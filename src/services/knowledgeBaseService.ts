@@ -68,7 +68,67 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
   const sharedHandlers: SharedHandler[] = [];
   const encounteredTipIds = new Set<string>();
 
+  // Helper function to recursively find tips in directories
+  async function findTipsRecursively(
+    currentScanPath: string, 
+    categoryId: KnowledgeCategory, 
+    tipFilesFoundDetails: { count: number, files: ScriptingTip[] }
+  ) {
+    const entries = await fs.readdir(currentScanPath, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const entryPath = path.join(currentScanPath, entry.name);
+      
+      if (entry.isDirectory()) {
+        // Recursively scan subdirectory
+        await findTipsRecursively(entryPath, categoryId, tipFilesFoundDetails);
+      } else if (entry.isFile() && entry.name.endsWith('.md') && !entry.name.startsWith('_')) {
+        // Process markdown file
+        const fileContent = await fs.readFile(entryPath, 'utf-8');
+        const parsedFile = parseMarkdownTipFile(fileContent, entryPath);
+
+        if (parsedFile?.frontmatter?.title) {
+          const fm = parsedFile.frontmatter;
+          const baseName = path.basename(entry.name, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_');
+          
+          // Get relative path from category root (for unique IDs in nested directories)
+          const relativePathFromCategory = path.relative(path.join(KNOWLEDGE_BASE_DIR, categoryId), path.dirname(entryPath));
+          
+          // Create tip ID, using relative path for nested files to ensure uniqueness
+          const pathPrefix = relativePathFromCategory && relativePathFromCategory !== '.' ? 
+            relativePathFromCategory.replace(/\//g, '_').replace(/\\/g, '_') + '_' : '';
+          const tipId = fm.id || `${categoryId}_${pathPrefix}${baseName}`;
+
+          if (encounteredTipIds.has(tipId)) {
+            logger.warn('Duplicate Tip ID resolved. Consider making frontmatter IDs unique or renaming files.', { tipId, filePath: entryPath });
+          }
+          encounteredTipIds.add(tipId);
+
+          if (parsedFile.script) {
+            tipFilesFoundDetails.files.push({
+              id: tipId,
+              category: categoryId,
+              title: fm.title,
+              description: fm.description,
+              script: parsedFile.script,
+              language: parsedFile.determinedLanguage,
+              keywords: Array.isArray(fm.keywords) ? fm.keywords.map(String) : (fm.keywords ? [String(fm.keywords)] : []),
+              notes: fm.notes,
+              filePath: entryPath,
+              isComplex: fm.isComplex !== undefined ? fm.isComplex : (parsedFile.script.length > 250),
+              argumentsPrompt: fm.argumentsPrompt,
+            });
+            tipFilesFoundDetails.count++;
+          } else {
+            logger.debug("Conceptual tip (no script block)", { title: fm.title, path: entryPath });
+          }
+        }
+      }
+    }
+  }
+
   try {
+    // Load shared handlers
     const sharedHandlersPath = path.join(KNOWLEDGE_BASE_DIR, SHARED_HANDLERS_DIR_NAME);
     try {
       const handlerFiles = await fs.readdir(sharedHandlersPath, { withFileTypes: true });
@@ -91,15 +151,19 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
       }
     }
 
+    // Scan categories
     const categoryDirEntries = await fs.readdir(KNOWLEDGE_BASE_DIR, { withFileTypes: true });
 
     for (const categoryDirEntry of categoryDirEntries) {
       if (categoryDirEntry.isDirectory() && categoryDirEntry.name !== SHARED_HANDLERS_DIR_NAME) {
         const categoryId = categoryDirEntry.name as KnowledgeCategory;
         const categoryPath = path.join(KNOWLEDGE_BASE_DIR, categoryId);
-        let tipCount = 0;
         let categoryDescription = `Tips and examples for ${categoryId.replace(/_/g, ' ')}.`;
+        
+        // Initialize container for tips in this category
+        let categorySpecificTipDetails = { count: 0, files: [] as ScriptingTip[] };
 
+        // Try to read category info
         try {
             const catInfoPath = path.join(categoryPath, '_category_info.md');
             const catInfoContent = await fs.readFile(catInfoPath, 'utf-8');
@@ -112,49 +176,24 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
             /* No _category_info.md or error parsing, use default description. Error variable intentionally unused. */
         }
 
-        const tipFileEntries = await fs.readdir(categoryPath, { withFileTypes: true });
-        for (const tipFileEntry of tipFileEntries) {
-          if (tipFileEntry.isFile() && tipFileEntry.name.endsWith('.md') && !tipFileEntry.name.startsWith('_')) {
-            const filePath = path.join(categoryPath, tipFileEntry.name);
-            const fileContent = await fs.readFile(filePath, 'utf-8');
-            const parsedFile = parseMarkdownTipFile(fileContent, filePath);
-
-            if (parsedFile?.frontmatter?.title) {
-              const fm = parsedFile.frontmatter;
-              const baseName = path.basename(tipFileEntry.name, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_');
-              const tipId = fm.id || `${categoryId}_${baseName}`;
-
-              if (encounteredTipIds.has(tipId)) {
-                  logger.warn('Duplicate Tip ID resolved. Consider making frontmatter IDs unique or renaming files.', { tipId, filePath });
-              }
-              encounteredTipIds.add(tipId);
-
-              if (parsedFile.script) {
-                allTips.push({
-                  id: tipId,
-                  category: categoryId,
-                  title: fm.title,
-                  description: fm.description,
-                  script: parsedFile.script,
-                  language: parsedFile.determinedLanguage,
-                  keywords: Array.isArray(fm.keywords) ? fm.keywords.map(String) : (fm.keywords ? [String(fm.keywords)] : []),
-                  notes: fm.notes,
-                  filePath: filePath,
-                  isComplex: fm.isComplex !== undefined ? fm.isComplex : (parsedFile.script.length > 250),
-                  argumentsPrompt: fm.argumentsPrompt,
-                });
-                tipCount++;
-              } else {
-                 logger.debug("Conceptual tip (no script block)", { title: fm.title, path: filePath });
-              }
-            }
-          }
-        }
-        if (tipCount > 0) {
-            categories.push({ id: categoryId, description: categoryDescription, tipCount });
+        // Recursively find all tip files in this category
+        await findTipsRecursively(categoryPath, categoryId, categorySpecificTipDetails);
+        
+        // Add category if it has tips
+        if (categorySpecificTipDetails.count > 0) {
+            categories.push({ 
+              id: categoryId, 
+              description: categoryDescription, 
+              tipCount: categorySpecificTipDetails.count 
+            });
+            
+            // Add all tips to the main array
+            allTips.push(...categorySpecificTipDetails.files);
         }
       }
     }
+    
+    // Sort results
     categories.sort((a: KnowledgeBaseIndex['categories'][0], b: KnowledgeBaseIndex['categories'][0]) => a.id.localeCompare(b.id));
     allTips.sort((a: ScriptingTip, b: ScriptingTip) => a.id.localeCompare(b.id));
 
