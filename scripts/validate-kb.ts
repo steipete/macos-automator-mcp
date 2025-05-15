@@ -80,95 +80,97 @@ function logWarning(filePath: string, message: string, isLocalKbIssue = false) {
   report.warnings.push(`WARN: ${prefix}[${filePath}] ${message}`);
 }
 
-function logFix(filePath: string, message: string) { // Fixes are not typically local-specific in logging
-  report.fixesApplied.push(`FIXED: [${filePath}] ${message}`);
-}
+// Function is currently unused
+// function logFix(filePath: string, message: string) { // Fixes are not typically local-specific in logging
+//   report.fixesApplied.push(`FIXED: [${filePath}] ${message}`);
+// }
 
 // Basic AppleScript auto-formatter/linter (can be significantly expanded)
-function lintAndFixAppleScript(scriptContent: string, filePath: string): string {
-  let fixedContent = scriptContent;
-  let fixesMade = false;
+// Function is currently unused
+// function lintAndFixAppleScript(scriptContent: string, filePath: string): string {
+//   let fixedContent = scriptContent;
+//   const fixesMade = false;
 
-  // 1. Consistent indentation (simple example: ensure lines in tell blocks are indented)
-  // This is a naive approach and can be wrong for complex scripts.
-  // A proper parser would be needed for robust indentation.
-  const lines = fixedContent.split('\n');
-  let indentLevel = 0;
-  const indentSize = 2; // spaces
-  fixedContent = lines.map(line => {
-    const trimmedLine = line.trim();
-    if (trimmedLine.startsWith('end tell') || trimmedLine.startsWith('end if') || trimmedLine.startsWith('end repeat') || trimmedLine.startsWith('else') || trimmedLine.startsWith('on error')) {
-      indentLevel = Math.max(0, indentLevel - 1);
-    }
-    let currentIndent = ' '.repeat(indentLevel * indentSize);
-    if (trimmedLine.startsWith('else') || trimmedLine.startsWith('on error')) { // these are at same level as `if` or `try`
-        currentIndent = ' '.repeat(Math.max(0, indentLevel) * indentSize);
-    }
+  //   // 1. Consistent indentation (simple example: ensure lines in tell blocks are indented)
+  //   // This is a naive approach and can be wrong for complex scripts.
+  //   // A proper parser would be needed for robust indentation.
+  //   const lines = fixedContent.split('\n');
+  //   let indentLevel = 0;
+  //   const indentSize = 2; // spaces
+  //   fixedContent = lines.map(line => {
+  //     const trimmedLine = line.trim();
+  //     if (trimmedLine.startsWith('end tell') || trimmedLine.startsWith('end if') || trimmedLine.startsWith('end repeat') || trimmedLine.startsWith('else') || trimmedLine.startsWith('on error')) {
+  //       indentLevel = Math.max(0, indentLevel - 1);
+  //     }
+  //     let currentIndent = ' '.repeat(indentLevel * indentSize);
+  //     if (trimmedLine.startsWith('else') || trimmedLine.startsWith('on error')) { // these are at same level as `if` or `try`
+  //         currentIndent = ' '.repeat(Math.max(0, indentLevel) * indentSize);
+  //     }
 
-    const reindentedLine = currentIndent + trimmedLine;
-    if (reindentedLine !== line.trimEnd() && trimmedLine !== "") { // only log if changed and not an empty line after trim
-      // This fix is too noisy and potentially incorrect for complex formatting
-      // logFix(filePath, `Re-indented line: "${trimmedLine.substring(0,30)}..."}`);
-      // fixesMade = true;
-    }
+  //     const reindentedLine = currentIndent + trimmedLine;
+  //     if (reindentedLine !== line.trimEnd() && trimmedLine !== "") { // only log if changed and not an empty line after trim
+  //       // This fix is too noisy and potentially incorrect for complex formatting
+  //       // logFix(filePath, `Re-indented line: "${trimmedLine.substring(0,30)}..."}`);
+  //       // fixesMade = true;
+  //     }
 
-    if ((trimmedLine.startsWith('tell application') && !trimmedLine.endsWith('to')) || trimmedLine.startsWith('if ') && trimmedLine.endsWith('then') && !trimmedLine.includes('end if') || trimmedLine.startsWith('repeat ') || trimmedLine.startsWith('try')) {
-      if (!trimmedLine.includes('end tell') && !trimmedLine.includes('end if') && !trimmedLine.includes('end repeat') && !trimmedLine.includes('end try')) {
-        indentLevel++;
-      }
-    }
-    return reindentedLine;
-  }).join('\n');
+  //     if ((trimmedLine.startsWith('tell application') && !trimmedLine.endsWith('to')) || trimmedLine.startsWith('if ') && trimmedLine.endsWith('then') && !trimmedLine.includes('end if') || trimmedLine.startsWith('repeat ') || trimmedLine.startsWith('try')) {
+  //       if (!trimmedLine.includes('end tell') && !trimmedLine.includes('end if') && !trimmedLine.includes('end repeat') && !trimmedLine.includes('end try')) {
+  //         indentLevel++;
+  //       }
+  //     }
+  //     return reindentedLine;
+  //   }).join('\n');
 
 
-  // 2. Consistent keyword casing (example for 'tell application')
-  const tellRegex = /\b(tell\s+application)\b/gi;
-  if (tellRegex.test(fixedContent)) {
-    const originalTellCount = (fixedContent.match(tellRegex) || []).length;
-    const newContent = fixedContent.replace(tellRegex, 'tell application');
-    if (newContent !== fixedContent && (newContent.match(/\btell application\b/g) || []).length === originalTellCount ) {
-        // Only log if a real change happened
-        // logFix(filePath, "Standardized 'tell application' casing.");
-        // fixesMade = true;
-        // fixedContent = newContent;
-        // For now, disabling auto-fix for casing as it might be too aggressive without full parsing context.
-    }
-  }
-  // Add more rules: e.g., 'end tell', 'set x to y', 'if...then...else...end if'
+  //   // 2. Consistent keyword casing (example for 'tell application')
+  //   const tellRegex = /\b(tell\s+application)\b/gi;
+  //   if (tellRegex.test(fixedContent)) {
+  //     const originalTellCount = (fixedContent.match(tellRegex) || []).length;
+  //     const newContent = fixedContent.replace(tellRegex, 'tell application');
+  //     if (newContent !== fixedContent && (newContent.match(/\btell application\b/g) || []).length === originalTellCount ) {
+  //         // Only log if a real change happened
+  //         // logFix(filePath, "Standardized 'tell application' casing.");
+  //         // fixesMade = true;
+  //         // fixedContent = newContent;
+  //         // For now, disabling auto-fix for casing as it might be too aggressive without full parsing context.
+  //     }
+  //   }
+  //   // Add more rules: e.g., 'end tell', 'set x to y', 'if...then...else...end if'
 
-  // 3. Check for common issues like missing 'end tell' (hard to auto-fix reliably without full parser)
-  const tellMatch = fixedContent.match(/\btell\b/g);
-  const endTellMatch = fixedContent.match(/\bend tell\b/g);
-  const tellCount = tellMatch ? tellMatch.length : 0;
-  const endTellCount = endTellMatch ? endTellMatch.length : 0;
-  
-  // Skip tell count warning for code with commented sections that might contain tell blocks
-  if (fixedContent.includes("(*") && fixedContent.includes("*)")) {
-    // Only log warning for severe imbalance, as commented code can contain tell blocks
-    if (Math.abs(tellCount - endTellCount) > 2) {
-      logWarning(filePath, `Significant imbalance in 'tell'/'end tell' blocks (${tellCount}/${endTellCount}). File has comments that may contain code blocks. Please verify manually.`, false);
-    }
-  } else if (tellCount > endTellCount) {
-    logWarning(filePath, `Potential missing 'end tell'. Found ${tellCount} 'tell' and ${endTellCount} 'end tell'.`, false);
-  } else if (endTellCount > tellCount) {
-    logWarning(filePath, `Potential extraneous 'end tell'. Found ${tellCount} 'tell' and ${endTellCount} 'end tell'.`, false);
-  }
+  //   // 3. Check for common issues like missing 'end tell' (hard to auto-fix reliably without full parser)
+  //   const tellMatch = fixedContent.match(/\btell\b/g);
+  //   const endTellMatch = fixedContent.match(/\bend tell\b/g);
+  //   const tellCount = tellMatch ? tellMatch.length : 0;
+  //   const endTellCount = endTellMatch ? endTellMatch.length : 0;
+    
+  //   // Skip tell count warning for code with commented sections that might contain tell blocks
+  //   if (fixedContent.includes("(*") && fixedContent.includes("*)")) {
+  //     // Only log warning for severe imbalance, as commented code can contain tell blocks
+  //     if (Math.abs(tellCount - endTellCount) > 2) {
+  //       logWarning(filePath, `Significant imbalance in 'tell'/'end tell' blocks (${tellCount}/${endTellCount}). File has comments that may contain code blocks. Please verify manually.`, false);
+  //     }
+  //   } else if (tellCount > endTellCount) {
+  //     logWarning(filePath, `Potential missing 'end tell'. Found ${tellCount} 'tell' and ${endTellCount} 'end tell'.`, false);
+  //   } else if (endTellCount > tellCount) {
+  //     logWarning(filePath, `Potential extraneous 'end tell'. Found ${tellCount} 'tell' and ${endTellCount} 'end tell'.`, false);
+  //   }
 
-  // 4. Ensure POSIX path for shell scripts or POSIX file for AppleScript paths
-  if (fixedContent.includes('do shell script') && fixedContent.match(/["""'][A-Za-z0-9\s]+:/)) { // Detects HFS paths in shell scripts
-    logWarning(filePath, "Potential HFS path used in 'do shell script'. Should use POSIX path with 'quoted form of.'.", false);
-  }
+  //   // 4. Ensure POSIX path for shell scripts or POSIX file for AppleScript paths
+  //   if (fixedContent.includes('do shell script') && fixedContent.match(/["""'][A-Za-z0-9\s]+:/)) { // Detects HFS paths in shell scripts
+  //     logWarning(filePath, "Potential HFS path used in 'do shell script'. Should use POSIX path with 'quoted form of.'.", false);
+  //   }
 
-  if (fixesMade) {
-    report.fixesApplied.push(filePath); // Add file path if any fix was made
-  }
-  return fixedContent;
-}
+  //   if (fixesMade) {
+  //     report.fixesApplied.push(filePath); // Add file path if any fix was made
+  //   }
+  //   return fixedContent;
+// }
 
 async function validateTipFile(filePath: string, categoryId: string, kbPath: string, isLocalKb: boolean): Promise<void> {
   report.totalFilesChecked++;
   const fileContent = await fs.readFile(filePath, 'utf-8');
-  const { data, content: markdownBody, isEmpty, excerpt } = matter(fileContent, { excerpt: true });
+  const { data, content: markdownBody } = matter(fileContent, { excerpt: true });
   const frontmatter = data as TipFrontmatter;
 
   // --- Frontmatter Checks ---
@@ -182,7 +184,7 @@ async function validateTipFile(filePath: string, categoryId: string, kbPath: str
 
   const baseName = path.basename(filePath, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_').toLowerCase();
   const relativeDirPath = path.dirname(path.relative(path.join(kbPath, categoryId), filePath));
-  const pathPrefix = relativeDirPath && relativeDirPath !== '.' ? `${relativeDirPath.replace(/[\\\/]/g, '_')}_` : '';
+  const pathPrefix = relativeDirPath && relativeDirPath !== '.' ? `${relativeDirPath.replace(/[\\/_]/g, '_')}_` : '';
   const generatedId = `${categoryId}_${pathPrefix}${baseName}`;
   const tipId = frontmatter.id || generatedId;
 
@@ -253,8 +255,7 @@ async function validateTipFile(filePath: string, categoryId: string, kbPath: str
     }
 
     if (lang === 'applescript' || scriptBlockLang === 'applescript') {
-      const originalScript = scriptContent;
-      // const fixedScript = lintAndFixAppleScript(originalScript, filePath); // LINTING DISABLED FOR NOW
+      // const fixedScript = lintAndFixAppleScript(scriptContent, filePath); // LINTING DISABLED FOR NOW
       // if (fixedScript !== originalScript) {
         // logWarning(filePath, "AppleScript formatting differences found. Auto-fix available (currently disabled).", isLocalKb);
       // }
@@ -305,9 +306,9 @@ async function validateSharedHandlerFile(filePath: string, isLocalKb: boolean): 
             }
         }
         report.totalSharedHandlers++; // Count all successfully processed handlers
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            logError(filePath, `Failed to read shared handler file: ${e.message}`, isLocalKb);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            logError(filePath, `Failed to read shared handler file: ${error.message}`, isLocalKb);
         } else {
             logError(filePath, `Failed to read shared handler file: Unknown error occurred`, isLocalKb);
         }
@@ -369,9 +370,9 @@ async function processKnowledgeBasePath(basePathToScan: string, isLocal: boolean
                         await validateSharedHandlerFile(path.join(categoryPath, handlerFile.name), isLocal);
                     }
                 }
-            } catch (e) { // Catch error if _shared_handlers dir doesn't exist in local KB
-                if (!isLocal || (e as NodeJS.ErrnoException)?.code !== 'ENOENT') {
-                    logError(categoryPath, `Failed to read _shared_handlers directory: ${(e as Error).message}`, isLocal);
+            } catch (error) { // Catch error if _shared_handlers dir doesn't exist in local KB
+                if (!isLocal || (error as NodeJS.ErrnoException)?.code !== 'ENOENT') {
+                    logError(categoryPath, `Failed to read _shared_handlers directory: ${(error as Error).message}`, isLocal);
                 } else {
                     // console.debug(`Optional _shared_handlers directory not found in local KB: ${categoryPath}`);
                 }
@@ -394,7 +395,7 @@ async function processKnowledgeBasePath(basePathToScan: string, isLocal: boolean
             if (!report.categoriesFound.has(categoryId) && catFm.description) {
                  // report.categoriesFound.add(categoryId); // this is now handled in validateTipFile based on actual tips
             }
-        } catch (e) {
+        } catch {
             // Only warn if not found for primary KB. For local, it's optional.
             if (!isLocal) {
                 logWarning(categoryPath, "_category_info.md not found or not readable. Category description will be default.", false);

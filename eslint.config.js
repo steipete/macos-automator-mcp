@@ -24,6 +24,7 @@ export default tseslint.config(
         require: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly',
+        console: 'readonly',
       },
     },
     linterOptions: {

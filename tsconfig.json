@@ -27,7 +27,7 @@
 
     /* Modules */
     "module": "NodeNext",
-    "rootDir": "src",
+    "rootDir": ".",
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
     // "rootDirs": [],
@@ -59,6 +59,7 @@
     // "noEmit": true,
     // "outFile": "./",
     "outDir": "dist",
+    "rootDirs": ["src", "scripts"],
     // "removeComments": true,
     // "importHelpers": true,
     // "downlevelIteration": true,
