@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Lint
+      run: npm run lint
+    
+    - name: Build
+      run: npm run build
+    
+    - name: Check TypeScript compilation
+      run: tsc --noEmit
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-${{ matrix.node-version }}
+        path: dist/
+        retention-days: 7
+        
+  kb-validation:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Validate Knowledge Base
+      run: npm run validate-kb
+
+  # Test macOS specific functionality (optional, as actual execution requires macOS)
+  # Uncomment this section if you want to set up a macOS runner for execution tests
+  # macos-test:
+  #   runs-on: macos-latest
+  #   needs: build
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   
+  #   - name: Use Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '20.x'
+  #       cache: 'npm'
+  #   
+  #   - name: Install dependencies
+  #     run: npm ci
+  #   
+  #   - name: Build
+  #     run: npm run build
+  #   
+  #   - name: Run basic startup test 
+  #     run: |
+  #       npm start -- --test-mode &
+  #       PID=$!
+  #       sleep 5
+  #       kill $PID
