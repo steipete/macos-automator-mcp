@@ -15,7 +15,7 @@ import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas
 import { ScriptExecutor } from './ScriptExecutor.js';
 import type { ScriptExecutionError }  from './types.js';
 import pkg from '../package.json' with { type: 'json' }; // Import package.json
-import { getKnowledgeBase, getScriptingTipsService } from './services/knowledgeBaseService.js'; // Import KB functions
+import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
 import { z } from 'zod';
 
 const logger = new Logger('macos_automator_server');
@@ -54,6 +54,7 @@ const ExecuteScriptInputShape = {
   inputData: z.record(z.any()).optional(),
   timeoutSeconds: z.number().optional(),
   useScriptFriendlyOutput: z.boolean().optional(),
+  includeExecutedScriptInOutput: z.boolean().optional(),
 } as const;
 
 const GetScriptingTipsInputShape = {
@@ -66,6 +67,14 @@ const GetScriptingTipsInputShape = {
 async function main() {
   logger.info('Starting macos_automator MCP Server...');
   logger.warn("CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.");
+
+  // Eagerly initialize Knowledge Base if KB_PARSING is set to eager
+  const eagerParseEnv = process.env.KB_PARSING?.toLowerCase();
+  if (eagerParseEnv === 'eager') {
+    await conditionallyInitializeKnowledgeBase(true);
+  } else {
+    conditionallyInitializeKnowledgeBase(false); // Log that it's lazy
+  }
 
   const server = new McpServer({
     name: 'macos_automator', // Matches the key in mcp.json
@@ -127,8 +136,11 @@ async function main() {
       } else if (input.scriptPath) {
         // File path existence check is now within ScriptExecutor
         // No specific action here, path is passed to executor
+        logger.debug('Executing script from path', { scriptPath: input.scriptPath, language: languageToUse });
       } else if (input.scriptContent) {
         // Content is directly from input
+        // languageToUse is already set based on input or default
+        logger.debug('Executing script from content', { language: languageToUse, initialLength: input.scriptContent.length });
       } else {
         throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID). This should be caught by Zod schema refinement.");
       }
@@ -137,6 +149,14 @@ async function main() {
           languageToUse = input.language;
       } else if (!input.knowledgeBaseScriptId && !input.language) {
           languageToUse = 'applescript';
+      }
+
+      // Log the actual script to be executed (especially useful for KB scripts after substitution)
+      if (scriptContentToExecute) {
+        logger.debug('Final script content to be executed:', { language: languageToUse, script: scriptContentToExecute });
+      } else if (scriptPathToExecute) {
+        // For scriptPath, we don't log content here, just that it's a path-based execution
+        logger.debug('Executing script via path (content not logged here):', { scriptPath: scriptPathToExecute, language: languageToUse });
       }
 
       try {
@@ -153,7 +173,19 @@ async function main() {
         if (result.stderr) {
            logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
         }
-        return { content: [{ type: 'text', text: result.stdout }] };
+        
+        const outputContent: { type: 'text'; text: string }[] = [{ type: 'text', text: result.stdout }];
+
+        if (input.includeExecutedScriptInOutput) {
+          let scriptIdentifier = "Script source not determined (should not happen).";
+          if (scriptContentToExecute) {
+            scriptIdentifier = `\n--- Executed Script Content ---\n${scriptContentToExecute}`;
+          } else if (scriptPathToExecute) {
+            scriptIdentifier = `\n--- Executed Script Path ---\n${scriptPathToExecute}`;
+          }
+          outputContent.push({ type: 'text', text: scriptIdentifier });
+        }
+        return { content: outputContent };
 
       } catch (error: unknown) {
         const execError = error as ScriptExecutionError;
@@ -180,6 +212,16 @@ async function main() {
         if (likelyPermissionError || possibleSilentPermissionError) {
             finalErrorMessage = `${baseErrorMessage}\n\nPOSSIBLE PERMISSION ISSUE: Ensure the application running this server (e.g., Terminal, Node) has required permissions in 'System Settings > Privacy & Security > Automation' and 'Accessibility'. See README.md. The target application for the script may also need specific permissions.`;
         }
+
+        // Append the attempted script to the error message
+        let scriptIdentifierForError = "Script source not determined (should not happen).";
+        if (scriptContentToExecute) {
+          scriptIdentifierForError = `\n\n--- Script Attempted (Content) ---\n${scriptContentToExecute}`;
+        } else if (scriptPathToExecute) {
+          scriptIdentifierForError = `\n\n--- Script Attempted (Path) ---\n${scriptPathToExecute}`;
+        }
+        finalErrorMessage += scriptIdentifierForError;
+
         throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, finalErrorMessage);
       }
     }

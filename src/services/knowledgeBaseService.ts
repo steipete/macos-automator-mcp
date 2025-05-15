@@ -10,7 +10,7 @@ import type {
   SharedHandler,
   TipFrontmatter
 } from './scriptingKnowledge.types.js';
-import { GetScriptingTipsInput } from '../schemas.js';
+import type { GetScriptingTipsInput } from '../schemas.js'; // Changed to type-only import
 import { Logger } from '../logger.js';
 
 const logger = new Logger('KnowledgeBaseService');
@@ -62,6 +62,7 @@ function parseMarkdownTipFile(
 }
 
 async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
+  indexedKnowledgeBase = null; // Ensure it starts fresh every time this core function is called
   logger.info('Starting: Load and index knowledge base from Markdown files...');
   const categories: KnowledgeBaseIndex['categories'] = [];
   const allTips: ScriptingTip[] = [];
@@ -72,59 +73,94 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
   async function findTipsRecursively(
     currentScanPath: string, 
     categoryId: KnowledgeCategory, 
-    tipFilesFoundDetails: { count: number, files: ScriptingTip[] }
-  ) {
-    const entries = await fs.readdir(currentScanPath, { withFileTypes: true });
+    encounteredTipIds: Set<string>
+  ): Promise<{ count: number; files: ScriptingTip[] }> {
+    logger.debug('Recursively scanning directory for tips', { currentScanPath, categoryId });
+    
+    let entries: import('node:fs').Dirent[]; // Typed entries
+    try {
+      entries = await fs.readdir(currentScanPath, { withFileTypes: true });
+    } catch (error) {
+      logger.warn('Failed to read directory in findTipsRecursively, skipping.', { 
+        currentScanPath, 
+        categoryId, 
+        errorMessage: (error instanceof Error ? error.message : String(error)) 
+      });
+      return { count: 0, files: [] }; // Return zero if directory read fails
+    }
+    
+    let currentLevelCount = 0;
+    const currentLevelFiles: ScriptingTip[] = []; // Changed to const
     
     for (const entry of entries) {
       const entryPath = path.join(currentScanPath, entry.name);
       
-      if (entry.isDirectory()) {
-        // Recursively scan subdirectory
-        await findTipsRecursively(entryPath, categoryId, tipFilesFoundDetails);
-      } else if (entry.isFile() && entry.name.endsWith('.md') && !entry.name.startsWith('_')) {
-        // Process markdown file
-        const fileContent = await fs.readFile(entryPath, 'utf-8');
-        const parsedFile = parseMarkdownTipFile(fileContent, entryPath);
-
-        if (parsedFile?.frontmatter?.title) {
-          const fm = parsedFile.frontmatter;
-          const baseName = path.basename(entry.name, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_');
-          
-          // Get relative path from category root (for unique IDs in nested directories)
-          const relativePathFromCategory = path.relative(path.join(KNOWLEDGE_BASE_DIR, categoryId), path.dirname(entryPath));
-          
-          // Create tip ID, using relative path for nested files to ensure uniqueness
-          const pathPrefix = relativePathFromCategory && relativePathFromCategory !== '.' ? 
-            relativePathFromCategory.replace(/\//g, '_').replace(/\\/g, '_') + '_' : '';
-          const tipId = fm.id || `${categoryId}_${pathPrefix}${baseName}`;
-
-          if (encounteredTipIds.has(tipId)) {
-            logger.warn('Duplicate Tip ID resolved. Consider making frontmatter IDs unique or renaming files.', { tipId, filePath: entryPath });
-          }
-          encounteredTipIds.add(tipId);
-
-          if (parsedFile.script) {
-            tipFilesFoundDetails.files.push({
-              id: tipId,
-              category: categoryId,
-              title: fm.title,
-              description: fm.description,
-              script: parsedFile.script,
-              language: parsedFile.determinedLanguage,
-              keywords: Array.isArray(fm.keywords) ? fm.keywords.map(String) : (fm.keywords ? [String(fm.keywords)] : []),
-              notes: fm.notes,
-              filePath: entryPath,
-              isComplex: fm.isComplex !== undefined ? fm.isComplex : (parsedFile.script.length > 250),
-              argumentsPrompt: fm.argumentsPrompt,
+      try { // Add a try-catch for each entry
+        if (entry.isDirectory()) {
+          const subDirResult = await findTipsRecursively(entryPath, categoryId, encounteredTipIds);
+          currentLevelCount += subDirResult.count;
+          currentLevelFiles.push(...subDirResult.files);
+        } else if (entry.isFile() && entry.name.endsWith('.md') && !entry.name.startsWith('_')) {
+          let fileContent: string; // Typed fileContent
+          try {
+            fileContent = await fs.readFile(entryPath, 'utf-8');
+          } catch (fileReadError) {
+            logger.warn('Failed to read file in findTipsRecursively, skipping file.', {
+              entryPath,
+              categoryId,
+              errorMessage: (fileReadError instanceof Error ? fileReadError.message : String(fileReadError))
             });
-            tipFilesFoundDetails.count++;
-          } else {
-            logger.debug("Conceptual tip (no script block)", { title: fm.title, path: entryPath });
+            continue; // Skip this file, continue with the next entry
+          }
+          
+          const parsedFile = parseMarkdownTipFile(fileContent, entryPath);
+
+          if (parsedFile?.frontmatter?.title) {
+            const fm = parsedFile.frontmatter;
+            const baseName = path.basename(entry.name, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_');
+            
+            const relativePathFromCategory = path.relative(path.join(KNOWLEDGE_BASE_DIR, categoryId), path.dirname(entryPath));
+            const pathPrefix = relativePathFromCategory && relativePathFromCategory !== '.' ? 
+              `${relativePathFromCategory.replace(/\//g, '_').replace(/\\/g, '_')}_` : ''; // Converted to template literal
+            const tipId = fm.id || `${categoryId}_${pathPrefix}${baseName}`;
+
+            if (encounteredTipIds.has(tipId)) {
+              logger.warn('Duplicate Tip ID resolved. Consider making frontmatter IDs unique or renaming files.', { tipId, filePath: entryPath });
+            }
+            encounteredTipIds.add(tipId);
+
+            if (parsedFile.script) {
+              currentLevelFiles.push({
+                id: tipId,
+                category: categoryId,
+                title: fm.title,
+                description: fm.description,
+                script: parsedFile.script,
+                language: parsedFile.determinedLanguage,
+                keywords: Array.isArray(fm.keywords) ? fm.keywords.map(String) : (fm.keywords ? [String(fm.keywords)] : []),
+                notes: fm.notes,
+                filePath: entryPath,
+                isComplex: fm.isComplex !== undefined ? fm.isComplex : (parsedFile.script.length > 250),
+                argumentsPrompt: fm.argumentsPrompt,
+              });
+              currentLevelCount++;
+              logger.debug('Found scriptable tip and incremented count', { tipId, newCount: currentLevelCount, categoryId });
+            } else {
+              logger.debug("Conceptual tip (no script block)", { title: fm.title, path: entryPath });
+            }
           }
         }
+      } catch (entryError) {
+        logger.warn('Error processing entry in findTipsRecursively, skipping entry.', {
+          entryPath,
+          categoryId,
+          errorMessage: (entryError instanceof Error ? entryError.message : String(entryError))
+        });
+        // Continue with the next entry in the loop
       }
     }
+    
+    return { count: currentLevelCount, files: currentLevelFiles };
   }
 
   try {
@@ -160,9 +196,6 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
         const categoryPath = path.join(KNOWLEDGE_BASE_DIR, categoryId);
         let categoryDescription = `Tips and examples for ${categoryId.replace(/_/g, ' ')}.`;
         
-        // Initialize container for tips in this category
-        let categorySpecificTipDetails = { count: 0, files: [] as ScriptingTip[] };
-
         // Try to read category info
         try {
             const catInfoPath = path.join(categoryPath, '_category_info.md');
@@ -177,18 +210,18 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
         }
 
         // Recursively find all tip files in this category
-        await findTipsRecursively(categoryPath, categoryId, categorySpecificTipDetails);
+        const categoryScanResults = await findTipsRecursively(categoryPath, categoryId, encounteredTipIds);
         
         // Add category if it has tips
-        if (categorySpecificTipDetails.count > 0) {
+        if (categoryScanResults.count > 0) {
             categories.push({ 
               id: categoryId, 
               description: categoryDescription, 
-              tipCount: categorySpecificTipDetails.count 
+              tipCount: categoryScanResults.count 
             });
             
             // Add all tips to the main array
-            allTips.push(...categorySpecificTipDetails.files);
+            allTips.push(...categoryScanResults.files);
         }
       }
     }
@@ -229,6 +262,26 @@ export async function getKnowledgeBase(): Promise<KnowledgeBaseIndex> {
         isLoadingKnowledgeBase = false;
     });
     return knowledgeBaseLoadPromise;
+}
+
+// New function for conditional eager initialization
+export async function conditionallyInitializeKnowledgeBase(eagerMode: boolean): Promise<void> {
+  if (eagerMode) {
+    logger.info('KB_PARSING is set to eager. Initializing knowledge base at startup...');
+    try {
+      await getKnowledgeBase(); // This will trigger loading if not already done
+      logger.info('Eager initialization of knowledge base complete.');
+    } catch (error) {
+      logger.error('Error during eager initialization of knowledge base', { 
+        errorMessage: (error instanceof Error ? error.message : String(error)),
+        stack: (error instanceof Error ? error.stack : undefined)
+      });
+      // Depending on policy, might want to re-throw or handle so server doesn't start, 
+      // but for now, just log and continue.
+    }
+  } else {
+    logger.info('KB_PARSING is lazy (or not set). Knowledge base will load on first use.');
+  }
 }
 
 export async function getScriptingTipsService(

@@ -3,11 +3,11 @@ import { z } from 'zod';
 
 // Placeholder for KNOWN_CATEGORIES. In a real scenario, this might be populated dynamically
 // or from a more extensive list. For now, ensure it's not empty for z.enum.
-const KNOWN_CATEGORIES = ['basics', 'finder', 'electron_editors', 'safari', 'chrome'] as const;
+// const KNOWN_CATEGORIES = ['basics', 'finder', 'electron_editors', 'safari', 'chrome'] as const; // Keep for reference or future dynamic population
 
-const DynamicScriptingKnowledgeCategoryEnum = KNOWN_CATEGORIES.length > 0 
-    ? z.enum(KNOWN_CATEGORIES) 
-    : z.string().describe("Category of AppleScript/JXA tips. No categories pre-defined if this is a plain string.");
+// Allow any string for category, as they are dynamically loaded from the KB.
+const DynamicScriptingKnowledgeCategoryEnum = z.string()
+    .describe("Category of AppleScript/JXA tips. Should match a discovered category ID from the knowledge base.");
 
 export const ExecuteScriptInputSchema = z.object({
   scriptContent: z.string().optional()
@@ -25,7 +25,9 @@ export const ExecuteScriptInputSchema = z.object({
   timeoutSeconds: z.number().int().positive().optional().default(30)
     .describe("Script execution timeout in seconds."),
   useScriptFriendlyOutput: z.boolean().optional().default(false)
-    .describe("Use 'osascript -ss' for script-friendly output.")
+    .describe("Use 'osascript -ss' for script-friendly output."),
+  includeExecutedScriptInOutput: z.boolean().optional().default(false)
+    .describe("If true, the executed script content (after substitutions) or path will be included in the output.")
 }).refine(data => {
     const sources = [data.scriptContent, data.scriptPath, data.knowledgeBaseScriptId].filter(s => s !== undefined && s !== null && s !== '');
     return sources.length === 1;
