@@ -1,6 +1,6 @@
 ---
 title: "Core: Index Reference Form"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_index
 description: "Accessing elements within containers (lists, strings, application elements) by their numerical index."
 keywords: ["reference form", "index", "item", "character", "word", "paragraph", "list access", "string element", "1-indexed", "negative index"]

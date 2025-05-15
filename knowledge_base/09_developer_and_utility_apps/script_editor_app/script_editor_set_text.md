@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Set Document Text"
-category: "11_developer_and_utility_apps" # Subdir: script_editor_app
+category: "09_developer_and_utility_apps"
 id: script_editor_set_text
 description: "Sets the text content of a Script Editor document, allowing programmatic creation or modification of AppleScripts."
 keywords: ["Script Editor", "set text", "modify script", "edit", "document", "code generation"]

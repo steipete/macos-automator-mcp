@@ -1,6 +1,6 @@
 ---
 title: "Advanced: Raw Apple Events"
-category: "13_advanced_techniques" # Subdir: inter_app_communication_advanced
+category: "11_advanced_techniques"
 id: advanced_raw_apple_events
 description: "Explains raw Apple Events using four-character codes (chevrons «») and their limited use cases."
 keywords: ["Apple Events", "raw events", "four-char codes", "chevrons", "low-level", "scripting bridge", "sdef"]

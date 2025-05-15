@@ -1,6 +1,6 @@
 ---
 title: "Paths: User Selects File or Folder"
-category: "03_file_system_and_finder" # Subdir: paths_and_references
+category: "03_file_system_and_finder"
 id: paths_user_select_file_folder
 description: "Uses 'choose file', 'choose folder', and 'choose file name' (for saving) to get path input from the user via standard dialogs."
 keywords: ["choose file", "choose folder", "choose file name", "user input", "dialog", "path selection"]

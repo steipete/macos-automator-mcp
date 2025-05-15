@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: offset of...in Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_offset_of_in
 description: "Finds the position of a substring within a string or an item within a list."
 keywords: ["StandardAdditions", "offset", "substring", "find", "position", "string search", "list search"]

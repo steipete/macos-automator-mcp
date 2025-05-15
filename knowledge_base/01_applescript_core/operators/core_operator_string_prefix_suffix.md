@@ -1,6 +1,6 @@
 ---
 title: "Core: String Prefix/Suffix Operators"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_string_prefix_suffix
 description: "Covers string operators like 'starts with', 'ends with', and their negations."
 keywords: ["operator", "string", "starts with", "ends with", "prefix", "suffix", "does not start with", "does not end with"]

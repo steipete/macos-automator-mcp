@@ -1,6 +1,6 @@
 ---
 title: "Network Configuration with networksetup"
-category: "network_services"
+category: "12_network_services"
 id: network_networksetup_cli
 description: "Manage network services, interfaces, Wi-Fi connections, and DNS settings using the networksetup command-line tool."
 keywords: ["network", "networksetup", "Wi-Fi", "DNS", "proxy", "ethernet", "network services", "TCP/IP"]

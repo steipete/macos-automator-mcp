@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Get Document Text"
-category: "11_developer_and_utility_apps" # Subdir: script_editor_app
+category: "09_developer_and_utility_apps"
 id: script_editor_get_text
 description: "Retrieves the text content of a Script Editor document."
 keywords: ["Script Editor", "text", "content", "document", "get text", "script content"]

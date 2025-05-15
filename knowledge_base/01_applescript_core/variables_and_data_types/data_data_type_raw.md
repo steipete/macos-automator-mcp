@@ -1,6 +1,6 @@
 ---
 title: "AppleScript Raw Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_data_raw
 description: "Understanding and working with the 'data' data type in AppleScript for handling binary data and type information."
 keywords: ["data", "raw data", "binary data", "type codes", "hexadecimal", "data conversion", "«data»"]

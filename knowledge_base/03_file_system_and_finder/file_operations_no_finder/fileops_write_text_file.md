@@ -1,6 +1,6 @@
 ---
 title: "File Ops (No Finder): Write Text to File (Overwrite)"
-category: "03_file_system_and_finder" # Subdir: file_operations_no_finder
+category: "03_file_system_and_finder"
 id: fileops_write_text_file
 description: "Writes provided text content to a specified file, overwriting the file if it exists, or creating it if it doesn't. Uses StandardAdditions."
 keywords: ["write file", "save file", "create file", "overwrite", "StandardAdditions"]

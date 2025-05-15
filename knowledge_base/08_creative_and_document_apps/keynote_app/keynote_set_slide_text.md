@@ -1,6 +1,6 @@
 ---
 title: "Keynote: Set Title and Body Text of Current Slide"
-category: "10_creative_and_document_apps" # Subdir: keynote_app
+category: "08_creative_and_document_apps"
 id: keynote_set_slide_text
 description: "Sets the title and body text content of the current slide in the frontmost Keynote presentation."
 keywords: ["Keynote", "slide text", "title", "body", "content", "text item", "presentation"]

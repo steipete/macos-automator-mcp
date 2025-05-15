@@ -1,6 +1,6 @@
 ---
 title: "JXA Basics: Introduction and Syntax"
-category: "12_jxa_basics"
+category: "10_jxa_basics"
 id: jxa_introduction_syntax
 description: "Basic syntax for JavaScript for Automation (JXA), including how to target applications and execute commands."
 keywords: ["jxa", "javascript", "automation", "syntax", "Application object"]

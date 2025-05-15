@@ -1,6 +1,6 @@
 ---
 title: "HTTP Download with URL Access and curl"
-category: "network_services"
+category: "12_network_services"
 id: network_http_download
 description: "Download files and content from the internet using both modern curl and legacy URL Access approaches."
 keywords: ["HTTP", "download", "URL", "web", "fetch", "curl", "URL Access"]

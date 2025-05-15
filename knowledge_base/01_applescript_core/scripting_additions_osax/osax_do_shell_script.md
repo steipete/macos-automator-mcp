@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: do shell script Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_do_shell_script
 description: "Executes a Unix shell command and returns its standard output as a string."
 keywords: ["StandardAdditions", "do shell script", "terminal command", "unix", "bash", "zsh", "execute"]

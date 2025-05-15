@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Compile Document"
-category: "11_developer_and_utility_apps" # Subdir: script_editor_app
+category: "09_developer_and_utility_apps"
 id: script_editor_compile_document
 description: "Compiles an AppleScript document in Script Editor to check for syntax errors and prepare it for execution."
 keywords: ["Script Editor", "compile", "check syntax", "AppleScript", "document", "validation"]

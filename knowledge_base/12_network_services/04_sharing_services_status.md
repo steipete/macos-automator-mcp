@@ -1,6 +1,6 @@
 ---
 title: "Manage macOS Sharing Services"
-category: "network_services"
+category: "12_network_services"
 id: network_sharing_services_status
 description: "Check and toggle macOS sharing services like File Sharing, Screen Sharing, and Remote Login using shell commands."
 keywords: ["Sharing", "File Sharing", "Screen Sharing", "Remote Login", "SSH", "VNC", "service", "systemsetup"]

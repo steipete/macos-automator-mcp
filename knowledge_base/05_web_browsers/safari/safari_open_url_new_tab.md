@@ -1,6 +1,6 @@
 ---
 title: "Safari: Open URL in New Tab"
-category: "04_web_browsers" # Subdir: safari
+category: "05_web_browsers"
 id: safari_open_url_new_tab
 description: "Opens a specified URL in a new tab in the frontmost Safari window."
 keywords: ["safari", "new tab", "open url", "navigation"]

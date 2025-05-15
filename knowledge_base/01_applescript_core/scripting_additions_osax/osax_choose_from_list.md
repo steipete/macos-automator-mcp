@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: choose from list Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_choose_from_list
 description: "Displays a dialog prompting the user to choose one or more items from a list."
 keywords: ["StandardAdditions", "choose from list", "list selection", "dialog", "multiple selection", "osax"]

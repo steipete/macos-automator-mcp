@@ -1,6 +1,6 @@
 ---
 title: "Advanced: 'ignoring application responses' Block"
-category: "13_advanced_techniques" # Subdir: inter_app_communication_advanced
+category: "11_advanced_techniques"
 id: advanced_ignoring_responses
 description: "Explains how to use 'ignoring application responses' to send commands without waiting for completion or handling errors from the target application."
 keywords: ["Apple Events", "ignoring application responses", "asynchronous", "fire and forget", "error handling", "performance"]

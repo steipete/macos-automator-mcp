@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: display dialog Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_display_dialog
 description: "Displays a modal dialog box with a message, optional input field, buttons, and icon."
 keywords: ["StandardAdditions", "display dialog", "dialog", "alert", "prompt", "user input", "osax"]

@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: choose URL Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_choose_url
 description: "Displays a dialog for the user to enter or select a URL. Returns the entered URL as text."
 keywords: ["StandardAdditions", "choose URL", "URL input", "dialog", "web address", "osax"]

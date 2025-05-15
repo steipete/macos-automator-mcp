@@ -1,6 +1,6 @@
 ---
 title: "Core: Alias Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_alias
 description: "Working with aliases in AppleScript, which are dynamic references to file system objects."
 keywords: ["alias", "file", "folder", "reference", "path", "HFS path", "data type"]

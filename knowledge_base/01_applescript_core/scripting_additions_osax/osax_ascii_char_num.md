@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: ASCII Character/Number"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_ascii_char_num
 description: "Converts between ASCII character codes (integers) and their corresponding characters."
 keywords: ["StandardAdditions", "ASCII character", "ASCII number", "character code", "ord", "chr", "osax"]

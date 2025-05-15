@@ -1,6 +1,6 @@
 ---
 title: "Core: Date Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_date
 description: "Working with dates and times in AppleScript."
 keywords: ["date", "time", "data type", "current date", "format", "calculation"]

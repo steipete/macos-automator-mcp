@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: load script Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_load_script
 description: "Loads a compiled script file (.scpt) or script application (.app) into memory as a script object, allowing its handlers and properties to be called."
 keywords: ["StandardAdditions", "load script", "script object", "reusable code", "library", "module", "osax"]

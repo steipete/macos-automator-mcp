@@ -1,6 +1,6 @@
 ---
 title: "Chrome: Execute JavaScript in Active Tab and Get Result"
-category: "04_web_browsers" # Subdir: chrome
+category: "05_web_browsers"
 id: chrome_execute_js_get_result
 description: "Executes a JavaScript string in the active tab of the frontmost Google Chrome window and returns its result."
 keywords: ["chrome", "javascript", "execute javascript", "dom", "automation"]

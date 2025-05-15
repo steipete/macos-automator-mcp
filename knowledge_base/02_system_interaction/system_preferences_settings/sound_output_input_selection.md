@@ -1,6 +1,6 @@
 ---
 title: "Sound Output and Input Device Selection"
-category: "02_system_interaction" # Subdir: system_preferences_settings
+category: "02_system_interaction"
 id: system_sound_io_selection
 description: "Control sound input and output device selection using AppleScript with UI scripting or shell commands."
 keywords: ["sound", "audio", "output device", "input device", "microphone", "speakers", "volume", "mute", "System Settings"]

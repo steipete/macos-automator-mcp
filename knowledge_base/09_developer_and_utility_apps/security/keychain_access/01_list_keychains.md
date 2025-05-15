@@ -1,6 +1,6 @@
 ---
 title: "Keychain Access: List Available Keychains"
-category: "11_developer_and_utility_apps" # Subdir: security/keychain_access
+category: "09_developer_and_utility_apps"
 id: keychain_list_keychains
 description: "Lists all available keychains on the system using the security command-line tool."
 keywords: ["keychain", "security", "macOS", "passwords", "credentials", "keychain access", "list keychains"]

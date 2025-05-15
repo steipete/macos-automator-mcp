@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: ASCII character Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_ascii_character
 description: "Converts an ASCII number (0-255) to its corresponding character."
 keywords: ["StandardAdditions", "ASCII character", "character code", "ASCII to char", "osax"]

@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: path to Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_path_to
 description: "Returns an alias to a special system or user folder (e.g., desktop, documents, applications folder, etc.)."
 keywords: ["StandardAdditions", "path to", "folder path", "alias", "system folder", "user folder"]

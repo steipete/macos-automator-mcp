@@ -1,6 +1,6 @@
 ---
 title: "Core: Logical Operators (and, or, not)"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_logical
 description: "Explains the logical operators 'and', 'or', and 'not' for combining boolean expressions."
 keywords: ["operator", "logical", "and", "or", "not", "boolean logic", "condition"]

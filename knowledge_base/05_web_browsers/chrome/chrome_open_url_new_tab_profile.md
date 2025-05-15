@@ -1,6 +1,6 @@
 ---
 title: "Chrome: Open URL in New Tab (Specific Profile)"
-category: "04_web_browsers" # Subdir: chrome
+category: "05_web_browsers"
 id: chrome_open_url_new_tab_profile
 description: "Opens a specified URL in Google Chrome, potentially in a specific user profile, creating a new tab if Chrome is already open."
 keywords: ["chrome", "new tab", "open url", "profile", "navigation", "shell"]

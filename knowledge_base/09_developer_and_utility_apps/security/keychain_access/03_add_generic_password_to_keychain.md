@@ -1,6 +1,6 @@
 ---
 title: "Keychain Access: Add Generic Password"
-category: "11_developer_and_utility_apps" # Subdir: security/keychain_access
+category: "09_developer_and_utility_apps"
 id: keychain_add_generic_password
 description: "Adds a new generic password item to the macOS Keychain using the security command-line tool."
 keywords: ["keychain", "security", "macOS", "passwords", "credentials", "add-generic-password", "password storage"]

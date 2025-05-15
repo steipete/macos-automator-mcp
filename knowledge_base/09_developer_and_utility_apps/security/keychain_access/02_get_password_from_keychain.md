@@ -1,6 +1,6 @@
 ---
 title: "Keychain Access: Retrieve Password"
-category: "11_developer_and_utility_apps" # Subdir: security/keychain_access
+category: "09_developer_and_utility_apps"
 id: keychain_get_password
 description: "Retrieves a stored password from the macOS Keychain using the security command-line tool."
 keywords: ["keychain", "security", "macOS", "passwords", "credentials", "find-generic-password", "find-internet-password"]

@@ -1,6 +1,6 @@
 ---
 title: "Core: Reference Operator ('a reference to')"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_reference_to
 description: "Explains the 'a reference to' operator, which creates a pointer to an object or its parts."
 keywords: ["operator", "reference", "a reference to", "pointer", "indirect reference"]

@@ -1,6 +1,6 @@
 ---
 title: "Electron Editors: Open DevTools & Inject JavaScript"
-category: "05_ides_and_editors" # Nested: knowledge_base/05_ides_and_editors/electron_editors/
+category: "06_ides_and_editors"
 id: electron_editors_devtools_js_inject
 description: "Opens Developer Tools in a frontmost Electron-based editor (VS Code, Cursor, etc.) and types/executes JavaScript in its console."
 keywords: ["vscode", "cursor", "windsurf", "electron", "devtools", "javascript", "inject", "console", "ui scripting"]

@@ -1,6 +1,6 @@
 ---
 title: "Core: Stay-Open Applet Handler 'on reopen'"
-category: "01_applescript_core" # Subdir: handlers_and_subroutines
+category: "01_applescript_core"
 id: core_handler_on_reopen
 description: "Defines a handler that executes when a running stay-open applet is reactivated (e.g., by clicking its Dock icon or opening it again from Finder)."
 keywords: ["handler", "on reopen", "reopen", "stay open", "applet", "reactivate", "activate"]

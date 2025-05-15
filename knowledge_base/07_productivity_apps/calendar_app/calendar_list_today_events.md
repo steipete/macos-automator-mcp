@@ -1,6 +1,6 @@
 ---
 title: "Calendar: List Events for Today"
-category: "09_productivity_apps" # Subdir: calendar_app
+category: "07_productivity_apps"
 id: calendar_list_today_events
 description: "Retrieves and lists all events scheduled for the current day from all calendars."
 keywords: ["Calendar", "list events", "today's schedule", "appointments"]

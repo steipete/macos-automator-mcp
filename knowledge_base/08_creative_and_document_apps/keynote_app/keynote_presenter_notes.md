@@ -1,6 +1,6 @@
 ---
 title: "Keynote: Get and Set Presenter Notes"
-category: "10_creative_and_document_apps" # Subdir: keynote_app
+category: "08_creative_and_document_apps"
 id: keynote_presenter_notes
 description: "Gets or sets the presenter notes for the current slide in Keynote."
 keywords: ["Keynote", "presenter notes", "notes", "slide notes", "presentation"]

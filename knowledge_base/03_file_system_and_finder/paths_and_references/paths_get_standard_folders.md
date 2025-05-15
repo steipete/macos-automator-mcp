@@ -1,6 +1,6 @@
 ---
 title: "Paths: Get Path to Standard Folders"
-category: "03_file_system_and_finder" # Subdir: paths_and_references
+category: "03_file_system_and_finder"
 id: paths_get_standard_folders
 description: "Uses AppleScript's 'path to' command to reliably get paths to standard macOS folders like Desktop, Documents, Application Support, etc., for different domains."
 keywords: ["path to", "standard folders", "desktop", "documents", "application support", "home folder", "user domain"]

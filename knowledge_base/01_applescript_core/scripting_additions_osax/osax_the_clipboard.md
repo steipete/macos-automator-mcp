@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: the clipboard Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_the_clipboard
 description: "Gets or sets the contents of the system clipboard."
 keywords: ["StandardAdditions", "clipboard", "the clipboard", "get clipboard", "set clipboard", "copy", "paste", "osax"]

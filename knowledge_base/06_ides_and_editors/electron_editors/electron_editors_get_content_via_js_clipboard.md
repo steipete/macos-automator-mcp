@@ -1,6 +1,6 @@
 ---
 title: "Electron Editors: Get Editor Content via DevTools JS & Clipboard"
-category: "05_ides_and_editors" # Nested: knowledge_base/05_ides_and_editors/electron_editors/
+category: "06_ides_and_editors"
 id: electron_editors_get_content_via_js_clipboard
 description: "Retrieves the content of the active text editor in VS Code (or similar if API matches) by executing JavaScript in DevTools that copies the content to the clipboard, then AppleScript reads the clipboard."
 keywords: ["vscode", "cursor", "electron", "devtools", "javascript", "clipboard", "get text", "editor content"]

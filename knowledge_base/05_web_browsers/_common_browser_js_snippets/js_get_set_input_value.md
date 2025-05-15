@@ -1,6 +1,6 @@
 ---
 title: "JS Snippet: Get/Set Input Field Value"
-category: "04_web_browsers" # Subdir: _common_browser_js_snippets
+category: "05_web_browsers"
 id: js_get_set_input_value
 description: "JavaScript to get or set the value of an HTML input field, textarea, or select."
 keywords: ["javascript", "dom", "input value", "form fill", "textarea", "select"]

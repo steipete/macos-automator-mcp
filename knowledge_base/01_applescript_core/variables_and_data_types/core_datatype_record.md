@@ -1,6 +1,6 @@
 ---
 title: "Core: Record Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_record
 description: "Working with records (objects/dictionaries) in AppleScript, which store key-value pairs."
 keywords: ["record", "object", "dictionary", "data type", "property", "key-value"]

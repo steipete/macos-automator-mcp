@@ -1,6 +1,6 @@
 ---
 title: "Core: Textual Comparison Operators"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_comparison_textual
 description: "Covers textual comparison operators in AppleScript like 'comes before', 'comes after', and their negations."
 keywords: ["operator", "comparison", "comes before", "comes after", "is not less than", "is not greater than", "string comparison", "lexicographical"]

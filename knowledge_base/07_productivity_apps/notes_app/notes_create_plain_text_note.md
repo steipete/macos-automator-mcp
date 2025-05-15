@@ -1,6 +1,6 @@
 ---
 title: "Notes: Create Plain Text Note"
-category: "09_productivity_apps" # Subdir: notes_app
+category: "07_productivity_apps"
 id: notes_create_plain_text_note
 description: "Creates a new note in Apple Notes with a specified title and plain text body. Optionally specify a folder."
 keywords: ["Notes", "new note", "create note", "text"]

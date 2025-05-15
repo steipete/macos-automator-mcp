@@ -1,6 +1,6 @@
 ---
 title: "Core: Droplet Handler 'on open'"
-category: "01_applescript_core" # Subdir: handlers_and_subroutines
+category: "01_applescript_core"
 id: core_handler_on_open_droplet
 description: "Defines a handler that executes when files or folders are dropped onto the saved script (applet). The input is a list of aliases to the dropped items."
 keywords: ["handler", "droplet", "on open", "drag and drop", "file processing", "alias list"]

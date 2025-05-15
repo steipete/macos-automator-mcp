@@ -1,6 +1,6 @@
 ---
 title: "Date, Time, and Timezone Settings"
-category: "02_system_interaction" # Subdir: system_preferences_settings
+category: "02_system_interaction"
 id: system_date_time_timezone
 description: "Control date, time, and timezone settings on macOS using AppleScript with shell commands or UI scripting."
 keywords: ["date", "time", "timezone", "clock", "NTP", "systemsetup", "System Settings", "Date & Time"]

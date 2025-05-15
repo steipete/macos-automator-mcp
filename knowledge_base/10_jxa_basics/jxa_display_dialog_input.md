@@ -1,6 +1,6 @@
 ---
 title: "JXA Basics: Display Dialog and Get Input"
-category: "12_jxa_basics"
+category: "10_jxa_basics"
 id: jxa_display_dialog_input
 description: "Shows how to use 'displayDialog' in JXA to show messages and get user input."
 keywords: ["jxa", "javascript", "displayDialog", "dialog", "user input", "prompt"]

@@ -1,6 +1,6 @@
 ---
 title: "Core: Arithmetic Operators (div, mod, ^)"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_arithmetic_extra
 description: "Covers the integer division (div), modulo (mod), and exponentiation (^) operators."
 keywords: ["operator", "arithmetic", "div", "mod", "power", "exponentiation", "integer division", "remainder"]

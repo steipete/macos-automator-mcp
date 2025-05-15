@@ -11,6 +11,7 @@ keywords:
 language: applescript
 id: calendar_create_event
 argumentsPrompt: "Provide title, date, start time, end time, and optional notes for the event"
+category: "07_productivity_apps"
 ---
 
 This script creates a new event in the default calendar with the specified details.

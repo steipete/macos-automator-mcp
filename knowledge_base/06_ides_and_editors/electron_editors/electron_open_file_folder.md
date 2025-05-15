@@ -1,6 +1,6 @@
 ---
 title: "Electron Editors: Open File or Folder"
-category: "05_ides_and_editors" # Subdir: electron_editors
+category: "06_ides_and_editors"
 id: electron_open_file_folder
 description: "Opens a specified file or folder in an Electron-based editor like VS Code or Cursor."
 keywords: ["vscode", "cursor", "electron", "open file", "open folder"]

@@ -1,6 +1,6 @@
 ---
 title: "Core: Coercion Operator ('as')"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_coercion_as
 description: "Explains the 'as' operator for explicit data type coercion (conversion)."
 keywords: ["operator", "coercion", "as", "type conversion", "data type", "cast"]

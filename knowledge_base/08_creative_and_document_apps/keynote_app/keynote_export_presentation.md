@@ -1,6 +1,6 @@
 ---
 title: "Keynote: Export Presentation (PDF, PowerPoint)"
-category: "10_creative_and_document_apps" # Subdir: keynote_app
+category: "08_creative_and_document_apps"
 id: keynote_export_presentation
 description: "Exports the frontmost Keynote presentation to PDF or PowerPoint format."
 keywords: ["Keynote", "export", "save as", "PDF", "PowerPoint", "pptx", "presentation"]

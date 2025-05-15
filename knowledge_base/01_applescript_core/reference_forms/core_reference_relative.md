@@ -1,6 +1,6 @@
 ---
 title: "Core: Relative Reference Form"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_relative
 description: "Accessing objects based on their position relative to another known object (e.g., item before/after)."
 keywords: ["reference form", "relative", "before", "after", "positional", "object specifier"]

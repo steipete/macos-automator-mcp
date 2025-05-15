@@ -1,6 +1,6 @@
 ---
 title: "Core: Boolean Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_boolean
 description: "Working with boolean (true/false) values in AppleScript."
 keywords: ["boolean", "true", "false", "data type", "logical", "condition"]

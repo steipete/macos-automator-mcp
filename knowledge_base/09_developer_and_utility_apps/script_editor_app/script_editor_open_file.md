@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Open Script File"
-category: "11_developer_and_utility_apps" # Subdir: script_editor_app
+category: "09_developer_and_utility_apps"
 id: script_editor_open_file
 description: "Opens an AppleScript file in Script Editor."
 keywords: ["Script Editor", "open file", "script file", "AppleScript", "load script", "editor"]

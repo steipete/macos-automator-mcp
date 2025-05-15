@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: list disks and list folder Commands"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_list_disk_folder
 description: "Lists mounted disk volumes and the contents of a specified folder."
 keywords: ["StandardAdditions", "list disks", "list folder", "file system", "directory listing", "volumes", "files", "folders", "osax"]

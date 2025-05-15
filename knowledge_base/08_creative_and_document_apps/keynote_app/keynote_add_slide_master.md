@@ -1,6 +1,6 @@
 ---
 title: "Keynote: Add New Slide with Master"
-category: "10_creative_and_document_apps" # Subdir: keynote_app
+category: "08_creative_and_document_apps"
 id: keynote_add_slide_master
 description: "Adds a new slide to the current Keynote presentation using a specified master slide name."
 keywords: ["Keynote", "slide", "new slide", "master slide", "presentation"]

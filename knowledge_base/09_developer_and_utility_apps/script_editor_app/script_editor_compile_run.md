@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Compile and Run Active Script"
-category: "11_developer_and_utility_apps"
+category: "09_developer_and_utility_apps"
 id: script_editor_compile_run
 description: "Tells Script Editor to compile and then run its frontmost document."
 keywords: ["Script Editor", "compile", "run script", "applescript development"]

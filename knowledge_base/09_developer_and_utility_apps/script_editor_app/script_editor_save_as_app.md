@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Save Document As Application"
-category: "11_developer_and_utility_apps"
+category: "09_developer_and_utility_apps"
 id: script_editor_save_as_app
 description: "Saves the frontmost Script Editor document as an application (applet)."
 keywords: ["Script Editor", "save script", "applet", "application", "export"]

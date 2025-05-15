@@ -1,6 +1,6 @@
 ---
 title: "Safari: Execute JavaScript in Front Tab and Get Result"
-category: "04_web_browsers" # Subdir: safari
+category: "05_web_browsers"
 id: safari_execute_js_get_result
 description: "Executes a JavaScript string in the frontmost Safari document and returns its result."
 keywords: ["safari", "javascript", "do javascript", "dom", "automation", "execute"]

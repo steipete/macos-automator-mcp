@@ -1,6 +1,6 @@
 ---
 title: "Keychain Access: Lock and Unlock Keychains"
-category: "11_developer_and_utility_apps" # Subdir: security/keychain_access
+category: "09_developer_and_utility_apps"
 id: keychain_lock_unlock
 description: "Lock and unlock macOS keychains programmatically using the security command-line tool."
 keywords: ["keychain", "security", "macOS", "lock", "unlock", "password", "credentials", "keychain access"]

@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: summarize Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_summarize
 description: "Attempts to create a summary of a given text or the content of a text file. The length of the summary can be specified in sentences."
 keywords: ["StandardAdditions", "summarize", "text summary", "osax", "natural language"]

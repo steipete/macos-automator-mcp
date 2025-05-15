@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: File Read/Write Operations"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_file_read_write
 description: "Covers basic file input/output operations using StandardAdditions: open for access, read, write, close access, get eof, and set eof."
 keywords: ["StandardAdditions", "file access", "read file", "write file", "file io", "eof", "open for access", "close access", "osax"]

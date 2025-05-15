@@ -1,6 +1,6 @@
 ---
 title: "System Clipboard: Get File Paths (if any)"
-category: "02_system_interaction" # Subdir: clipboard_system
+category: "02_system_interaction"
 id: system_clipboard_get_file_paths
 description: "Checks if the clipboard contains file references (e.g., copied from Finder) and returns their POSIX paths."
 keywords: ["clipboard", "file path", "copy files", "Finder selection", "System Events"]

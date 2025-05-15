@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: run script Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_run_script
 description: "Executes a script object, script file, or script applet from within another script. Can pass parameters and receive a return value."
 keywords: ["StandardAdditions", "run script", "execute script", "call script", "modular scripting", "osax"]

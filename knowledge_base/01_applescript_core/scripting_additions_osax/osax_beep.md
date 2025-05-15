@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: beep Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_beep
 description: "Plays the system alert sound. Can specify the number of beeps."
 keywords: ["StandardAdditions", "beep", "alert sound", "sound", "notification", "osax"]

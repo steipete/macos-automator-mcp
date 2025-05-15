@@ -1,6 +1,6 @@
 ---
 title: "How to Use This Knowledge Base"
-category: "00_readme_and_conventions" # Use category field for directory
+category: "00_readme_and_conventions"
 id: conventions_how_to_use_kb
 description: "Explains how to query and use the tips provided by this MCP server."
 keywords: ["help", "meta", "documentation", "get_scripting_tips", "execute_script"]

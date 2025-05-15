@@ -1,6 +1,6 @@
 ---
 title: "JXA: Interacting with Finder"
-category: "12_jxa_basics"
+category: "10_jxa_basics"
 id: jxa_finder_interaction
 description: "Demonstrates basic Finder operations like getting Desktop items and creating a folder using JXA."
 keywords: ["jxa", "javascript", "finder", "file system", "automation"]

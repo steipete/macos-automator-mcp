@@ -1,6 +1,6 @@
 ---
 title: "Shortcuts: Run Shortcut by Name"
-category: "11_developer_and_utility_apps" # Subdir: shortcuts_app
+category: "09_developer_and_utility_apps"
 id: shortcuts_run_by_name
 description: "Executes a specified macOS Shortcut by its name. Optionally provide input to the Shortcut."
 keywords: ["Shortcuts", "automation", "run shortcut", "Shortcuts Events"]

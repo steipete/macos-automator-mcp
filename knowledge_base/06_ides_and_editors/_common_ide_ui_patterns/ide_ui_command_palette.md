@@ -1,6 +1,6 @@
 ---
 title: "Common IDE UI: Open Command Palette & Run Command"
-category: "05_ides_and_editors" # Subdir: _common_ide_ui_patterns
+category: "06_ides_and_editors"
 id: ide_ui_command_palette
 description: "Simulates opening the Command Palette (usually Shift+Command+P) in the frontmost IDE and typing/selecting a command."
 keywords: ["ide", "vscode", "cursor", "command palette", "ui scripting", "keystroke"]

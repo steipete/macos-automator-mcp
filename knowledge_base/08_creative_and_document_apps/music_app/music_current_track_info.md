@@ -1,6 +1,6 @@
 ---
 title: "Music: Get Current Track Information"
-category: "10_creative_and_document_apps" # Subdir: music_app
+category: "08_creative_and_document_apps"
 id: music_current_track_info
 description: "Retrieves detailed information about the currently playing or selected track in Music.app."
 keywords: ["Music", "iTunes", "current track", "track info", "song details", "artist", "album", "duration", "rating", "Apple Music"]

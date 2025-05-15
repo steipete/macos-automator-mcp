@@ -1,6 +1,6 @@
 ---
 title: "Core: Range Reference Form"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_range
 description: "Accessing a contiguous series of elements by specifying a start and end index."
 keywords: ["reference form", "range", "items X thru Y", "characters A to B", "slice", "sublist", "substring"]

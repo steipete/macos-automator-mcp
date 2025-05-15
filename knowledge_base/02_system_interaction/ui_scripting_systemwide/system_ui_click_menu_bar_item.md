@@ -1,6 +1,6 @@
 ---
 title: "System UI: Click Menu Bar Item of Frontmost App"
-category: "02_system_interaction" # Subdir: ui_scripting_systemwide
+category: "02_system_interaction"
 id: system_ui_click_menu_bar_item
 description: "Clicks a top-level menu bar item (e.g., 'File', 'Edit') of the currently frontmost application."
 keywords: ["ui scripting", "menu bar", "click menu", "System Events", "frontmost app"]

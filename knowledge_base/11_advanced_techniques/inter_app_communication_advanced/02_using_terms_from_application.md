@@ -1,6 +1,6 @@
 ---
 title: "Advanced: 'using terms from application' Block"
-category: "13_advanced_techniques" # Subdir: inter_app_communication_advanced
+category: "11_advanced_techniques"
 id: advanced_using_terms_from
 description: "Explains how to use the 'using terms from application' block to resolve terminology conflicts between applications or scripting additions."
 keywords: ["Apple Events", "using terms from", "terminology", "dictionary conflict", "application scripting", "scope"]

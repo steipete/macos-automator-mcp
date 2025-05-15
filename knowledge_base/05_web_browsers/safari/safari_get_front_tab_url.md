@@ -1,6 +1,6 @@
 ---
 title: "Safari: Get URL of Front Tab"
-category: "04_web_browsers" # This will be nested, e.g., knowledge_base/04_web_browsers/safari/
+category: "05_web_browsers"
 id: safari_get_front_tab_url
 description: "Retrieves the web address (URL) of the currently active tab in the frontmost Safari window."
 keywords: ["Safari", "URL", "current tab", "web address", "browser"]

@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: choose application Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_choose_application
 description: "Displays a dialog allowing the user to select an application. Returns an alias to the chosen application."
 keywords: ["StandardAdditions", "choose application", "application selection", "dialog", "osax"]

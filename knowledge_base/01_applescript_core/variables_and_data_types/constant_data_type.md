@@ -1,6 +1,6 @@
 ---
 title: "AppleScript Constants: The 'constant' Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_constant
 description: "Explains AppleScript's 'constant' data type, which represents named constant values used by applications."
 keywords: ["constant", "data type", "enumeration", "application constants", "symbolic values", "type coercion"]

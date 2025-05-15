@@ -1,6 +1,6 @@
 ---
 title: "Core: Stay-Open Applet Handler 'on idle'"
-category: "01_applescript_core" # Subdir: handlers_and_subroutines
+category: "01_applescript_core"
 id: core_handler_on_idle
 description: "Defines a handler that executes periodically if the script is saved as a 'Stay Open' application. Returning a number sets the next idle interval in seconds."
 keywords: ["handler", "idle", "stay open", "applet", "background task", "periodic"]

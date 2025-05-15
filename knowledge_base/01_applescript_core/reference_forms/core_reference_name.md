@@ -1,6 +1,6 @@
 ---
 title: "Core: Name Reference Form"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_name
 description: "Accessing objects by their specified name (e.g., files, applications, windows)."
 keywords: ["reference form", "name", "file name", "application name", "window name", "object specifier"]

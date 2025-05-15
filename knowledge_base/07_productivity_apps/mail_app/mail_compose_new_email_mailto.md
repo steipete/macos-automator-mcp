@@ -1,6 +1,6 @@
 ---
 title: "Mail: Compose New Email (via mailto URL)"
-category: "09_productivity_apps" # Subdir: mail_app
+category: "07_productivity_apps"
 id: mail_compose_new_email_mailto
 description: "Creates a new email in Mail.app with specified recipient, subject, and body using a 'mailto' URL. Mail.app will open with the draft."
 keywords: ["Mail", "email", "compose", "new message", "mailto"]

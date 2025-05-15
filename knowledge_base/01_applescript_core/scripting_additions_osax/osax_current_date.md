@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: current date Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_current_date
 description: "Returns the current system date and time as a date object."
 keywords: ["StandardAdditions", "current date", "date", "time", "now", "timestamp", "osax"]

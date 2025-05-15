@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: info for Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_info_for
 description: "Retrieves a record of metadata about a specified file or folder alias."
 keywords: ["StandardAdditions", "info for", "file metadata", "folder metadata", "attributes", "alias"]

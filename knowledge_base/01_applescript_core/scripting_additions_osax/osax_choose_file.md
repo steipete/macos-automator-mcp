@@ -9,6 +9,7 @@ keywords:
   - OSAX
   - scripting addition
 language: applescript
+category: "01_applescript_core"
 ---
 
 This script demonstrates the `choose file` scripting addition, which shows a standard file selection dialog.

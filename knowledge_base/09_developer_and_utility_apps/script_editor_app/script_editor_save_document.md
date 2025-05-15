@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Save Document"
-category: "11_developer_and_utility_apps" # Subdir: script_editor_app
+category: "09_developer_and_utility_apps"
 id: script_editor_save_document
 description: "Saves a Script Editor document to disk as a script file, applet, or other format."
 keywords: ["Script Editor", "save document", "script file", "save as", "applet", "export", "SCPT"]

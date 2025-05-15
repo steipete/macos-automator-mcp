@@ -1,6 +1,6 @@
 ---
 title: "Advanced: 'considering/ignoring attributes' Block"
-category: "13_advanced_techniques" # Subdir: inter_app_communication_advanced
+category: "11_advanced_techniques"
 id: advanced_considering_ignoring_attributes
 description: "Explains how the 'considering' and 'ignoring' blocks modify AppleScript's string comparison behavior for attributes like case, white space, punctuation, etc."
 keywords: ["Apple Events", "considering", "ignoring", "case sensitivity", "white space", "punctuation", "diacriticals", "hyphens", "expansion", "string comparison"]

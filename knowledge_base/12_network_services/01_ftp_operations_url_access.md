@@ -1,6 +1,6 @@
 ---
 title: "FTP Operations with URL Access"
-category: "network_services"
+category: "12_network_services"
 id: network_ftp_operations
 description: "Use URL Access scripting to perform FTP operations like downloading and uploading files."
 keywords: ["FTP", "download", "upload", "URL Access", "file transfer", "network", "curl"]

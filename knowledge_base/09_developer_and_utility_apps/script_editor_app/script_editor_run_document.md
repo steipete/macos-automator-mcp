@@ -1,6 +1,6 @@
 ---
 title: "Script Editor: Run Document"
-category: "11_developer_and_utility_apps" # Subdir: script_editor_app
+category: "09_developer_and_utility_apps"
 id: script_editor_run_document
 description: "Executes an AppleScript document in Script Editor and retrieves its result."
 keywords: ["Script Editor", "run script", "execute", "document", "script result", "automation"]

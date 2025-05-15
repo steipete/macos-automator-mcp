@@ -1,6 +1,6 @@
 ---
 title: "Electron Editors (VS Code): Get Active Editor Content via DevTools JS"
-category: "05_ides_and_editors" # Subdir: electron_editors
+category: "06_ides_and_editors"
 id: electron_vscode_get_editor_content_js
 description: "Retrieves text from VS Code's active editor using JavaScript injection into DevTools, copying result to clipboard."
 keywords: ["vscode", "electron", "devtools", "javascript", "get text", "editor content", "clipboard"]

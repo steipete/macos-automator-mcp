@@ -1,6 +1,6 @@
 ---
 title: "Keynote: Create New Presentation from Theme"
-category: "10_creative_and_document_apps" # Subdir: keynote_app
+category: "08_creative_and_document_apps"
 id: keynote_create_presentation_theme
 description: "Creates a new Keynote presentation using a specified theme name."
 keywords: ["Keynote", "presentation", "new document", "theme"]

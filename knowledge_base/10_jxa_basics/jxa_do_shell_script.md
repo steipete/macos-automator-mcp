@@ -1,6 +1,6 @@
 ---
 title: "JXA: Running Shell Scripts"
-category: "12_jxa_basics"
+category: "10_jxa_basics"
 id: jxa_do_shell_script
 description: "Shows how to execute shell commands from JXA using `app.doShellScript()`."
 keywords: ["jxa", "javascript", "shell script", "terminal command", "execute"]

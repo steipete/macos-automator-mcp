@@ -1,6 +1,6 @@
 ---
 title: "Shell: List Directory Contents (ls -la)"
-category: "03_file_system_and_finder" # Subdir: do_shell_script_for_files
+category: "03_file_system_and_finder"
 id: shell_list_directory_ls
 description: "Uses 'do shell script' with 'ls -la' to get a detailed listing of a directory's contents."
 keywords: ["shell", "ls", "list directory", "file listing", "terminal command"]

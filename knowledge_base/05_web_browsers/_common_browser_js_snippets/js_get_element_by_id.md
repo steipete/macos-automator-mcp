@@ -1,6 +1,6 @@
 ---
 title: "JS Snippet: Get Element by ID"
-category: "04_web_browsers" # Subdir: _common_browser_js_snippets
+category: "05_web_browsers"
 id: js_get_element_by_id
 description: "JavaScript to select an HTML element by its unique ID."
 keywords: ["javascript", "dom", "getelementbyid", "select element"]

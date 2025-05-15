@@ -1,6 +1,6 @@
 ---
 title: "Core: Property Reference Form"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_property
 description: "Accessing the properties of objects (e.g., name of file, URL of document)."
 keywords: ["reference form", "property", "attribute", "object property", "name of", "class of"]

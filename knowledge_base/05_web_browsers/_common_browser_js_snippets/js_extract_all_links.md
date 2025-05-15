@@ -1,6 +1,6 @@
 ---
 title: "JS Snippet: Extract All Links from Page"
-category: "04_web_browsers" # Subdir: _common_browser_js_snippets
+category: "05_web_browsers"
 id: js_extract_all_links
 description: "JavaScript to find all <a> tags on a page and return their href attributes."
 keywords: ["javascript", "dom", "extract links", "scrape", "href", "anchor tags"]

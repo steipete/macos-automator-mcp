@@ -1,6 +1,6 @@
 ---
 title: "Advanced: Handling Large Data & Performance Tips"
-category: "13_advanced_techniques" # Subdir: handling_large_data_and_performance
+category: "11_advanced_techniques"
 id: advanced_large_data_performance
 description: "Strategies for dealing with large lists, text, or many iterations to improve AppleScript performance."
 keywords: ["performance", "large data", "optimization", "lists", "text", "loops", "System Events"]

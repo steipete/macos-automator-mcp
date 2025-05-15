@@ -1,6 +1,6 @@
 ---
 title: "Core: Stay-Open Applet Handler 'on quit'"
-category: "01_applescript_core" # Subdir: handlers_and_subroutines
+category: "01_applescript_core"
 id: core_handler_on_quit
 description: "Defines a handler that executes when a stay-open applet is commanded to quit, allowing for cleanup operations."
 keywords: ["handler", "on quit", "quit", "stay open", "applet", "cleanup", "exit handler"]

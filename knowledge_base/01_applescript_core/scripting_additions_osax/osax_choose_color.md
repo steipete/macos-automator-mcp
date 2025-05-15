@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: choose color Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_choose_color
 description: "Displays the standard macOS color picker dialog and returns the selected color as an RGB list."
 keywords: ["StandardAdditions", "choose color", "color picker", "RGB color", "dialog", "osax"]

@@ -1,6 +1,6 @@
 ---
 title: "JS Snippet: Click Element"
-category: "04_web_browsers" # Subdir: _common_browser_js_snippets
+category: "05_web_browsers"
 id: js_click_element
 description: "JavaScript to programmatically click an HTML element."
 keywords: ["javascript", "dom", "click", "interaction"]

@@ -1,6 +1,6 @@
 ---
 title: "Core: ID Reference Form"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_id
 description: "Accessing objects by their unique ID (e.g., process ID, window ID)."
 keywords: ["reference form", "id", "process id", "pid", "window id", "unique identifier"]

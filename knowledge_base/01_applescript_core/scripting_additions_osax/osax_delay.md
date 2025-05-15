@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: delay Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_delay
 description: "Pauses script execution for a specified number of seconds."
 keywords: ["StandardAdditions", "delay", "pause", "wait", "sleep", "timing", "osax"]

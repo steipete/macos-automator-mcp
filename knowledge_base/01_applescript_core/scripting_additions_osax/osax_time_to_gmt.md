@@ -1,6 +1,6 @@
 ---
 title: "StandardAdditions: time to GMT Command"
-category: "01_applescript_core" # Subdir: scripting_additions_osax
+category: "01_applescript_core"
 id: osax_time_to_gmt
 description: "Returns the difference in seconds between the computer's local time zone and Greenwich Mean Time (GMT)/Coordinated Universal Time (UTC)."
 keywords: ["StandardAdditions", "time to GMT", "UTC offset", "timezone", "osax"]

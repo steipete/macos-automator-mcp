@@ -1,6 +1,6 @@
 ---
 title: "System Preferences: Switch Network Locations"
-category: "02_system_interaction" # Subdir: system_preferences_settings
+category: "02_system_interaction"
 id: system_network_location_switching
 description: "Switch between network locations using shell commands, enabling easy transitions between different network configurations."
 keywords: ["network location", "networksetup", "Network preferences", "location switching", "network configuration", "network profile"]

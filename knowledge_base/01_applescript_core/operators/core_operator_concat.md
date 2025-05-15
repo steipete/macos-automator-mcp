@@ -1,6 +1,6 @@
 ---
 title: "Core: Concatenation Operator (&)"
-category: "01_applescript_core" # Subdir: operators
+category: "01_applescript_core"
 id: core_operator_concat
 description: "The ampersand (&) operator is used to concatenate (join) strings, lists, or add properties to records."
 keywords: ["operator", "concatenate", "join", "string", "list", "record", "&"]

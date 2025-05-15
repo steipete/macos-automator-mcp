@@ -1,6 +1,6 @@
 ---
 title: "Music: Basic Playback Controls"
-category: "10_creative_and_document_apps" # Subdir: music_app
+category: "08_creative_and_document_apps"
 id: music_playback_controls
 description: "Control basic playback in Music.app (or iTunes) such as play, pause, stop, next, previous, and volume."
 keywords: ["Music", "iTunes", "playback", "play", "pause", "stop", "next track", "previous track", "volume", "Apple Music"]

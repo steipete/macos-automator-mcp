@@ -1,6 +1,6 @@
 ---
 title: "Core: Filter Reference Form ('whose' / 'where')"
-category: "01_applescript_core" # Subdir: reference_forms
+category: "01_applescript_core"
 id: core_reference_filter_whose
 description: "Selects items from a container based on a boolean condition applied to their properties."
 keywords: ["reference form", "filter", "whose", "where", "conditional selection", "query"]

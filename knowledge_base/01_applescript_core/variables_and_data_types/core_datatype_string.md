@@ -1,6 +1,6 @@
 ---
 title: "Core: String Data Type"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_string
 description: "Working with strings (text) in AppleScript, including properties like length, and elements like characters, words, paragraphs."
 keywords: ["string", "text", "data type", "length", "character", "word", "paragraph", "concatenation"]

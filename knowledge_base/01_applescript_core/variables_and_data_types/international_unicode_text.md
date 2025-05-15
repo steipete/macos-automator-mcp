@@ -1,6 +1,6 @@
 ---
 title: "International and Unicode Text in AppleScript"
-category: "01_applescript_core" # Subdir: variables_and_data_types
+category: "01_applescript_core"
 id: core_datatype_international_unicode_text
 description: "Working with international character sets and Unicode text in AppleScript for multilingual applications."
 keywords: ["international text", "Unicode text", "localization", "i18n", "UTF-8", "character encoding", "multi-byte", "non-Latin"]

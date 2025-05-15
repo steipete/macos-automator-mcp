@@ -1,6 +1,6 @@
 ---
 title: "Keynote: Start and Stop Slideshow"
-category: "10_creative_and_document_apps" # Subdir: keynote_app
+category: "08_creative_and_document_apps"
 id: keynote_slideshow_control
 description: "Starts or stops the slideshow for the frontmost Keynote presentation."
 keywords: ["Keynote", "slideshow", "play", "start", "stop", "presentation mode"]
