@@ -13,6 +13,8 @@ import { ScriptExecutor } from './ScriptExecutor.js';
 import type { ScriptExecutionError }  from './types.js';
 // import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
+import { substitutePlaceholders } from './placeholderSubstitutor.js'; // Value import
+import type { SubstitutionResult } from './placeholderSubstitutor.js'; // Type import
 import { z } from 'zod';
 
 // Added imports for robust package.json loading
@@ -43,33 +45,9 @@ const EXECUTION_MODE_INFO = IS_RUNNING_FROM_SRC ? 'TypeScript source (e.g., via 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
 
-// Helper functions for KB script argument substitution
-function escapeForAppleScriptStringLiteral(value: string): string {
-    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
-}
-
-// Helper to escape special characters in regex patterns
-// function escapeRegExp(string: string): string { // This function is no longer used
-//     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-// }
-
-function valueToAppleScriptLiteral(value: unknown): string {
-    if (typeof value === 'string') {
-        return escapeForAppleScriptStringLiteral(value);
-    }
-    if (typeof value === 'number' || typeof value === 'boolean') {
-        return String(value);
-    }
-    if (Array.isArray(value)) {
-        return `{${value.map(v => valueToAppleScriptLiteral(v)).join(", ")}}`;
-    }
-    if (typeof value === 'object' && value !== null) {
-        const recordParts = Object.entries(value).map(([k, v]) => `${k}:${valueToAppleScriptLiteral(v)}`);
-        return `{${recordParts.join(", ")}}`;
-    }
-    logger.warn('Unsupported type for AppleScript literal conversion, using "missing value"', { value });
-    return "missing value"; // AppleScript's equivalent of null/undefined (bare keyword)
-}
+// Helper functions for KB script argument substitution - MOVED to placeholderSubstitutor.ts
+// function escapeForAppleScriptStringLiteral(value: string): string { ... }
+// function valueToAppleScriptLiteral(value: unknown): string { ... }
 
 // Define raw shapes for tool registration (required by newer SDK versions)
 const ExecuteScriptInputShape = {
@@ -122,7 +100,7 @@ async function main() {
       let scriptPathToExecute: string | undefined = input.scriptPath;
       let languageToUse: 'applescript' | 'javascript';
       let finalArgumentsForScriptFile = input.arguments || [];
-      const substitutionLogs: string[] = [];
+      let substitutionLogs: string[] = []; // Changed from const to let
 
       logger.debug('execute_script called with input:', input);
 
@@ -137,105 +115,30 @@ async function main() {
             throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Knowledge base script ID '${input.kbScriptId}' has no script content.`);
         }
 
-        scriptContentToExecute = tip.script;
         languageToUse = tip.language;
         scriptPathToExecute = undefined; 
         finalArgumentsForScriptFile = []; 
 
-        if (scriptContentToExecute) {
-            // Log char codes for initial script content for deep debugging of quotes
-            const charCodes = Array.from(scriptContentToExecute).map(char => char.charCodeAt(0));
-            logger.debug('[SUBSTITUTION_DEEP_DEBUG] Initial char codes for script', { first100CharCodes: charCodes.slice(0,100), last100CharCodes: charCodes.slice(-100) });
+        if (tip.script) { // Check if tip.script exists before substitution
+            // Log char codes for initial script content for deep debugging of quotes (Handled by substitutor if needed)
+            // logger.debug('[SUBSTITUTION_DEEP_DEBUG] Initial char codes for script', { ... });
 
-            // Define placeholder patterns carefully to match placeholders in script templates.
-            // These typically appear as quoted strings in the templates for safety.
-            // Example from KB: return myHandler("--MCP_INPUT:name", "--MCP_ARG_1")
-
-            const logSub = (message: string, data: unknown) => {
-                const logEntry = `[SUBST] ${message} ${JSON.stringify(data)}`;
-                logger.debug(logEntry); // Keep debug logging to console
-                if (input.includeSubstitutionLogs) {
-                    substitutionLogs.push(logEntry);
-                }
-            };
-
-            // JS-style ${inputData.key}
-            const jsInputDataRegex = /\\$\\{inputData\\.(\\w+)\\}/g;
-            logSub('Before jsInputDataRegex', { scriptContentLength: scriptContentToExecute.length });
-            scriptContentToExecute = scriptContentToExecute.replace(jsInputDataRegex, (match, keyName) => {
-                const replacementValue = input.inputData && keyName in input.inputData
-                    ? valueToAppleScriptLiteral(input.inputData[keyName])
-                    : "missing value"; // Bare keyword
-                logSub('jsInputDataRegex replacing', { match, keyName, replacementValue });
-                return replacementValue;
+            // Placeholder substitution logic MOVED to placeholderSubstitutor.ts
+            const substitutionResult: SubstitutionResult = substitutePlaceholders({
+                scriptContent: tip.script, // Use tip.script directly
+                inputData: input.inputData,
+                args: input.arguments, // Pass input.arguments which might be undefined
+                includeSubstitutionLogs: input.includeSubstitutionLogs || false,
             });
-            logSub('After jsInputDataRegex', { scriptContentLength: scriptContentToExecute.length });
 
-            // JS-style ${arguments[N]}
-            const jsArgumentsRegex = /\\$\\{arguments\\[(\\d+)\\]\\}/g;
-            logSub('Before jsArgumentsRegex', { scriptContentLength: scriptContentToExecute.length });
-            scriptContentToExecute = scriptContentToExecute.replace(jsArgumentsRegex, (match, indexStr) => {
-                const index = Number.parseInt(indexStr, 10);
-                const replacementValue = input.arguments && index >= 0 && index < input.arguments.length
-                    ? valueToAppleScriptLiteral(input.arguments[index])
-                    : "missing value"; // Bare keyword
-                logSub('jsArgumentsRegex replacing', { match, indexStr, index, replacementValue });
-                return replacementValue;
-            });
-            logSub('After jsArgumentsRegex', { scriptContentLength: scriptContentToExecute.length });
+            scriptContentToExecute = substitutionResult.substitutedScript;
+            substitutionLogs = substitutionResult.logs;
+
+            // Log messages previously in the substitution block can be emitted here if needed,
+            // or rely on logs from substitutePlaceholders if it had its own logger.
+            // For now, substitutionLogs are collected and added to output as before.
             
-            // Quoted "--MCP_INPUT:keyName" (handles single or double quotes around the placeholder)
-            // const quotedMcpInputRegex = /(?:["'])--MCP_INPUT:(\w+)(?:["'])/g; // Original regex
-            // const quotedMcpInputRegex = /--MCP_INPUT:(\w+)/g; // Previous step
-            const quotedMcpInputRegex = /(["'])--MCP_INPUT:(\w+)\1/g; // Match opening quote, then key, then same opening quote
-            logSub('Before quotedMcpInputRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
-            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpInputRegex, (match, openingQuote, keyName) => {
-                 const replacementValue = input.inputData && keyName in input.inputData
-                    ? valueToAppleScriptLiteral(input.inputData[keyName])
-                    : "missing value"; // Bare keyword
-                 logSub('quotedMcpInputRegex (match surrounding quotes) replacing', { match, openingQuote, keyName, replacementValue });
-                 return replacementValue; // Return just the value, as quotes are consumed by the regex
-            });
-            logSub('After quotedMcpInputRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
-
-            // Quoted "--MCP_ARG_N" (handles single or double quotes)
-            // Adapting quotedMcpArgRegex similarly
-            // const quotedMcpArgRegex = /(?:["'])--MCP_ARG_(\d+)(?:["'])/g; // Original
-            const quotedMcpArgRegex = /(["'])--MCP_ARG_(\d+)\1/g;
-            logSub('Before quotedMcpArgRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
-            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpArgRegex, (match, openingQuote, argNumStr) => {
-                const argIndex = Number.parseInt(argNumStr, 10) - 1;
-                const replacementValue = input.arguments && argIndex >= 0 && argIndex < input.arguments.length
-                    ? valueToAppleScriptLiteral(input.arguments[argIndex])
-                    : "missing value"; // Bare keyword
-                logSub('quotedMcpArgRegex (match surrounding quotes) replacing', { match, openingQuote, argNumStr, argIndex, replacementValue });
-                return replacementValue;
-            });
-            logSub('After quotedMcpArgRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
-
-            // Context-aware bare placeholders (not in comments) e.g., in function calls like myFunc(--MCP_INPUT:key)
-            const expressionMcpInputRegex = /([(,=]\s*)--MCP_INPUT:(\w+)\b/g;
-            logSub('Before expressionMcpInputRegex', { scriptContentLength: scriptContentToExecute.length });
-            scriptContentToExecute = scriptContentToExecute.replace(expressionMcpInputRegex, (match, prefix, keyName) => {
-                const replacementValue = input.inputData && keyName in input.inputData
-                        ? valueToAppleScriptLiteral(input.inputData[keyName])
-                        : "missing value";
-                logSub('expressionMcpInputRegex replacing', { match, prefix, keyName, replacementValue });
-                return prefix + replacementValue;
-            });
-            logSub('After expressionMcpInputRegex', { scriptContentLength: scriptContentToExecute.length });
-
-            const expressionMcpArgRegex = /([(,=]\s*)--MCP_ARG_(\d+)\b/g;
-            logSub('Before expressionMcpArgRegex', { scriptContentLength: scriptContentToExecute.length });
-            scriptContentToExecute = scriptContentToExecute.replace(expressionMcpArgRegex, (match, prefix, argNumStr) => {
-                const argIndex = Number.parseInt(argNumStr, 10) - 1;
-                const replacementValue = input.arguments && argIndex >= 0 && argIndex < input.arguments.length
-                        ? valueToAppleScriptLiteral(input.arguments[argIndex])
-                        : "missing value";
-                logSub('expressionMcpArgRegex replacing', { match, prefix, argNumStr, argIndex, replacementValue });
-                return prefix + replacementValue;
-            });
-            logSub('After expressionMcpArgRegex', { scriptContentLength: scriptContentToExecute.length });
+            // logger.debug related to substitution steps are now inside substitutePlaceholders or covered by returned logs.
         }
         logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
       } else if (input.scriptPath || input.scriptContent) {
