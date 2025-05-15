@@ -66,6 +66,9 @@ Desktop.ini
 # Output of 'npm pack'
 *.tgz
 
+# Generated JavaScript files from TypeScript scripts
+scripts/*.js
+
 # Validation output file
 validation-output.txt
 test_output.txt
