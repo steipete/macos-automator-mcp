@@ -65,3 +65,6 @@ Desktop.ini
 
 # Output of 'npm pack'
 *.tgz
+
+# Validation output file
+validation-output.txt
