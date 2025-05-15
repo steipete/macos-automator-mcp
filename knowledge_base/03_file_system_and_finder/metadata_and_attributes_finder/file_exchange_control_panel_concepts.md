@@ -4,7 +4,7 @@ description: "Understanding and managing file extension to application associati
 author: "Claude"
 category: "03_file_system_and_finder"
 subcategory: "metadata_and_attributes_finder"
-tags: ["file extension", "file association", "default application", "file types", "duti", "lsregister"]
+keywords: ["file extension", "file association", "default application", "file types", "duti", "lsregister"]
 language: "applescript"
 version: "1.0"
 validated: true

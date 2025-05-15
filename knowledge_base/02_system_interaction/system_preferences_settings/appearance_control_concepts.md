@@ -4,7 +4,7 @@ description: "Change and manage macOS appearance settings including dark mode, a
 author: "Claude"
 category: "02_system_interaction"
 subcategory: "system_preferences_settings"
-tags: ["appearance", "dark mode", "accent color", "highlight color", "system settings", "ui scripting"]
+keywords: ["appearance", "dark mode", "accent color", "highlight color", "system settings", "ui scripting"]
 language: "applescript"
 version: "1.0"
 validated: true

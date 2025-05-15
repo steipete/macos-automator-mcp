@@ -4,7 +4,7 @@ description: "Scripts for controlling mouse/trackpad tracking speed, scrolling b
 author: "Claude"
 category: "02_system_interaction"
 subcategory: "system_preferences_settings"
-tags: ["mouse", "trackpad", "memory", "system settings", "ui scripting", "system information"]
+keywords: ["mouse", "trackpad", "memory", "system settings", "ui scripting", "system information"]
 language: "applescript"
 version: "1.0"
 validated: true

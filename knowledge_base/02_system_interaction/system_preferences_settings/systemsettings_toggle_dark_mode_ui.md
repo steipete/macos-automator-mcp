@@ -64,3 +64,4 @@ on toggleDarkModeViaUI()
 end toggleDarkModeViaUI
 
 return my toggleDarkModeViaUI()
+```

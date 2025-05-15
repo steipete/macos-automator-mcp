@@ -4,7 +4,7 @@ description: "Understanding and working with legacy file types and creator codes
 author: "Claude"
 category: "03_file_system_and_finder"
 subcategory: "metadata_and_attributes_finder"
-tags: ["file type", "creator code", "legacy", "metadata", "finder", "uti", "resource fork"]
+keywords: ["file type", "creator code", "legacy", "metadata", "finder", "uti", "resource fork"]
 language: "applescript"
 version: "1.0"
 validated: true
