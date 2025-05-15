@@ -47,8 +47,8 @@ function valueToAppleScriptLiteral(value: unknown): string {
         const recordParts = Object.entries(value).map(([k, v]) => `${k}:${valueToAppleScriptLiteral(v)}`);
         return `{${recordParts.join(", ")}}`;
     }
-    logger.warn('Unsupported type for AppleScript literal conversion', { value });
-    return "\"__MCP_UNSUPPORTED_TYPE__\""; // Placeholder for unsupported types
+    logger.warn('Unsupported type for AppleScript literal conversion, using "missing value"', { value });
+    return "missing value"; // AppleScript's equivalent of null/undefined (bare keyword)
 }
 
 // Define raw shapes for tool registration (required by newer SDK versions)
@@ -100,7 +100,7 @@ async function main() {
       const input = ExecuteScriptInputSchema.parse(args);
       let scriptContentToExecute: string | undefined = input.scriptContent;
       let scriptPathToExecute: string | undefined = input.scriptPath;
-      let languageToUse: 'applescript' | 'javascript' = input.language || 'applescript';
+      let languageToUse: 'applescript' | 'javascript';
       let finalArgumentsForScriptFile = input.arguments || [];
       const substitutionLogs: string[] = [];
 
@@ -218,24 +218,17 @@ async function main() {
             logSub('After expressionMcpArgRegex', { scriptContentLength: scriptContentToExecute.length });
         }
         logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
-      } else if (input.scriptPath) {
-        // File path existence check is now within ScriptExecutor
-        // No specific action here, path is passed to executor
-        logger.debug('Executing script from path', { scriptPath: input.scriptPath, language: languageToUse });
-      } else if (input.scriptContent) {
-        // Content is directly from input
-        // languageToUse is already set based on input or default
-        logger.debug('Executing script from content', { language: languageToUse, initialLength: input.scriptContent.length });
+      } else if (input.scriptPath || input.scriptContent) {
+        languageToUse = input.language || 'applescript';
+        if (input.scriptPath) {
+            logger.debug('Executing script from path', { scriptPath: input.scriptPath, language: languageToUse });
+        } else if (input.scriptContent) {
+            logger.debug('Executing script from content', { language: languageToUse, initialLength: input.scriptContent.length });
+        }
       } else {
-        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID). This should be caught by Zod schema refinement.");
+        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID).");
       }
       
-      if (!input.knowledgeBaseScriptId && input.language) {
-          languageToUse = input.language;
-      } else if (!input.knowledgeBaseScriptId && !input.language) {
-          languageToUse = 'applescript';
-      }
-
       // Log the actual script to be executed (especially useful for KB scripts after substitution)
       if (scriptContentToExecute) {
         logger.debug('Final script content to be executed:', { language: languageToUse, script: scriptContentToExecute });
