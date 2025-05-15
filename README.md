@@ -80,6 +80,8 @@ Alternatively, for development or if you prefer to run the server directly from 
 
     The `start.sh` script will automatically use `tsx` to run the TypeScript source directly if a compiled version is not found, or run the compiled version from `dist/` if available. It respects the `LOG_LEVEL` environment variable.
 
+    **Note for Developers:** The `start.sh` script, particularly if modified to remove any pre-existing compiled `dist/server.js` before execution (e.g., by adding `rm -f dist/server.js`), is designed to ensure you are always running the latest TypeScript code from the `src/` directory via `tsx`. This is ideal for development to prevent issues with stale builds. For production deployment (e.g., when published to npm), a build process would typically create a definitive `dist/server.js` which would then be the entry point for the published package.
+
 ## Tools Provided
 
 ### 1. `execute_script`
@@ -110,6 +112,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
 -   `timeoutSeconds` (integer, optional, default: 30): Maximum execution time.
 -   `useScriptFriendlyOutput` (boolean, optional, default: false): Uses `osascript -ss` flag for potentially more structured output, especially for lists and records.
 -   `includeExecutedScriptInOutput` (boolean, optional, default: false): If true, the output will include the full script content (after any placeholder substitutions for knowledge base scripts) or the script path that was executed. This is appended as an additional text part in the output content array.
+-   `includeSubstitutionLogs` (boolean, optional, default: false): If true, detailed logs of placeholder substitutions performed on knowledge base scripts are included in the output. This is useful for debugging how `inputData` and `arguments` are processed and inserted into the script. The logs are prepended to the script output on success or appended to the error message on failure.
 
 **SECURITY WARNING & MACOS PERMISSIONS:** (Same critical warnings as before about arbitrary script execution and macOS Automation/Accessibility permissions).
 
@@ -159,6 +162,31 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
     `{ "toolName": "get_scripting_tips", "input": { "category": "safari" } }`
 -   Search for tips related to "clipboard":
     `{ "toolName": "get_scripting_tips", "input": { "searchTerm": "clipboard" } }`
+
+### 3. Other Available Tools
+
+This MCP server may also expose other general-purpose tools depending on the environment it's running in. Here's a summary of commonly available tools and their functions:
+
+*   **`codebase_search`**: Finds snippets of code from the codebase most relevant to a semantic search query. Can target specific directories.
+*   **`read_file`**: Reads the contents of a file, either a specific range of lines or the entire file (use with caution for large files).
+*   **`run_terminal_cmd`**: Proposes a terminal command to be run on behalf of the user. The user must approve the command. Can run in the background.
+*   **`list_dir`**: Lists the contents of a specified directory relative to the workspace root.
+*   **`grep_search`**: Performs fast, exact regex searches over text files using the `ripgrep` engine.
+*   **`edit_file`**: Proposes an edit to an existing file or creates a new file using a diff-like format.
+*   **`file_search`**: Performs a fast fuzzy search for files based on a partial file path or name.
+*   **`delete_file`**: Deletes a specified file.
+*   **`reapply`**: Calls a smarter model to reapply the last `edit_file` attempt if the initial application was not as expected. Use immediately after an `edit_file` call if the diff is incorrect.
+*   **`web_search`**: Searches the web for real-time information using a general web search engine.
+*   **`claude_code`**: A versatile multi-modal assistant for code, file, Git, and terminal operations via Claude CLI. Can perform complex multi-step tasks, file operations, code generation/analysis, Git workflows, and more. Requires a `workFolder` for context.
+*   **`write_to_terminal` (iTerm specific)**: Writes text to the active iTerm terminal, often used to run a command directly in iTerm.
+*   **`read_terminal_output` (iTerm specific)**: Reads a specified number of lines of output from the active iTerm terminal.
+*   **`send_control_character` (iTerm specific)**: Sends a control character (e.g., Control-C) to the active iTerm terminal.
+*   **`brave_web_search` (Brave Search specific)**: Performs a web search using the Brave Search API. Good for general queries, news, and articles.
+*   **`brave_local_search` (Brave Search specific)**: Searches for local businesses and places using Brave's Local Search API.
+*   **`filesystem_write_file`**: Creates a new file or completely overwrites an existing file with new content.
+*   **`filesystem_edit_file`**: Makes line-based edits to a text file by replacing exact line sequences.
+
+**Note:** The availability and exact behavior of some tools (especially those prefixed like `claude_code`, iTerm specific, Brave Search specific, or filesystem specific tools) might depend on the specific MCP client and environment configuration. The `execute_script` and `get_scripting_tips` tools are core to this `macos_automator` server.
 
 ## Key Use Cases & Examples
 

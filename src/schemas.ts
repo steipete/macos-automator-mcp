@@ -27,7 +27,9 @@ export const ExecuteScriptInputSchema = z.object({
   useScriptFriendlyOutput: z.boolean().optional().default(false)
     .describe("Use 'osascript -ss' for script-friendly output."),
   includeExecutedScriptInOutput: z.boolean().optional().default(false)
-    .describe("If true, the executed script content (after substitutions) or path will be included in the output.")
+    .describe("If true, the executed script content (after substitutions) or path will be included in the output."),
+  includeSubstitutionLogs: z.boolean().optional().default(false)
+    .describe("If true, detailed logs of placeholder substitutions will be included in the output.")
 }).refine(data => {
     const sources = [data.scriptContent, data.scriptPath, data.knowledgeBaseScriptId].filter(s => s !== undefined && s !== null && s !== '');
     return sources.length === 1;

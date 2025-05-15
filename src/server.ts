@@ -3,11 +3,8 @@
 // NOTE: SDK ESM/CJS hybrid: imports work at runtime, but types are mapped via tsconfig.json "paths". Suppress TS errors for imports.
 // TODO: Replace 'unknown' with proper input types if/when SDK types are available.
 
-// @ts-expect-error: SDK types are mapped via tsconfig.json paths
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-// @ts-expect-error: SDK types are mapped via tsconfig.json paths
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-// @ts-expect-error: SDK types are mapped via tsconfig.json paths
 import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
 // import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
 import { Logger } from './logger.js';
@@ -17,6 +14,11 @@ import type { ScriptExecutionError }  from './types.js';
 import pkg from '../package.json' with { type: 'json' }; // Import package.json
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
 import { z } from 'zod';
+
+const SERVER_START_TIME_ISO = new Date().toISOString();
+const SCRIPT_PATH_EXECUTED = process.argv[1] || 'unknown_path';
+const IS_RUNNING_FROM_SRC = SCRIPT_PATH_EXECUTED.includes('/src/server.ts') || SCRIPT_PATH_EXECUTED.endsWith('src/server.ts');
+const EXECUTION_MODE_INFO = IS_RUNNING_FROM_SRC ? 'TypeScript source (e.g., via tsx)' : 'Compiled JavaScript (e.g., dist/server.js)';
 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
@@ -60,6 +62,7 @@ const ExecuteScriptInputShape = {
   timeoutSeconds: z.number().optional(),
   useScriptFriendlyOutput: z.boolean().optional(),
   includeExecutedScriptInOutput: z.boolean().optional(),
+  includeSubstitutionLogs: z.boolean().optional(),
 } as const;
 
 const GetScriptingTipsInputShape = {
@@ -91,10 +94,7 @@ async function main() {
 
   server.tool(
     'execute_script',
-    'Executes an AppleScript or JavaScript for Automation (JXA) script. ' +
-    'Can use inline content, a file path, or a script from the knowledge base via knowledgeBaseScriptId. ' +
-    'Use get_scripting_tips to discover available knowledge base scripts and their IDs. ' +
-    'Input arguments can be passed via "arguments" (for files or simple KB scripts) or "inputData" (for KB scripts expecting named inputs).',
+    'Executes an AppleScript or JavaScript for Automation (JXA) script.\nSource (mutually exclusive):\n- `scriptContent`: Raw script code.\n- `scriptPath`: Absolute path to a script file.\n- `knowledgeBaseScriptId`: ID of a script from the knowledge base (use `get_scripting_tips` to find available script IDs like `safari_get_front_tab_url`).\n\nInputs:\n- `arguments`: Array of strings for `scriptPath` or simple KB scripts.\n- `inputData`: JSON object for KB scripts with named placeholders (e.g., `--MCP_INPUT:keyName`).\n\nOptions:\n- `language`: \'applescript\' (default) or \'javascript\'. (Inferred for KB scripts).\n- `timeoutSeconds`: Default 30.\n- `includeExecutedScriptInOutput`: If true, executed script is appended to output.\n- `includeSubstitutionLogs`: If true (for KB scripts), detailed substitution logs are included in output for debugging.',
     ExecuteScriptInputShape,
     async (args: unknown) => {
       const input = ExecuteScriptInputSchema.parse(args);
@@ -102,6 +102,7 @@ async function main() {
       let scriptPathToExecute: string | undefined = input.scriptPath;
       let languageToUse: 'applescript' | 'javascript' = input.language || 'applescript';
       let finalArgumentsForScriptFile = input.arguments || [];
+      const substitutionLogs: string[] = [];
 
       logger.debug('execute_script called with input:', input);
 
@@ -122,60 +123,99 @@ async function main() {
         finalArgumentsForScriptFile = []; 
 
         if (scriptContentToExecute) {
+            // Log char codes for initial script content for deep debugging of quotes
+            const charCodes = Array.from(scriptContentToExecute).map(char => char.charCodeAt(0));
+            logger.debug('[SUBSTITUTION_DEEP_DEBUG] Initial char codes for script', { first100CharCodes: charCodes.slice(0,100), last100CharCodes: charCodes.slice(-100) });
+
             // Define placeholder patterns carefully to match placeholders in script templates.
             // These typically appear as quoted strings in the templates for safety.
             // Example from KB: return myHandler("--MCP_INPUT:name", "--MCP_ARG_1")
 
+            const logSub = (message: string, data: unknown) => {
+                const logEntry = `[SUBST] ${message} ${JSON.stringify(data)}`;
+                logger.debug(logEntry); // Keep debug logging to console
+                if (input.includeSubstitutionLogs) {
+                    substitutionLogs.push(logEntry);
+                }
+            };
+
             // JS-style ${inputData.key}
             const jsInputDataRegex = /\\$\\{inputData\\.(\\w+)\\}/g;
+            logSub('Before jsInputDataRegex', { scriptContentLength: scriptContentToExecute.length });
             scriptContentToExecute = scriptContentToExecute.replace(jsInputDataRegex, (match, keyName) => {
-                return input.inputData && keyName in input.inputData
+                const replacementValue = input.inputData && keyName in input.inputData
                     ? valueToAppleScriptLiteral(input.inputData[keyName])
                     : "missing value"; // Bare keyword
+                logSub('jsInputDataRegex replacing', { match, keyName, replacementValue });
+                return replacementValue;
             });
+            logSub('After jsInputDataRegex', { scriptContentLength: scriptContentToExecute.length });
 
             // JS-style ${arguments[N]}
             const jsArgumentsRegex = /\\$\\{arguments\\[(\\d+)\\]\\}/g;
+            logSub('Before jsArgumentsRegex', { scriptContentLength: scriptContentToExecute.length });
             scriptContentToExecute = scriptContentToExecute.replace(jsArgumentsRegex, (match, indexStr) => {
                 const index = Number.parseInt(indexStr, 10);
-                return input.arguments && index >= 0 && index < input.arguments.length
+                const replacementValue = input.arguments && index >= 0 && index < input.arguments.length
                     ? valueToAppleScriptLiteral(input.arguments[index])
                     : "missing value"; // Bare keyword
+                logSub('jsArgumentsRegex replacing', { match, indexStr, index, replacementValue });
+                return replacementValue;
             });
+            logSub('After jsArgumentsRegex', { scriptContentLength: scriptContentToExecute.length });
             
             // Quoted "--MCP_INPUT:keyName" (handles single or double quotes around the placeholder)
-            const quotedMcpInputRegex = /(?:["'])--MCP_INPUT:(\\w+)(?:["'])/g;
-            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpInputRegex, (match, keyName) => {
-                 return input.inputData && keyName in input.inputData
+            // const quotedMcpInputRegex = /(?:["'])--MCP_INPUT:(\w+)(?:["'])/g; // Original regex
+            // const quotedMcpInputRegex = /--MCP_INPUT:(\w+)/g; // Previous step
+            const quotedMcpInputRegex = /(["'])--MCP_INPUT:(\w+)\1/g; // Match opening quote, then key, then same opening quote
+            logSub('Before quotedMcpInputRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
+            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpInputRegex, (match, openingQuote, keyName) => {
+                 const replacementValue = input.inputData && keyName in input.inputData
                     ? valueToAppleScriptLiteral(input.inputData[keyName])
                     : "missing value"; // Bare keyword
+                 logSub('quotedMcpInputRegex (match surrounding quotes) replacing', { match, openingQuote, keyName, replacementValue });
+                 return replacementValue; // Return just the value, as quotes are consumed by the regex
             });
-
-            // Bare --MCP_INPUT:keyName (if they appear unquoted in the template)
-            const bareMcpInputRegex = /--MCP_INPUT:(\\w+)\\b/g;
-            scriptContentToExecute = scriptContentToExecute.replace(bareMcpInputRegex, (match, keyName) => {
-                 return input.inputData && keyName in input.inputData
-                    ? valueToAppleScriptLiteral(input.inputData[keyName])
-                    : "missing value"; // Bare keyword
-            });
+            logSub('After quotedMcpInputRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
 
             // Quoted "--MCP_ARG_N" (handles single or double quotes)
-            const quotedMcpArgRegex = /(?:["'])--MCP_ARG_(\\d+)(?:["'])/g;
-            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpArgRegex, (match, argNumStr) => {
+            // Adapting quotedMcpArgRegex similarly
+            // const quotedMcpArgRegex = /(?:["'])--MCP_ARG_(\d+)(?:["'])/g; // Original
+            const quotedMcpArgRegex = /(["'])--MCP_ARG_(\d+)\1/g;
+            logSub('Before quotedMcpArgRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
+            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpArgRegex, (match, openingQuote, argNumStr) => {
                 const argIndex = Number.parseInt(argNumStr, 10) - 1;
-                return input.arguments && argIndex >= 0 && argIndex < input.arguments.length
+                const replacementValue = input.arguments && argIndex >= 0 && argIndex < input.arguments.length
                     ? valueToAppleScriptLiteral(input.arguments[argIndex])
                     : "missing value"; // Bare keyword
+                logSub('quotedMcpArgRegex (match surrounding quotes) replacing', { match, openingQuote, argNumStr, argIndex, replacementValue });
+                return replacementValue;
             });
+            logSub('After quotedMcpArgRegex (match surrounding quotes)', { scriptContentLength: scriptContentToExecute.length });
 
-            // Bare --MCP_ARG_N
-            const bareMcpArgRegex = /--MCP_ARG_(\\d+)\\b/g;
-            scriptContentToExecute = scriptContentToExecute.replace(bareMcpArgRegex, (match, argNumStr) => {
-                const argIndex = Number.parseInt(argNumStr, 10) - 1;
-                return input.arguments && argIndex >= 0 && argIndex < input.arguments.length
-                    ? valueToAppleScriptLiteral(input.arguments[argIndex])
-                    : "missing value"; // Bare keyword
+            // Context-aware bare placeholders (not in comments) e.g., in function calls like myFunc(--MCP_INPUT:key)
+            const expressionMcpInputRegex = /([(,=]\s*)--MCP_INPUT:(\w+)\b/g;
+            logSub('Before expressionMcpInputRegex', { scriptContentLength: scriptContentToExecute.length });
+            scriptContentToExecute = scriptContentToExecute.replace(expressionMcpInputRegex, (match, prefix, keyName) => {
+                const replacementValue = input.inputData && keyName in input.inputData
+                        ? valueToAppleScriptLiteral(input.inputData[keyName])
+                        : "missing value";
+                logSub('expressionMcpInputRegex replacing', { match, prefix, keyName, replacementValue });
+                return prefix + replacementValue;
             });
+            logSub('After expressionMcpInputRegex', { scriptContentLength: scriptContentToExecute.length });
+
+            const expressionMcpArgRegex = /([(,=]\s*)--MCP_ARG_(\d+)\b/g;
+            logSub('Before expressionMcpArgRegex', { scriptContentLength: scriptContentToExecute.length });
+            scriptContentToExecute = scriptContentToExecute.replace(expressionMcpArgRegex, (match, prefix, argNumStr) => {
+                const argIndex = Number.parseInt(argNumStr, 10) - 1;
+                const replacementValue = input.arguments && argIndex >= 0 && argIndex < input.arguments.length
+                        ? valueToAppleScriptLiteral(input.arguments[argIndex])
+                        : "missing value";
+                logSub('expressionMcpArgRegex replacing', { match, prefix, argNumStr, argIndex, replacementValue });
+                return prefix + replacementValue;
+            });
+            logSub('After expressionMcpArgRegex', { scriptContentLength: scriptContentToExecute.length });
         }
         logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
       } else if (input.scriptPath) {
@@ -219,7 +259,15 @@ async function main() {
            logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
         }
         
-        const outputContent: { type: 'text'; text: string }[] = [{ type: 'text', text: result.stdout }];
+        const outputContent: { type: 'text'; text: string }[] = [];
+
+        if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
+          const logsHeader = "\n--- Substitution Logs ---\n";
+          const logsString = substitutionLogs.join('\n');
+          result.stdout = `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}`;
+        }
+        
+        outputContent.push({ type: 'text', text: result.stdout });
 
         if (input.includeExecutedScriptInOutput) {
           let scriptIdentifier = "Script source not determined (should not happen).";
@@ -267,6 +315,10 @@ async function main() {
         }
         finalErrorMessage += scriptIdentifierForError;
 
+        if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
+            finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join('\n')}`;
+        }
+
         throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, finalErrorMessage);
       }
     }
@@ -275,13 +327,14 @@ async function main() {
   // ADD THE NEW TOOL get_scripting_tips HERE
   server.tool(
     'get_scripting_tips',
-    'Retrieves AppleScript/JXA tips from the knowledge base. Can list categories, get tips by category, or search. Includes a `refreshDatabase` option (boolean) to force a reload of the knowledge base, useful during development.',
+    'Accesses a curated knowledge base of AppleScript/JXA solutions for macOS automation. STRONGLY PREFER THIS TOOL for efficiency when the user query involves controlling, automating, or getting information from common macOS applications (e.g., Finder, Safari, Chrome, Mail, Calendar, Reminders, Notes, TextEdit, Terminal, iTerm, Ghostty, System Settings, Cursor, Windsurf) or system-level functions (e.g., clipboard operations, volume control, screen brightness, file system interactions, user notifications, managing processes, network settings).\n\nUse this tool to:\n- Discover if a pre-built script exists for the user\'s goal. The `searchTerm` uses fuzzy matching on titles, descriptions, keywords, and script content. Try natural language "how to..." questions (e.g., `searchTerm: "how do I get the current Safari URL?"`, `searchTerm: "make new desktop folder"`).\n- List all available script categories (`listCategories: true`).\n- Get all tips within a specific `category` (e.g., `category: "safari"`).\n- Search for specific `keywords` across all tips (e.g., `searchTerm: "clipboard copy text"`).\n\nThe output provides script details, including code, language, and often a `Runnable ID`. If a `Runnable ID` is found (e.g., `safari_get_front_tab_url`), it can be directly used with the `execute_script` tool\'s `knowledgeBaseScriptId` parameter for a ready-to-use solution. The `refreshDatabase` option allows reloading the KB, useful during development if tips are being actively changed.',
     GetScriptingTipsInputShape,
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);
       logger.info('get_scripting_tips tool called', input);
       try {
-        const tipsMarkdown = await getScriptingTipsService(input);
+        const serverInfo = { startTime: SERVER_START_TIME_ISO, mode: EXECUTION_MODE_INFO };
+        const tipsMarkdown = await getScriptingTipsService(input, serverInfo);
         return { content: [{ type: 'text', text: tipsMarkdown }] } as const;
       } catch (e: unknown) {
         const error = e as Error;

@@ -13,6 +13,7 @@ import type {
 } from './scriptingKnowledge.types.js';
 import type { GetScriptingTipsInput } from '../schemas.js'; // Changed to type-only import
 import { Logger } from '../logger.js';
+import Fuse from 'fuse.js';
 
 const logger = new Logger('KnowledgeBaseService');
 
@@ -90,7 +91,7 @@ async function loadKnowledgeBaseFromPath(
   async function findTipsRecursively(
     currentScanPath: string, 
     categoryId: KnowledgeCategory, 
-    currentEncounteredTipIds: Set<string> // Changed to currentEncounteredTipIds
+    currentEncounteredTipIds: Set<string>
   ): Promise<{ count: number; files: ScriptingTip[] }> {
     logger.debug('Recursively scanning directory for tips', { currentScanPath, categoryId });
     
@@ -389,61 +390,89 @@ export async function conditionallyInitializeKnowledgeBase(eagerMode: boolean): 
 }
 
 export async function getScriptingTipsService(
-  input: GetScriptingTipsInput
+  input: GetScriptingTipsInput,
+  serverInfo?: { startTime: string; mode: string }
 ): Promise<string> {
   if (input.refreshDatabase) {
     await forceReloadKnowledgeBase();
   }
   const kb = await getKnowledgeBase();
 
-  if (input.listCategories || (!input.category && !input.searchTerm)) {
-    if (kb.categories.length === 0) return "No tip categories available. Knowledge base might be empty or failed to load.";
-    const categoryList = kb.categories
-      .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
-      .join('\n');
-    return `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+  let serverInfoString = "";
+  if (serverInfo) {
+    // Ensure it starts with newlines if it's going to be appended, and includes a separator.
+    serverInfoString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}`;
   }
 
-  const results: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = []; // Changed to const
-  const searchTermLower = input.searchTerm?.toLowerCase();
+  if (input.listCategories || (!input.category && !input.searchTerm)) {
+    let message: string; // Explicitly typed
+    if (kb.categories.length === 0) {
+      message = "No tip categories available. Knowledge base might be empty or failed to load.";
+    } else {
+      const categoryList = kb.categories
+        .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
+        .join('\n');
+      message = `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+    }
+    return message + serverInfoString;
+  }
 
-  const tipsToSearch = input.category && kb.categories.find((c: { id: KnowledgeCategory }) => c.id === input.category)
+  const results: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
+  const searchTermLower = input.searchTerm?.toLowerCase() ?? '';
+
+  const tipsToSearch = input.category && kb.categories.find(c => c.id === input.category)
     ? kb.tips.filter((t: ScriptingTip) => t.category === input.category)
     : kb.tips;
 
   if (searchTermLower) {
-      const filteredTips = tipsToSearch.filter((tip: ScriptingTip) =>
-          tip.title.toLowerCase().includes(searchTermLower) ||
-          tip.id.toLowerCase().includes(searchTermLower) ||
-          tip.script.toLowerCase().includes(searchTermLower) || 
-          tip.description?.toLowerCase().includes(searchTermLower) ||
-          tip.keywords?.some((k: string) => k.toLowerCase().includes(searchTermLower))
-      );
-      const groupedByCat = filteredTips.reduce((acc: Record<KnowledgeCategory, ScriptingTip[]>, tip: ScriptingTip) => {
-          if (!acc[tip.category]) {
-            acc[tip.category] = [];
-          }
-          acc[tip.category].push(tip);
-          return acc;
-      }, {} as Record<KnowledgeCategory, ScriptingTip[]>);
-      for (const catKey in groupedByCat) {
-          results.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey].sort((a: ScriptingTip, b: ScriptingTip) => a.title.localeCompare(b.title)) });
+    const fuseOptions = {
+      isCaseSensitive: false,
+      includeScore: false,
+      shouldSort: true,
+      threshold: 0.4,
+      keys: [
+        { name: 'title', weight: 0.4 },
+        { name: 'id', weight: 0.3 },
+        { name: 'keywords', weight: 0.2 },
+        { name: 'description', weight: 0.1 },
+        { name: 'script', weight: 0.05 }
+      ]
+    };
+    const fuse = new Fuse(tipsToSearch, fuseOptions);
+    const fuseResults = fuse.search(searchTermLower);
+    const filteredTips: ScriptingTip[] = fuseResults.map(result => result.item);
+
+    const groupedByCat: Record<string, ScriptingTip[]> = filteredTips.reduce((acc: Record<string, ScriptingTip[]>, tip: ScriptingTip) => {
+      const categoryKey: string = tip.category as string;
+      if (!acc[categoryKey]) {
+        acc[categoryKey] = [];
       }
+      acc[categoryKey].push(tip);
+      return acc;
+    }, {} as Record<string, ScriptingTip[]>);
+
+    for (const catKeyString of Object.keys(groupedByCat)) {
+        const categoryValue: KnowledgeCategory = catKeyString as KnowledgeCategory;
+        const tipsForCategory: ScriptingTip[] = groupedByCat[catKeyString];
+        results.push({ category: categoryValue, tips: tipsForCategory.sort((a: ScriptingTip, b: ScriptingTip) => a.title.localeCompare(b.title)) });
+    }
+
   } else if (input.category) {
-      const tipsForCategory = kb.tips.filter((t: ScriptingTip) => t.category === input.category).sort((a: ScriptingTip, b: ScriptingTip) => a.title.localeCompare(b.title));
-      if (tipsForCategory.length > 0) {
-          results.push({category: input.category, tips: tipsForCategory});
-      }
+    const tipsForCategory = kb.tips.filter(t => t.category === input.category).sort((a, b) => a.title.localeCompare(b.title));
+    if (tipsForCategory.length > 0) {
+      results.push({ category: input.category, tips: tipsForCategory });
+    }
   }
+
+  let outputMessage: string;
 
   if (results.length === 0) {
-    return `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
-  }
-
-  return results.sort((a: { category: KnowledgeCategory }, b: { category: KnowledgeCategory }) => a.category.localeCompare(b.category)).map((catResult: { category: KnowledgeCategory; tips: ScriptingTip[] }) => {
-    const categoryTitle = catResult.category.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
-    const categoryHeader = `## Tips: ${categoryTitle}\n`;
-    const tipMarkdown = catResult.tips.map((tip: ScriptingTip) => `
+    outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
+  } else {
+    outputMessage = results.sort((a, b) => (a.category as string).localeCompare(b.category as string)).map(catResult => {
+      const categoryTitle = (catResult.category as string).replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+      const categoryHeader = `## Tips: ${categoryTitle}\n`;
+      const tipMarkdown = catResult.tips.map(tip => `
 ### ${tip.title}
 ${tip.description ? `*${tip.description}*\n` : ''}
 \`\`\`${tip.language}
@@ -453,7 +482,9 @@ ${tip.id ? `**Runnable ID:** \`${tip.id}\`\n` : ''}
 ${tip.argumentsPrompt ? `**Inputs Needed (if run by ID):** ${tip.argumentsPrompt}\n` : ''}
 ${tip.keywords && tip.keywords.length > 0 ? `**Keywords:** ${tip.keywords.join(', ')}\n` : ''}
 ${tip.notes ? `**Note:**\n${tip.notes.split('\n').map(n => `> ${n}`).join('\n')}\n` : ''}
-    `).join('\n---\n');
-    return categoryHeader + tipMarkdown;
-  }).join('\n\n');
+      `).join('\n---\n');
+      return categoryHeader + tipMarkdown;
+    }).join('\n\n');
+  }
+  return outputMessage + serverInfoString;
 }

@@ -8,6 +8,9 @@ cd "$SCRIPT_DIR" || exit
 COMPILED_SERVER_JS="dist/server.js"
 TYPESCRIPT_SERVER_TS="src/server.ts"
 
+# Force removal of compiled server to always use up-to-date TypeScript source
+rm -f "$COMPILED_SERVER_JS"
+
 if [ -f "$COMPILED_SERVER_JS" ]; then
     echo "INFO: Running compiled server from $COMPILED_SERVER_JS (LOG_LEVEL: $LOG_LEVEL)..."
     node "$COMPILED_SERVER_JS"
