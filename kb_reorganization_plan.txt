@@ -1,0 +1,31 @@
+# Knowledge Base Reorganization Plan
+
+## Current Structure
+- 00_readme_and_conventions
+- 01_applescript_core
+- 02_system_interaction
+- 03_file_system_and_finder
+- 03_terminal_emulators (duplicate number)
+- 04_web_browsers
+- 05_ides_and_editors
+- 09_productivity_apps (gap in numbering)
+- 10_creative_and_document_apps
+- 11_developer_and_utility_apps
+- 12_jxa_basics
+- 13_advanced_techniques
+- network_services (missing number)
+
+## New Structure
+- 00_readme_and_conventions (unchanged)
+- 01_applescript_core (unchanged)
+- 02_system_interaction (unchanged)
+- 03_file_system_and_finder (unchanged)
+- 04_terminal_emulators (renumbered from 03)
+- 05_web_browsers (renumbered from 04)
+- 06_ides_and_editors (renumbered from 05)
+- 07_productivity_apps (renumbered from 09)
+- 08_creative_and_document_apps (renumbered from 10)
+- 09_developer_and_utility_apps (renumbered from 11)
+- 10_jxa_basics (renumbered from 12)
+- 11_advanced_techniques (renumbered from 13)
+- 12_network_services (added number)
