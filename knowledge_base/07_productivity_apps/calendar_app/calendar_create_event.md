@@ -70,3 +70,5 @@ This script:
 2. Can be customized with input placeholders (using `--MCP_INPUT:fieldName`)
 3. Shows how to add optional properties like location, URL, all-day setting, and alarms
 4. Includes a helper function to convert string date/time formats to date objects
+
+END_TIP

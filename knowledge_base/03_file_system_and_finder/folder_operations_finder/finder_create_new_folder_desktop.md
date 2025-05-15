@@ -46,3 +46,5 @@ The script:
 2. Checks if a folder with that name already exists
 3. Creates the new folder on the desktop if it doesn't exist
 4. Returns the path to the newly created folder or an error message
+
+END_TIP
