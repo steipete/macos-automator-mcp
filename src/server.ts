@@ -19,6 +19,7 @@ import { z } from 'zod';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 // Robustly load package.json
 const __filenameServer = fileURLToPath(import.meta.url);
@@ -388,11 +389,15 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-    main().catch(error => {
-        const mainError = error as Error;
-        logger.error("Fatal error during server startup:", { message: mainError.message, stack: mainError.stack });
-        process.exit(1);
-    });
+// Execute main() if this module is the entry point, even when invoked via a symlinked CLI script
+try {
+  const executedPath = realpathSync(process.argv[1] || '');
+  const modulePath = realpathSync(fileURLToPath(import.meta.url));
+  if (executedPath === modulePath) {
+    await main();
+  }
+} catch (error) {
+  const mainError = error as Error;
+  logger.error("Fatal error during server startup:", { message: mainError.message, stack: mainError.stack });
+  process.exit(1);
 } 
