@@ -1,5 +1,5 @@
 // Logging utility 
-import type { LogLevel } from './types';
+import type { LogLevel } from './types.js';
 
 const LOG_LEVELS: Record<LogLevel, number> = {
   DEBUG: 0,

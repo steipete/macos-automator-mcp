@@ -38,17 +38,47 @@ Add the following configuration to your MCP client's `mcp.json` (or equivalent c
     "macos_automator": {
       "command": "npx",
       "args": [
-        "-y", // Auto-accept npx install prompt if not already cached
-        "@steipete/macos-automator-mcp@latest" // Replace @steipete with your npm username if you publish
+        "-y",
+        "@steipete/macos-automator-mcp@latest"
       ],
       "env": {
-        "LOG_LEVEL": "INFO" // Optional: "DEBUG", "INFO", "WARN", "ERROR"
+        "LOG_LEVEL": "INFO"
       }
     }
-    // ... other MCP server configurations
   }
 }
 ```
+
+### Running Locally (for Development or Direct Use)
+
+Alternatively, for development or if you prefer to run the server directly from a cloned repository, you can use the provided `start.sh` script. This is useful if you want to make local modifications or run a specific version.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/steipete/macos-automator-mcp.git
+    cd macos-automator-mcp
+    npm install # Ensure dependencies are installed
+    ```
+
+2.  **Configure your MCP client:**
+    Update your MCP client's configuration to point to the absolute path of the `start.sh` script within your cloned repository.
+
+    Example `mcp.json` configuration snippet:
+    ```json
+    {
+      "mcpServers": {
+        "macos_automator_local": {
+          "command": "/absolute/path/to/your/cloned/macos-automator-mcp/start.sh",
+          "env": {
+            "LOG_LEVEL": "DEBUG"
+          }
+        }
+      }
+    }
+    ```
+    **Important:** Replace `/absolute/path/to/your/cloned/macos-automator-mcp/start.sh` with the correct absolute path on your system.
+
+    The `start.sh` script will automatically use `tsx` to run the TypeScript source directly if a compiled version is not found, or run the compiled version from `dist/` if available. It respects the `LOG_LEVEL` environment variable.
 
 ## Tools Provided
 
@@ -89,7 +119,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
     {
       "toolName": "execute_script",
       "input": {
-        "knowledgeBaseScriptId": "safari_get_active_tab_url", // Example ID
+        "knowledgeBaseScriptId": "safari_get_active_tab_url",
         "timeoutSeconds": 10
       }
     }
@@ -99,7 +129,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
     {
       "toolName": "execute_script",
       "input": {
-        "knowledgeBaseScriptId": "finder_create_folder_at_path", // Example ID
+        "knowledgeBaseScriptId": "finder_create_folder_at_path",
         "inputData": {
           "folderName": "New MCP Folder",
           "parentPath": "~/Desktop"

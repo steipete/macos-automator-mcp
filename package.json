@@ -12,8 +12,9 @@
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write \\\"src/**/*.ts\\\" \\\"*.md\\\"",
-    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+    "format": "prettier --write \"src/**/*.ts\" \"*.md\"",
+    "validate-kb": "tsx validator.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/gray-matter": "^4.0.0",
     "@types/node": "^22.15.18",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",

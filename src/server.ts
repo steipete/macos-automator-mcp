@@ -1,13 +1,22 @@
 #!/usr/bin/env node
-import { McpServer, McpError, ErrorCode } from '@modelcontextprotocol/sdk/server/mcp';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
+// server.ts - MCP server entrypoint
+// NOTE: SDK ESM/CJS hybrid: imports work at runtime, but types are mapped via tsconfig.json "paths". Suppress TS errors for imports.
+// TODO: Replace 'unknown' with proper input types if/when SDK types are available.
+
+// @ts-expect-error: SDK types are mapped via tsconfig.json paths
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+// @ts-expect-error: SDK types are mapped via tsconfig.json paths
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+// @ts-expect-error: SDK types are mapped via tsconfig.json paths
+import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
 // import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
-import { Logger } from './logger';
-import { ExecuteScriptInputSchema, type ExecuteScriptInput, GetScriptingTipsInputSchema, type GetScriptingTipsInput } from './schemas';
-import { ScriptExecutor } from './ScriptExecutor';
-import type { ScriptExecutionError }  from './types';
-import pkg from '../package.json' assert { type: 'json' }; // Import package.json
-import { getKnowledgeBase, getScriptingTipsService } from './services/knowledgeBaseService'; // Import KB functions
+import { Logger } from './logger.js';
+import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas.js';
+import { ScriptExecutor } from './ScriptExecutor.js';
+import type { ScriptExecutionError }  from './types.js';
+import pkg from '../package.json' with { type: 'json' }; // Import package.json
+import { getKnowledgeBase, getScriptingTipsService } from './services/knowledgeBaseService.js'; // Import KB functions
+import { z } from 'zod';
 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
@@ -35,6 +44,25 @@ function valueToAppleScriptLiteral(value: unknown): string {
     return "\"__MCP_UNSUPPORTED_TYPE__\""; // Placeholder for unsupported types
 }
 
+// Define raw shapes for tool registration (required by newer SDK versions)
+const ExecuteScriptInputShape = {
+  scriptContent: z.string().optional(),
+  scriptPath: z.string().optional(),
+  knowledgeBaseScriptId: z.string().optional(),
+  language: z.enum(['applescript', 'javascript']).optional(),
+  arguments: z.array(z.string()).optional(),
+  inputData: z.record(z.any()).optional(),
+  timeoutSeconds: z.number().optional(),
+  useScriptFriendlyOutput: z.boolean().optional(),
+} as const;
+
+const GetScriptingTipsInputShape = {
+  category: z.string().optional(),
+  searchTerm: z.string().optional(),
+  listCategories: z.boolean().optional(),
+  refreshDatabase: z.boolean().optional(),
+} as const;
+
 async function main() {
   logger.info('Starting macos_automator MCP Server...');
   logger.warn("CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.");
@@ -42,7 +70,7 @@ async function main() {
   const server = new McpServer({
     name: 'macos_automator', // Matches the key in mcp.json
     version: pkg.version, // Dynamically use version from package.json
-    onLog: (level, message, data) => { // Optional: Hook MCP internal logs to our logger
+    onLog: (level: "DEBUG" | "INFO" | "WARN" | "ERROR", message: string, data?: Record<string, unknown>) => {
       logger[level.toLowerCase() as 'debug' | 'info' | 'warn' | 'error']?.(`[MCP_SDK] ${message}`, data);
     }
   });
@@ -52,9 +80,10 @@ async function main() {
     'Executes an AppleScript or JavaScript for Automation (JXA) script. ' +
     'Can use inline content, a file path, or a script from the knowledge base via knowledgeBaseScriptId. ' +
     'Use get_scripting_tips to discover available knowledge base scripts and their IDs. ' +
-    'Input arguments can be passed via \'arguments\' (for files or simple KB scripts) or \'inputData\' (for KB scripts expecting named inputs).',
-    ExecuteScriptInputSchema,
-    async (input: ExecuteScriptInput) => {
+    'Input arguments can be passed via "arguments" (for files or simple KB scripts) or "inputData" (for KB scripts expecting named inputs).',
+    ExecuteScriptInputShape,
+    async (args: unknown) => {
+      const input = ExecuteScriptInputSchema.parse(args);
       let scriptContentToExecute: string | undefined = input.scriptContent;
       let scriptPathToExecute: string | undefined = input.scriptPath;
       let languageToUse: 'applescript' | 'javascript' = input.language || 'applescript';
@@ -64,13 +93,13 @@ async function main() {
 
       if (input.knowledgeBaseScriptId) {
         const kb = await getKnowledgeBase();
-        const tip = kb.tips.find(t => t.id === input.knowledgeBaseScriptId);
+        const tip = kb.tips.find((t: { id: string }) => t.id === input.knowledgeBaseScriptId);
 
         if (!tip) {
-          throw new McpError(ErrorCode.NotFound, `Knowledge base script with ID '${input.knowledgeBaseScriptId}' not found.`);
+          throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, `Knowledge base script with ID '${input.knowledgeBaseScriptId}' not found.`);
         }
         if (!tip.script) {
-            throw new McpError(ErrorCode.InternalError, `Knowledge base script ID '${input.knowledgeBaseScriptId}' has no script content.`);
+            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Knowledge base script ID '${input.knowledgeBaseScriptId}' has no script content.`);
         }
 
         scriptContentToExecute = tip.script;
@@ -101,7 +130,7 @@ async function main() {
       } else if (input.scriptContent) {
         // Content is directly from input
       } else {
-        throw new McpError(ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID). This should be caught by Zod schema refinement.");
+        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID). This should be caught by Zod schema refinement.");
       }
       
       if (!input.knowledgeBaseScriptId && input.language) {
@@ -128,16 +157,16 @@ async function main() {
 
       } catch (error: unknown) {
         const execError = error as ScriptExecutionError;
-        let baseErrorMessage = `Script execution failed. `;
+        let baseErrorMessage = 'Script execution failed. ';
         
         if (execError.name === "UnsupportedPlatformError") {
-            throw new McpError(ErrorCode.NotSupported, execError.message);
+            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidRequest, execError.message);
         }
         if (execError.name === "ScriptFileAccessError") {
-            throw new McpError(ErrorCode.NotFound, execError.message);
+            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, execError.message);
         }
         if (execError.isTimeout) {
-             throw new McpError(ErrorCode.Timeout, `Script execution timed out after ${input.timeoutSeconds || 30} seconds.`);
+             throw new sdkTypes.McpError(sdkTypes.ErrorCode.RequestTimeout, `Script execution timed out after ${input.timeoutSeconds || 30} seconds.`);
         }
 
         baseErrorMessage += execError.stderr?.trim() ? `Details: ${execError.stderr.trim()}` : (execError.message || 'No specific error message from script.');
@@ -151,7 +180,7 @@ async function main() {
         if (likelyPermissionError || possibleSilentPermissionError) {
             finalErrorMessage = `${baseErrorMessage}\n\nPOSSIBLE PERMISSION ISSUE: Ensure the application running this server (e.g., Terminal, Node) has required permissions in 'System Settings > Privacy & Security > Automation' and 'Accessibility'. See README.md. The target application for the script may also need specific permissions.`;
         }
-        throw new McpError(ErrorCode.InternalError, finalErrorMessage);
+        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, finalErrorMessage);
       }
     }
   );
@@ -160,16 +189,17 @@ async function main() {
   server.tool(
     'get_scripting_tips',
     'Retrieves AppleScript/JXA tips from the knowledge base. Can list categories, get tips by category, or search.',
-    GetScriptingTipsInputSchema,
-    async (input: GetScriptingTipsInput) => {
+    GetScriptingTipsInputShape,
+    async (args: unknown) => {
+      const input = GetScriptingTipsInputSchema.parse(args);
       logger.info('get_scripting_tips tool called', input);
       try {
         const tipsMarkdown = await getScriptingTipsService(input);
-        return { content: [{ type: 'markdown', text: tipsMarkdown }] };
+        return { content: [{ type: 'text', text: tipsMarkdown }] } as const;
       } catch (e: unknown) {
         const error = e as Error;
         logger.error('Error in get_scripting_tips tool handler', { message: error.message });
-        throw new McpError(ErrorCode.InternalError, `Failed to retrieve scripting tips: ${error.message}`);
+        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Failed to retrieve scripting tips: ${error.message}`);
       }
     }
   );
@@ -177,7 +207,7 @@ async function main() {
   const transport = new StdioServerTransport();
   try {
     await server.connect(transport);
-    logger.info(`macos_automator MCP Server v${server.info.version} connected via STDIO and ready.`);
+    logger.info(`macos_automator MCP Server v${pkg.version} connected via STDIO and ready.`);
   } catch (error: unknown) { // Changed from any to unknown
     const connectError = error as Error;
     logger.error('Failed to connect server to transport', { message: connectError.message, stack: connectError.stack });

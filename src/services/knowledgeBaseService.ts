@@ -2,18 +2,25 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
+import { fileURLToPath } from 'node:url'; // Import for robust pathing
 import type {
   ScriptingTip,
   KnowledgeBaseIndex,
   KnowledgeCategory,
   SharedHandler,
   TipFrontmatter
-} from './scriptingKnowledge.types';
-import { Logger } from '../logger';
+} from './scriptingKnowledge.types.js';
+import { GetScriptingTipsInput } from '../schemas.js';
+import { Logger } from '../logger.js';
 
 const logger = new Logger('KnowledgeBaseService');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const KNOWLEDGE_BASE_ROOT_DIR_NAME = 'knowledge_base';
-const KNOWLEDGE_BASE_DIR = path.resolve(process.cwd(), KNOWLEDGE_BASE_ROOT_DIR_NAME);
+// Adjusted path to be relative to this file, assuming knowledge_base is at project root
+const KNOWLEDGE_BASE_DIR = path.resolve(__dirname, '..', '..', KNOWLEDGE_BASE_ROOT_DIR_NAME);
 const SHARED_HANDLERS_DIR_NAME = '_shared_handlers';
 
 let indexedKnowledgeBase: KnowledgeBaseIndex | null = null;
@@ -98,10 +105,12 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
             const catInfoContent = await fs.readFile(catInfoPath, 'utf-8');
             const { data } = matter(catInfoContent);
             const catFm = data as TipFrontmatter;
-            if (catFm && catFm?.description) {
+            if (catFm?.description) {
                 categoryDescription = catFm.description;
             }
-        } catch (_e) { /* No _category_info.md or error parsing, use default description, prefix e with _ */ }
+        } catch {
+            /* No _category_info.md or error parsing, use default description. Error variable intentionally unused. */
+        }
 
         const tipFileEntries = await fs.readdir(categoryPath, { withFileTypes: true });
         for (const tipFileEntry of tipFileEntries) {
@@ -110,7 +119,7 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
             const fileContent = await fs.readFile(filePath, 'utf-8');
             const parsedFile = parseMarkdownTipFile(fileContent, filePath);
 
-            if (parsedFile && parsedFile.frontmatter?.title) {
+            if (parsedFile?.frontmatter?.title) {
               const fm = parsedFile.frontmatter;
               const baseName = path.basename(tipFileEntry.name, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_');
               const tipId = fm.id || `${categoryId}_${baseName}`;
@@ -146,8 +155,8 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
         }
       }
     }
-    categories.sort((a,b) => a.id.localeCompare(b.id));
-    allTips.sort((a,b) => a.id.localeCompare(b.id));
+    categories.sort((a: KnowledgeBaseIndex['categories'][0], b: KnowledgeBaseIndex['categories'][0]) => a.id.localeCompare(b.id));
+    allTips.sort((a: ScriptingTip, b: ScriptingTip) => a.id.localeCompare(b.id));
 
     indexedKnowledgeBase = { categories, tips: allTips, sharedHandlers };
     logger.info(`Knowledge base loading complete: ${categories.length} categories, ${allTips.length} scriptable tips, ${sharedHandlers.length} shared handlers.`);
@@ -159,8 +168,17 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
   return indexedKnowledgeBase;
 }
 
+// Exported function to allow explicit reloading
+export async function forceReloadKnowledgeBase(): Promise<KnowledgeBaseIndex> {
+  logger.info('Forcing knowledge base reload...');
+  indexedKnowledgeBase = null;
+  knowledgeBaseLoadPromise = null;
+  isLoadingKnowledgeBase = false; 
+  return getKnowledgeBase(); // This will trigger a fresh load
+}
+
 export async function getKnowledgeBase(): Promise<KnowledgeBaseIndex> {
-    if (indexedKnowledgeBase) {
+    if (indexedKnowledgeBase && !isLoadingKnowledgeBase) {
         return indexedKnowledgeBase;
     }
     if (isLoadingKnowledgeBase && knowledgeBaseLoadPromise) {
@@ -175,8 +193,11 @@ export async function getKnowledgeBase(): Promise<KnowledgeBaseIndex> {
 }
 
 export async function getScriptingTipsService(
-  input: { category?: KnowledgeCategory; searchTerm?: string; listCategories?: boolean }
+  input: GetScriptingTipsInput
 ): Promise<string> {
+  if (input.refreshDatabase) {
+    await forceReloadKnowledgeBase();
+  }
   const kb = await getKnowledgeBase();
 
   if (input.listCategories || (!input.category && !input.searchTerm)) {
@@ -190,19 +211,19 @@ export async function getScriptingTipsService(
   const results: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = []; // Changed to const
   const searchTermLower = input.searchTerm?.toLowerCase();
 
-  const tipsToSearch = input.category && kb.categories.find(c => c.id === input.category)
-    ? kb.tips.filter(t => t.category === input.category)
+  const tipsToSearch = input.category && kb.categories.find((c: { id: KnowledgeCategory }) => c.id === input.category)
+    ? kb.tips.filter((t: ScriptingTip) => t.category === input.category)
     : kb.tips;
 
   if (searchTermLower) {
-      const filteredTips = tipsToSearch.filter(tip =>
+      const filteredTips = tipsToSearch.filter((tip: ScriptingTip) =>
           tip.title.toLowerCase().includes(searchTermLower) ||
           tip.id.toLowerCase().includes(searchTermLower) ||
           tip.script.toLowerCase().includes(searchTermLower) || 
           tip.description?.toLowerCase().includes(searchTermLower) ||
-          tip.keywords?.some(k => k.toLowerCase().includes(searchTermLower))
+          tip.keywords?.some((k: string) => k.toLowerCase().includes(searchTermLower))
       );
-      const groupedByCat = filteredTips.reduce((acc, tip) => {
+      const groupedByCat = filteredTips.reduce((acc: Record<KnowledgeCategory, ScriptingTip[]>, tip: ScriptingTip) => {
           if (!acc[tip.category]) {
             acc[tip.category] = [];
           }
@@ -210,10 +231,10 @@ export async function getScriptingTipsService(
           return acc;
       }, {} as Record<KnowledgeCategory, ScriptingTip[]>);
       for (const catKey in groupedByCat) {
-          results.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey].sort((a,b) => a.title.localeCompare(b.title)) });
+          results.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey].sort((a: ScriptingTip, b: ScriptingTip) => a.title.localeCompare(b.title)) });
       }
   } else if (input.category) {
-      const tipsForCategory = kb.tips.filter(t => t.category === input.category).sort((a,b) => a.title.localeCompare(b.title));
+      const tipsForCategory = kb.tips.filter((t: ScriptingTip) => t.category === input.category).sort((a: ScriptingTip, b: ScriptingTip) => a.title.localeCompare(b.title));
       if (tipsForCategory.length > 0) {
           results.push({category: input.category, tips: tipsForCategory});
       }
@@ -223,10 +244,10 @@ export async function getScriptingTipsService(
     return `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
   }
 
-  return results.sort((a,b) => a.category.localeCompare(b.category)).map(catResult => {
-    const categoryTitle = catResult.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return results.sort((a: { category: KnowledgeCategory }, b: { category: KnowledgeCategory }) => a.category.localeCompare(b.category)).map((catResult: { category: KnowledgeCategory; tips: ScriptingTip[] }) => {
+    const categoryTitle = catResult.category.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
     const categoryHeader = `## Tips: ${categoryTitle}\n`;
-    const tipMarkdown = catResult.tips.map(tip => `
+    const tipMarkdown = catResult.tips.map((tip: ScriptingTip) => `
 ### ${tip.title}
 ${tip.description ? `*${tip.description}*\n` : ''}
 \`\`\`${tip.language}
@@ -239,4 +260,4 @@ ${tip.notes ? `**Note:**\n${tip.notes.split('\n').map(n => `> ${n}`).join('\n')}
     `).join('\n---\n');
     return categoryHeader + tipMarkdown;
   }).join('\n\n');
-} 
+}

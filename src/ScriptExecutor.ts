@@ -3,8 +3,8 @@ import { execFile, type ExecFileException } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
 import os from 'node:os';
-import { Logger } from './logger';
-import type { ScriptExecutionOptions, ScriptExecutionResult, ScriptExecutionError } from './types';
+import { Logger } from './logger.js';
+import type { ScriptExecutionOptions, ScriptExecutionResult, ScriptExecutionError } from './types.js';
 
 const execFileAsync = promisify(execFile);
 const logger = new Logger('ScriptExecutor');
