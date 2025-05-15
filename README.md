@@ -163,31 +163,6 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 -   Search for tips related to "clipboard":
     `{ "toolName": "get_scripting_tips", "input": { "searchTerm": "clipboard" } }`
 
-### 3. Other Available Tools
-
-This MCP server may also expose other general-purpose tools depending on the environment it's running in. Here's a summary of commonly available tools and their functions:
-
-*   **`codebase_search`**: Finds snippets of code from the codebase most relevant to a semantic search query. Can target specific directories.
-*   **`read_file`**: Reads the contents of a file, either a specific range of lines or the entire file (use with caution for large files).
-*   **`run_terminal_cmd`**: Proposes a terminal command to be run on behalf of the user. The user must approve the command. Can run in the background.
-*   **`list_dir`**: Lists the contents of a specified directory relative to the workspace root.
-*   **`grep_search`**: Performs fast, exact regex searches over text files using the `ripgrep` engine.
-*   **`edit_file`**: Proposes an edit to an existing file or creates a new file using a diff-like format.
-*   **`file_search`**: Performs a fast fuzzy search for files based on a partial file path or name.
-*   **`delete_file`**: Deletes a specified file.
-*   **`reapply`**: Calls a smarter model to reapply the last `edit_file` attempt if the initial application was not as expected. Use immediately after an `edit_file` call if the diff is incorrect.
-*   **`web_search`**: Searches the web for real-time information using a general web search engine.
-*   **`claude_code`**: A versatile multi-modal assistant for code, file, Git, and terminal operations via Claude CLI. Can perform complex multi-step tasks, file operations, code generation/analysis, Git workflows, and more. Requires a `workFolder` for context.
-*   **`write_to_terminal` (iTerm specific)**: Writes text to the active iTerm terminal, often used to run a command directly in iTerm.
-*   **`read_terminal_output` (iTerm specific)**: Reads a specified number of lines of output from the active iTerm terminal.
-*   **`send_control_character` (iTerm specific)**: Sends a control character (e.g., Control-C) to the active iTerm terminal.
-*   **`brave_web_search` (Brave Search specific)**: Performs a web search using the Brave Search API. Good for general queries, news, and articles.
-*   **`brave_local_search` (Brave Search specific)**: Searches for local businesses and places using Brave's Local Search API.
-*   **`filesystem_write_file`**: Creates a new file or completely overwrites an existing file with new content.
-*   **`filesystem_edit_file`**: Makes line-based edits to a text file by replacing exact line sequences.
-
-**Note:** The availability and exact behavior of some tools (especially those prefixed like `claude_code`, iTerm specific, Brave Search specific, or filesystem specific tools) might depend on the specific MCP client and environment configuration. The `execute_script` and `get_scripting_tips` tools are core to this `macos_automator` server.
-
 ## Key Use Cases & Examples
 
 -   **Application Control:**
