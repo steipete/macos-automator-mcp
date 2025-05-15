@@ -1,0 +1,53 @@
+{
+  "name": "@steipete/macos-automator-mcp",
+  "version": "0.1.0",
+  "description": "MCP Server to execute AppleScript and JXA on macOS.",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "macos-automator-mcp": "dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/server.ts",
+    "start": "node dist/server.js",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \\\"src/**/*.ts\\\" \\\"*.md\\\"",
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steipete/macos-automator-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "applescript",
+    "jxa",
+    "macos",
+    "automation"
+  ],
+  "author": "steipete",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steipete/macos-automator-mcp/issues"
+  },
+  "homepage": "https://github.com/steipete/macos-automator-mcp#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.3",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
