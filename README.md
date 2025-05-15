@@ -246,6 +246,74 @@ This allows for personalization and extension of the available automation script
 
 Contributions are welcome! Please submit issues and pull requests to the [GitHub repository](https://github.com/steipete/macos-automator-mcp).
 
+## Automation Capabilities
+
+This server provides powerful macOS automation capabilities through AppleScript and JavaScript for Automation (JXA). Here are some of the most useful examples:
+
+### Terminal Automation
+- **Run commands in new Terminal tabs:**
+  ```
+  { "knowledgeBaseScriptId": "terminal_app_run_command_new_tab", "inputData": { "command": "ls -la" } }
+  ```
+- **Execute commands with sudo and provide password securely**
+- **Capture command output for processing**
+
+### Browser Control
+- **Chrome/Safari automation:**
+  ```
+  { "knowledgeBaseScriptId": "chrome_open_url_new_tab_profile", "inputData": { "url": "https://example.com", "profileName": "Default" } }
+  ```
+  ```
+  { "knowledgeBaseScriptId": "safari_get_front_tab_url" }
+  ```
+- **Execute JavaScript in browser context:**
+  ```
+  { "knowledgeBaseScriptId": "chrome_execute_javascript", "inputData": { "javascript": "document.title" } }
+  ```
+- **Extract page content, manipulate forms, and automate workflows**
+- **Take screenshots of web pages**
+
+### System Interaction
+- **Toggle system settings (dark mode, volume, network):**
+  ```
+  { "knowledgeBaseScriptId": "systemsettings_toggle_dark_mode_ui" }
+  ```
+- **Get/set clipboard content:**
+  ```
+  { "knowledgeBaseScriptId": "system_clipboard_get_file_paths" }
+  ```
+- **Open/control system dialogs and alerts**
+- **Create and manage system notifications**
+
+### File Operations
+- **Create, move, and manipulate files/folders:**
+  ```
+  { "knowledgeBaseScriptId": "finder_create_new_folder_desktop", "inputData": { "folderName": "My Project" } }
+  ```
+- **Read and write text files:**
+  ```
+  { "knowledgeBaseScriptId": "fileops_read_text_file", "inputData": { "filePath": "~/Documents/notes.txt" } }
+  ```
+- **List and filter files in directories**
+- **Get file metadata and properties**
+
+### Application Integration
+- **Calendar/Reminders management:**
+  ```
+  { "knowledgeBaseScriptId": "calendar_create_event", "inputData": { "title": "Meeting", "startDate": "2023-06-01 10:00", "endDate": "2023-06-01 11:00" } }
+  ```
+- **Email automation with Mail.app:**
+  ```
+  { "knowledgeBaseScriptId": "mail_send_email_direct", "inputData": { "recipient": "user@example.com", "subject": "Hello", "body": "Message content" } }
+  ```
+- **Control music playback:**
+  ```
+  { "knowledgeBaseScriptId": "music_playback_controls", "inputData": { "action": "play" } }
+  ```
+- **Work with creative apps (Keynote, Pages, Numbers)**
+
+Use the `get_scripting_tips` tool to explore all available automation capabilities organized by category.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. 
