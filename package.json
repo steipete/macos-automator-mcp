@@ -14,6 +14,7 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\" \"*.md\"",
     "validate-kb": "tsx validator.ts",
+    "validate": "tsx validator.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
