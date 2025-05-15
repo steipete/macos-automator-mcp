@@ -2,6 +2,10 @@
 
 ![macOS Automator MCP Server](assets/logo.png)
 
+<a href="https://glama.ai/mcp/servers/@steipete/macos-automator-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@steipete/macos-automator-mcp/badge" alt="macOS Automator Server MCP server" />
+</a>
+
 ## Overview
 This project provides a Model Context Protocol (MCP) server, `macos_automator`, that allows execution of AppleScript and JavaScript for Automation (JXA) scripts on macOS. It features a knowledge base of pre-defined scripts accessible by ID and supports inline scripts, script files, and argument passing.
 The knowledge base is loaded lazily on first use for fast server startup.
@@ -318,4 +322,4 @@ Use the `get_scripting_tips` tool to explore all available automation capabiliti
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
