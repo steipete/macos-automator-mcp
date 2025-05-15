@@ -1,4 +1,5 @@
 {
+  "include": ["src/**/*"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
@@ -27,9 +28,9 @@
 
     /* Modules */
     "module": "NodeNext",
-    "rootDir": ".",
+    "rootDir": "src",
     "moduleResolution": "NodeNext",
-    "baseUrl": ".",
+    // "baseUrl": ".",
     // "rootDirs": [],
     // "typeRoots": [],
     // "types": [],
@@ -59,7 +60,7 @@
     // "noEmit": true,
     // "outFile": "./",
     "outDir": "dist",
-    "rootDirs": ["src", "scripts"],
+    // "rootDirs": ["src", "scripts"],
     // "removeComments": true,
     // "importHelpers": true,
     // "downlevelIteration": true,

@@ -1,12 +1,18 @@
 {
   "name": "@steipete/macos-automator-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP Server to execute AppleScript and JXA on macOS.",
   "type": "module",
   "main": "dist/server.js",
   "bin": {
     "macos-automator-mcp": "dist/server.js"
   },
+  "files": [
+    "dist/**/*",
+    "knowledge_base/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/server.ts",
