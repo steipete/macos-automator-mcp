@@ -76,3 +76,28 @@ Remember that scripts run on macOS require specific permissions:
 - Automation permissions for controlling applications
 - Accessibility permissions for UI scripting via System Events
 - Full Disk Access for certain file operations
+
+## Agent Operational Learnings and Debugging Strategies
+
+This section captures key operational strategies and debugging techniques for the agent (me) based on collaborative sessions.
+
+### Prioritizing Log Visibility for Debugging
+
+When an external tool or script (like AppleScript via `osascript`) returns cryptic errors, or when agent-generated code/substitutions might be faulty:
+
+1.  **Suspect Dynamic Content**: Issues often stem from the dynamic content being passed to the external tool (e.g., incorrect placeholder substitutions leading to syntax errors in the target language).
+2.  **Enable/Add Detailed Logging**: Prioritize enabling any built-in detailed logging features of the tool in question (e.g., `includeSubstitutionLogs: true` for this project's `execute_script` tool).
+3.  **Ensure Log Visibility**: If standard debug logging doesn't appear in the primary output channel the user is observing, attempt to modify the code to force critical diagnostic information (like step-by-step transformations, variable states, or the exact content being passed externally) into that main output. This might involve temporarily altering the structure of the success or error messages to include these logs.
+    *   **Confirm Restarts and Code Version**: For changes requiring server restarts (common in this project), leverage any features that confirm the new code is active. For example, the server startup timestamp and execution mode info appended to `get_scripting_tips` output helps verify that a restart was successful and the intended code version (e.g., TypeScript source via `tsx` vs. compiled `dist/server.js`) is running.
+
+### Iterative Simplification for Complex Patterns (e.g., Regex)
+
+If a complex pattern (like a regular expression) in code being generated or modified by the agent is not working as expected, and the cause isn't immediately obvious:
+
+1.  **Isolate the Pattern**: Identify the specific complex pattern (e.g., a regex for string replacement).
+2.  **Drastically Simplify**: Reduce the pattern to its most basic form that should still achieve a part of the goal or match a core component of the target string. (e.g., simplifying `/(?:["'])--MCP_INPUT:(\w+)(?:["'])/g` to `/--MCP_INPUT:/g` to test basic matching of the placeholder prefix).
+3.  **Test the Simple Form**: Verify if this simplified pattern works. If it does, the core string manipulation mechanism is likely sound.
+4.  **Incrementally Rebuild & Test**: Gradually add back elements of the original complexity (e.g., capture groups, character sets, quantifiers, lookarounds, backreferences like `\1`). Test at each incremental step to pinpoint which specific construct or combination introduces the failure. This process helped identify that `(?:["'])` was problematic in our placeholder regex, leading to a solution using a capturing group and a backreference like `/(["'])--MCP_INPUT:(\w+)\1/g`.
+5.  **Verify Replacement Logic**: Ensure that if the pattern involves capturing groups for use in a replacement, the replacement logic correctly utilizes these captures and produces the intended output format (e.g., `valueToAppleScriptLiteral` for AppleScript).
+
+This methodical approach is more effective than repeatedly trying minor variations of an already complex and failing pattern.
