@@ -1,12 +1,14 @@
 # macOS Automator MCP Server
 
 ## Overview
-This project provides a Model Context Protocol (MCP) server, `macos_automator`, that exposes a single tool (`execute_script`) to run AppleScript and JavaScript for Automation (JXA) scripts on macOS.
+This project provides a Model Context Protocol (MCP) server, `macos_automator`, that allows execution of AppleScript and JavaScript for Automation (JXA) scripts on macOS. It features a knowledge base of pre-defined scripts accessible by ID and supports inline scripts, script files, and argument passing.
+The knowledge base is loaded lazily on first use for fast server startup.
 
 ## Benefits
-- Execute AppleScript and JXA scripts remotely via the MCP.
+- Execute AppleScript/JXA scripts remotely via MCP.
+- Utilize a rich, extensible knowledge base of common macOS automation tasks.
 - Control macOS applications and system functions programmatically.
-- Integrate macOS automation into larger workflows.
+- Integrate macOS automation into larger AI-driven workflows.
 
 ## Prerequisites
 - Node.js (version >=18.0.0 recommended, see `package.json` engines).
@@ -48,67 +50,83 @@ Add the following configuration to your MCP client's `mcp.json` (or equivalent c
 }
 ```
 
-## Tool Provided: `execute_script`
+## Tools Provided
 
-Executes an AppleScript or JavaScript for Automation (JXA) script on macOS.
-The script can be provided as inline content or by specifying an absolute POSIX path to a script file on the server.
-Returns the standard output (stdout) of the script.
+### 1. `execute_script`
 
-SECURITY WARNING:
-- Executing arbitrary scripts carries inherent security risks. Ensure the source of scripts is trusted.
-- This tool can interact with ANY scriptable application, access the file system, and run shell commands via AppleScript's 'do shell script'.
+Executes an AppleScript or JavaScript for Automation (JXA) script on macOS. 
+Scripts can be provided as inline content (`scriptContent`), an absolute file path (`scriptPath`), or by referencing a script from the built-in knowledge base using its unique `knowledgeBaseScriptId`.
 
-MACOS PERMISSIONS (CRITICAL - SEE README.MD FOR FULL DETAILS):
-- The application running THIS MCP server (e.g., Terminal, Node.js app) requires explicit user permission.
-- Set in: System Settings > Privacy & Security > Automation (to control other apps like Finder, Safari, Mail).
-- Set in: System Settings > Privacy & Security > Accessibility (for UI scripting via "System Events").
-- These permissions must be granted ON THE MACOS MACHINE WHERE THIS SERVER IS RUNNING.
-- First-time attempts to control a new app may still trigger a macOS confirmation prompt.
+**Script Sources (mutually exclusive):**
+-   `scriptContent` (string): Raw script code.
+-   `scriptPath` (string): Absolute POSIX path to a script file (e.g., `.applescript`, `.scpt`, `.js`).
+-   `knowledgeBaseScriptId` (string): The ID of a pre-defined script from the server's knowledge base. Use the `get_scripting_tips` tool to discover available script IDs and their functionalities.
 
-LANGUAGE SUPPORT:
-- AppleScript (default): Powerful for controlling macOS applications and UI.
-- JavaScript for Automation (JXA): Use JavaScript syntax for macOS automation. Specify with 'language: "javascript"'.
+**Language Specification:**
+-   `language` (enum: 'applescript' | 'javascript', optional): Specify the language.
+    -   If using `knowledgeBaseScriptId`, the language is inferred from the knowledge base script.
+    -   If using `scriptContent` or `scriptPath` and `language` is omitted, it defaults to 'applescript'.
 
-SCRIPT ARGUMENTS (for scriptPath):
-- Arguments passed in the 'arguments' array are available to the script.
-- AppleScript: 'on run argv ... end run' (argv is a list of strings).
-- JXA: 'function run(argv) { ... }' (argv is an array of strings).
+**Passing Inputs to Scripts:**
+-   `arguments` (array of strings, optional): 
+    -   For `scriptPath`: Passed as standard arguments to the script's `on run argv` (AppleScript) or `run(argv)` (JXA) handler.
+    -   For `knowledgeBaseScriptId`: Used if the pre-defined script is designed to accept positional string arguments (e.g., replaces placeholders like `--MCP_ARG_1`, `--MCP_ARG_2`). Check the script's `argumentsPrompt` from `get_scripting_tips`.
+-   `inputData` (JSON object, optional): 
+    -   Primarily for `knowledgeBaseScriptId` scripts designed to accept named, structured inputs.
+    -   Values from this object replace placeholders in the script (e.g., `--MCP_INPUT:yourKeyName`). See `argumentsPrompt` from `get_scripting_tips`.
+    -   Values (strings, numbers, booleans, simple arrays/objects) are converted to their AppleScript literal equivalents.
 
-OUTPUT:
-- The result of the last evaluated expression in the script is returned as text.
-- Use 'useScriptFriendlyOutput: true' for '-ss' flag, which can provide more structured output for lists, etc.
+**Other Options:**
+-   `timeoutSeconds` (integer, optional, default: 30): Maximum execution time.
+-   `useScriptFriendlyOutput` (boolean, optional, default: false): Uses `osascript -ss` flag for potentially more structured output, especially for lists and records.
 
-EXAMPLES (AppleScript):
-1. Get current Safari URL:
-   { "scriptContent": "tell application \"Safari\" to get URL of front document" }
-2. Display a notification:
-   { "scriptContent": "display notification \"Task complete!\" with title \"MCP\"" }
-3. Get files on Desktop:
-   { "scriptContent": "tell application \"Finder\" to get name of every item of desktop" }
-4. Use script-friendly output for a list:
-   { "scriptContent": "return {\"item a\", \"item b\"}", "useScriptFriendlyOutput": true }
-5. Run a shell command:
-   { "scriptContent": "do shell script \"ls -la ~/Desktop\"" }
-6. Execute a script file with arguments:
-   { "scriptPath": "/Users/Shared/myscripts/greet.applescript", "arguments": ["Alice"] }
-   (greet.applescript: 'on run argv\n display dialog (\"Hello \" & item 1 of argv)\nend run')
+**SECURITY WARNING & MACOS PERMISSIONS:** (Same critical warnings as before about arbitrary script execution and macOS Automation/Accessibility permissions).
 
-EXAMPLES (JXA - set 'language: "javascript"'):
-1. Get Finder version:
-   { "scriptContent": "Application('Finder').version()", "language": "javascript" }
-2. Display a dialog:
-   { "scriptContent": "Application.currentApplication().includeStandardAdditions = true; Application.currentApplication().displayDialog('Hello from JXA!')", "language": "javascript" }
+**Examples:**
+-   (Existing examples for inline/file path remain relevant)
+-   **Using Knowledge Base Script by ID:**
+    ```json
+    {
+      "toolName": "execute_script",
+      "input": {
+        "knowledgeBaseScriptId": "safari_get_active_tab_url", // Example ID
+        "timeoutSeconds": 10
+      }
+    }
+    ```
+-   **Using Knowledge Base Script by ID with `inputData`:**
+    ```json
+    {
+      "toolName": "execute_script",
+      "input": {
+        "knowledgeBaseScriptId": "finder_create_folder_at_path", // Example ID
+        "inputData": {
+          "folderName": "New MCP Folder",
+          "parentPath": "~/Desktop"
+        }
+      }
+    }
+    ```
 
-### Arguments
+### 2. `get_scripting_tips`
 
-The `execute_script` tool accepts the following arguments (defined in `src/schemas.ts`):
+Retrieves AppleScript/JXA tips, examples, and runnable script details from the server's knowledge base. Useful for discovering available scripts, their functionalities, and how to use them with `execute_script` (especially `knowledgeBaseScriptId`).
 
--   `scriptContent` (string, optional): The raw AppleScript or JXA code to execute. Mutually exclusive with `scriptPath`.
--   `scriptPath` (string, optional): The absolute POSIX path to a script file (.scpt, .applescript, .js for JXA) on the server. Mutually exclusive with `scriptContent`.
--   `language` (enum: 'applescript' | 'javascript', optional, default: 'applescript'): The scripting language.
--   `arguments` (array of strings, optional, default: []): Arguments for script files.
--   `timeoutSeconds` (integer, optional, default: 30): Maximum execution time in seconds.
--   `useScriptFriendlyOutput` (boolean, optional, default: false): Use `osascript -ss` for script-friendly output.
+**Arguments:**
+-   `listCategories` (boolean, optional, default: false): If true, returns only the list of available knowledge base categories and their descriptions. Overrides other parameters.
+-   `category` (string, optional): Filters tips by a specific category ID (e.g., "finder", "safari").
+-   `searchTerm` (string, optional): Searches for a keyword within tip titles, descriptions, script content, keywords, or IDs.
+
+**Output:**
+-   Returns a Markdown formatted string containing the requested tips, including their title, description, script content, language, runnable ID (if applicable), argument prompts, and notes.
+
+**Example Usage:**
+-   List all categories:
+    `{ "toolName": "get_scripting_tips", "input": { "listCategories": true } }`
+-   Get tips for "safari" category:
+    `{ "toolName": "get_scripting_tips", "input": { "category": "safari" } }`
+-   Search for tips related to "clipboard":
+    `{ "toolName": "get_scripting_tips", "input": { "searchTerm": "clipboard" } }`
 
 ## Key Use Cases & Examples
 
@@ -139,7 +157,7 @@ The `execute_script` tool accepts the following arguments (defined in `src/schem
 
 ## For Developers
 
-For instructions on local development, setup, and contribution guidelines, please see [DEVELOPMENT.md](DEVELOPMENT.md).
+For detailed instructions on local development, project structure (including the `knowledge_base`), and contribution guidelines, please see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Contributing
 

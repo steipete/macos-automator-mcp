@@ -1,28 +1,51 @@
 // Zod input schemas 
 import { z } from 'zod';
 
+// Placeholder for KNOWN_CATEGORIES. In a real scenario, this might be populated dynamically
+// or from a more extensive list. For now, ensure it's not empty for z.enum.
+const KNOWN_CATEGORIES = ['basics', 'finder', 'electron_editors', 'safari', 'chrome'] as const;
+
+const DynamicScriptingKnowledgeCategoryEnum = KNOWN_CATEGORIES.length > 0 
+    ? z.enum(KNOWN_CATEGORIES) 
+    : z.string().describe("Category of AppleScript/JXA tips. No categories pre-defined if this is a plain string.");
+
 export const ExecuteScriptInputSchema = z.object({
   scriptContent: z.string().optional()
-    .describe("The raw AppleScript or JXA code to execute. Mutually exclusive with scriptPath."),
+    .describe("Raw AppleScript/JXA code. Mutually exclusive with scriptPath & knowledgeBaseScriptId."),
   scriptPath: z.string().optional()
-    .describe("The absolute POSIX path to a script file (.scpt, .applescript, .js for JXA) on the server. Mutually exclusive with scriptContent."),
-  language: z.enum(['applescript', 'javascript']).optional().default('applescript')
-    .describe("The scripting language to use. Defaults to 'applescript'."),
+    .describe("Absolute POSIX path to a script file. Mutually exclusive with scriptContent & knowledgeBaseScriptId."),
+  knowledgeBaseScriptId: z.string().optional()
+    .describe("Unique ID of a pre-defined script from the knowledge base. Mutually exclusive with scriptContent & scriptPath. Use 'get_scripting_tips' to find IDs."),
+  language: z.enum(['applescript', 'javascript']).optional()
+    .describe("Scripting language. Inferred if using knowledgeBaseScriptId. Defaults to 'applescript' if using scriptContent/scriptPath and not specified."),
   arguments: z.array(z.string()).optional().default([])
-    .describe("An array of string arguments to pass to the script file (primarily for scripts run via scriptPath). These are available in the 'on run argv' handler in AppleScript or 'run(argv)' function in JXA."),
+    .describe("String arguments for scriptPath scripts ('on run argv'). For knowledgeBaseScriptId, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
+  inputData: z.record(z.string(), z.any()).optional() 
+    .describe("JSON object providing named input data for knowledgeBaseScriptId scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
   timeoutSeconds: z.number().int().positive().optional().default(30)
-    .describe("Maximum execution time for the script in seconds. Defaults to 30 seconds."),
+    .describe("Script execution timeout in seconds."),
   useScriptFriendlyOutput: z.boolean().optional().default(false)
-    .describe("If true, instructs 'osascript' to use script-friendly output format (-ss flag). This can affect how lists and other data types are returned. Defaults to false (human-readable output).")
+    .describe("Use 'osascript -ss' for script-friendly output.")
 }).refine(data => {
-    return (data.scriptContent !== undefined && data.scriptPath === undefined) ||
-           (data.scriptContent === undefined && data.scriptPath !== undefined);
+    const sources = [data.scriptContent, data.scriptPath, data.knowledgeBaseScriptId].filter(s => s !== undefined && s !== null && s !== '');
+    return sources.length === 1;
 }, {
-    message: "Exactly one of 'scriptContent' or 'scriptPath' must be provided.",
-    path: ["scriptContent", "scriptPath"], // Indicate which fields are involved in the refinement
+    message: "Exactly one of 'scriptContent', 'scriptPath', or 'knowledgeBaseScriptId' must be provided and be non-empty.",
+    path: ["scriptContent", "scriptPath", "knowledgeBaseScriptId"],
 });
 
 export type ExecuteScriptInput = z.infer<typeof ExecuteScriptInputSchema>;
+
+export const GetScriptingTipsInputSchema = z.object({
+  category: DynamicScriptingKnowledgeCategoryEnum.optional()
+    .describe("Specific category of tips. If omitted with no searchTerm, lists all categories."),
+  searchTerm: z.string().optional()
+    .describe("Keyword to search within tip titles, content, keywords, or IDs."),
+  listCategories: z.boolean().optional().default(false)
+    .describe("If true, returns only the list of available categories and their descriptions. Overrides other parameters.")
+});
+
+export type GetScriptingTipsInput = z.infer<typeof GetScriptingTipsInputSchema>;
 
 // Output is always { content: [{ type: "text", text: "string_output" }] }
 // No specific Zod schema needed for output beyond what MCP SDK handles. 

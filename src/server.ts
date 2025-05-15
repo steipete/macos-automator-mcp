@@ -3,13 +3,37 @@ import { McpServer, McpError, ErrorCode } from '@modelcontextprotocol/sdk/server
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 // import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
 import { Logger } from './logger';
-import { ExecuteScriptInputSchema, type ExecuteScriptInput } from './schemas';
+import { ExecuteScriptInputSchema, type ExecuteScriptInput, GetScriptingTipsInputSchema, type GetScriptingTipsInput } from './schemas';
 import { ScriptExecutor } from './ScriptExecutor';
 import type { ScriptExecutionError }  from './types';
 import pkg from '../package.json' assert { type: 'json' }; // Import package.json
+import { getKnowledgeBase, getScriptingTipsService } from './services/knowledgeBaseService'; // Import KB functions
 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
+
+// Helper function for KB script argument substitution
+function escapeForAppleScriptStringLiteral(value: string): string {
+    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+}
+
+function valueToAppleScriptLiteral(value: unknown): string {
+    if (typeof value === 'string') {
+        return escapeForAppleScriptStringLiteral(value);
+    }
+    if (typeof value === 'number' || typeof value === 'boolean') {
+        return String(value);
+    }
+    if (Array.isArray(value)) {
+        return `{${value.map(v => valueToAppleScriptLiteral(v)).join(", ")}}`;
+    }
+    if (typeof value === 'object' && value !== null) {
+        const recordParts = Object.entries(value).map(([k, v]) => `${k}:${valueToAppleScriptLiteral(v)}`);
+        return `{${recordParts.join(", ")}}`;
+    }
+    logger.warn('Unsupported type for AppleScript literal conversion', { value });
+    return "\"__MCP_UNSUPPORTED_TYPE__\""; // Placeholder for unsupported types
+}
 
 async function main() {
   logger.info('Starting macos_automator MCP Server...');
@@ -25,110 +49,127 @@ async function main() {
 
   server.tool(
     'execute_script',
-    `Executes an AppleScript or JavaScript for Automation (JXA) script on macOS.
-    The script can be provided as inline content or by specifying an absolute POSIX path to a script file on the server.
-    Returns the standard output (stdout) of the script.
-
-    SECURITY WARNING:
-    - Executing arbitrary scripts carries inherent security risks. Ensure the source of scripts is trusted.
-    - This tool can interact with ANY scriptable application, access the file system, and run shell commands via AppleScript's 'do shell script'.
-
-    MACOS PERMISSIONS (CRITICAL - SEE README.MD FOR FULL DETAILS):
-    - The application running THIS MCP server (e.g., Terminal, Node.js app) requires explicit user permission.
-    - Set in: System Settings > Privacy & Security > Automation (to control other apps like Finder, Safari, Mail).
-    - Set in: System Settings > Privacy & Security > Accessibility (for UI scripting via "System Events").
-    - These permissions must be granted ON THE MACOS MACHINE WHERE THIS SERVER IS RUNNING.
-    - First-time attempts to control a new app may still trigger a macOS confirmation prompt.
-
-    LANGUAGE SUPPORT:
-    - AppleScript (default): Powerful for controlling macOS applications and UI.
-    - JavaScript for Automation (JXA): Use JavaScript syntax for macOS automation. Specify with 'language: "javascript"'.
-
-    SCRIPT ARGUMENTS (for scriptPath):
-    - Arguments passed in the 'arguments' array are available to the script.
-    - AppleScript: 'on run argv ... end run' (argv is a list of strings).
-    - JXA: 'function run(argv) { ... }' (argv is an array of strings).
-
-    OUTPUT:
-    - The result of the last evaluated expression in the script is returned as text.
-    - Use 'useScriptFriendlyOutput: true' for '-ss' flag, which can provide more structured output for lists, etc.
-
-    EXAMPLES (AppleScript):
-    1. Get current Safari URL:
-       { "scriptContent": "tell application "Safari" to get URL of front document" }
-    2. Display a notification:
-       { "scriptContent": "display notification "Task complete!" with title "MCP"" }
-    3. Get files on Desktop:
-       { "scriptContent": "tell application "Finder" to get name of every item of desktop" }
-    4. Use script-friendly output for a list:
-       { "scriptContent": "return {"item a", "item b"}", "useScriptFriendlyOutput": true }
-    5. Run a shell command:
-       { "scriptContent": "do shell script "ls -la ~/Desktop"" }
-    6. Execute a script file with arguments:
-       { "scriptPath": "/Users/Shared/myscripts/greet.applescript", "arguments": ["Alice"] }
-       (greet.applescript: 'on run argv\n display dialog ("Hello " & item 1 of argv)\nend run')
-
-    EXAMPLES (JXA - set 'language: "javascript"'):
-    1. Get Finder version:
-       { "scriptContent": "Application('Finder').version()", "language": "javascript" }
-    2. Display a dialog:
-       { "scriptContent": "Application.currentApplication().includeStandardAdditions = true; Application.currentApplication().displayDialog('Hello from JXA!')", "language": "javascript" }
-    `,
+    'Executes an AppleScript or JavaScript for Automation (JXA) script. ' +
+    'Can use inline content, a file path, or a script from the knowledge base via knowledgeBaseScriptId. ' +
+    'Use get_scripting_tips to discover available knowledge base scripts and their IDs. ' +
+    'Input arguments can be passed via \'arguments\' (for files or simple KB scripts) or \'inputData\' (for KB scripts expecting named inputs).',
     ExecuteScriptInputSchema,
     async (input: ExecuteScriptInput) => {
-      logger.info('execute_script tool called', { 
-        hasContent: !!input.scriptContent, 
-        path: input.scriptPath,
-        lang: input.language 
-      });
+      let scriptContentToExecute: string | undefined = input.scriptContent;
+      let scriptPathToExecute: string | undefined = input.scriptPath;
+      let languageToUse: 'applescript' | 'javascript' = input.language || 'applescript';
+      let finalArgumentsForScriptFile = input.arguments || [];
+
+      logger.debug('execute_script called with input:', input);
+
+      if (input.knowledgeBaseScriptId) {
+        const kb = await getKnowledgeBase();
+        const tip = kb.tips.find(t => t.id === input.knowledgeBaseScriptId);
+
+        if (!tip) {
+          throw new McpError(ErrorCode.NotFound, `Knowledge base script with ID '${input.knowledgeBaseScriptId}' not found.`);
+        }
+        if (!tip.script) {
+            throw new McpError(ErrorCode.InternalError, `Knowledge base script ID '${input.knowledgeBaseScriptId}' has no script content.`);
+        }
+
+        scriptContentToExecute = tip.script;
+        languageToUse = tip.language;
+        scriptPathToExecute = undefined; 
+        finalArgumentsForScriptFile = []; 
+
+        if (scriptContentToExecute) { 
+            if (input.inputData) {
+              for (const key in input.inputData) {
+                // eslint-disable-next-line no-useless-escape
+                const placeholder = new RegExp(`(?:\$\{inputData\.${key}\}|--MCP_INPUT:${key}\b)`, 'g');
+                scriptContentToExecute = scriptContentToExecute.replace(placeholder, valueToAppleScriptLiteral(input.inputData[key]));
+              }
+            }
+            if (input.arguments && input.arguments.length > 0) {
+                for (let i = 0; i < input.arguments.length; i++) {
+                    // eslint-disable-next-line no-useless-escape
+                    const placeholder = new RegExp(`(?:\$\{arguments\[${i}\]\}|--MCP_ARG_${i+1}\b)`, 'g');
+                    scriptContentToExecute = scriptContentToExecute.replace(placeholder, valueToAppleScriptLiteral(input.arguments[i]));
+                }
+            }
+        }
+        logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
+      } else if (input.scriptPath) {
+        // File path existence check is now within ScriptExecutor
+        // No specific action here, path is passed to executor
+      } else if (input.scriptContent) {
+        // Content is directly from input
+      } else {
+        throw new McpError(ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID). This should be caught by Zod schema refinement.");
+      }
+      
+      if (!input.knowledgeBaseScriptId && input.language) {
+          languageToUse = input.language;
+      } else if (!input.knowledgeBaseScriptId && !input.language) {
+          languageToUse = 'applescript';
+      }
 
       try {
         const result = await scriptExecutor.execute(
-          { content: input.scriptContent, path: input.scriptPath },
+          { content: scriptContentToExecute, path: scriptPathToExecute },
           {
-            language: input.language,
-            timeoutMs: input.timeoutSeconds * 1000,
-            useScriptFriendlyOutput: input.useScriptFriendlyOutput,
-            arguments: input.arguments,
+            language: languageToUse,
+            timeoutMs: (input.timeoutSeconds || 30) * 1000,
+            useScriptFriendlyOutput: input.useScriptFriendlyOutput || false,
+            arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [], 
           }
         );
-        logger.info('Script executed successfully', { stdoutLength: result.stdout.length, stderrLength: result.stderr.length });
+        
         if (result.stderr) {
-          // Log stderr as a warning even on success, as it might contain script warnings
-           logger.warn('Script produced stderr output on success', { stderr: result.stderr });
+           logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
         }
-        return {
-          content: [{ type: 'text', text: result.stdout }],
-        };
-      } catch (error: unknown) { // Changed from any to unknown
-        const execError = error as ScriptExecutionError;
-        logger.error('Error in execute_script tool handler', {
-          message: execError.message,
-          name: execError.name,
-          isTimeout: execError.isTimeout,
-          stdout: execError.stdout, // Keep stdout for potential debugging info
-          stderr: execError.stderr,
-        });
+        return { content: [{ type: 'text', text: result.stdout }] };
 
-        // ZodErrors are typically caught by the MCP SDK layer if schema validation fails before tool execution.
-        // This check is more for internal robustness if a ZodError instance were to be thrown from ScriptExecutor for some reason.
-        if (execError.name === "ZodError") { 
-          throw new McpError(ErrorCode.InvalidParams, `Input validation error: ${execError.message}`);
-        }
+      } catch (error: unknown) {
+        const execError = error as ScriptExecutionError;
+        let baseErrorMessage = `Script execution failed. `;
+        
         if (execError.name === "UnsupportedPlatformError") {
-          throw new McpError(ErrorCode.NotSupported, execError.message);
+            throw new McpError(ErrorCode.NotSupported, execError.message);
         }
         if (execError.name === "ScriptFileAccessError") {
             throw new McpError(ErrorCode.NotFound, execError.message);
         }
         if (execError.isTimeout) {
-          throw new McpError(ErrorCode.Timeout, `Script execution timed out after ${input.timeoutSeconds} seconds.`);
+             throw new McpError(ErrorCode.Timeout, `Script execution timed out after ${input.timeoutSeconds || 30} seconds.`);
         }
 
-        const stderrMessage = execError.stderr?.trim();
-        const execErrorMessage = execError.message || 'No specific error message from script.';
-        const errorMessage = `Script execution failed. ${stderrMessage ? `Error details: ${stderrMessage}` : execErrorMessage}`;
-        throw new McpError(ErrorCode.InternalError, errorMessage);
+        baseErrorMessage += execError.stderr?.trim() ? `Details: ${execError.stderr.trim()}` : (execError.message || 'No specific error message from script.');
+        
+        let finalErrorMessage = baseErrorMessage;
+        const permissionErrorPattern = /Not authorized|access for assistive devices is disabled|errAEEventNotPermitted|errAEAccessDenied|-1743|-10004/i;
+        const likelyPermissionError = execError.stderr && permissionErrorPattern.test(execError.stderr);
+        // Sometimes exit code 1 with no stderr can also be a silent permission issue
+        const possibleSilentPermissionError = execError.exitCode === 1 && !execError.stderr?.trim(); 
+
+        if (likelyPermissionError || possibleSilentPermissionError) {
+            finalErrorMessage = `${baseErrorMessage}\n\nPOSSIBLE PERMISSION ISSUE: Ensure the application running this server (e.g., Terminal, Node) has required permissions in 'System Settings > Privacy & Security > Automation' and 'Accessibility'. See README.md. The target application for the script may also need specific permissions.`;
+        }
+        throw new McpError(ErrorCode.InternalError, finalErrorMessage);
+      }
+    }
+  );
+
+  // ADD THE NEW TOOL get_scripting_tips HERE
+  server.tool(
+    'get_scripting_tips',
+    'Retrieves AppleScript/JXA tips from the knowledge base. Can list categories, get tips by category, or search.',
+    GetScriptingTipsInputSchema,
+    async (input: GetScriptingTipsInput) => {
+      logger.info('get_scripting_tips tool called', input);
+      try {
+        const tipsMarkdown = await getScriptingTipsService(input);
+        return { content: [{ type: 'markdown', text: tipsMarkdown }] };
+      } catch (e: unknown) {
+        const error = e as Error;
+        logger.error('Error in get_scripting_tips tool handler', { message: error.message });
+        throw new McpError(ErrorCode.InternalError, `Failed to retrieve scripting tips: ${error.message}`);
       }
     }
   );

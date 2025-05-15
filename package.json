@@ -34,6 +34,7 @@
   "homepage": "https://github.com/steipete/macos-automator-mcp#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.3",
+    "gray-matter": "^4.0.3",
     "zod": "^3.24.4"
   },
   "devDependencies": {

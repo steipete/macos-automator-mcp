@@ -73,7 +73,7 @@ export class ScriptExecutor {
       const stdoutString = stdout.toString();
       const stderrString = stderr.toString();
 
-      if (stderrString && stderrString.trim()) {
+      if (stderrString?.trim()) {
         logger.warn('osascript produced stderr output on successful execution', { stderr: stderrString.trim() });
       }
       return { stdout: stdoutString.trim(), stderr: stderrString.trim() };
