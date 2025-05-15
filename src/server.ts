@@ -21,10 +21,15 @@ import { z } from 'zod';
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
 
-// Helper function for KB script argument substitution
+// Helper functions for KB script argument substitution
 function escapeForAppleScriptStringLiteral(value: string): string {
     return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
+
+// Helper to escape special characters in regex patterns
+// function escapeRegExp(string: string): string { // This function is no longer used
+//     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// }
 
 function valueToAppleScriptLiteral(value: unknown): string {
     if (typeof value === 'string') {
@@ -116,21 +121,61 @@ async function main() {
         scriptPathToExecute = undefined; 
         finalArgumentsForScriptFile = []; 
 
-        if (scriptContentToExecute) { 
-            if (input.inputData) {
-              for (const key in input.inputData) {
-                // eslint-disable-next-line no-useless-escape
-                const placeholder = new RegExp(`(?:\$\{inputData\.${key}\}|--MCP_INPUT:${key}\b)`, 'g');
-                scriptContentToExecute = scriptContentToExecute.replace(placeholder, valueToAppleScriptLiteral(input.inputData[key]));
-              }
-            }
-            if (input.arguments && input.arguments.length > 0) {
-                for (let i = 0; i < input.arguments.length; i++) {
-                    // eslint-disable-next-line no-useless-escape
-                    const placeholder = new RegExp(`(?:\$\{arguments\[${i}\]\}|--MCP_ARG_${i+1}\b)`, 'g');
-                    scriptContentToExecute = scriptContentToExecute.replace(placeholder, valueToAppleScriptLiteral(input.arguments[i]));
-                }
-            }
+        if (scriptContentToExecute) {
+            // Define placeholder patterns carefully to match placeholders in script templates.
+            // These typically appear as quoted strings in the templates for safety.
+            // Example from KB: return myHandler("--MCP_INPUT:name", "--MCP_ARG_1")
+
+            // JS-style ${inputData.key}
+            const jsInputDataRegex = /\\$\\{inputData\\.(\\w+)\\}/g;
+            scriptContentToExecute = scriptContentToExecute.replace(jsInputDataRegex, (match, keyName) => {
+                return input.inputData && keyName in input.inputData
+                    ? valueToAppleScriptLiteral(input.inputData[keyName])
+                    : "missing value"; // Bare keyword
+            });
+
+            // JS-style ${arguments[N]}
+            const jsArgumentsRegex = /\\$\\{arguments\\[(\\d+)\\]\\}/g;
+            scriptContentToExecute = scriptContentToExecute.replace(jsArgumentsRegex, (match, indexStr) => {
+                const index = Number.parseInt(indexStr, 10);
+                return input.arguments && index >= 0 && index < input.arguments.length
+                    ? valueToAppleScriptLiteral(input.arguments[index])
+                    : "missing value"; // Bare keyword
+            });
+            
+            // Quoted "--MCP_INPUT:keyName" (handles single or double quotes around the placeholder)
+            const quotedMcpInputRegex = /(?:["'])--MCP_INPUT:(\\w+)(?:["'])/g;
+            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpInputRegex, (match, keyName) => {
+                 return input.inputData && keyName in input.inputData
+                    ? valueToAppleScriptLiteral(input.inputData[keyName])
+                    : "missing value"; // Bare keyword
+            });
+
+            // Bare --MCP_INPUT:keyName (if they appear unquoted in the template)
+            const bareMcpInputRegex = /--MCP_INPUT:(\\w+)\\b/g;
+            scriptContentToExecute = scriptContentToExecute.replace(bareMcpInputRegex, (match, keyName) => {
+                 return input.inputData && keyName in input.inputData
+                    ? valueToAppleScriptLiteral(input.inputData[keyName])
+                    : "missing value"; // Bare keyword
+            });
+
+            // Quoted "--MCP_ARG_N" (handles single or double quotes)
+            const quotedMcpArgRegex = /(?:["'])--MCP_ARG_(\\d+)(?:["'])/g;
+            scriptContentToExecute = scriptContentToExecute.replace(quotedMcpArgRegex, (match, argNumStr) => {
+                const argIndex = Number.parseInt(argNumStr, 10) - 1;
+                return input.arguments && argIndex >= 0 && argIndex < input.arguments.length
+                    ? valueToAppleScriptLiteral(input.arguments[argIndex])
+                    : "missing value"; // Bare keyword
+            });
+
+            // Bare --MCP_ARG_N
+            const bareMcpArgRegex = /--MCP_ARG_(\\d+)\\b/g;
+            scriptContentToExecute = scriptContentToExecute.replace(bareMcpArgRegex, (match, argNumStr) => {
+                const argIndex = Number.parseInt(argNumStr, 10) - 1;
+                return input.arguments && argIndex >= 0 && argIndex < input.arguments.length
+                    ? valueToAppleScriptLiteral(input.arguments[argIndex])
+                    : "missing value"; // Bare keyword
+            });
         }
         logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
       } else if (input.scriptPath) {
@@ -230,7 +275,7 @@ async function main() {
   // ADD THE NEW TOOL get_scripting_tips HERE
   server.tool(
     'get_scripting_tips',
-    'Retrieves AppleScript/JXA tips from the knowledge base. Can list categories, get tips by category, or search.',
+    'Retrieves AppleScript/JXA tips from the knowledge base. Can list categories, get tips by category, or search. Includes a `refreshDatabase` option (boolean) to force a reload of the knowledge base, useful during development.',
     GetScriptingTipsInputShape,
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);
