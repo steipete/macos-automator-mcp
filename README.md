@@ -1,5 +1,7 @@
 # macOS Automator MCP Server
 
+![macOS Automator MCP Server](assets/logo.png)
+
 ## Overview
 This project provides a Model Context Protocol (MCP) server, `macos_automator`, that allows execution of AppleScript and JavaScript for Automation (JXA) scripts on macOS. It features a knowledge base of pre-defined scripts accessible by ID and supports inline scripts, script files, and argument passing.
 The knowledge base is loaded lazily on first use for fast server startup.
