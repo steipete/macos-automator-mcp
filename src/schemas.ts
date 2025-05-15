@@ -11,17 +11,17 @@ const DynamicScriptingKnowledgeCategoryEnum = z.string()
 
 export const ExecuteScriptInputSchema = z.object({
   scriptContent: z.string().optional()
-    .describe("Raw AppleScript/JXA code. Mutually exclusive with scriptPath & knowledgeBaseScriptId."),
+    .describe("Raw AppleScript/JXA code. Mutually exclusive with scriptPath & kbScriptId."),
   scriptPath: z.string().optional()
-    .describe("Absolute POSIX path to a script file. Mutually exclusive with scriptContent & knowledgeBaseScriptId."),
-  knowledgeBaseScriptId: z.string().optional()
+    .describe("Absolute POSIX path to a script file. Mutually exclusive with scriptContent & kbScriptId."),
+  kbScriptId: z.string().optional()
     .describe("Unique ID of a pre-defined script from the knowledge base. Mutually exclusive with scriptContent & scriptPath. Use 'get_scripting_tips' to find IDs."),
   language: z.enum(['applescript', 'javascript']).optional()
-    .describe("Scripting language. Inferred if using knowledgeBaseScriptId. Defaults to 'applescript' if using scriptContent/scriptPath and not specified."),
+    .describe("Scripting language. Inferred if using kbScriptId. Defaults to 'applescript' if using scriptContent/scriptPath and not specified."),
   arguments: z.array(z.string()).optional().default([])
-    .describe("String arguments for scriptPath scripts ('on run argv'). For knowledgeBaseScriptId, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
+    .describe("String arguments for scriptPath scripts ('on run argv'). For kbScriptId, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
   inputData: z.record(z.string(), z.any()).optional() 
-    .describe("JSON object providing named input data for knowledgeBaseScriptId scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
+    .describe("JSON object providing named input data for kbScriptId scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
   timeoutSeconds: z.number().int().positive().optional().default(30)
     .describe("Script execution timeout in seconds."),
   useScriptFriendlyOutput: z.boolean().optional().default(false)
@@ -31,11 +31,11 @@ export const ExecuteScriptInputSchema = z.object({
   includeSubstitutionLogs: z.boolean().optional().default(false)
     .describe("If true, detailed logs of placeholder substitutions will be included in the output.")
 }).refine(data => {
-    const sources = [data.scriptContent, data.scriptPath, data.knowledgeBaseScriptId].filter(s => s !== undefined && s !== null && s !== '');
+    const sources = [data.scriptContent, data.scriptPath, data.kbScriptId].filter(s => s !== undefined && s !== null && s !== '');
     return sources.length === 1;
 }, {
-    message: "Exactly one of 'scriptContent', 'scriptPath', or 'knowledgeBaseScriptId' must be provided and be non-empty.",
-    path: ["scriptContent", "scriptPath", "knowledgeBaseScriptId"],
+    message: "Exactly one of 'scriptContent', 'scriptPath', or 'kbScriptId' must be provided and be non-empty.",
+    path: ["scriptContent", "scriptPath", "kbScriptId"],
 });
 
 export type ExecuteScriptInput = z.infer<typeof ExecuteScriptInputSchema>;

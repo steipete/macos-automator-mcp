@@ -87,24 +87,24 @@ Alternatively, for development or if you prefer to run the server directly from 
 ### 1. `execute_script`
 
 Executes an AppleScript or JavaScript for Automation (JXA) script on macOS. 
-Scripts can be provided as inline content (`scriptContent`), an absolute file path (`scriptPath`), or by referencing a script from the built-in knowledge base using its unique `knowledgeBaseScriptId`.
+Scripts can be provided as inline content (`scriptContent`), an absolute file path (`scriptPath`), or by referencing a script from the built-in knowledge base using its unique `kbScriptId`.
 
 **Script Sources (mutually exclusive):**
 -   `scriptContent` (string): Raw script code.
 -   `scriptPath` (string): Absolute POSIX path to a script file (e.g., `.applescript`, `.scpt`, `.js`).
--   `knowledgeBaseScriptId` (string): The ID of a pre-defined script from the server's knowledge base. Use the `get_scripting_tips` tool to discover available script IDs and their functionalities.
+-   `kbScriptId` (string): The ID of a pre-defined script from the server's knowledge base. Use the `get_scripting_tips` tool to discover available script IDs and their functionalities.
 
 **Language Specification:**
 -   `language` (enum: 'applescript' | 'javascript', optional): Specify the language.
-    -   If using `knowledgeBaseScriptId`, the language is inferred from the knowledge base script.
+    -   If using `kbScriptId`, the language is inferred from the knowledge base script.
     -   If using `scriptContent` or `scriptPath` and `language` is omitted, it defaults to 'applescript'.
 
 **Passing Inputs to Scripts:**
 -   `arguments` (array of strings, optional): 
     -   For `scriptPath`: Passed as standard arguments to the script's `on run argv` (AppleScript) or `run(argv)` (JXA) handler.
-    -   For `knowledgeBaseScriptId`: Used if the pre-defined script is designed to accept positional string arguments (e.g., replaces placeholders like `--MCP_ARG_1`, `--MCP_ARG_2`). Check the script's `argumentsPrompt` from `get_scripting_tips`.
+    -   For `kbScriptId`: Used if the pre-defined script is designed to accept positional string arguments (e.g., replaces placeholders like `--MCP_ARG_1`, `--MCP_ARG_2`). Check the script's `argumentsPrompt` from `get_scripting_tips`.
 -   `inputData` (JSON object, optional): 
-    -   Primarily for `knowledgeBaseScriptId` scripts designed to accept named, structured inputs.
+    -   Primarily for `kbScriptId` scripts designed to accept named, structured inputs.
     -   Values from this object replace placeholders in the script (e.g., `--MCP_INPUT:yourKeyName`). See `argumentsPrompt` from `get_scripting_tips`.
     -   Values (strings, numbers, booleans, simple arrays/objects) are converted to their AppleScript literal equivalents.
 
@@ -123,7 +123,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
     {
       "toolName": "execute_script",
       "input": {
-        "knowledgeBaseScriptId": "safari_get_active_tab_url",
+        "kbScriptId": "safari_get_active_tab_url",
         "timeoutSeconds": 10
       }
     }
@@ -133,7 +133,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
     {
       "toolName": "execute_script",
       "input": {
-        "knowledgeBaseScriptId": "finder_create_folder_at_path",
+        "kbScriptId": "finder_create_folder_at_path",
         "inputData": {
           "folderName": "New MCP Folder",
           "parentPath": "~/Desktop"
@@ -144,7 +144,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
 
 ### 2. `get_scripting_tips`
 
-Retrieves AppleScript/JXA tips, examples, and runnable script details from the server's knowledge base. Useful for discovering available scripts, their functionalities, and how to use them with `execute_script` (especially `knowledgeBaseScriptId`).
+Retrieves AppleScript/JXA tips, examples, and runnable script details from the server's knowledge base. Useful for discovering available scripts, their functionalities, and how to use them with `execute_script` (especially `kbScriptId`).
 
 **Arguments:**
 -   `listCategories` (boolean, optional, default: false): If true, returns only the list of available knowledge base categories and their descriptions. Overrides other parameters.
@@ -192,7 +192,7 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 
 -   `KB_PARSING`: Controls when the knowledge base (script tips) is parsed.
     -   Values:
-        -   `lazy` (default): The knowledge base is parsed on the first request to `get_scripting_tips` or when a `knowledgeBaseScriptId` is used in `execute_script`. This allows for faster server startup.
+        -   `lazy` (default): The knowledge base is parsed on the first request to `get_scripting_tips` or when a `kbScriptId` is used in `execute_script`. This allows for faster server startup.
         -   `eager`: The knowledge base is parsed when the server starts up. This may slightly increase startup time but ensures the KB is immediately available and any parsing errors are caught early.
     -   Example (when running via `start.sh` or similar):
         ```bash
@@ -253,7 +253,7 @@ This server provides powerful macOS automation capabilities through AppleScript 
 ### Terminal Automation
 - **Run commands in new Terminal tabs:**
   ```
-  { "knowledgeBaseScriptId": "terminal_app_run_command_new_tab", "inputData": { "command": "ls -la" } }
+  { "kbScriptId": "terminal_app_run_command_new_tab", "inputData": { "command": "ls -la" } }
   ```
 - **Execute commands with sudo and provide password securely**
 - **Capture command output for processing**
@@ -261,14 +261,14 @@ This server provides powerful macOS automation capabilities through AppleScript 
 ### Browser Control
 - **Chrome/Safari automation:**
   ```
-  { "knowledgeBaseScriptId": "chrome_open_url_new_tab_profile", "inputData": { "url": "https://example.com", "profileName": "Default" } }
+  { "kbScriptId": "chrome_open_url_new_tab_profile", "inputData": { "url": "https://example.com", "profileName": "Default" } }
   ```
   ```
-  { "knowledgeBaseScriptId": "safari_get_front_tab_url" }
+  { "kbScriptId": "safari_get_front_tab_url" }
   ```
 - **Execute JavaScript in browser context:**
   ```
-  { "knowledgeBaseScriptId": "chrome_execute_javascript", "inputData": { "javascript": "document.title" } }
+  { "kbScriptId": "chrome_execute_javascript", "inputData": { "javascript": "document.title" } }
   ```
 - **Extract page content, manipulate forms, and automate workflows**
 - **Take screenshots of web pages**
@@ -276,11 +276,11 @@ This server provides powerful macOS automation capabilities through AppleScript 
 ### System Interaction
 - **Toggle system settings (dark mode, volume, network):**
   ```
-  { "knowledgeBaseScriptId": "systemsettings_toggle_dark_mode_ui" }
+  { "kbScriptId": "systemsettings_toggle_dark_mode_ui" }
   ```
 - **Get/set clipboard content:**
   ```
-  { "knowledgeBaseScriptId": "system_clipboard_get_file_paths" }
+  { "kbScriptId": "system_clipboard_get_file_paths" }
   ```
 - **Open/control system dialogs and alerts**
 - **Create and manage system notifications**
@@ -288,11 +288,11 @@ This server provides powerful macOS automation capabilities through AppleScript 
 ### File Operations
 - **Create, move, and manipulate files/folders:**
   ```
-  { "knowledgeBaseScriptId": "finder_create_new_folder_desktop", "inputData": { "folderName": "My Project" } }
+  { "kbScriptId": "finder_create_new_folder_desktop", "inputData": { "folderName": "My Project" } }
   ```
 - **Read and write text files:**
   ```
-  { "knowledgeBaseScriptId": "fileops_read_text_file", "inputData": { "filePath": "~/Documents/notes.txt" } }
+  { "kbScriptId": "fileops_read_text_file", "inputData": { "filePath": "~/Documents/notes.txt" } }
   ```
 - **List and filter files in directories**
 - **Get file metadata and properties**
@@ -300,15 +300,15 @@ This server provides powerful macOS automation capabilities through AppleScript 
 ### Application Integration
 - **Calendar/Reminders management:**
   ```
-  { "knowledgeBaseScriptId": "calendar_create_event", "inputData": { "title": "Meeting", "startDate": "2023-06-01 10:00", "endDate": "2023-06-01 11:00" } }
+  { "kbScriptId": "calendar_create_event", "inputData": { "title": "Meeting", "startDate": "2023-06-01 10:00", "endDate": "2023-06-01 11:00" } }
   ```
 - **Email automation with Mail.app:**
   ```
-  { "knowledgeBaseScriptId": "mail_send_email_direct", "inputData": { "recipient": "user@example.com", "subject": "Hello", "body": "Message content" } }
+  { "kbScriptId": "mail_send_email_direct", "inputData": { "recipient": "user@example.com", "subject": "Hello", "body": "Message content" } }
   ```
 - **Control music playback:**
   ```
-  { "knowledgeBaseScriptId": "music_playback_controls", "inputData": { "action": "play" } }
+  { "kbScriptId": "music_playback_controls", "inputData": { "action": "play" } }
   ```
 - **Work with creative apps (Keynote, Pages, Numbers)**
 
