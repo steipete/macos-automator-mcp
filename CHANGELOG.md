@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4 - 2025-05-15
+- Version bump to resolve npm versioning conflict.
+
 ## 0.1.3 - 2025-05-15
 - Fix CLI symlink start: resolve real paths to ensure server starts when invoked via npx or global install.
 
