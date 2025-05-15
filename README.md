@@ -109,6 +109,7 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
 **Other Options:**
 -   `timeoutSeconds` (integer, optional, default: 30): Maximum execution time.
 -   `useScriptFriendlyOutput` (boolean, optional, default: false): Uses `osascript -ss` flag for potentially more structured output, especially for lists and records.
+-   `includeExecutedScriptInOutput` (boolean, optional, default: false): If true, the output will include the full script content (after any placeholder substitutions for knowledge base scripts) or the script path that was executed. This is appended as an additional text part in the output content array.
 
 **SECURITY WARNING & MACOS PERMISSIONS:** (Same critical warnings as before about arbitrary script execution and macOS Automation/Accessibility permissions).
 
@@ -184,6 +185,24 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 -   `LOG_LEVEL`: Set the logging level for the server.
     -   Values: `DEBUG`, `INFO`, `WARN`, `ERROR`
     -   Example: `LOG_LEVEL=DEBUG npx @steipete/macos-automator-mcp@latest`
+
+-   `KB_PARSING`: Controls when the knowledge base (script tips) is parsed.
+    -   Values:
+        -   `lazy` (default): The knowledge base is parsed on the first request to `get_scripting_tips` or when a `knowledgeBaseScriptId` is used in `execute_script`. This allows for faster server startup.
+        -   `eager`: The knowledge base is parsed when the server starts up. This may slightly increase startup time but ensures the KB is immediately available and any parsing errors are caught early.
+    -   Example (when running via `start.sh` or similar):
+        ```bash
+        KB_PARSING=eager ./start.sh
+        ```
+    -   Example (when configuring via an MCP runner that supports `env`, like `mcp-agentify`):
+        ```json
+        {
+          "env": {
+            "LOG_LEVEL": "INFO",
+            "KB_PARSING": "eager"
+          }
+        }
+        ```
 
 ## For Developers
 
