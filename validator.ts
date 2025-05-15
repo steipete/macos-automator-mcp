@@ -234,6 +234,33 @@ async function validateSharedHandlerFile(filePath: string): Promise<void> {
 }
 
 
+// Helper function to recursively validate tip files in a directory
+async function validateTipFilesRecursively(
+  currentPath: string,
+  categoryId: string,
+  recursive: boolean = true
+): Promise<void> {
+  try {
+    const entries = await fs.readdir(currentPath, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const entryPath = path.join(currentPath, entry.name);
+      
+      if (entry.isDirectory() && recursive) {
+        // Recursively validate files in subdirectory (skip _directories)
+        if (!entry.name.startsWith('_')) {
+          await validateTipFilesRecursively(entryPath, categoryId);
+        }
+      } else if (entry.isFile() && entry.name.endsWith('.md') && !entry.name.startsWith('_')) {
+        // Validate markdown file
+        await validateTipFile(entryPath, categoryId);
+      }
+    }
+  } catch (error) {
+    logError(currentPath, `Failed to read directory: ${(error as Error).message}`);
+  }
+}
+
 async function validateKnowledgeBase(): Promise<void> {
   console.info(`Validating knowledge base in: ${KNOWLEDGE_BASE_DIR}`);
   try {
@@ -254,7 +281,6 @@ async function validateKnowledgeBase(): Promise<void> {
             continue;
         }
 
-
         // Validate _category_info.md if it exists
         const catInfoPath = path.join(categoryPath, '_category_info.md');
         try {
@@ -269,13 +295,8 @@ async function validateKnowledgeBase(): Promise<void> {
             logWarning(categoryPath, "_category_info.md not found or not readable. Category description will be default.");
         }
 
-
-        const tipFileEntries = await fs.readdir(categoryPath, { withFileTypes: true });
-        for (const tipFileEntry of tipFileEntries) {
-          if (tipFileEntry.isFile() && tipFileEntry.name.endsWith('.md') && !tipFileEntry.name.startsWith('_')) {
-            await validateTipFile(path.join(categoryPath, tipFileEntry.name), categoryId);
-          }
-        }
+        // Validate tip files recursively
+        await validateTipFilesRecursively(categoryPath, categoryId);
       }
     }
   } catch (error: unknown) {
