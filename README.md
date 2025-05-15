@@ -147,6 +147,7 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 -   `listCategories` (boolean, optional, default: false): If true, returns only the list of available knowledge base categories and their descriptions. Overrides other parameters.
 -   `category` (string, optional): Filters tips by a specific category ID (e.g., "finder", "safari").
 -   `searchTerm` (string, optional): Searches for a keyword within tip titles, descriptions, script content, keywords, or IDs.
+-   `refreshDatabase` (boolean, optional, default: false): If true, forces a reload of the entire knowledge base from disk before processing the request. This is useful during development if you are actively modifying knowledge base files and want to ensure the latest versions are used without restarting the server.
 
 **Output:**
 -   Returns a Markdown formatted string containing the requested tips, including their title, description, script content, language, runnable ID (if applicable), argument prompts, and notes.
@@ -207,6 +208,36 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 ## For Developers
 
 For detailed instructions on local development, project structure (including the `knowledge_base`), and contribution guidelines, please see [DEVELOPMENT.md](DEVELOPMENT.md).
+
+## Development
+
+See [DEVELOPMENT.md](./DEVELOPMENT.md) for details on the project structure, building, and testing.
+
+## Local Knowledge Base
+
+You can supplement the built-in knowledge base with your own local tips and shared handlers. Create a directory structure identical to the `knowledge_base` in this repository (or a subset of it).
+
+By default, the application will look for this local knowledge base at `~/.macos-automator/knowledge_base`.
+You can customize this path by setting the `LOCAL_KB_PATH` environment variable.
+
+**Example:**
+
+Suppose you have a local knowledge base at `/Users/yourname/my-custom-kb`.
+Set the environment variable:
+`export LOCAL_KB_PATH=/Users/yourname/my-custom-kb`
+
+Or, if you are running the validator script, you can use the `--local-kb-path` argument:
+`npm run validate:kb -- --local-kb-path /Users/yourname/my-custom-kb`
+
+**Structure and Overrides:**
+
+*   Your local knowledge base should mirror the category structure of the main `knowledge_base` (e.g., `01_applescript_core`, `05_web_browsers/safari`, etc.).
+*   You can add new `.md` tip files or `_shared_handlers` (e.g., `.applescript` or `.js` files).
+*   If a tip ID (either from frontmatter `id:` or generated from filename/path) in your local knowledge base matches an ID in the embedded knowledge base, your local version will **override** the embedded one.
+*   Similarly, shared handlers with the same name and language (e.g., `my_utility.applescript`) in your local `_shared_handlers` directory will override any embedded ones with the same name and language within the same category (or globally if you place them at the root of your local KB's `_shared_handlers`).
+*   Category descriptions from `_category_info.md` in your local KB can also override those from the embedded KB for the same category.
+
+This allows for personalization and extension of the available automation scripts and tips without modifying the core application files.
 
 ## Contributing
 
