@@ -307,7 +307,29 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
   const encounteredTipIds = new Set<string>(); // Shared across all loading paths
 
   // Load from the standard knowledge base first
-  await loadKnowledgeBaseFromPath(KNOWLEDGE_BASE_DIR, false, categories, allTips, sharedHandlers, encounteredTipIds);
+  try {
+    await fs.access(KNOWLEDGE_BASE_DIR); // Check if the main knowledge_base dir exists
+    logger.info(`Standard knowledge base path found: ${KNOWLEDGE_BASE_DIR}. Loading...`);
+    await loadKnowledgeBaseFromPath(KNOWLEDGE_BASE_DIR, false, categories, allTips, sharedHandlers, encounteredTipIds);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      logger.warn(`Standard knowledge base directory not found at ${KNOWLEDGE_BASE_DIR}. This is likely an npm package installation issue.`);
+      logger.warn('To fix this issue, ensure the package was published correctly with the knowledge_base directory included.');
+      logger.warn('If running via npx, try installing the package globally first: npm install -g @steipete/macos-automator-mcp');
+      
+      // Create an empty category to prevent other code from breaking
+      categories.push({
+        id: 'no_knowledge_base_found',
+        description: 'ERROR: Knowledge base directory missing. The package may be corrupted or not installed correctly.',
+        tipCount: 0
+      });
+    } else {
+      logger.error(`Error accessing standard knowledge base: ${KNOWLEDGE_BASE_DIR}`, { 
+        error: (error as Error).message,
+        stack: (error as Error).stack
+      });
+    }
+  }
 
   // Then load from the local knowledge base, potentially overriding tips and handlers
   const localKbPath = await getLocalKnowledgeBasePath();

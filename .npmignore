@@ -1,0 +1,8 @@
+# Ignore everything except explicitly included files in package.json
+*
+
+# Explicitly do not ignore the knowledge_base dir and dist dir
+!/knowledge_base/
+!/dist/
+!/README.md
+!/LICENSE

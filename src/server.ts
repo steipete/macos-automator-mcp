@@ -11,9 +11,28 @@ import { Logger } from './logger.js';
 import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas.js';
 import { ScriptExecutor } from './ScriptExecutor.js';
 import type { ScriptExecutionError }  from './types.js';
-import pkg from '../package.json' with { type: 'json' }; // Import package.json
+// import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
 import { z } from 'zod';
+
+// Added imports for robust package.json loading
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Robustly load package.json
+const __filenameServer = fileURLToPath(import.meta.url);
+const packageRootServer = path.resolve(path.dirname(__filenameServer), '..'); // from dist/server.js to package root
+const packageJsonPathServer = path.join(packageRootServer, 'package.json');
+let pkg: { version: string }; // Define type for pkg
+try {
+  pkg = JSON.parse(await fs.readFile(packageJsonPathServer, 'utf-8'));
+} catch (error) {
+  // Fallback or error handling if package.json cannot be read
+  // This is critical for npx environments if pathing is an issue
+  console.error("Failed to load package.json:", error);
+  pkg = { version: "0.0.0-error" }; // Provide a fallback
+}
 
 const SERVER_START_TIME_ISO = new Date().toISOString();
 const SCRIPT_PATH_EXECUTED = process.argv[1] || 'unknown_path';

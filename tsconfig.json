@@ -109,17 +109,19 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,
-    "skipLibCheck": true
-  },
-  "paths": {
-    "@modelcontextprotocol/sdk/server/mcp.js": [
-      "./node_modules/@modelcontextprotocol/sdk/dist/cjs/server/mcp.d.ts"
-    ],
-    "@modelcontextprotocol/sdk/server/stdio.js": [
-      "./node_modules/@modelcontextprotocol/sdk/dist/cjs/server/stdio.d.ts"
-    ],
-    "@modelcontextprotocol/sdk/types.js": [
-      "./node_modules/@modelcontextprotocol/sdk/dist/cjs/types.d.ts"
-    ]
+    "skipLibCheck": true,
+    
+    /* Paths - moved from outside compilerOptions */
+    "paths": {
+      "@modelcontextprotocol/sdk/server/mcp.js": [
+        "./node_modules/@modelcontextprotocol/sdk/dist/cjs/server/mcp.d.ts"
+      ],
+      "@modelcontextprotocol/sdk/server/stdio.js": [
+        "./node_modules/@modelcontextprotocol/sdk/dist/cjs/server/stdio.d.ts"
+      ],
+      "@modelcontextprotocol/sdk/types.js": [
+        "./node_modules/@modelcontextprotocol/sdk/dist/cjs/types.d.ts"
+      ]
+    }
   }
 }
