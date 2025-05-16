@@ -114,13 +114,13 @@
     /* Paths - moved from outside compilerOptions */
     "paths": {
       "@modelcontextprotocol/sdk/server/mcp.js": [
-        "./node_modules/@modelcontextprotocol/sdk/dist/cjs/server/mcp.d.ts"
+        "./node_modules/@modelcontextprotocol/sdk/dist/esm/server/mcp.d.ts"
       ],
       "@modelcontextprotocol/sdk/server/stdio.js": [
-        "./node_modules/@modelcontextprotocol/sdk/dist/cjs/server/stdio.d.ts"
+        "./node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.d.ts"
       ],
       "@modelcontextprotocol/sdk/types.js": [
-        "./node_modules/@modelcontextprotocol/sdk/dist/cjs/types.d.ts"
+        "./node_modules/@modelcontextprotocol/sdk/dist/esm/types.d.ts"
       ]
     }
   }

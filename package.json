@@ -43,6 +43,7 @@
     "@modelcontextprotocol/sdk": "^1.11.3",
     "fuse.js": "^7.1.0",
     "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
     "zod": "^3.24.4"
   },
   "devDependencies": {
