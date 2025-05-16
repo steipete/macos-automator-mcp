@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Flag Messages'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_flag_messages
 description: Flags selected messages in Mail.app with specific flag colors
 keywords:

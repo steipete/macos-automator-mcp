@@ -1,6 +1,6 @@
 ---
 title: 'Electron Editors: Open File or Folder'
-category: 08_editors/electron_editors
+category: 08_editors
 id: electron_open_file_folder
 description: >-
   Opens a specified file or folder in an Electron-based editor like VS Code or

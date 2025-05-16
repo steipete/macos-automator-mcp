@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Clear Browser Data'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_clear_browser_data
 description: >-
   Clears various types of browser data from Chrome including cache, cookies,

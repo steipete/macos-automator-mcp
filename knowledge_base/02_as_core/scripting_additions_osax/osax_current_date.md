@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: current date Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_current_date
 description: Returns the current system date and time as a date object.
 keywords:

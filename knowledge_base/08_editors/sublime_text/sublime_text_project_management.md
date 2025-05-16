@@ -23,7 +23,7 @@ parameters:
       The path to the project file (.sublime-project) or folder (for create
       action)
     required: false
-category: 08_editors/sublime_text
+category: 08_editors
 ---
 
 # Manage Sublime Text projects

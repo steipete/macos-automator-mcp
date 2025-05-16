@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Archive Project for Distribution'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_archive_project
 description: Archives an Xcode project for distribution using the Archive option.
 keywords:

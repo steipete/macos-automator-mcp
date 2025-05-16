@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Open Web Inspector'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_open_web_inspector
 description: Opens the Web Inspector (Developer Tools) for the current tab in Safari.
 keywords:

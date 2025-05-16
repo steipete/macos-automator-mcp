@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Network Throttling'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_network_throttling
 description: >-
   Configures Chrome DevTools network throttling to simulate various connection

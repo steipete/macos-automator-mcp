@@ -18,7 +18,7 @@ parameters:
   - name: command
     description: 'The command to execute (e.g., ''workbench.action.terminal.toggleTerminal'')'
     required: true
-category: 08_editors/vscode
+category: 08_editors
 ---
 
 # Run VS Code command

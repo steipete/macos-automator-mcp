@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: path to Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_path_to
 description: >-
   Returns an alias to a special system or user folder (e.g., desktop, documents,

@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Export Email Contacts'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_export_contacts
 description: Extracts email addresses from selected messages and exports them to a file
 keywords:

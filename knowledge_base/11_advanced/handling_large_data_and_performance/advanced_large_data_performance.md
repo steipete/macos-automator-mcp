@@ -1,6 +1,6 @@
 ---
 title: 'Advanced: Handling Large Data & Performance Tips'
-category: 11_advanced/handling_large_data_and_performance
+category: 11_advanced
 id: advanced_large_data_performance
 description: >-
   Strategies for dealing with large lists, text, or many iterations to improve

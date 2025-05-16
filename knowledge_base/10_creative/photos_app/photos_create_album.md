@@ -1,6 +1,6 @@
 ---
 title: 'Photos: Create New Album'
-category: 10_creative/photos_app
+category: 10_creative
 id: photos_create_album
 description: Creates a new album in the Photos app with a specified name.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: do shell script Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_do_shell_script
 description: Executes a Unix shell command and returns its standard output as a string.
 keywords:

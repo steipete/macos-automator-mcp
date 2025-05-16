@@ -1,6 +1,6 @@
 ---
 title: Mail Automation Script
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_automation_script
 description: >-
   Automates various email tasks in Apple Mail including sending, filtering,

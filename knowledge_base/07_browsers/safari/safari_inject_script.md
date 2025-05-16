@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Inject JavaScript'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_inject_script
 description: >-
   Injects custom JavaScript code or external script files into the current

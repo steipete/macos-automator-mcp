@@ -1,6 +1,6 @@
 ---
 title: 'Core: Concatenation Operator (&)'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_concat
 description: >-
   The ampersand (&) operator is used to concatenate (join) strings, lists, or

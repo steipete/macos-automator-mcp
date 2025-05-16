@@ -1,6 +1,6 @@
 ---
 title: 'Keychain Access: List Available Keychains'
-category: 13_developer/security
+category: 13_developer
 id: keychain_list_keychains
 description: >-
   Lists all available keychains on the system using the security command-line

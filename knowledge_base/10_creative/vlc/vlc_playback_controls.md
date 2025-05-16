@@ -1,6 +1,6 @@
 ---
 title: 'VLC: Basic Playback Controls'
-category: 10_creative/vlc
+category: 10_creative
 id: vlc_playback_controls
 description: >-
   Control basic playback in VLC Media Player including play, pause, stop, and

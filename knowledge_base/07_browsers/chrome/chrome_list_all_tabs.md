@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: List All Tabs'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_list_all_tabs
 description: >-
   Lists all tabs from all windows in Google Chrome with their URLs and titles,

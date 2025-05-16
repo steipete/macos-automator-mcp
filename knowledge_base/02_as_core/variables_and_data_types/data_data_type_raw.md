@@ -1,6 +1,6 @@
 ---
 title: AppleScript Raw Data Type
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_data_raw
 description: >-
   Understanding and working with the 'data' data type in AppleScript for

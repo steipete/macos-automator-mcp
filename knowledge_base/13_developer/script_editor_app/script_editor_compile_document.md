@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Compile Document'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_compile_document
 description: >-
   Compiles an AppleScript document in Script Editor to check for syntax errors

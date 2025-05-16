@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Bookmark Current Page'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_bookmark_current_page
 description: >-
   Bookmarks the current page in Firefox, with options to specify folder and add

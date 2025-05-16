@@ -1,6 +1,6 @@
 ---
 title: 'File Ops (No Finder): Write Text to File (Overwrite)'
-category: 05_files/file_operations_no_finder
+category: 05_files
 id: fileops_write_text_file
 description: >-
   Writes provided text content to a specified file, overwriting the file if it

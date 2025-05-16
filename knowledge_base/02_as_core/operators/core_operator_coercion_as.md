@@ -1,6 +1,6 @@
 ---
 title: 'Core: Coercion Operator (''as'')'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_coercion_as
 description: Explains the 'as' operator for explicit data type coercion (conversion).
 keywords:

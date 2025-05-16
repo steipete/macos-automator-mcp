@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Open Instruments for Profiling'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_open_instruments
 description: Opens Xcode Instruments for app profiling with a selected template.
 keywords:

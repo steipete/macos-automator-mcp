@@ -1,6 +1,6 @@
 ---
 title: 'Messages: Get Chat History'
-category: 09_productivity/messages_app
+category: 09_productivity
 id: messages_get_chat_history
 description: Retrieves message history from a specific chat in the Messages app.
 keywords:

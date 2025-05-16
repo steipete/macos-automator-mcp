@@ -26,7 +26,7 @@ parameters:
   - name: browser
     description: 'Browser to use (chrome or safari, default chrome)'
     required: false
-category: 08_editors/browser_devtools
+category: 08_editors
 ---
 
 # Capture Network Activity to HAR File

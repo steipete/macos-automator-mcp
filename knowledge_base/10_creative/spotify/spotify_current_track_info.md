@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Get Current Track Information'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_current_track_info
 description: Retrieves detailed information about the currently playing track in Spotify.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Finder: Create New Folder'
-category: 05_files/file_operations_finder
+category: 05_files
 id: finder_create_new_folder
 description: Creates a new folder in a specified location using Finder.
 keywords:

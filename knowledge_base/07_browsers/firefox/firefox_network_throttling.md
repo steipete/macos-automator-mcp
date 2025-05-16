@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Network Throttling'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_network_throttling
 description: >-
   Controls Firefox's network throttling feature in Developer Tools to simulate

@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Extract Project Info from Info.plist'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_extract_project_info
 description: Extracts app metadata from Info.plist in an Xcode project.
 keywords:

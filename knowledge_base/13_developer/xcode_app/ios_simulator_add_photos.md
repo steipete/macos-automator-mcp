@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Add Photos to Library'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_add_photos
 description: Adds photos and videos to an iOS Simulator's Photo Library.
 keywords:

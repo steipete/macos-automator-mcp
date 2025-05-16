@@ -17,7 +17,7 @@ parameters:
   - name: itemPath
     description: The path to the file or folder to open (POSIX path)
     required: true
-category: 08_editors/sublime_text
+category: 08_editors
 ---
 
 # Open file or folder in Sublime Text

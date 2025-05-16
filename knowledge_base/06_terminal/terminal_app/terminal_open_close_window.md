@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Open and Close Windows'
 id: terminal_open_close_window
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Opens a new Terminal.app window, optionally runs a command, and provides
   functionality to close windows.

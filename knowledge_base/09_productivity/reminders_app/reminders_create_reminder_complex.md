@@ -1,7 +1,7 @@
 ---
 title: 'Reminders: Create Advanced Reminder'
 id: reminders_create_reminder_complex
-category: 09_productivity/reminders_app
+category: 09_productivity
 description: >-
   Adds a new reminder to a specified list (or default list) with a name, and
   optional due date, priority, and body/notes.

@@ -1,6 +1,6 @@
 ---
 title: 'Contacts: Search by Name'
-category: 09_productivity/contacts_app
+category: 09_productivity
 id: contacts_search_by_name
 description: Searches for contacts in the Contacts app by name.
 keywords:

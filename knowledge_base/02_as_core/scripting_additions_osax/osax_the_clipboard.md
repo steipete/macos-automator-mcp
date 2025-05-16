@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: the clipboard Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_the_clipboard
 description: Gets or sets the contents of the system clipboard.
 keywords:

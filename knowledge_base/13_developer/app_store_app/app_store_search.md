@@ -1,6 +1,6 @@
 ---
 title: 'App Store: Search for Apps'
-category: 13_developer/app_store_app
+category: 13_developer
 id: app_store_search
 description: Searches for applications in the Mac App Store.
 keywords:

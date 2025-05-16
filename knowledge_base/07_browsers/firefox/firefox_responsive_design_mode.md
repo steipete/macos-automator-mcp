@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Responsive Design Mode'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_responsive_design_mode
 description: >-
   Opens Firefox's Responsive Design Mode for testing websites on different

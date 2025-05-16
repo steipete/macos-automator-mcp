@@ -1,6 +1,6 @@
 ---
 title: 'Finder: Get POSIX Path of Selected Items'
-category: 05_files/file_operations_finder
+category: 05_files
 id: finder_get_selected_items_paths
 description: >-
   Retrieves the POSIX paths of all currently selected files and folders in the

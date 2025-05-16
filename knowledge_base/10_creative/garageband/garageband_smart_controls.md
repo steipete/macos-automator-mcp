@@ -1,6 +1,6 @@
 ---
 title: 'GarageBand: Smart Controls'
-category: 10_creative/garageband
+category: 10_creative
 id: garageband_smart_controls
 description: >-
   Access and control GarageBand's Smart Controls interface for adjusting effects

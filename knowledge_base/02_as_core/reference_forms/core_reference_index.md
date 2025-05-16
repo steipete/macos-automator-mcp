@@ -1,6 +1,6 @@
 ---
 title: 'Core: Index Reference Form'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_index
 description: >-
   Accessing elements within containers (lists, strings, application elements) by

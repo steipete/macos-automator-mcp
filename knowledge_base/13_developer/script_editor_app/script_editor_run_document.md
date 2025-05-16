@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Run Document'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_run_document
 description: Executes an AppleScript document in Script Editor and retrieves its result.
 keywords:

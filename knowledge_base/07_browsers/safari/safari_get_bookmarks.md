@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Get Bookmarks'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_get_bookmarks
 description: Retrieves bookmarks from Safari and returns them in a structured format.
 keywords:

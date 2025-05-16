@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: ASCII Character/Number'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_ascii_char_num
 description: >-
   Converts between ASCII character codes (integers) and their corresponding

@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Send Control Character'
 id: terminal_send_control_character
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Sends a control character (e.g., Ctrl-C, Escape) to the frontmost Terminal.app
   window by simulating keystrokes.

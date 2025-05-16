@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Send Push Notification'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_send_notification
 description: Sends a test push notification to an app running in the iOS Simulator.
 keywords:

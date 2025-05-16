@@ -29,7 +29,7 @@ parameters:
   - name: positions
     description: 'Array of position objects for custom layout {x, y, width, height}'
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # iTerm2 Window and Tab Arrangement

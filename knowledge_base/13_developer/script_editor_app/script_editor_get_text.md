@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Get Document Text'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_get_text
 description: Retrieves the text content of a Script Editor document.
 keywords:

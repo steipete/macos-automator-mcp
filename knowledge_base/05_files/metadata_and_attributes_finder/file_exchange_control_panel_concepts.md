@@ -4,7 +4,7 @@ description: >-
   Understanding and managing file extension to application associations in
   modern macOS with AppleScript
 author: Claude
-category: 05_files/metadata_and_attributes_finder
+category: 05_files
 subcategory: metadata_and_attributes_finder
 keywords:
   - file extension

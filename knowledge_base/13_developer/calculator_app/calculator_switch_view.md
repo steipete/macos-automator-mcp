@@ -1,6 +1,6 @@
 ---
 title: 'Calculator: Switch Calculator View'
-category: 13_developer/calculator_app
+category: 13_developer
 id: calculator_switch_view
 description: >-
   Switches between the different calculator views (Basic, Scientific,

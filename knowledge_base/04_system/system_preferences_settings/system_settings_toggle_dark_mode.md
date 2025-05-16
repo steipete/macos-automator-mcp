@@ -1,6 +1,6 @@
 ---
 title: 'System Settings: Toggle Dark Mode'
-category: 04_system/system_preferences_settings
+category: 04_system
 id: system_settings_toggle_dark_mode
 description: Toggles between light and dark mode in macOS.
 keywords:

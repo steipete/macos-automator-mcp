@@ -1,6 +1,6 @@
 ---
 title: 'Music: Basic Playback Controls'
-category: 10_creative/music_app
+category: 10_creative
 id: music_playback_controls
 description: >-
   Control basic playback in Music.app (or iTunes) such as play, pause, stop,

@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Close Current Tab'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_close_current_tab
 description: Closes the currently active tab in Firefox.
 keywords:

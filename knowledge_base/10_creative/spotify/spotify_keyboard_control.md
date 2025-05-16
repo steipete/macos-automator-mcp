@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Keyboard Shortcut Control'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_keyboard_control
 description: >-
   Control Spotify using keyboard shortcuts via System Events, useful for

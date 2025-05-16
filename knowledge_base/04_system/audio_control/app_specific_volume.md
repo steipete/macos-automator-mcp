@@ -1,6 +1,6 @@
 ---
 title: 'System: App-Specific Volume Control'
-category: 04_system/audio_control
+category: 04_system
 id: app_specific_volume
 description: >-
   Control volume levels for specific applications independently from the system

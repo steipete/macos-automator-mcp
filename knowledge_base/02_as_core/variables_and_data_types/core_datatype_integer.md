@@ -1,6 +1,6 @@
 ---
 title: 'Core: Integer Data Type'
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_integer
 description: Working with integer (whole number) values in AppleScript.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: List Available Devices'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_list_devices
 description: 'Lists all available iOS, iPadOS, watchOS, and tvOS simulator devices.'
 keywords:

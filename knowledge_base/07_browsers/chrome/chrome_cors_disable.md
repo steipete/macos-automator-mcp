@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Disable CORS'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_cors_disable
 description: >-
   Disables Cross-Origin Resource Sharing (CORS) restrictions in Chrome for local

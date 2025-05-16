@@ -1,6 +1,6 @@
 ---
 title: 'Core: Arbitrary Element Reference Form (''some'')'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_arbitrary
 description: >-
   Accessing an arbitrary or random element from a collection using 'some

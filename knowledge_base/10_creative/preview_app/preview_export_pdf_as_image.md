@@ -1,6 +1,6 @@
 ---
 title: 'Preview: Export PDF as Image'
-category: 10_creative/preview_app
+category: 10_creative
 id: preview_export_pdf_as_image
 description: Exports a PDF file as an image using Preview.
 keywords:

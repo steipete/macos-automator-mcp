@@ -1,6 +1,6 @@
 ---
 title: 'Audio Hijack: Recordings Management'
-category: 10_creative/audio_hijack
+category: 10_creative
 id: audio_hijack_recordings_management
 description: >-
   Manage recordings in Audio Hijack including listing recent recordings, getting

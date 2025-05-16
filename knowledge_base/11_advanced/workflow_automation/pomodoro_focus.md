@@ -22,7 +22,7 @@ parameters:
       Comma-separated list of distracting apps to quit (e.g.,
       'Slack,Mail,Messages')
     required: false
-category: 11_advanced/workflow_automation
+category: 11_advanced
 ---
 
 # Pomodoro Focus Timer with Distractions Management

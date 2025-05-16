@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Advanced Browser Automation'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_browser_automation
 description: >-
   Performs advanced multi-step browser automation in Chrome similar to

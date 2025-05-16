@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Manage App Privacy Permissions'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_privacy_permissions
 description: Manages privacy permissions for an app in the iOS Simulator.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Stocks: Search for Stock Symbol'
-category: 09_productivity/stocks_app
+category: 09_productivity
 id: stocks_search_symbol
 description: Searches for a stock symbol or company name in the Stocks app.
 keywords:

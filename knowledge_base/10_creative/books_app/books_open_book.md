@@ -1,6 +1,6 @@
 ---
 title: 'Books: Open Book by Title'
-category: 10_creative/books_app
+category: 10_creative
 id: books_open_book
 description: Opens a book by title in the Books app.
 keywords:

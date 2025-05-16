@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Save Page as PDF'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_save_page_as_pdf
 description: Saves the current Firefox page as a PDF file using UI automation.
 keywords:

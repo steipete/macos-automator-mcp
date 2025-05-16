@@ -26,7 +26,7 @@ parameters:
       The type of transformation ('uppercase', 'lowercase', 'titlecase',
       'indent', 'outdent', 'trim', 'sort')
     required: false
-category: 08_editors/sublime_text
+category: 08_editors
 ---
 
 # Manipulate text in Sublime Text

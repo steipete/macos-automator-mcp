@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Reset All Simulators'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_reset_all_simulators
 description: 'Resets all iOS, iPadOS, watchOS, and tvOS simulators to clean state.'
 keywords:

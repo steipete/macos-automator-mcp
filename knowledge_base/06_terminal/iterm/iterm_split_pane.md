@@ -26,7 +26,7 @@ parameters:
   - name: resizeAmount
     description: 'Amount to resize by (1-10, where 10 is maximum) when using resize action'
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # iTerm2 Split Pane Management

@@ -1,6 +1,6 @@
 ---
 title: 'Notes: Create New Folder'
-category: 09_productivity/notes_app
+category: 09_productivity
 id: notes_create_folder
 description: Creates a new folder in the Notes app.
 keywords:

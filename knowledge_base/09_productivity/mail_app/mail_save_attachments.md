@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Save Attachments from Selected Email'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_save_attachments
 description: Extracts and saves all attachments from selected email messages in Mail.app
 keywords:

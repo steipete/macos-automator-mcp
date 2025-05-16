@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Build Project via UI Scripting'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_build_project_ui
 description: Builds an Xcode project by simulating menu selections in the Xcode UI.
 keywords:

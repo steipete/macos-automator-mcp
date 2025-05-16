@@ -1,6 +1,6 @@
 ---
 title: 'Music: Playlist Operations'
-category: 10_creative/music_app
+category: 10_creative
 id: music_playlist_operations
 description: >-
   Manage Apple Music playlists including creating, listing, modifying, and

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Configure Accessibility Features'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_accessibility
 description: >-
   Configures accessibility features in iOS Simulator for testing app

@@ -1,6 +1,6 @@
 ---
 title: 'Preview: Open File'
-category: 10_creative/preview_app
+category: 10_creative
 id: preview_open_file
 description: Opens a specified file in the Preview application.
 keywords:

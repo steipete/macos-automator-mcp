@@ -1,6 +1,6 @@
 ---
 title: 'Mail: List Accounts and Mailboxes'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_list_accounts_mailboxes
 description: Lists all Mail.app accounts and their mailboxes with message counts
 keywords:

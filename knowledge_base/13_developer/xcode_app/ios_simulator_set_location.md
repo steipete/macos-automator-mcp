@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Set Device Location'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_set_location
 description: Sets a custom GPS location for an iOS Simulator device.
 keywords:

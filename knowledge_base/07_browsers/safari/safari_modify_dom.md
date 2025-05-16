@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Modify DOM'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_modify_dom
 description: >-
   Modifies the DOM of the current Safari webpage, allowing you to add, remove,

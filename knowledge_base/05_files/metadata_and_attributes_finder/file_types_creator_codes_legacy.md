@@ -4,7 +4,7 @@ description: >-
   Understanding and working with legacy file types and creator codes in modern
   macOS using AppleScript
 author: Claude
-category: 05_files/metadata_and_attributes_finder
+category: 05_files
 subcategory: metadata_and_attributes_finder
 keywords:
   - file type

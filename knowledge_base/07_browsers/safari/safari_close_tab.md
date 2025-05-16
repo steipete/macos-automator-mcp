@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Close Tab'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_close_tab
 description: Closes the current tab or a tab with a specific index in Safari.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Contacts: List All Contacts'
-category: 09_productivity/contacts_app
+category: 09_productivity
 id: contacts_list_all_contacts
 description: Retrieves and lists all contacts from the Contacts app.
 keywords:

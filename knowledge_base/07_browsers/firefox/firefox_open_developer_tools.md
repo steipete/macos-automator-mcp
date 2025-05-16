@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Open Developer Tools'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_open_developer_tools
 description: >-
   Opens Firefox Developer Tools, optionally focusing on a specific panel

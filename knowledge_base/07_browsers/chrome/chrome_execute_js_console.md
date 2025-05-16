@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Execute JavaScript in Console'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_execute_js_console
 description: >-
   Executes JavaScript code in Chrome's Console with full DevTools API access and

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Enable Developer Settings'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_developer_settings
 description: Enables and configures advanced developer settings in iOS Simulator.
 keywords:

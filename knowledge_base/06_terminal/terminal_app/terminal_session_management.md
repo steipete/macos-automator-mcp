@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Session Management'
 id: terminal_session_management
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Saves and restores Terminal.app window arrangements, including tabs, window
   positions, and working directories.

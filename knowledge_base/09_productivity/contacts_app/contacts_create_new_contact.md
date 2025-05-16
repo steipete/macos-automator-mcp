@@ -1,6 +1,6 @@
 ---
 title: 'Contacts: Create New Contact'
-category: 09_productivity/contacts_app
+category: 09_productivity
 id: contacts_create_new_contact
 description: Creates a new contact in the Contacts app with specified information.
 keywords:

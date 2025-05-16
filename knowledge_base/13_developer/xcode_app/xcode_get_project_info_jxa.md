@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Get Project Info (JXA)'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_get_project_info_jxa
 description: >-
   Retrieves information about an open Xcode project using JavaScript for

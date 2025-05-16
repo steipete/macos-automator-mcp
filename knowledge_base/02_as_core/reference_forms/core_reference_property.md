@@ -1,6 +1,6 @@
 ---
 title: 'Core: Property Reference Form'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_property
 description: 'Accessing the properties of objects (e.g., name of file, URL of document).'
 keywords:

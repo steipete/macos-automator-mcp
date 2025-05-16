@@ -1,6 +1,6 @@
 ---
 title: 'Calendar: Find Events by Keyword'
-category: 09_productivity/calendar_app
+category: 09_productivity
 id: calendar_find_events
 description: Searches for calendar events containing a specific keyword.
 keywords:

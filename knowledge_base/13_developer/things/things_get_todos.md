@@ -13,7 +13,7 @@ keywords:
   - fetch
 version: 1.0.0
 updated: 2024-05-16T00:00:00.000Z
-category: 13_developer/things
+category: 13_developer
 ---
 
 # Get To-Dos from Things

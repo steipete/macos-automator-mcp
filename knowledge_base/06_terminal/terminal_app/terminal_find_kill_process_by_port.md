@@ -17,7 +17,7 @@ keywords:
   - troubleshooting
 required_permissions:
   - Network access
-category: 06_terminal/terminal_app
+category: 06_terminal
 ---
 
 # Find Process Using Port and Optionally Kill It

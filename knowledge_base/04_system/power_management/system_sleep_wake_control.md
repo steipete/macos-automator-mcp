@@ -1,6 +1,6 @@
 ---
 title: System Sleep and Wake Control
-category: 04_system/power_management
+category: 04_system
 id: system_sleep_wake_control
 description: >-
   Controls system sleep, wake, shutdown, and restart events with various options

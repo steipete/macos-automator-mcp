@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Capture Screenshot'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_capture_screenshot
 description: >-
   Captures screenshots of webpages in Google Chrome with options for full page,

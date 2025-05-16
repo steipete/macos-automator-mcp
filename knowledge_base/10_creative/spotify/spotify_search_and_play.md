@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Search and Play'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_search_and_play
 description: 'Search for tracks, albums, or artists in Spotify and play the results.'
 keywords:

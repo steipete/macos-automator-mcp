@@ -12,7 +12,7 @@ keywords:
   - change comparison
 version: 1.0.0
 updated: 2024-05-16T00:00:00.000Z
-category: 13_developer/kaleidoscope
+category: 13_developer
 ---
 
 # View Git Changeset in Kaleidoscope

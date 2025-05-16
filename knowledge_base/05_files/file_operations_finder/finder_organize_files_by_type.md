@@ -1,6 +1,6 @@
 ---
 title: 'Finder: Organize Files by Type'
-category: 05_files/file_operations_finder
+category: 05_files
 id: finder_organize_files_by_type
 description: >-
   Organizes files in a folder by their file type, moving them into type-specific

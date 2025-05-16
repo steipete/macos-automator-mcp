@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Basic Playback Controls'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_playback_controls
 description: >-
   Control basic playback in Spotify such as play, pause, next, previous, and

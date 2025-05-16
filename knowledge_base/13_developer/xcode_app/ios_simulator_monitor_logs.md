@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Monitor and Filter App Logs'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_monitor_logs
 description: >-
   Monitors iOS Simulator logs and filters them by app or subsystem for real-time

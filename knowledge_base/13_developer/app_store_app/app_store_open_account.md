@@ -1,6 +1,6 @@
 ---
 title: 'App Store: Open Account Page'
-category: 13_developer/app_store_app
+category: 13_developer
 id: app_store_open_account
 description: Opens the account page in the Mac App Store.
 keywords:

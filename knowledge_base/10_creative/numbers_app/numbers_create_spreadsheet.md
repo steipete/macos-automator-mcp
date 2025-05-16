@@ -1,6 +1,6 @@
 ---
 title: 'Numbers: Create New Spreadsheet'
-category: 10_creative/numbers_app
+category: 10_creative
 id: numbers_create_spreadsheet
 description: Creates a new spreadsheet in Numbers with specified content.
 keywords:

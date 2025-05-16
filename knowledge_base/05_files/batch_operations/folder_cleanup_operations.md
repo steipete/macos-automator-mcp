@@ -1,6 +1,6 @@
 ---
 title: Folder Cleanup Operations
-category: 05_files/batch_operations
+category: 05_files
 id: folder_cleanup_operations
 description: >-
   Comprehensive folder cleanup script to organize and maintain folder

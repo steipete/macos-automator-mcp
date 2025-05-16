@@ -1,6 +1,6 @@
 ---
 title: International and Unicode Text in AppleScript
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_international_unicode_text
 description: >-
   Working with international character sets and Unicode text in AppleScript for

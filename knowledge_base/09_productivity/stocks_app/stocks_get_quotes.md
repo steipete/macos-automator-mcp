@@ -1,6 +1,6 @@
 ---
 title: 'Stocks: Get Stock Quotes'
-category: 09_productivity/stocks_app
+category: 09_productivity
 id: stocks_get_quotes
 description: Retrieves current stock quotes from the Stocks app.
 keywords:

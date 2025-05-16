@@ -1,6 +1,6 @@
 ---
 title: 'Photos: Get Selected Items'
-category: 10_creative/photos_app
+category: 10_creative
 id: photos_get_selected_items
 description: Retrieves information about currently selected photos in the Photos app.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Automated Test Runner'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_test_runner
 description: >-
   Runs automated browser tests in Chrome with support for assertions,

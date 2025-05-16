@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Save Webpage'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_save_page
 description: >-
   Saves the current Safari webpage in various formats including HTML, PDF, and

@@ -11,7 +11,7 @@ keywords:
 language: applescript
 id: finder_create_new_folder_desktop
 argumentsPrompt: Provide a name for the new folder
-category: 05_files/folder_operations_finder
+category: 05_files
 ---
 
 This script creates a new folder on the desktop with a specified name.

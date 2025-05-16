@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Control Status Bar'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_status_bar
 description: >-
   Customizes the status bar appearance in iOS Simulator for screenshots and

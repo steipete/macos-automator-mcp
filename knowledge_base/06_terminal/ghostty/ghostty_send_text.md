@@ -23,7 +23,7 @@ parameters:
   - name: executeCommand
     description: 'Whether to press Return after sending the text (default: false)'
     required: false
-category: 06_terminal/ghostty
+category: 06_terminal
 ---
 
 # Send Text to Ghostty Without Executing

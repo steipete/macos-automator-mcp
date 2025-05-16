@@ -1,6 +1,6 @@
 ---
 title: 'Pages: Template Operations'
-category: 10_creative/pages_app
+category: 10_creative
 id: pages_template_operations
 description: 'Create from template, save as template, and list available templates in Pages.'
 keywords:

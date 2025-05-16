@@ -24,7 +24,7 @@ parameters:
   - name: createNew
     description: Whether to create a new session if it doesn't exist (true/false)
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # iTerm2 tmux Integration

@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Clear Cache and Website Data'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_clear_cache
 description: >-
   Clears Safari's cache, cookies, and website data for improved testing and

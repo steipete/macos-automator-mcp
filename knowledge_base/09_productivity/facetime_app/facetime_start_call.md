@@ -1,6 +1,6 @@
 ---
 title: 'FaceTime: Start New Call'
-category: 09_productivity/facetime_app
+category: 09_productivity
 id: facetime_start_call
 description: Initiates a new FaceTime call to a specified contact or number.
 keywords:

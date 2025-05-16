@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Inspect Element by Selector'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_inspect_element
 description: >-
   Inspects a specific DOM element in Chrome DevTools using CSS selector or

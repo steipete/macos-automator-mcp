@@ -1,6 +1,6 @@
 ---
 title: 'Podcasts: Play Episode'
-category: 10_creative/podcasts_app
+category: 10_creative
 id: podcasts_play_episode
 description: Plays a specific podcast episode in the Podcasts app.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Paths: User Selects File or Folder'
-category: 05_files/paths_and_references
+category: 05_files
 id: paths_user_select_file_folder
 description: >-
   Uses 'choose file', 'choose folder', and 'choose file name' (for saving) to

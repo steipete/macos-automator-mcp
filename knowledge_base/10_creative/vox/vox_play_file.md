@@ -1,6 +1,6 @@
 ---
 title: 'VOX: Play Audio File'
-category: 10_creative/vox
+category: 10_creative
 id: vox_play_file
 description: >-
   Play a local audio file in VOX Music Player, supporting high-quality formats

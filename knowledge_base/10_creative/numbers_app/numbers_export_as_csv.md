@@ -1,6 +1,6 @@
 ---
 title: 'Numbers: Export as CSV'
-category: 10_creative/numbers_app
+category: 10_creative
 id: numbers_export_as_csv
 description: Exports a Numbers spreadsheet as a CSV file.
 keywords:

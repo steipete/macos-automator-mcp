@@ -1,6 +1,6 @@
 ---
 title: 'Swinsian: Get Current Track Information'
-category: 10_creative/swinsian
+category: 10_creative
 id: swinsian_current_track_info
 description: >-
   Retrieves detailed information about the currently playing track in Swinsian

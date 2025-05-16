@@ -1,6 +1,6 @@
 ---
 title: 'Maps: Search for Location'
-category: 09_productivity/maps_app
+category: 09_productivity
 id: maps_search_location
 description: Searches for a specific location in the Maps app.
 keywords:

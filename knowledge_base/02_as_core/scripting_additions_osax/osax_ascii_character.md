@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: ASCII character Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_ascii_character
 description: Converts an ASCII number (0-255) to its corresponding character.
 keywords:

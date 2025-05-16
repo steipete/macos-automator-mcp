@@ -25,7 +25,7 @@ arguments_sample_value:
 argument_descriptions:
   location: 'Location name or postal code (e.g., ''San Francisco'' or ''94105'')'
   units: 'Temperature units (''c'' for Celsius, ''f'' for Fahrenheit)'
-category: 13_developer/weather_app
+category: 13_developer
 ---
 
 # Get Current Weather Conditions

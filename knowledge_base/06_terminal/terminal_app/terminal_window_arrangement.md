@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Window and Tab Arrangement'
 id: terminal_window_arrangement
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Arranges Terminal.app windows and tabs according to predefined layouts or
   custom specifications.

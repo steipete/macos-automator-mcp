@@ -4,7 +4,7 @@ description: >-
   Change and manage macOS appearance settings including dark mode, accent
   colors, and highlight colors using AppleScript and UI scripting
 author: Claude
-category: 04_system/system_preferences_settings
+category: 04_system
 subcategory: system_preferences_settings
 keywords:
   - appearance

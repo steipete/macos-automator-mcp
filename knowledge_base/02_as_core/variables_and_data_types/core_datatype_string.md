@@ -1,6 +1,6 @@
 ---
 title: 'Core: String Data Type'
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_string
 description: >-
   Working with strings (text) in AppleScript, including properties like length,

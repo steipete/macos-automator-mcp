@@ -1,6 +1,6 @@
 ---
 title: 'Pages: Manage Paragraph Styles'
-category: 10_creative/pages_app
+category: 10_creative
 id: pages_manage_styles
 description: 'Creates, modifies, and applies paragraph styles in a Pages document.'
 keywords:

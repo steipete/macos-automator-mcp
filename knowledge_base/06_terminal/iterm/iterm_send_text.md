@@ -28,7 +28,7 @@ parameters:
       Target session by criteria - number, name, or "active" (default is
       "active")
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # Send Text to iTerm2 Without Executing

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Install App'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_install_app
 description: Installs an app on an iOS simulator device and optionally launches it.
 keywords:

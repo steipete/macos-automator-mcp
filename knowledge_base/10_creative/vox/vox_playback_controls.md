@@ -1,6 +1,6 @@
 ---
 title: 'VOX: Basic Playback Controls'
-category: 10_creative/vox
+category: 10_creative
 id: vox_playback_controls
 description: >-
   Control basic playback in VOX Music Player including play, pause, next,

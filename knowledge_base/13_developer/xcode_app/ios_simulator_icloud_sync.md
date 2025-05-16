@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Trigger iCloud Sync'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_icloud_sync
 description: >-
   Manually triggers iCloud sync in iOS Simulator for testing cloud

@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Export Page as PDF'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_export_pdf
 description: Exports the current webpage as a PDF document in Safari.
 keywords:

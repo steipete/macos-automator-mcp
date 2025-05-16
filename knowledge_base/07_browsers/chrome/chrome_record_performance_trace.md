@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Record Performance Trace'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_record_performance_trace
 description: >-
   Records a detailed performance trace in Chrome to analyze rendering,

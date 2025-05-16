@@ -1,6 +1,6 @@
 ---
 title: 'Core: ''contains'' Operator'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_contains
 description: >-
   Checks if a list, record, or string contains another item or substring.

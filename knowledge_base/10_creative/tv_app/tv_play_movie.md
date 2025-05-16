@@ -1,6 +1,6 @@
 ---
 title: 'TV: Play Movie or Show'
-category: 10_creative/tv_app
+category: 10_creative
 id: tv_play_movie
 description: Plays a movie or TV show from your library in the TV app.
 keywords:

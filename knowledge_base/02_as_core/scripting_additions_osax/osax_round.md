@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: round Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_round
 description: >-
   Rounds a number to the nearest integer, with options for rounding direction

@@ -1,6 +1,6 @@
 ---
 title: 'Core: Stay-Open Applet Handler ''on reopen'''
-category: 02_as_core/handlers_and_subroutines
+category: 02_as_core
 id: core_handler_on_reopen
 description: >-
   Defines a handler that executes when a running stay-open applet is reactivated

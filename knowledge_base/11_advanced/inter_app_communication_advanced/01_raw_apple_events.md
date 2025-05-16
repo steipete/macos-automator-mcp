@@ -1,6 +1,6 @@
 ---
 title: 'Advanced: Raw Apple Events'
-category: 11_advanced/inter_app_communication_advanced
+category: 11_advanced
 id: advanced_raw_apple_events
 description: >-
   Explains raw Apple Events using four-character codes (chevrons «») and their

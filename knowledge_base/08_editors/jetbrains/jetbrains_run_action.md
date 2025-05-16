@@ -23,7 +23,7 @@ parameters:
   - name: actionName
     description: 'The name of the action to execute (e.g., ''Find in Files'', ''Build Project'')'
     required: true
-category: 08_editors/jetbrains
+category: 08_editors
 ---
 
 # Run action in JetBrains IDE

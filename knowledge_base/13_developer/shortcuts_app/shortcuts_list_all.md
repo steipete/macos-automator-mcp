@@ -1,6 +1,6 @@
 ---
 title: 'Shortcuts: List All Shortcuts'
-category: 13_developer/shortcuts_app
+category: 13_developer
 id: shortcuts_list_all
 description: >-
   Lists all available shortcuts in the macOS Shortcuts app, with folder

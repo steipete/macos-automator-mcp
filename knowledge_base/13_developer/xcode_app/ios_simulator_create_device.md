@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Create Custom Device'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_create_device
 description: Creates a custom iOS Simulator device with specific device type and runtime.
 keywords:

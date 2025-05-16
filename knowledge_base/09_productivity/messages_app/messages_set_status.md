@@ -1,6 +1,6 @@
 ---
 title: 'Messages: Set Status Message'
-category: 09_productivity/messages_app
+category: 09_productivity
 id: messages_set_status
 description: Sets your status message in the Messages app.
 keywords:

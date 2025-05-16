@@ -1,6 +1,6 @@
 ---
 title: 'Numbers: Edit Cell Formula'
-category: 10_creative/numbers_app
+category: 10_creative
 id: numbers_edit_cell_formula
 description: Edits a cell formula in a Numbers spreadsheet.
 keywords:

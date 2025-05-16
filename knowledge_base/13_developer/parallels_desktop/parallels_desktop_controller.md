@@ -12,7 +12,7 @@ keywords:
   - automation
 language: applescript
 isComplex: false
-category: 13_developer/parallels_desktop
+category: 13_developer
 ---
 
 # Parallels Desktop VM Controller

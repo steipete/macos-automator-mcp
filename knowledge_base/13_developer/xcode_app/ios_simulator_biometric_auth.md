@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Simulate Biometric Authentication'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_biometric_auth
 description: >-
   Simulates Touch ID or Face ID authentication success or failure in the iOS

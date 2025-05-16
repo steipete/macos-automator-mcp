@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Open URL'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_open_url
 description: Opens a URL in iOS Simulator's Safari or in an app with a custom URL scheme.
 keywords:

@@ -29,7 +29,7 @@ argument_descriptions:
   location: 'Location name or postal code (e.g., ''London'' or ''90210'')'
   days: Number of forecast days (1-7)
   units: 'Temperature units (''c'' for Celsius, ''f'' for Fahrenheit)'
-category: 13_developer/weather_app
+category: 13_developer
 ---
 
 # Get Weather Forecast

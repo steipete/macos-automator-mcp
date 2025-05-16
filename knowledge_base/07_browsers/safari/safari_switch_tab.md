@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Switch Tab'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_switch_tab
 description: >-
   Switches to a tab with a specific index or one that matches a URL/title

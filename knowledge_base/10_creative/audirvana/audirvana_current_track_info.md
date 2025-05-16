@@ -1,6 +1,6 @@
 ---
 title: 'Audirvana: Current Track Information'
-category: 10_creative/audirvana
+category: 10_creative
 id: audirvana_current_track_info
 description: >-
   Retrieve detailed information about the currently playing track in Audirvana,

@@ -1,6 +1,6 @@
 ---
 title: Clipboard History Manager
-category: 04_system/clipboard_system
+category: 04_system
 id: clipboard_history_manager
 description: >-
   Manages a history of clipboard contents, allowing storage and retrieval of

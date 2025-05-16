@@ -1,6 +1,6 @@
 ---
 title: System Screen Lock
-category: 04_system/screen_lock
+category: 04_system
 id: system_screen_lock
 description: >-
   Locks the screen on macOS using keyboard shortcut simulation or login window

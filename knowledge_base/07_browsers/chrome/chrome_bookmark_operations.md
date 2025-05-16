@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Bookmark Operations'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_bookmark_operations
 description: >-
   Performs operations with Chrome bookmarks including adding the current page to

@@ -9,7 +9,7 @@ language: applescript
 contributors:
   - Claude AI
 created: 2024-05-16T00:00:00.000Z
-category: 09_productivity/find_my_app
+category: 09_productivity
 platforms:
   - macOS
 keywords:

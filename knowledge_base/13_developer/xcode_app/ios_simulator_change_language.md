@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Change Language and Region'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_change_language
 description: Changes the language and region settings of an iOS Simulator device.
 keywords:

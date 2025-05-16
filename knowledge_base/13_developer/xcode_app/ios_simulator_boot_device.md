@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Boot and Launch Device'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_boot_device
 description: Boots a specific iOS simulator device and launches the Simulator app.
 keywords:

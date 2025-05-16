@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Generate Inbox Summary'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_summarize_inbox
 description: >-
   Creates a summary report of your inbox including message counts, top senders,

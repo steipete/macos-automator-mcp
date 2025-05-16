@@ -1,6 +1,6 @@
 ---
 title: 'System Settings: Open Specific Preference Pane'
-category: 04_system/system_preferences_settings
+category: 04_system
 id: systemsettings_open_pane
 description: >-
   Opens System Settings (or System Preferences on older macOS) to a specific

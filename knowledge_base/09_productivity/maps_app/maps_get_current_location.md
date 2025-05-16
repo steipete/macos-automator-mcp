@@ -1,6 +1,6 @@
 ---
 title: 'Maps: Get Current Location'
-category: 09_productivity/maps_app
+category: 09_productivity
 id: maps_get_current_location
 description: Retrieves the current location information from the Maps app.
 keywords:

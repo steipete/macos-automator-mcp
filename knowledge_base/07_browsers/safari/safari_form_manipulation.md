@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Form Manipulation'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_form_manipulation
 description: >-
   Fills, manipulates, and submits web forms in Safari, supporting various input

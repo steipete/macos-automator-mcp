@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Refresh Current Page'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_refresh_page
 description: Refreshes (reloads) the current page in Firefox.
 keywords:

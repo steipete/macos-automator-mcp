@@ -1,6 +1,6 @@
 ---
 title: 'Numbers: Create Chart from Data'
-category: 10_creative/numbers_app
+category: 10_creative
 id: numbers_create_chart
 description: Creates a chart from data in a Numbers spreadsheet.
 keywords:

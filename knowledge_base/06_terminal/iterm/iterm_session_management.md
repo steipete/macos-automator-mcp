@@ -24,7 +24,7 @@ parameters:
   - name: includeContents
     description: 'Whether to save terminal contents (true/false, default false)'
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # iTerm2 Session Management

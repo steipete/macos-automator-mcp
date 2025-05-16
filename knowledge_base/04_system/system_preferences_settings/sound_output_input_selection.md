@@ -1,6 +1,6 @@
 ---
 title: Sound Output and Input Device Selection
-category: 04_system/system_preferences_settings
+category: 04_system
 id: system_sound_io_selection
 description: >-
   Control sound input and output device selection using AppleScript with UI

@@ -12,7 +12,7 @@ keywords:
   - automation
 language: applescript
 isComplex: false
-category: 13_developer/vmware_fusion
+category: 13_developer
 ---
 
 # VMware Fusion VM Controller

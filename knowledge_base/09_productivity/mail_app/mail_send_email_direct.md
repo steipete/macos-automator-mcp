@@ -13,7 +13,7 @@ keywords:
 language: applescript
 id: mail_send_email_direct
 argumentsPrompt: 'Provide recipient email, subject, body text, and optional attachment path'
-category: 09_productivity/mail_app
+category: 09_productivity
 ---
 
 This script creates and sends an email directly from Apple Mail without user intervention.

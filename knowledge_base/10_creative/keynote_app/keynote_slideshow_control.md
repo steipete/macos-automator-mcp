@@ -1,6 +1,6 @@
 ---
 title: 'Keynote: Start and Stop Slideshow'
-category: 10_creative/keynote_app
+category: 10_creative
 id: keynote_slideshow_control
 description: Starts or stops the slideshow for the frontmost Keynote presentation.
 keywords:

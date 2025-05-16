@@ -1,6 +1,6 @@
 ---
 title: 'Core: Range Reference Form'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_range
 description: Accessing a contiguous series of elements by specifying a start and end index.
 keywords:

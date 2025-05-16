@@ -1,6 +1,6 @@
 ---
 title: 'QuickTime Player: Record Screen'
-category: 10_creative/quicktime_player_app
+category: 10_creative
 id: quicktime_record_screen
 description: Starts a screen recording using QuickTime Player.
 keywords:

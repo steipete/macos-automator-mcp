@@ -1,6 +1,6 @@
 ---
 title: 'System Clipboard: Get File Paths (if any)'
-category: 04_system/clipboard_system
+category: 04_system
 id: system_clipboard_get_file_paths
 description: >-
   Checks if the clipboard contains file references (e.g., copied from Finder)

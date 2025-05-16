@@ -1,6 +1,6 @@
 ---
 title: 'Pages: Create New Document'
-category: 10_creative/pages_app
+category: 10_creative
 id: pages_create_document
 description: Creates a new document in Pages with specified content.
 keywords:

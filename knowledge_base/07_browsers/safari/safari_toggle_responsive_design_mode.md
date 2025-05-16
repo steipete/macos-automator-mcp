@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Toggle Responsive Design Mode'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_toggle_responsive_design_mode
 description: >-
   Toggles responsive design mode in Safari for mobile device testing and

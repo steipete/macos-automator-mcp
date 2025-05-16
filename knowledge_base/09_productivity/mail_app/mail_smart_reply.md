@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Smart Reply with Templates'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_smart_reply
 description: >-
   Creates a reply to the selected email using customizable templates based on

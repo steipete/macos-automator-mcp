@@ -1,6 +1,6 @@
 ---
 title: 'Messages: Send File Attachment'
-category: 09_productivity/messages_app
+category: 09_productivity
 id: messages_send_file
 description: Sends a file as an attachment in the Messages app.
 keywords:

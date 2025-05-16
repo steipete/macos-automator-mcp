@@ -1,6 +1,6 @@
 ---
 title: 'Keychain Access: Add Generic Password'
-category: 13_developer/security
+category: 13_developer
 id: keychain_add_generic_password
 description: >-
   Adds a new generic password item to the macOS Keychain using the security

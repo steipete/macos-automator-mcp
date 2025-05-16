@@ -1,6 +1,6 @@
 ---
 title: 'VLC: Open Media File or URL'
-category: 10_creative/vlc
+category: 10_creative
 id: vlc_open_media
 description: Open a local media file or streaming URL in VLC Media Player.
 keywords:

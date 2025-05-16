@@ -25,7 +25,7 @@ parameters:
       executes the command directly as keyboard shortcut
     required: false
     default: 'true'
-category: 08_editors/sublime_text
+category: 08_editors
 ---
 
 # Run command in Sublime Text

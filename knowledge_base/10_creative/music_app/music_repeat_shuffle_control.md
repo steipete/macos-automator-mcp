@@ -1,6 +1,6 @@
 ---
 title: 'Music: Repeat and Shuffle Control'
-category: 10_creative/music_app
+category: 10_creative
 id: music_repeat_shuffle_control
 description: Control Apple Music's repeat and shuffle settings via AppleScript.
 keywords:

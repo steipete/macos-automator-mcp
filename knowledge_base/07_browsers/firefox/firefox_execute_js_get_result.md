@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Execute JavaScript and Get Result'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_execute_js_get_result
 description: Executes JavaScript in the front tab of Firefox and returns the result.
 keywords:

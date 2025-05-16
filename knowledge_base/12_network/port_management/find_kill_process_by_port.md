@@ -184,7 +184,7 @@ arguments:
     type: boolean
     required: false
     default: false
-category: 12_network/port_management
+category: 12_network
 ---
 
 ```applescript

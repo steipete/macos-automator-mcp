@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Get URL of Front Tab'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_get_front_tab_url
 description: >-
   Retrieves the web address (URL) of the currently active tab in the frontmost

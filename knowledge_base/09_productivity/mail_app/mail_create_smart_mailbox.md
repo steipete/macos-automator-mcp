@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Create Smart Mailbox'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_create_smart_mailbox
 description: Creates a new Smart Mailbox in Mail app based on specified criteria.
 keywords:

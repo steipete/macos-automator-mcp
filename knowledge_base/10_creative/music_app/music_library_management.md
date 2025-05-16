@@ -1,6 +1,6 @@
 ---
 title: 'Music: Library Management'
-category: 10_creative/music_app
+category: 10_creative
 id: music_library_management
 description: >-
   Manage Apple Music library, including adding tracks, updating metadata, and

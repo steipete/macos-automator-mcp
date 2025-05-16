@@ -1,6 +1,6 @@
 ---
 title: 'Core: Date Data Type'
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_date
 description: Working with dates and times in AppleScript.
 keywords:

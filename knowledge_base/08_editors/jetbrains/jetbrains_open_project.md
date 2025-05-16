@@ -23,7 +23,7 @@ parameters:
   - name: projectPath
     description: Path to the project to open (POSIX path)
     required: true
-category: 08_editors/jetbrains
+category: 08_editors
 ---
 
 # Open project in JetBrains IDE

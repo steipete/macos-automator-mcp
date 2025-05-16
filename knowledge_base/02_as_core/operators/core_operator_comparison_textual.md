@@ -1,6 +1,6 @@
 ---
 title: 'Core: Textual Comparison Operators'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_comparison_textual
 description: >-
   Covers textual comparison operators in AppleScript like 'comes before', 'comes

@@ -1,6 +1,6 @@
 ---
 title: 'System Settings: Toggle Wi-Fi'
-category: 04_system/system_preferences_settings
+category: 04_system
 id: system_settings_network_toggle_wifi
 description: Toggles Wi-Fi on or off through System Settings or System Preferences.
 keywords:

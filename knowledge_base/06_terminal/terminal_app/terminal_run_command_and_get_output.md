@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Run Command and Get Output'
 id: terminal_run_command_and_get_output
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Opens Terminal.app (or uses an existing window), runs a specified shell
   command in a chosen working directory, and captures its standard output.

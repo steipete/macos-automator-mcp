@@ -1,6 +1,6 @@
 ---
 title: 'Audirvana: Play Audio File'
-category: 10_creative/audirvana
+category: 10_creative
 id: audirvana_play_file
 description: >-
   Play high-resolution audio files in Audirvana, supporting formats like FLAC,

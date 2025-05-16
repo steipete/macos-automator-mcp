@@ -1,6 +1,6 @@
 ---
 title: 'Calendar: Create New Event'
-category: 09_productivity/calendar_app
+category: 09_productivity
 id: calendar_create_event
 description: Creates a new event in the Calendar app with specified details.
 keywords:

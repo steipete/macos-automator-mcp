@@ -1,6 +1,6 @@
 ---
 title: 'Messages: Get Recent Chats'
-category: 09_productivity/messages_app
+category: 09_productivity
 id: messages_get_recent_chats
 description: Retrieves a list of recent chat conversations from the Messages app.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Get Unread Message Count'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_get_unread_count
 description: >-
   Retrieves the unread message count from specified mailboxes across mail

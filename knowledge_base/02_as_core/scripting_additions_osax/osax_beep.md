@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: beep Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_beep
 description: Plays the system alert sound. Can specify the number of beeps.
 keywords:

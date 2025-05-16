@@ -1,6 +1,6 @@
 ---
 title: 'Home App: Control Smart Home Device'
-category: 09_productivity/home_app
+category: 09_productivity
 id: home_control_device
 description: >-
   Controls a smart home device (turn on/off, adjust brightness/temperature) in

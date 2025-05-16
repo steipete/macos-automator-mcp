@@ -1,6 +1,6 @@
 ---
 title: 'Find My: Get Device Location and Play Sound'
-category: 09_productivity/find_my_app
+category: 09_productivity
 id: find_my_device_location
 description: >-
   Launches Find My app, retrieves a device's last known location, and provides

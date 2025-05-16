@@ -1,6 +1,6 @@
 ---
 title: 'Core: Boolean Data Type'
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_boolean
 description: Working with boolean (true/false) values in AppleScript.
 keywords:

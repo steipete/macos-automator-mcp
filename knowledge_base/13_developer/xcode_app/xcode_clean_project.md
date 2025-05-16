@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Clean Project'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_clean_project
 description: Cleans an Xcode project by removing build artifacts and intermediate files.
 keywords:

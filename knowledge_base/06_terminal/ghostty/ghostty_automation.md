@@ -21,7 +21,7 @@ parameters:
   - name: workDir
     description: Working directory to start in
     required: false
-category: 06_terminal/ghostty
+category: 06_terminal
 ---
 
 # Automate Ghostty Terminal

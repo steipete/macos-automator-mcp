@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Accessibility Inspector'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_accessibility_inspector
 description: >-
   Runs Chrome's Accessibility Inspector on a webpage or specific element,

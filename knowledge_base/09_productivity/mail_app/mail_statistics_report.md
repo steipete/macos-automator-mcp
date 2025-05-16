@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Generate Email Statistics Report'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_statistics_report
 description: >-
   Creates a detailed statistical report about your email usage and communication

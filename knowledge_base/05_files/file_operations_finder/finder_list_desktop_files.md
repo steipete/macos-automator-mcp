@@ -1,6 +1,6 @@
 ---
 title: 'Finder: List Names of Files on Desktop'
-category: 05_files/file_operations_finder
+category: 05_files
 id: finder_list_desktop_files
 description: >-
   Retrieves a list of names of all files (not folders) directly on the current

@@ -1,6 +1,6 @@
 ---
 title: 'VOX: Get Current Track Information'
-category: 10_creative/vox
+category: 10_creative
 id: vox_current_track_info
 description: >-
   Retrieves detailed information about the currently playing track in VOX Music

@@ -1,6 +1,6 @@
 ---
 title: 'Core: Stay-Open Applet Handler ''on idle'''
-category: 02_as_core/handlers_and_subroutines
+category: 02_as_core
 id: core_handler_on_idle
 description: >-
   Defines a handler that executes periodically if the script is saved as a 'Stay

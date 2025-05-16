@@ -1,6 +1,6 @@
 ---
 title: File Encryption and Decryption
-category: 05_files/security_operations
+category: 05_files
 id: file_encryption_decryption
 description: >-
   Encrypts and decrypts files securely using various macOS encryption methods

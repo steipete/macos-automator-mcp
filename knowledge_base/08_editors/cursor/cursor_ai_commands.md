@@ -20,7 +20,7 @@ parameters:
       Command to execute (generate, explain, chat, improve, fix_errors,
       complete_code)
     required: true
-category: 08_editors/cursor
+category: 08_editors
 ---
 
 # Trigger Cursor AI commands

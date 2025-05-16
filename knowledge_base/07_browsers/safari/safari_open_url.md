@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Open URL'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_open_url
 description: >-
   Opens a specified URL in Safari (in the current window or a new window if

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Simulate Shake Gesture'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_shake_gesture
 description: Simulates device shake gesture in iOS Simulator.
 keywords:
