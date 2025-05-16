@@ -18,11 +18,11 @@ export interface ScriptingTip {
   isLocal?: boolean; // Indicates if the tip is from the local KB
   // Placeholder for future:
   // inputSchema?: any; // Optional Zod schema string or object for 'inputData' if run by ID
-  // usesSharedHandlers?: string[]; // Names of handlers from _shared_handlers/
+  // usesSharedHandlers?: string[]; // Names of handlers from shared-handlers/
 }
 
 export interface SharedHandler {
-  name: string; // Filename without extension from _shared_handlers/
+  name: string; // Filename without extension from shared-handlers/
   content: string;
   filePath: string;
   language: 'applescript' | 'javascript'; // Determined by file extension

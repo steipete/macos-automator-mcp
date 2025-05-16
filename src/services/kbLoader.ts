@@ -6,7 +6,7 @@ import { Logger } from '../logger.js'; // Assuming logger is one level up
 
 const logger = new Logger('KBLoader');
 
-const SHARED_HANDLERS_DIR_NAME = '_shared_handlers'; // Used for locating shared handlers within a KB path
+const SHARED_HANDLERS_DIR_NAME = 'shared-handlers'; // Used for locating shared handlers within a KB path
 
 export interface ParsedTipFile {
   frontmatter: TipFrontmatter;
@@ -179,9 +179,9 @@ export async function loadTipsAndHandlersFromPath(
   } catch (e: unknown) {
     const error = e as NodeJS.ErrnoException;
     if (error.code !== 'ENOENT') {
-       logger.warn('Error reading _shared_handlers directory. Skipping.', { path: sharedHandlersPath, error: error.message, isLocalKb });
+       logger.warn('Error reading shared-handlers directory. Skipping.', { path: sharedHandlersPath, error: error.message, isLocalKb });
     } else {
-       logger.debug('_shared_handlers directory not found, normal for some KBs.', { path: sharedHandlersPath, isLocalKb });
+       logger.debug('shared-handlers directory not found, normal for some KBs.', { path: sharedHandlersPath, isLocalKb });
     }
   }
 
