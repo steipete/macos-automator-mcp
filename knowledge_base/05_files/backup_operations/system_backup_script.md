@@ -1,11 +1,23 @@
 ---
-title: "System Backup Script"
-category: "03_file_system_and_finder"
+title: System Backup Script
+category: 05_files/backup_operations
 id: system_backup_script
-description: "Creates customizable backups of important files and folders with scheduling, compression, encryption, and retention options"
-keywords: ["backup", "rsync", "archive", "incremental", "compression", "encryption", "schedule", "restoration"]
+description: >-
+  Creates customizable backups of important files and folders with scheduling,
+  compression, encryption, and retention options
+keywords:
+  - backup
+  - rsync
+  - archive
+  - incremental
+  - compression
+  - encryption
+  - schedule
+  - restoration
 language: applescript
-notes: "Some operations require administrator privileges. Uses rsync for efficient incremental backups and optionally supports encrypted disk images."
+notes: >-
+  Some operations require administrator privileges. Uses rsync for efficient
+  incremental backups and optionally supports encrypted disk images.
 ---
 
 ```applescript

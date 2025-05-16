@@ -11,9 +11,9 @@ keywords:
   - synchronization
   - extensions
 usage_examples:
-  - "Back up VS Code settings and extensions"
-  - "Create portable profile of VS Code configuration"
-  - "Transfer settings between work and personal machines"
+  - Back up VS Code settings and extensions
+  - Create portable profile of VS Code configuration
+  - Transfer settings between work and personal machines
 parameters:
   - name: backupPath
     description: Path to save the backup (POSIX path)
@@ -21,6 +21,7 @@ parameters:
   - name: includeExtensions
     description: Whether to include extensions in the backup (true/false)
     required: false
+category: 08_editors/vscode
 ---
 
 # Sync VS Code Settings Between Machines

@@ -1,11 +1,26 @@
 ---
-title: "System Preferences Control"
-category: "02_system_interaction"
+title: System Preferences Control
+category: 04_system/system_settings
 id: system_preferences_control
-description: "Controls various system preferences and settings through AppleScript including appearance, sound, display, and security options"
-keywords: ["system preferences", "settings", "appearance", "dark mode", "sound", "resolution", "security", "privacy", "accessibility", "night shift", "true tone"]
+description: >-
+  Controls various system preferences and settings through AppleScript including
+  appearance, sound, display, and security options
+keywords:
+  - system preferences
+  - settings
+  - appearance
+  - dark mode
+  - sound
+  - resolution
+  - security
+  - privacy
+  - accessibility
+  - night shift
+  - true tone
 language: applescript
-notes: "Many advanced preferences require accessibility permissions. Some settings may require slightly different approaches on newer macOS versions."
+notes: >-
+  Many advanced preferences require accessibility permissions. Some settings may
+  require slightly different approaches on newer macOS versions.
 ---
 
 ```applescript

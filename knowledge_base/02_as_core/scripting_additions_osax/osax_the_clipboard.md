@@ -1,15 +1,29 @@
 ---
-title: "StandardAdditions: the clipboard Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: the clipboard Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_the_clipboard
-description: "Gets or sets the contents of the system clipboard."
-keywords: ["StandardAdditions", "clipboard", "the clipboard", "get clipboard", "set clipboard", "copy", "paste", "osax"]
+description: Gets or sets the contents of the system clipboard.
+keywords:
+  - StandardAdditions
+  - clipboard
+  - the clipboard
+  - get clipboard
+  - set clipboard
+  - copy
+  - paste
+  - osax
 language: applescript
-notes: |
+notes: >
   - `set the clipboard to value` copies `value` to the clipboard.
-  - `get the clipboard` or simply `the clipboard` retrieves the current clipboard content.
-  - Can specify data type using `as {type}`: `get the clipboard as text`, `get the clipboard as picture`.
-  - `clipboard info` provides information about the types of data currently on the clipboard.
+
+  - `get the clipboard` or simply `the clipboard` retrieves the current
+  clipboard content.
+
+  - Can specify data type using `as {type}`: `get the clipboard as text`, `get
+  the clipboard as picture`.
+
+  - `clipboard info` provides information about the types of data currently on
+  the clipboard.
 ---
 
 `the clipboard` allows interaction with the system clipboard.

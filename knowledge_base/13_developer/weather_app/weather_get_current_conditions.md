@@ -3,17 +3,29 @@ id: weather_get_current_conditions
 title: Get Current Weather Conditions
 description: Script to retrieve current weather conditions using a weather API
 language: applescript
-tags: ['weather', 'api', 'network', 'utility']
-keywords: ['weather', 'conditions', 'temperature', 'forecast', 'weatherapi']
+tags:
+  - weather
+  - api
+  - network
+  - utility
+keywords:
+  - weather
+  - conditions
+  - temperature
+  - forecast
+  - weatherapi
 completion_prompt: Get current weather conditions for a location
-required_arguments: ['location']
-optional_arguments: ['units']
+required_arguments:
+  - location
+optional_arguments:
+  - units
 arguments_sample_value:
-  location: "New York"
-  units: "c"
+  location: New York
+  units: c
 argument_descriptions:
-  location: "Location name or postal code (e.g., 'San Francisco' or '94105')"
-  units: "Temperature units ('c' for Celsius, 'f' for Fahrenheit)"
+  location: 'Location name or postal code (e.g., ''San Francisco'' or ''94105'')'
+  units: 'Temperature units (''c'' for Celsius, ''f'' for Fahrenheit)'
+category: 13_developer/weather_app
 ---
 
 # Get Current Weather Conditions

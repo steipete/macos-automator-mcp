@@ -1,16 +1,30 @@
 ---
-title: "Mail: Check for Missing Replies"
-category: "07_productivity_apps"
+title: 'Mail: Check for Missing Replies'
+category: 09_productivity/mail_app
 id: mail_check_for_replies
-description: "Identifies sent messages that have not received replies after a specified timeframe"
-keywords: ["Mail", "email", "reply", "follow up", "pending", "unanswered"]
+description: >-
+  Identifies sent messages that have not received replies after a specified
+  timeframe
+keywords:
+  - Mail
+  - email
+  - reply
+  - follow up
+  - pending
+  - unanswered
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide days threshold as 'daysThreshold' in inputData (optional, defaults to 3 days)"
-notes: |
-  - Identifies sent emails that have not received replies after a specified number of days
+argumentsPrompt: >-
+  Provide days threshold as 'daysThreshold' in inputData (optional, defaults to
+  3 days)
+notes: >
+  - Identifies sent emails that have not received replies after a specified
+  number of days
+
   - Helps with follow-up tasks for important messages
+
   - Searches across all mail accounts
+
   - Requires Automation permission for Mail.app
 ---
 

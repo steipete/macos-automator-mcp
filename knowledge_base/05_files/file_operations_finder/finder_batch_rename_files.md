@@ -1,12 +1,19 @@
 ---
-title: "Finder: Batch Rename Files"
-category: "03_file_system_and_finder"
+title: 'Finder: Batch Rename Files'
+category: 05_files/file_operations_finder
 id: finder_batch_rename_files
-description: "Renames multiple files in a folder according to a pattern."
-keywords: ["Finder", "batch rename", "file renaming", "filename", "rename files"]
+description: Renames multiple files in a folder according to a pattern.
+keywords:
+  - Finder
+  - batch rename
+  - file renaming
+  - filename
+  - rename files
 language: applescript
-argumentsPrompt: "Enter the folder path and the base name for renamed files"
-notes: "Renames all files in a folder using a base name followed by a sequential number. Preserves file extensions."
+argumentsPrompt: Enter the folder path and the base name for renamed files
+notes: >-
+  Renames all files in a folder using a base name followed by a sequential
+  number. Preserves file extensions.
 ---
 
 ```applescript

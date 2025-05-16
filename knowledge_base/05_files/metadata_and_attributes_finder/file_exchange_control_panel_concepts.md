@@ -1,12 +1,20 @@
 ---
-title: "File Extension Associations in Modern macOS"
-description: "Understanding and managing file extension to application associations in modern macOS with AppleScript"
-author: "Claude"
-category: "03_file_system_and_finder"
-subcategory: "metadata_and_attributes_finder"
-keywords: ["file extension", "file association", "default application", "file types", "duti", "lsregister"]
-language: "applescript"
-version: "1.0"
+title: File Extension Associations in Modern macOS
+description: >-
+  Understanding and managing file extension to application associations in
+  modern macOS with AppleScript
+author: Claude
+category: 05_files/metadata_and_attributes_finder
+subcategory: metadata_and_attributes_finder
+keywords:
+  - file extension
+  - file association
+  - default application
+  - file types
+  - duti
+  - lsregister
+language: applescript
+version: '1.0'
 validated: true
 ---
 

@@ -1,9 +1,18 @@
 ---
-title: "Firefox: Responsive Design Mode"
-category: "05_web_browsers"
+title: 'Firefox: Responsive Design Mode'
+category: 07_browsers/firefox
 id: firefox_responsive_design_mode
-description: "Opens Firefox's Responsive Design Mode for testing websites on different screen sizes and devices."
-keywords: ["Firefox", "responsive design", "mobile testing", "web development", "screen size", "viewport", "device emulation"]
+description: >-
+  Opens Firefox's Responsive Design Mode for testing websites on different
+  screen sizes and devices.
+keywords:
+  - Firefox
+  - responsive design
+  - mobile testing
+  - web development
+  - screen size
+  - viewport
+  - device emulation
 language: applescript
 notes: |
   - Firefox must be running.

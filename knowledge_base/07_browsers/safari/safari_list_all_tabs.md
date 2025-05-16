@@ -1,9 +1,17 @@
 ---
-title: "Safari: List All Tabs"
-category: "05_web_browsers"
+title: 'Safari: List All Tabs'
+category: 07_browsers/safari
 id: safari_list_all_tabs
-description: "Retrieves a list of all open tabs in all Safari windows, including their titles and URLs."
-keywords: ["Safari", "tabs", "windows", "list", "browser", "web"]
+description: >-
+  Retrieves a list of all open tabs in all Safari windows, including their
+  titles and URLs.
+keywords:
+  - Safari
+  - tabs
+  - windows
+  - list
+  - browser
+  - web
 language: applescript
 isComplex: false
 notes: |

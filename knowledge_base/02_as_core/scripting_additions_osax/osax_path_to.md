@@ -1,14 +1,27 @@
 ---
-title: "StandardAdditions: path to Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: path to Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_path_to
-description: "Returns an alias to a special system or user folder (e.g., desktop, documents, applications folder, etc.)."
-keywords: ["StandardAdditions", "path to", "folder path", "alias", "system folder", "user folder"]
+description: >-
+  Returns an alias to a special system or user folder (e.g., desktop, documents,
+  applications folder, etc.).
+keywords:
+  - StandardAdditions
+  - path to
+  - folder path
+  - alias
+  - system folder
+  - user folder
 language: applescript
-notes: |
-  - For a full list of folder keywords, open Script Editor > File > Open Dictionary... > StandardAdditions.osax, and find the 'path to' command.
-  - Can specify `from user domain`, `from local domain`, `from system domain`, or `from network domain`.
-  - `as string` or `POSIX path of` can convert the returned alias to a string path.
+notes: >
+  - For a full list of folder keywords, open Script Editor > File > Open
+  Dictionary... > StandardAdditions.osax, and find the 'path to' command.
+
+  - Can specify `from user domain`, `from local domain`, `from system domain`,
+  or `from network domain`.
+
+  - `as string` or `POSIX path of` can convert the returned alias to a string
+  path.
 ---
 
 The `path to` command provides a reliable way to get locations of standard macOS folders.

@@ -1,11 +1,24 @@
 ---
-title: "Calendar Event Creator"
-category: "07_productivity_apps"
+title: Calendar Event Creator
+category: 09_productivity/calendar_app
 id: calendar_event_creator
-description: "Creates calendar events with custom details, recurrence, alerts, and attendees using AppleScript's Calendar application integration"
-keywords: ["calendar", "event", "appointment", "scheduling", "reminders", "recurrence", "meeting", "attendees", "alerts"]
+description: >-
+  Creates calendar events with custom details, recurrence, alerts, and attendees
+  using AppleScript's Calendar application integration
+keywords:
+  - calendar
+  - event
+  - appointment
+  - scheduling
+  - reminders
+  - recurrence
+  - meeting
+  - attendees
+  - alerts
 language: applescript
-notes: "Works with macOS Calendar application (formerly iCal). Supports natural language date parsing and advanced calendar features."
+notes: >-
+  Works with macOS Calendar application (formerly iCal). Supports natural
+  language date parsing and advanced calendar features.
 ---
 
 ```applescript

@@ -1,19 +1,42 @@
 ---
-title: "Safari: Network Monitor"
-category: "05_web_browsers"
+title: 'Safari: Network Monitor'
+category: 07_browsers/safari
 id: safari_network_monitor
-description: "Opens Safari's Web Inspector in Network tab to monitor network requests and optionally records network activity."
-keywords: ["Safari", "network", "monitor", "web development", "debugging", "HTTP", "requests", "performance", "Web Inspector", "HAR"]
+description: >-
+  Opens Safari's Web Inspector in Network tab to monitor network requests and
+  optionally records network activity.
+keywords:
+  - Safari
+  - network
+  - monitor
+  - web development
+  - debugging
+  - HTTP
+  - requests
+  - performance
+  - Web Inspector
+  - HAR
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional record setting as 'record' in inputData ('true' to start recording, 'false' to stop). If not provided, just opens the network panel without changing recording state."
-notes: |
+argumentsPrompt: >-
+  Optional record setting as 'record' in inputData ('true' to start recording,
+  'false' to stop). If not provided, just opens the network panel without
+  changing recording state.
+notes: >
   - Safari must be running with at least one open tab.
+
   - The Develop menu must be enabled in Safari preferences.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
   - The script opens the Web Inspector in Network tab for monitoring requests.
-  - If recording is enabled, the script will start capturing all network activity.
+
+  - If recording is enabled, the script will start capturing all network
+  activity.
+
   - Recording can consume significant memory for busy sites, so use with care.
+
   - Network recording can be exported using the export button in the UI.
 ---
 

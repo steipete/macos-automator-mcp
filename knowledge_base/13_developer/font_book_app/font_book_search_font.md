@@ -1,12 +1,17 @@
 ---
-title: "Font Book: Search for Font"
-category: "developer"
+title: 'Font Book: Search for Font'
+category: 13_developer/font_book_app
 id: font_book_search_font
-description: "Searches for a specific font in Font Book."
-keywords: ["Font Book", "search font", "find typeface", "font lookup", "font search"]
+description: Searches for a specific font in Font Book.
+keywords:
+  - Font Book
+  - search font
+  - find typeface
+  - font lookup
+  - font search
 language: applescript
-argumentsPrompt: "Enter the name of the font to search for"
-notes: "Searches for a font by name and returns information about matching fonts."
+argumentsPrompt: Enter the name of the font to search for
+notes: Searches for a font by name and returns information about matching fonts.
 ---
 
 ```applescript

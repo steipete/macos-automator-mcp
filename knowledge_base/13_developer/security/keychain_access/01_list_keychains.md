@@ -1,9 +1,18 @@
 ---
-title: "Keychain Access: List Available Keychains"
-category: "developer"
+title: 'Keychain Access: List Available Keychains'
+category: 13_developer/security
 id: keychain_list_keychains
-description: "Lists all available keychains on the system using the security command-line tool."
-keywords: ["keychain", "security", "macOS", "passwords", "credentials", "keychain access", "list keychains"]
+description: >-
+  Lists all available keychains on the system using the security command-line
+  tool.
+keywords:
+  - keychain
+  - security
+  - macOS
+  - passwords
+  - credentials
+  - keychain access
+  - list keychains
 language: applescript
 notes: |
   - Uses the security command-line tool which ships with macOS

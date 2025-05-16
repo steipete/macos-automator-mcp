@@ -1,11 +1,18 @@
 ---
-title: "Maps: Get Current Location"
-category: "07_productivity_apps"
+title: 'Maps: Get Current Location'
+category: 09_productivity/maps_app
 id: maps_get_current_location
-description: "Retrieves the current location information from the Maps app."
-keywords: ["Maps", "current location", "GPS", "coordinates", "geolocation"]
+description: Retrieves the current location information from the Maps app.
+keywords:
+  - Maps
+  - current location
+  - GPS
+  - coordinates
+  - geolocation
 language: applescript
-notes: "Requires location services to be enabled and permission granted to the Maps app."
+notes: >-
+  Requires location services to be enabled and permission granted to the Maps
+  app.
 ---
 
 ```applescript

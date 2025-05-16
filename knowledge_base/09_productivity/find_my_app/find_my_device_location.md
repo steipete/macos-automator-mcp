@@ -1,15 +1,29 @@
 ---
-title: "Find My: Get Device Location and Play Sound"
-category: "07_productivity_apps"
+title: 'Find My: Get Device Location and Play Sound'
+category: 09_productivity/find_my_app
 id: find_my_device_location
-description: "Launches Find My app, retrieves a device's last known location, and provides functionality to play a sound on the device."
-keywords: ["Find My", "device location", "play sound", "locate device", "Apple devices"]
+description: >-
+  Launches Find My app, retrieves a device's last known location, and provides
+  functionality to play a sound on the device.
+keywords:
+  - Find My
+  - device location
+  - play sound
+  - locate device
+  - Apple devices
 language: applescript
-requires_permissions: ["Automation", "Accessibility"]
-parameter_docs: |
-  - deviceName (string): The name of the device to locate. This should match the device name shown in Find My app.
-  - playSound (boolean, optional): Whether to play a sound on the device. Default is false.
-notes: "Requires Find My app to be signed in with an Apple ID. Uses UI scripting (System Events) as Find My has limited direct AppleScript support."
+requires_permissions:
+  - Automation
+  - Accessibility
+parameter_docs: >
+  - deviceName (string): The name of the device to locate. This should match the
+  device name shown in Find My app.
+
+  - playSound (boolean, optional): Whether to play a sound on the device.
+  Default is false.
+notes: >-
+  Requires Find My app to be signed in with an Apple ID. Uses UI scripting
+  (System Events) as Find My has limited direct AppleScript support.
 ---
 
 ```applescript

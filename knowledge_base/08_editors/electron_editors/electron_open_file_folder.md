@@ -1,12 +1,21 @@
 ---
-title: "Electron Editors: Open File or Folder"
-category: "06_ides_and_editors"
+title: 'Electron Editors: Open File or Folder'
+category: 08_editors/electron_editors
 id: electron_open_file_folder
-description: "Opens a specified file or folder in an Electron-based editor like VS Code or Cursor."
-keywords: ["vscode", "cursor", "electron", "open file", "open folder"]
+description: >-
+  Opens a specified file or folder in an Electron-based editor like VS Code or
+  Cursor.
+keywords:
+  - vscode
+  - cursor
+  - electron
+  - open file
+  - open folder
 language: applescript
 isComplex: true
-argumentsPrompt: "Target editor application name as 'targetAppName', and absolute POSIX path to file/folder as 'itemPath' in inputData."
+argumentsPrompt: >-
+  Target editor application name as 'targetAppName', and absolute POSIX path to
+  file/folder as 'itemPath' in inputData.
 ---
 
 ```applescript

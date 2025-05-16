@@ -1,9 +1,17 @@
 ---
-title: "Core: 'contains' Operator"
-category: "01_applescript_core"
+title: 'Core: ''contains'' Operator'
+category: 02_as_core/operators
 id: core_operator_contains
-description: "Checks if a list, record, or string contains another item or substring. Returns boolean."
-keywords: ["operator", "contains", "is in", "substring", "list membership", "record key"]
+description: >-
+  Checks if a list, record, or string contains another item or substring.
+  Returns boolean.
+keywords:
+  - operator
+  - contains
+  - is in
+  - substring
+  - list membership
+  - record key
 language: applescript
 ---
 

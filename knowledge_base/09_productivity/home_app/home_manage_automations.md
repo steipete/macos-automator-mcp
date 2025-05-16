@@ -1,18 +1,33 @@
 ---
 id: home_manage_automations
-title: "Home App: Manage Automations"
-description: "Launches the Home app, lists existing automations (scenes, schedules, etc.), and provides functionality to enable or disable them."
+title: 'Home App: Manage Automations'
+description: >-
+  Launches the Home app, lists existing automations (scenes, schedules, etc.),
+  and provides functionality to enable or disable them.
 language: applescript
-contributors: ["Claude AI"]
-created: 2024-05-16
-category: 07_productivity_apps
-platforms: ["macOS"]
-keywords: ["Home app", "HomeKit", "smart home", "automations", "scenes", "schedules", "home automation", "System Events", "UI scripting"]
+contributors:
+  - Claude AI
+created: 2024-05-16T00:00:00.000Z
+category: 09_productivity/home_app
+platforms:
+  - macOS
+keywords:
+  - Home app
+  - HomeKit
+  - smart home
+  - automations
+  - scenes
+  - schedules
+  - home automation
+  - System Events
+  - UI scripting
 requirements:
   - System Events accessibility permissions
   - Home app configured with at least one HomeKit automation
   - macOS 10.14 (Mojave) or later
-argumentsPrompt: "Optional: Provide 'action' ('list', 'enable', 'disable') and 'automationName' (required for enable/disable actions) in inputData."
+argumentsPrompt: >-
+  Optional: Provide 'action' ('list', 'enable', 'disable') and 'automationName'
+  (required for enable/disable actions) in inputData.
 deprecated: false
 ---
 

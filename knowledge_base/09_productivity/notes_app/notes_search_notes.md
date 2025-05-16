@@ -1,12 +1,19 @@
 ---
-title: "Notes: Search for Notes"
-category: "07_productivity_apps"
+title: 'Notes: Search for Notes'
+category: 09_productivity/notes_app
 id: notes_search_notes
-description: "Searches for notes containing specific text in the Notes app."
-keywords: ["Notes", "search", "find notes", "note search", "text search"]
+description: Searches for notes containing specific text in the Notes app.
+keywords:
+  - Notes
+  - search
+  - find notes
+  - note search
+  - text search
 language: applescript
-argumentsPrompt: "Enter the search text to find in notes"
-notes: "Searches for notes containing the specified text in their title or body across all folders in Notes app."
+argumentsPrompt: Enter the search text to find in notes
+notes: >-
+  Searches for notes containing the specified text in their title or body across
+  all folders in Notes app.
 ---
 
 ```applescript

@@ -1,9 +1,20 @@
 ---
-title: "Spotify: Basic Playback Controls"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Basic Playback Controls'
+category: 10_creative/spotify
 id: spotify_playback_controls
-description: "Control basic playback in Spotify such as play, pause, next, previous, and volume."
-keywords: ["Spotify", "playback", "play", "pause", "stop", "next track", "previous track", "volume", "music"]
+description: >-
+  Control basic playback in Spotify such as play, pause, next, previous, and
+  volume.
+keywords:
+  - Spotify
+  - playback
+  - play
+  - pause
+  - stop
+  - next track
+  - previous track
+  - volume
+  - music
 language: applescript
 notes: |
   - These commands target the Spotify application.

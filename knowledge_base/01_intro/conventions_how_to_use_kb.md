@@ -1,10 +1,15 @@
 ---
-title: "How to Use This Knowledge Base"
-category: "00_readme_and_conventions"
+title: How to Use This Knowledge Base
+category: 01_intro
 id: conventions_how_to_use_kb
-description: "Explains how to query and use the tips provided by this MCP server."
-keywords: ["help", "meta", "documentation", "get_scripting_tips", "execute_script"]
-language: applescript # Language of the script block, or 'plaintext' if no script
+description: Explains how to query and use the tips provided by this MCP server.
+keywords:
+  - help
+  - meta
+  - documentation
+  - get_scripting_tips
+  - execute_script
+language: applescript
 isComplex: false
 ---
 

@@ -1,10 +1,17 @@
 ---
 title: Safari Event Listener Management
-category: "05_web_browsers"
+category: 07_browsers/safari
 id: safari_event_listener
-description: Lists, adds, removes, and monitors event listeners on a webpage in Safari
+description: 'Lists, adds, removes, and monitors event listeners on a webpage in Safari'
 language: applescript
-keywords: [safari, event, listener, javascript, monitor, debug, DOM events]
+keywords:
+  - safari
+  - event
+  - listener
+  - javascript
+  - monitor
+  - debug
+  - DOM events
 ---
 
 # Safari Event Listener Management

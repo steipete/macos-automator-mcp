@@ -1,9 +1,15 @@
 ---
-title: "Firefox: Refresh Current Page"
-category: "05_web_browsers"
+title: 'Firefox: Refresh Current Page'
+category: 07_browsers/firefox
 id: firefox_refresh_page
-description: "Refreshes (reloads) the current page in Firefox."
-keywords: ["Firefox", "refresh", "reload", "current page", "browser", "UI scripting"]
+description: Refreshes (reloads) the current page in Firefox.
+keywords:
+  - Firefox
+  - refresh
+  - reload
+  - current page
+  - browser
+  - UI scripting
 language: applescript
 notes: |
   - Firefox must be running.

@@ -1,19 +1,38 @@
 ---
-title: "VOX: Play Audio File"
-category: "08_creative_and_document_apps"
+title: 'VOX: Play Audio File'
+category: 10_creative/vox
 id: vox_play_file
-description: "Play a local audio file in VOX Music Player, supporting high-quality formats like FLAC, MP3, AAC, and more."
-keywords: ["VOX", "play file", "audio", "FLAC", "MP3", "high-quality", "playback", "audiophile"]
+description: >-
+  Play a local audio file in VOX Music Player, supporting high-quality formats
+  like FLAC, MP3, AAC, and more.
+keywords:
+  - VOX
+  - play file
+  - audio
+  - FLAC
+  - MP3
+  - high-quality
+  - playback
+  - audiophile
 language: applescript
-parameters: |
+parameters: >
   - file_path (required): Path to the audio file to play
-  - add_to_playlist (optional): Whether to add to playlist instead of replacing - "yes" or "no" (default: "no")
-notes: |
+
+  - add_to_playlist (optional): Whether to add to playlist instead of replacing
+  - "yes" or "no" (default: "no")
+notes: >
   - VOX Music Player must be running or will be launched automatically.
+
   - File path must be a valid path to an audio file.
-  - VOX supports many audio formats including FLAC, ALAC, AIFF, WAV, MP3, AAC, etc.
-  - The script can either replace the current playlist or add the file to the existing playlist.
-  - VOX is particularly useful for playing high-resolution audio files that Music.app may not support natively.
+
+  - VOX supports many audio formats including FLAC, ALAC, AIFF, WAV, MP3, AAC,
+  etc.
+
+  - The script can either replace the current playlist or add the file to the
+  existing playlist.
+
+  - VOX is particularly useful for playing high-resolution audio files that
+  Music.app may not support natively.
 ---
 
 Play an audio file in VOX Music Player.

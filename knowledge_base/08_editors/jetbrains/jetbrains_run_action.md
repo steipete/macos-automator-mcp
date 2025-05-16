@@ -11,16 +11,19 @@ keywords:
   - shortcuts
   - IDE-automation
 usage_examples:
-  - "Run Find in Files action in IntelliJ"
-  - "Run Build Project action in WebStorm"
-  - "Run Run action in PyCharm"
+  - Run Find in Files action in IntelliJ
+  - Run Build Project action in WebStorm
+  - Run Run action in PyCharm
 parameters:
   - name: ideName
-    description: The name of the JetBrains IDE (e.g., 'IntelliJ IDEA', 'WebStorm', 'PyCharm')
+    description: >-
+      The name of the JetBrains IDE (e.g., 'IntelliJ IDEA', 'WebStorm',
+      'PyCharm')
     required: true
   - name: actionName
-    description: The name of the action to execute (e.g., 'Find in Files', 'Build Project')
+    description: 'The name of the action to execute (e.g., ''Find in Files'', ''Build Project'')'
     required: true
+category: 08_editors/jetbrains
 ---
 
 # Run action in JetBrains IDE

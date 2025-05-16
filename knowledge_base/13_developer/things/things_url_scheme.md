@@ -4,10 +4,16 @@ title: Use Things URL Scheme
 description: Use AppleScript with Things URL scheme for quick actions
 author: steipete
 language: applescript
-tags: things, productivity, task management, url scheme, automation
-keywords: [url-scheme, quick-add, integration, encoding, deep-linking]
+tags: 'things, productivity, task management, url scheme, automation'
+keywords:
+  - url-scheme
+  - quick-add
+  - integration
+  - encoding
+  - deep-linking
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Use Things URL Scheme

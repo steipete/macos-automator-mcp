@@ -1,9 +1,19 @@
 ---
-title: "Core: List Data Type"
-category: "01_applescript_core"
+title: 'Core: List Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_list
-description: "Working with lists (arrays) in AppleScript. Lists are 1-indexed and can contain mixed data types."
-keywords: ["list", "array", "data type", "item", "index", "count", "concatenation", "repeat"]
+description: >-
+  Working with lists (arrays) in AppleScript. Lists are 1-indexed and can
+  contain mixed data types.
+keywords:
+  - list
+  - array
+  - data type
+  - item
+  - index
+  - count
+  - concatenation
+  - repeat
 language: applescript
 ---
 

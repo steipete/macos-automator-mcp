@@ -1,16 +1,26 @@
 ---
-title: "Mail: Flag Messages"
-category: "07_productivity_apps"
+title: 'Mail: Flag Messages'
+category: 09_productivity/mail_app
 id: mail_flag_messages
-description: "Flags selected messages in Mail.app with specific flag colors"
-keywords: ["Mail", "email", "flag", "color", "mark", "highlight"]
+description: Flags selected messages in Mail.app with specific flag colors
+keywords:
+  - Mail
+  - email
+  - flag
+  - color
+  - mark
+  - highlight
 language: applescript
 isComplex: false
-argumentsPrompt: "Provide flag color as 'flagColor' in inputData (optional, defaults to 'red')"
-notes: |
+argumentsPrompt: 'Provide flag color as ''flagColor'' in inputData (optional, defaults to ''red'')'
+notes: >
   - Flags or unflags currently selected messages in Mail.app
-  - Supports all Mail flag colors: red, orange, yellow, green, blue, purple, gray, or none (to unflag)
+
+  - Supports all Mail flag colors: red, orange, yellow, green, blue, purple,
+  gray, or none (to unflag)
+
   - Requires Automation permission for Mail.app
+
   - Requires Mail.app to be open with message(s) selected
 ---
 

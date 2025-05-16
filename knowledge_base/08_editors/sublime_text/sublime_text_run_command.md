@@ -11,16 +11,21 @@ keywords:
   - workflow
   - code commands
 usage_examples:
-  - "Open the command palette in Sublime Text"
-  - "Execute specific commands like 'Save All', 'Format File', etc."
+  - Open the command palette in Sublime Text
+  - 'Execute specific commands like ''Save All'', ''Format File'', etc.'
 parameters:
   - name: command
-    description: The command to execute (either a specific command for the command palette or a shortcut key sequence)
+    description: >-
+      The command to execute (either a specific command for the command palette
+      or a shortcut key sequence)
     required: true
   - name: useCommandPalette
-    description: If 'true', opens the command palette and enters the command; if 'false', executes the command directly as keyboard shortcut
+    description: >-
+      If 'true', opens the command palette and enters the command; if 'false',
+      executes the command directly as keyboard shortcut
     required: false
-    default: "true"
+    default: 'true'
+category: 08_editors/sublime_text
 ---
 
 # Run command in Sublime Text

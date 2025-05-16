@@ -1,11 +1,20 @@
 ---
-title: "Shortcuts: List All Shortcuts"
-category: "developer"
+title: 'Shortcuts: List All Shortcuts'
+category: 13_developer/shortcuts_app
 id: shortcuts_list_all
-description: "Lists all available shortcuts in the macOS Shortcuts app, with folder organization."
-keywords: ["Shortcuts", "list shortcuts", "shortcut folders", "automation", "workflow list"]
+description: >-
+  Lists all available shortcuts in the macOS Shortcuts app, with folder
+  organization.
+keywords:
+  - Shortcuts
+  - list shortcuts
+  - shortcut folders
+  - automation
+  - workflow list
 language: applescript
-notes: "Retrieves and displays all shortcuts, showing their folder organization and availability. Useful for discovering what shortcuts are available to run."
+notes: >-
+  Retrieves and displays all shortcuts, showing their folder organization and
+  availability. Useful for discovering what shortcuts are available to run.
 ---
 
 ```applescript

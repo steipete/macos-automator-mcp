@@ -1,21 +1,49 @@
 ---
-title: "Safari: Inject JavaScript"
-category: "05_web_browsers"
+title: 'Safari: Inject JavaScript'
+category: 07_browsers/safari
 id: safari_inject_script
-description: "Injects custom JavaScript code or external script files into the current Safari webpage."
-keywords: ["Safari", "JavaScript", "inject", "script", "web development", "DOM", "manipulation", "automation", "bookmarklet"]
+description: >-
+  Injects custom JavaScript code or external script files into the current
+  Safari webpage.
+keywords:
+  - Safari
+  - JavaScript
+  - inject
+  - script
+  - web development
+  - DOM
+  - manipulation
+  - automation
+  - bookmarklet
 language: applescript
 isComplex: true
-argumentsPrompt: "JavaScript code to inject as 'script' or URL of external script as 'scriptUrl' in inputData. Include 'persistent' flag set to 'true' to have script persist across page loads."
-notes: |
+argumentsPrompt: >-
+  JavaScript code to inject as 'script' or URL of external script as 'scriptUrl'
+  in inputData. Include 'persistent' flag set to 'true' to have script persist
+  across page loads.
+notes: >
   - Safari must be running with at least one open tab.
-  - This script allows you to inject either inline JavaScript code or load external script files.
-  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop menu.
-  - For complex scripts, consider using a minified version to avoid issues with quotes and newlines.
-  - The persistent option uses a MutationObserver to re-inject the script on DOM changes.
-  - External scripts are loaded asynchronously using a dynamically created script tag.
-  - Scripts run in the page context and have access to all page variables and DOM elements.
-  - For debugging, errors from the injected script will be captured and returned.
+
+  - This script allows you to inject either inline JavaScript code or load
+  external script files.
+
+  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop
+  menu.
+
+  - For complex scripts, consider using a minified version to avoid issues with
+  quotes and newlines.
+
+  - The persistent option uses a MutationObserver to re-inject the script on DOM
+  changes.
+
+  - External scripts are loaded asynchronously using a dynamically created
+  script tag.
+
+  - Scripts run in the page context and have access to all page variables and
+  DOM elements.
+
+  - For debugging, errors from the injected script will be captured and
+  returned.
 ---
 
 This script injects custom JavaScript into the current Safari webpage, allowing DOM manipulation and automation.

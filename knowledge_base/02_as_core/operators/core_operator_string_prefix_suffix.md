@@ -1,11 +1,21 @@
 ---
-title: "Core: String Prefix/Suffix Operators"
-category: "01_applescript_core"
+title: 'Core: String Prefix/Suffix Operators'
+category: 02_as_core/operators
 id: core_operator_string_prefix_suffix
-description: "Covers string operators like 'starts with', 'ends with', and their negations."
-keywords: ["operator", "string", "starts with", "ends with", "prefix", "suffix", "does not start with", "does not end with"]
+description: 'Covers string operators like ''starts with'', ''ends with'', and their negations.'
+keywords:
+  - operator
+  - string
+  - starts with
+  - ends with
+  - prefix
+  - suffix
+  - does not start with
+  - does not end with
 language: applescript
-notes: "These operators are case-insensitive by default but can be made case-sensitive using a `considering case` block."
+notes: >-
+  These operators are case-insensitive by default but can be made case-sensitive
+  using a `considering case` block.
 ---
 
 AppleScript provides convenient operators for checking string prefixes and suffixes.

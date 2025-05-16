@@ -1,12 +1,21 @@
 ---
-title: "Pages: Template Operations"
-category: "08_creative_and_document_apps"
+title: 'Pages: Template Operations'
+category: 10_creative/pages_app
 id: pages_template_operations
-description: "Create from template, save as template, and list available templates in Pages."
-keywords: ["Pages", "templates", "document templates", "new from template", "save as template", "list templates"]
+description: 'Create from template, save as template, and list available templates in Pages.'
+keywords:
+  - Pages
+  - templates
+  - document templates
+  - new from template
+  - save as template
+  - list templates
 language: applescript
-argumentsPrompt: "Choose operation type (create, save, list) and provide necessary parameters"
-notes: "Handles Pages document template operations. For 'create' operation, provide template name; for 'save' operation, provide current document and template name; 'list' operation shows all available templates."
+argumentsPrompt: 'Choose operation type (create, save, list) and provide necessary parameters'
+notes: >-
+  Handles Pages document template operations. For 'create' operation, provide
+  template name; for 'save' operation, provide current document and template
+  name; 'list' operation shows all available templates.
 ---
 
 ```applescript

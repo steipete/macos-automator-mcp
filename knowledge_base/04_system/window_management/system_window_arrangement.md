@@ -1,11 +1,21 @@
 ---
-title: "System Window Arrangement"
-category: "02_system_interaction"
+title: System Window Arrangement
+category: 04_system/window_management
 id: system_window_arrangement
-description: "Controls window positions, sizes, and arrangements for multiple applications"
-keywords: ["window", "arrange", "position", "size", "resize", "System Events", "workspace", "layout"]
+description: 'Controls window positions, sizes, and arrangements for multiple applications'
+keywords:
+  - window
+  - arrange
+  - position
+  - size
+  - resize
+  - System Events
+  - workspace
+  - layout
 language: applescript
-notes: "Requires accessibility permissions for System Events. Works best with applications that follow standard window management APIs."
+notes: >-
+  Requires accessibility permissions for System Events. Works best with
+  applications that follow standard window management APIs.
 ---
 
 ```applescript

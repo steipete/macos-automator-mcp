@@ -1,12 +1,21 @@
 ---
-title: "File Ops (No Finder): Write Text to File (Overwrite)"
-category: "03_file_system_and_finder"
+title: 'File Ops (No Finder): Write Text to File (Overwrite)'
+category: 05_files/file_operations_no_finder
 id: fileops_write_text_file
-description: "Writes provided text content to a specified file, overwriting the file if it exists, or creating it if it doesn't. Uses StandardAdditions."
-keywords: ["write file", "save file", "create file", "overwrite", "StandardAdditions"]
+description: >-
+  Writes provided text content to a specified file, overwriting the file if it
+  exists, or creating it if it doesn't. Uses StandardAdditions.
+keywords:
+  - write file
+  - save file
+  - create file
+  - overwrite
+  - StandardAdditions
 language: applescript
 isComplex: true
-argumentsPrompt: "Absolute POSIX path for the file as 'filePath', and text content as 'fileContent' in inputData."
+argumentsPrompt: >-
+  Absolute POSIX path for the file as 'filePath', and text content as
+  'fileContent' in inputData.
 ---
 
 ```applescript

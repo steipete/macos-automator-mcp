@@ -1,11 +1,19 @@
 ---
-title: "Core: Filter Reference Form ('whose' / 'where')"
-category: "01_applescript_core"
+title: 'Core: Filter Reference Form (''whose'' / ''where'')'
+category: 02_as_core/reference_forms
 id: core_reference_filter_whose
-description: "Selects items from a container based on a boolean condition applied to their properties."
-keywords: ["reference form", "filter", "whose", "where", "conditional selection", "query"]
+description: >-
+  Selects items from a container based on a boolean condition applied to their
+  properties.
+keywords:
+  - reference form
+  - filter
+  - whose
+  - where
+  - conditional selection
+  - query
 language: applescript
-notes: "This is a very powerful way to get specific collections of items."
+notes: This is a very powerful way to get specific collections of items.
 ---
 
 ```applescript

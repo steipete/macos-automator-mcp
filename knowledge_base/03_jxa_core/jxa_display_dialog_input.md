@@ -1,11 +1,19 @@
 ---
-title: "JXA Basics: Display Dialog and Get Input"
-category: "10_jxa_basics"
+title: 'JXA Basics: Display Dialog and Get Input'
+category: 03_jxa_core
 id: jxa_display_dialog_input
-description: "Shows how to use 'displayDialog' in JXA to show messages and get user input."
-keywords: ["jxa", "javascript", "displayDialog", "dialog", "user input", "prompt"]
+description: Shows how to use 'displayDialog' in JXA to show messages and get user input.
+keywords:
+  - jxa
+  - javascript
+  - displayDialog
+  - dialog
+  - user input
+  - prompt
 language: javascript
-notes: "`app.includeStandardAdditions = true;` is required before using `displayDialog`."
+notes: >-
+  `app.includeStandardAdditions = true;` is required before using
+  `displayDialog`.
 ---
 
 ```javascript

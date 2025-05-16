@@ -1,9 +1,17 @@
 ---
-title: "System Preferences: Switch Network Locations"
-category: "02_system_interaction"
+title: 'System Preferences: Switch Network Locations'
+category: 04_system/system_preferences_settings
 id: system_network_location_switching
-description: "Switch between network locations using shell commands, enabling easy transitions between different network configurations."
-keywords: ["network location", "networksetup", "Network preferences", "location switching", "network configuration", "network profile"]
+description: >-
+  Switch between network locations using shell commands, enabling easy
+  transitions between different network configurations.
+keywords:
+  - network location
+  - networksetup
+  - Network preferences
+  - location switching
+  - network configuration
+  - network profile
 language: applescript
 notes: |
   - Requires administrator privileges for the networksetup command

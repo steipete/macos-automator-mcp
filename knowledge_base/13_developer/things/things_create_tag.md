@@ -4,10 +4,16 @@ title: Create and Manage Tags in Things
 description: Use AppleScript to create and organize tags in Things app
 author: steipete
 language: applescript
-tags: things, productivity, task management, tags, organization
-keywords: [tagging, categorization, filtering, hierarchy, metadata]
+tags: 'things, productivity, task management, tags, organization'
+keywords:
+  - tagging
+  - categorization
+  - filtering
+  - hierarchy
+  - metadata
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Create and Manage Tags in Things

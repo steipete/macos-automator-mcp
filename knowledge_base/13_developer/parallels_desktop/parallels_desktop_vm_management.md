@@ -23,12 +23,13 @@ parameters:
     type: string
     description: The name of the virtual machine to operate on
     required: false
-    default: "Windows 11"
+    default: Windows 11
   - name: operation
     type: string
-    description: The operation to perform (list, start, stop, suspend, status)
+    description: 'The operation to perform (list, start, stop, suspend, status)'
     required: false
-    default: "list"
+    default: list
+category: 13_developer/parallels_desktop
 ---
 
 # Parallels Desktop VM Management

@@ -1,12 +1,17 @@
 ---
-title: "Dictionary: Look Up Word"
-category: "developer"
+title: 'Dictionary: Look Up Word'
+category: 13_developer/dictionary_app
 id: dictionary_look_up_word
-description: "Looks up a word in the macOS Dictionary app."
-keywords: ["Dictionary", "word lookup", "definition", "thesaurus", "lexicon"]
+description: Looks up a word in the macOS Dictionary app.
+keywords:
+  - Dictionary
+  - word lookup
+  - definition
+  - thesaurus
+  - lexicon
 language: applescript
-argumentsPrompt: "Enter the word to look up"
-notes: "Searches for a word in the Dictionary app using all available dictionaries."
+argumentsPrompt: Enter the word to look up
+notes: Searches for a word in the Dictionary app using all available dictionaries.
 ---
 
 ```applescript

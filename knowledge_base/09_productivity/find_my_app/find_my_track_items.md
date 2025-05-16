@@ -1,22 +1,36 @@
 ---
 id: find_my_track_items
 title: Track Items in Find My App (AirTags and Accessories)
-description: Launches the Find My app, switches to the Items tab, lists all tracked items and their last locations, and provides functionality to play a sound on a specific item
+description: >-
+  Launches the Find My app, switches to the Items tab, lists all tracked items
+  and their last locations, and provides functionality to play a sound on a
+  specific item
 language: applescript
-contributors: ["Claude AI"]
-created: 2024-05-16
-category: 07_productivity_apps
-platforms: ["macOS"]
-keywords: ["Find My", "AirTag", "accessories", "item tracking", "play sound", "locate items"]
+contributors:
+  - Claude AI
+created: 2024-05-16T00:00:00.000Z
+category: 09_productivity/find_my_app
+platforms:
+  - macOS
+keywords:
+  - Find My
+  - AirTag
+  - accessories
+  - item tracking
+  - play sound
+  - locate items
 requirements:
   - System Events accessibility permissions
   - Find My app
   - macOS 11 (Big Sur) or later
   - At least one item registered with Find My
 deprecated: false
-parameter_docs: |
-  - itemName (string, optional): The name of the specific item to play a sound on. If not provided, the script will list all items.
-  - playSound (boolean, optional): Whether to play a sound on the specified item. Default is false.
+parameter_docs: >
+  - itemName (string, optional): The name of the specific item to play a sound
+  on. If not provided, the script will list all items.
+
+  - playSound (boolean, optional): Whether to play a sound on the specified
+  item. Default is false.
 ---
 
 # Track Items in Find My App (AirTags and Accessories)

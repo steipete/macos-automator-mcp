@@ -1,12 +1,19 @@
 ---
-title: "Photos: Start Slideshow"
-category: "08_creative_and_document_apps"
+title: 'Photos: Start Slideshow'
+category: 10_creative/photos_app
 id: photos_slideshow
-description: "Starts a slideshow of selected photos or an album in the Photos app."
-keywords: ["Photos", "slideshow", "photo presentation", "image slideshow", "view photos"]
+description: Starts a slideshow of selected photos or an album in the Photos app.
+keywords:
+  - Photos
+  - slideshow
+  - photo presentation
+  - image slideshow
+  - view photos
 language: applescript
-argumentsPrompt: "Enter the album name (optional, uses selected photos if not specified)"
-notes: "Starts a slideshow in the Photos app. Either uses currently selected photos or a specified album."
+argumentsPrompt: 'Enter the album name (optional, uses selected photos if not specified)'
+notes: >-
+  Starts a slideshow in the Photos app. Either uses currently selected photos or
+  a specified album.
 ---
 
 ```applescript

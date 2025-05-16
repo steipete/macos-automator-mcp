@@ -1,12 +1,17 @@
 ---
-title: "Pages: Export as PDF"
-category: "08_creative_and_document_apps"
+title: 'Pages: Export as PDF'
+category: 10_creative/pages_app
 id: pages_export_as_pdf
-description: "Exports a Pages document as a PDF file."
-keywords: ["Pages", "export PDF", "convert document", "PDF export", "document conversion"]
+description: Exports a Pages document as a PDF file.
+keywords:
+  - Pages
+  - export PDF
+  - convert document
+  - PDF export
+  - document conversion
 language: applescript
-argumentsPrompt: "Enter the path to the Pages file and the PDF export path"
-notes: "Exports a Pages document to PDF format. Both paths should be full POSIX paths."
+argumentsPrompt: Enter the path to the Pages file and the PDF export path
+notes: Exports a Pages document to PDF format. Both paths should be full POSIX paths.
 ---
 
 ```applescript

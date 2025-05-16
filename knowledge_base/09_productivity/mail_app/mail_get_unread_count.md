@@ -1,12 +1,22 @@
 ---
-title: "Mail: Get Unread Message Count"
-category: "07_productivity_apps"
+title: 'Mail: Get Unread Message Count'
+category: 09_productivity/mail_app
 id: mail_get_unread_count
-description: "Retrieves the unread message count from specified mailboxes across mail accounts"
-keywords: ["Mail", "email", "unread", "count", "inbox", "messages"]
+description: >-
+  Retrieves the unread message count from specified mailboxes across mail
+  accounts
+keywords:
+  - Mail
+  - email
+  - unread
+  - count
+  - inbox
+  - messages
 language: applescript
 isComplex: false
-argumentsPrompt: "Provide a mailbox name as 'mailboxName' in inputData (optional, defaults to 'INBOX')"
+argumentsPrompt: >-
+  Provide a mailbox name as 'mailboxName' in inputData (optional, defaults to
+  'INBOX')
 notes: |
   - Returns unread counts for the specified mailbox across all accounts
   - If no mailbox is specified, checks the INBOX by default

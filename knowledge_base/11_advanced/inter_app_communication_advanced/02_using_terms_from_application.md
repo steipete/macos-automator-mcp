@@ -1,14 +1,29 @@
 ---
-title: "Advanced: 'using terms from application' Block"
-category: "11_advanced_techniques"
+title: 'Advanced: ''using terms from application'' Block'
+category: 11_advanced/inter_app_communication_advanced
 id: advanced_using_terms_from
-description: "Explains how to use the 'using terms from application' block to resolve terminology conflicts between applications or scripting additions."
-keywords: ["Apple Events", "using terms from", "terminology", "dictionary conflict", "application scripting", "scope"]
+description: >-
+  Explains how to use the 'using terms from application' block to resolve
+  terminology conflicts between applications or scripting additions.
+keywords:
+  - Apple Events
+  - using terms from
+  - terminology
+  - dictionary conflict
+  - application scripting
+  - scope
 language: applescript
-notes: |
-  - `using terms from application "AppName" ... end using terms from` tells AppleScript to interpret the enclosed commands using AppName's dictionary, even if the current `tell` block targets a different application.
-  - This is crucial when an application uses a common term (e.g., "window", "document") that clashes with another application's definition or a scripting addition's definition.
-  - It temporarily changes the context for terminology lookup for the enclosed statements.
+notes: >
+  - `using terms from application "AppName" ... end using terms from` tells
+  AppleScript to interpret the enclosed commands using AppName's dictionary,
+  even if the current `tell` block targets a different application.
+
+  - This is crucial when an application uses a common term (e.g., "window",
+  "document") that clashes with another application's definition or a scripting
+  addition's definition.
+
+  - It temporarily changes the context for terminology lookup for the enclosed
+  statements.
 ---
 
 When scripting multiple applications or using scripting additions, terminology conflicts can arise. The `using terms from` block specifies which application's dictionary to use for interpreting commands within that block.

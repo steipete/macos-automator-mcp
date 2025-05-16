@@ -1,9 +1,18 @@
 ---
-title: "FTP Operations with URL Access"
-category: "12_network_services"
+title: FTP Operations with URL Access
+category: 12_network
 id: network_ftp_operations
-description: "Use URL Access scripting to perform FTP operations like downloading and uploading files."
-keywords: ["FTP", "download", "upload", "URL Access", "file transfer", "network", "curl"]
+description: >-
+  Use URL Access scripting to perform FTP operations like downloading and
+  uploading files.
+keywords:
+  - FTP
+  - download
+  - upload
+  - URL Access
+  - file transfer
+  - network
+  - curl
 language: applescript
 notes: |
   - Modern macOS versions prefer the curl command for FTP operations

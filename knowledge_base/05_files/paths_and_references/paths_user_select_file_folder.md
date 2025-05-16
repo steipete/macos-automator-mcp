@@ -1,14 +1,26 @@
 ---
-title: "Paths: User Selects File or Folder"
-category: "03_file_system_and_finder"
+title: 'Paths: User Selects File or Folder'
+category: 05_files/paths_and_references
 id: paths_user_select_file_folder
-description: "Uses 'choose file', 'choose folder', and 'choose file name' (for saving) to get path input from the user via standard dialogs."
-keywords: ["choose file", "choose folder", "choose file name", "user input", "dialog", "path selection"]
+description: >-
+  Uses 'choose file', 'choose folder', and 'choose file name' (for saving) to
+  get path input from the user via standard dialogs.
+keywords:
+  - choose file
+  - choose folder
+  - choose file name
+  - user input
+  - dialog
+  - path selection
 language: applescript
-notes: |
+notes: >
   - `choose file` and `choose folder` return an `alias` if an item is selected.
-  - `choose file name` returns a `file` object (a path specification) for a new, unsaved file.
-  - If the user cancels, an error (number -128) is generated. Use a `try` block to handle this.
+
+  - `choose file name` returns a `file` object (a path specification) for a new,
+  unsaved file.
+
+  - If the user cancels, an error (number -128) is generated. Use a `try` block
+  to handle this.
 ---
 
 ```applescript

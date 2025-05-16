@@ -1,12 +1,26 @@
 ---
-title: "iOS Simulator: Manage Biometric Enrollment"
-category: "developer"
+title: 'iOS Simulator: Manage Biometric Enrollment'
+category: 13_developer/xcode_app
 id: ios_simulator_biometric_enrollment
-description: "Manages Touch ID and Face ID enrollment and settings in iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "Touch ID", "Face ID", "biometrics", "enrollment", "fingerprint", "authentication", "developer", "iOS", "iPadOS"]
+description: Manages Touch ID and Face ID enrollment and settings in iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - Touch ID
+  - Face ID
+  - biometrics
+  - enrollment
+  - fingerprint
+  - authentication
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Action as 'action' ('enroll', 'unenroll', 'match', 'nomatch', 'status'), biometric type as 'biometricType' ('touchid', 'faceid'), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Action as 'action' ('enroll', 'unenroll', 'match', 'nomatch', 'status'),
+  biometric type as 'biometricType' ('touchid', 'faceid'), and optional device
+  identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Manages biometric enrollment and authentication in the simulator
   - Can enroll and unenroll simulated fingerprints or face recognition

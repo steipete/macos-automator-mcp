@@ -1,20 +1,46 @@
 ---
-title: "Chrome: CSS Selector Finder"
-category: "05_web_browsers"
+title: 'Chrome: CSS Selector Finder'
+category: 07_browsers/chrome
 id: chrome_css_selector_finder
-description: "Finds optimal CSS selectors for web elements using various strategies including shortest unique path, ID-based, and robust attribute selectors."
-keywords: ["Chrome", "CSS", "selector", "finder", "XPath", "web scraping", "automation", "web development", "element selection"]
+description: >-
+  Finds optimal CSS selectors for web elements using various strategies
+  including shortest unique path, ID-based, and robust attribute selectors.
+keywords:
+  - Chrome
+  - CSS
+  - selector
+  - finder
+  - XPath
+  - web scraping
+  - automation
+  - web development
+  - element selection
 language: applescript
 isComplex: true
-argumentsPrompt: "Options in inputData. For example: { \"interactiveMode\": true } to enter point-and-click element selection mode, or { \"searchText\": \"Login\" } to find elements containing specific text. Use { \"generateOptions\": [\"shortest\", \"id-based\", \"robust\"] } to control selector generation strategies."
+argumentsPrompt: >-
+  Options in inputData. For example: { "interactiveMode": true } to enter
+  point-and-click element selection mode, or { "searchText": "Login" } to find
+  elements containing specific text. Use { "generateOptions": ["shortest",
+  "id-based", "robust"] } to control selector generation strategies.
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running with at least one window and tab open.
-  - Can operate in interactive mode for visual element selection or search for elements programmatically.
-  - Generates multiple selector types (CSS, XPath) with varying levels of specificity and robustness.
-  - Very useful for building automation scripts that need reliable element selectors.
-  - Supports multiple selection strategies including text-based, attribute-based, and relative positioning.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Can operate in interactive mode for visual element selection or search for
+  elements programmatically.
+
+  - Generates multiple selector types (CSS, XPath) with varying levels of
+  specificity and robustness.
+
+  - Very useful for building automation scripts that need reliable element
+  selectors.
+
+  - Supports multiple selection strategies including text-based,
+  attribute-based, and relative positioning.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
 ---
 

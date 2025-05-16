@@ -1,12 +1,26 @@
 ---
-title: "iOS Simulator: Control Status Bar"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Control Status Bar'
+category: 13_developer/xcode_app
 id: ios_simulator_status_bar
-description: "Customizes the status bar appearance in iOS Simulator for screenshots and videos."
-keywords: ["iOS Simulator", "Xcode", "status bar", "customize", "screenshot", "developer", "iOS", "iPadOS"]
+description: >-
+  Customizes the status bar appearance in iOS Simulator for screenshots and
+  videos.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - status bar
+  - customize
+  - screenshot
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional device identifier as 'deviceIdentifier' (defaults to 'booted'), time display as 'statusTime' (e.g., '9:41'), battery level as 'batteryLevel' (0-100), optional carrier name as 'carrierName', and optional data network as 'dataNetwork' (e.g., 'wifi', '5G', 'LTE')."
+argumentsPrompt: >-
+  Optional device identifier as 'deviceIdentifier' (defaults to 'booted'), time
+  display as 'statusTime' (e.g., '9:41'), battery level as 'batteryLevel'
+  (0-100), optional carrier name as 'carrierName', and optional data network as
+  'dataNetwork' (e.g., 'wifi', '5G', 'LTE').
 notes: |
   - Customizes iOS simulator status bar for clean screenshots and videos
   - Can set perfect time (like Apple's 9:41), battery level, carrier name

@@ -1,15 +1,33 @@
 ---
-title: "Electron Editors: Get Editor Content via DevTools JS & Clipboard"
-category: "06_ides_and_editors"
+title: 'Electron Editors: Get Editor Content via DevTools JS & Clipboard'
+category: 08_editors/electron_editors
 id: electron_editors_get_content_via_js_clipboard
-description: "Retrieves the content of the active text editor in VS Code (or similar if API matches) by executing JavaScript in DevTools that copies the content to the clipboard, then AppleScript reads the clipboard."
-keywords: ["vscode", "cursor", "electron", "devtools", "javascript", "clipboard", "get text", "editor content"]
+description: >-
+  Retrieves the content of the active text editor in VS Code (or similar if API
+  matches) by executing JavaScript in DevTools that copies the content to the
+  clipboard, then AppleScript reads the clipboard.
+keywords:
+  - vscode
+  - cursor
+  - electron
+  - devtools
+  - javascript
+  - clipboard
+  - get text
+  - editor content
 language: applescript
 isComplex: true
-argumentsPrompt: "Target application name (e.g., 'Visual Studio Code') as 'targetAppName' in inputData."
-notes: |
-  - Target app must be frontmost. Relies on DevTools shortcut (Option+Command+I).
-  - The JavaScript `vscode.env.clipboard.writeText(...)` and `vscode.window.activeTextEditor...` are specific to VS Code's renderer process API. Other Electron editors might require different JS.
+argumentsPrompt: >-
+  Target application name (e.g., 'Visual Studio Code') as 'targetAppName' in
+  inputData.
+notes: >
+  - Target app must be frontmost. Relies on DevTools shortcut
+  (Option+Command+I).
+
+  - The JavaScript `vscode.env.clipboard.writeText(...)` and
+  `vscode.window.activeTextEditor...` are specific to VS Code's renderer process
+  API. Other Electron editors might require different JS.
+
   - This temporarily overwrites the user's clipboard.
 ---
 

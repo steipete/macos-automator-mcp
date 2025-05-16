@@ -1,18 +1,38 @@
 ---
-title: "Spotify: Playback Position Control"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Playback Position Control'
+category: 10_creative/spotify
 id: spotify_playback_position
-description: "Control the playback position within the current Spotify track, showing time remaining and track progress."
-keywords: ["Spotify", "playback", "position", "seek", "skip", "scrub", "time", "track", "progress"]
+description: >-
+  Control the playback position within the current Spotify track, showing time
+  remaining and track progress.
+keywords:
+  - Spotify
+  - playback
+  - position
+  - seek
+  - skip
+  - scrub
+  - time
+  - track
+  - progress
 language: applescript
-parameters: |
-  - action (required): Action to perform - "set_position", "forward", "backward", "get_position"
-  - value (optional): For set_position: time in seconds. For forward/backward: seconds to jump (defaults to 10)
-notes: |
+parameters: >
+  - action (required): Action to perform - "set_position", "forward",
+  "backward", "get_position"
+
+  - value (optional): For set_position: time in seconds. For forward/backward:
+  seconds to jump (defaults to 10)
+notes: >
   - Spotify must be running with a track playing or paused.
-  - The "set_position" action requires a specific position in seconds (e.g., 60 for 1 minute into the track).
-  - The "forward" and "backward" actions move relative to the current position by the specified number of seconds.
-  - The player position is represented in seconds, while track duration is in milliseconds in Spotify's API.
+
+  - The "set_position" action requires a specific position in seconds (e.g., 60
+  for 1 minute into the track).
+
+  - The "forward" and "backward" actions move relative to the current position
+  by the specified number of seconds.
+
+  - The player position is represented in seconds, while track duration is in
+  milliseconds in Spotify's API.
 ---
 
 Control playback position within the current Spotify track.

@@ -1,16 +1,26 @@
 ---
-title: "Safari: Close Tab"
-category: "05_web_browsers"
+title: 'Safari: Close Tab'
+category: 07_browsers/safari
 id: safari_close_tab
-description: "Closes the current tab or a tab with a specific index in Safari."
-keywords: ["Safari", "close tab", "browser", "tab management"]
+description: Closes the current tab or a tab with a specific index in Safari.
+keywords:
+  - Safari
+  - close tab
+  - browser
+  - tab management
 language: applescript
 isComplex: false
-argumentsPrompt: "Optional tab index to close as 'tabIndex' in inputData. If not provided, closes the current tab."
-notes: |
+argumentsPrompt: >-
+  Optional tab index to close as 'tabIndex' in inputData. If not provided,
+  closes the current tab.
+notes: >
   - Safari must be running for this script to work.
+
   - If no tabIndex is provided, the currently active tab will be closed.
-  - If tabIndex is provided, the tab at that index in the front window will be closed (1-based index).
+
+  - If tabIndex is provided, the tab at that index in the front window will be
+  closed (1-based index).
+
   - If the last tab is closed, Safari's behavior is to close the window as well.
 ---
 

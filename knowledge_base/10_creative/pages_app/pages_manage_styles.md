@@ -1,12 +1,22 @@
 ---
-title: "Pages: Manage Paragraph Styles"
-category: "08_creative_and_document_apps"
+title: 'Pages: Manage Paragraph Styles'
+category: 10_creative/pages_app
 id: pages_manage_styles
-description: "Creates, modifies, and applies paragraph styles in a Pages document."
-keywords: ["Pages", "styles", "paragraph styles", "text formatting", "document styling"]
+description: 'Creates, modifies, and applies paragraph styles in a Pages document.'
+keywords:
+  - Pages
+  - styles
+  - paragraph styles
+  - text formatting
+  - document styling
 language: applescript
-argumentsPrompt: "Enter the style name and properties to create or modify. To apply a style, provide the text selection details."
-notes: "This script allows you to create, modify, or apply paragraph styles in an open Pages document. The document must be open in Pages before running. Style properties are specified as a record."
+argumentsPrompt: >-
+  Enter the style name and properties to create or modify. To apply a style,
+  provide the text selection details.
+notes: >-
+  This script allows you to create, modify, or apply paragraph styles in an open
+  Pages document. The document must be open in Pages before running. Style
+  properties are specified as a record.
 ---
 
 ```applescript

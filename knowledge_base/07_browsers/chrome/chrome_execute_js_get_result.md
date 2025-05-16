@@ -1,15 +1,25 @@
 ---
-title: "Chrome: Execute JavaScript in Active Tab and Get Result"
-category: "05_web_browsers"
+title: 'Chrome: Execute JavaScript in Active Tab and Get Result'
+category: 07_browsers/chrome
 id: chrome_execute_js_get_result
-description: "Executes a JavaScript string in the active tab of the frontmost Google Chrome window and returns its result."
-keywords: ["chrome", "javascript", "execute javascript", "dom", "automation"]
+description: >-
+  Executes a JavaScript string in the active tab of the frontmost Google Chrome
+  window and returns its result.
+keywords:
+  - chrome
+  - javascript
+  - execute javascript
+  - dom
+  - automation
 language: applescript
 isComplex: true
-argumentsPrompt: "JavaScript code to execute as 'jsCode' in inputData."
-notes: |
-  - CRITICAL: Chrome > View > Developer > "Allow JavaScript from Apple Events" must be CHECKED.
-  - The JavaScript should return a string, number, boolean, or an array of these.
+argumentsPrompt: JavaScript code to execute as 'jsCode' in inputData.
+notes: >
+  - CRITICAL: Chrome > View > Developer > "Allow JavaScript from Apple Events"
+  must be CHECKED.
+
+  - The JavaScript should return a string, number, boolean, or an array of
+  these.
 ---
 
 ```applescript

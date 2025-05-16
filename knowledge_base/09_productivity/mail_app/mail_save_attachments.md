@@ -1,12 +1,18 @@
 ---
-title: "Mail: Save Attachments from Selected Email"
-category: "07_productivity_apps"
+title: 'Mail: Save Attachments from Selected Email'
+category: 09_productivity/mail_app
 id: mail_save_attachments
-description: "Extracts and saves all attachments from selected email messages in Mail.app"
-keywords: ["Mail", "email", "attachments", "download", "save", "extract"]
+description: Extracts and saves all attachments from selected email messages in Mail.app
+keywords:
+  - Mail
+  - email
+  - attachments
+  - download
+  - save
+  - extract
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide a save path as 'savePath' in inputData (optional, defaults to Desktop)"
+argumentsPrompt: 'Provide a save path as ''savePath'' in inputData (optional, defaults to Desktop)'
 notes: |
   - Extracts attachments from currently selected emails in Mail.app
   - By default saves to Desktop, but a custom path can be specified

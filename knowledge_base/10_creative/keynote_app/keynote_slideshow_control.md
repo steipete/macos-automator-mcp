@@ -1,17 +1,28 @@
 ---
-title: "Keynote: Start and Stop Slideshow"
-category: "08_creative_and_document_apps"
+title: 'Keynote: Start and Stop Slideshow'
+category: 10_creative/keynote_app
 id: keynote_slideshow_control
-description: "Starts or stops the slideshow for the frontmost Keynote presentation."
-keywords: ["Keynote", "slideshow", "play", "start", "stop", "presentation mode"]
+description: Starts or stops the slideshow for the frontmost Keynote presentation.
+keywords:
+  - Keynote
+  - slideshow
+  - play
+  - start
+  - stop
+  - presentation mode
 language: applescript
 isComplex: true
-argumentsPrompt: "Action to perform: 'start' or 'stop' as 'slideshowAction' in inputData."
-notes: |
+argumentsPrompt: 'Action to perform: ''start'' or ''stop'' as ''slideshowAction'' in inputData.'
+notes: >
   - A Keynote presentation must be open.
-  - `start` and `stop` are direct commands if Keynote's dictionary supports them for the document or application.
+
+  - `start` and `stop` are direct commands if Keynote's dictionary supports them
+  for the document or application.
+
   - `show` and `stop slideshow` are common dictionary terms.
+
   - UI scripting can be a fallback if direct commands are problematic.
+
   - Requires Automation permission for Keynote.app.
 ---
 

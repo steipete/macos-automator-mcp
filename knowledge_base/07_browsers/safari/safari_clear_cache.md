@@ -1,23 +1,41 @@
 ---
-title: "Safari: Clear Cache and Website Data"
-category: "05_web_browsers"
+title: 'Safari: Clear Cache and Website Data'
+category: 07_browsers/safari
 id: safari_clear_cache
-description: "Clears Safari's cache, cookies, and website data for improved testing and development."
-keywords: ["Safari", "cache", "cookies", "web development", "testing", "website data", "clear data", "debug"]
+description: >-
+  Clears Safari's cache, cookies, and website data for improved testing and
+  development.
+keywords:
+  - Safari
+  - cache
+  - cookies
+  - web development
+  - testing
+  - website data
+  - clear data
+  - debug
 language: applescript
 isComplex: false
-argumentsPrompt: "Optional clearOption as 'clearOption' in inputData. Values can be 'all', 'cache', 'cookies', or 'local'. Defaults to 'all'."
-notes: |
+argumentsPrompt: >-
+  Optional clearOption as 'clearOption' in inputData. Values can be 'all',
+  'cache', 'cookies', or 'local'. Defaults to 'all'.
+notes: >
   - Safari must be running.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
   - The script navigates Safari's preferences and clears the selected data.
+
   - Clear options:
     - 'all': Clears all website data (default)
     - 'cache': Clears only the browser cache
     - 'cookies': Clears only cookies and website data
     - 'local': Clears only local storage and databases
   - Safari will need to be relaunched after clearing certain types of data.
-  - The exact UI elements may vary slightly between Safari versions, so the script tries multiple approaches.
+
+  - The exact UI elements may vary slightly between Safari versions, so the
+  script tries multiple approaches.
 ---
 
 This script clears Safari's cache and website data, which is useful for web development and testing.

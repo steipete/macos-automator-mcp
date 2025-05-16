@@ -1,9 +1,16 @@
 ---
-title: "Chrome: Get URL of Front Tab"
-category: "05_web_browsers"
+title: 'Chrome: Get URL of Front Tab'
+category: 07_browsers/chrome
 id: chrome_get_front_tab_url
-description: "Retrieves the web address (URL) of the currently active tab in the frontmost Google Chrome window."
-keywords: ["Chrome", "URL", "current tab", "web address", "browser"]
+description: >-
+  Retrieves the web address (URL) of the currently active tab in the frontmost
+  Google Chrome window.
+keywords:
+  - Chrome
+  - URL
+  - current tab
+  - web address
+  - browser
 language: applescript
 notes: |
   - Google Chrome must be running.

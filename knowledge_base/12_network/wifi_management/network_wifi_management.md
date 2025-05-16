@@ -1,11 +1,24 @@
 ---
-title: "WiFi Network Management"
-category: "12_network_services"
+title: WiFi Network Management
+category: 12_network/wifi_management
 id: network_wifi_management
-description: "Manages WiFi connections including turning WiFi on/off, scanning for networks, connecting to preferred networks, and creating network profiles"
-keywords: ["wifi", "network", "wireless", "airport", "connection", "scan", "SSID", "networksetup", "airport"]
+description: >-
+  Manages WiFi connections including turning WiFi on/off, scanning for networks,
+  connecting to preferred networks, and creating network profiles
+keywords:
+  - wifi
+  - network
+  - wireless
+  - airport
+  - connection
+  - scan
+  - SSID
+  - networksetup
+  - airport
 language: applescript
-notes: "Many commands require administrator privileges. Uses both AppleScript and shell commands via networksetup and airport utilities."
+notes: >-
+  Many commands require administrator privileges. Uses both AppleScript and
+  shell commands via networksetup and airport utilities.
 ---
 
 ```applescript

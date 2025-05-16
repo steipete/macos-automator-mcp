@@ -1,12 +1,19 @@
 ---
-title: "Calculator: Perform Basic Calculation"
-category: "developer"
+title: 'Calculator: Perform Basic Calculation'
+category: 13_developer/calculator_app
 id: calculator_perform_calculation
-description: "Performs a basic calculation using the macOS Calculator app."
-keywords: ["Calculator", "math", "arithmetic", "calculation", "compute"]
+description: Performs a basic calculation using the macOS Calculator app.
+keywords:
+  - Calculator
+  - math
+  - arithmetic
+  - calculation
+  - compute
 language: applescript
-argumentsPrompt: "Enter the calculation to perform (e.g., '15 * 7')"
-notes: "Performs basic arithmetic operations using the Calculator app's UI. Limited to simple calculations that can be entered via keystrokes."
+argumentsPrompt: 'Enter the calculation to perform (e.g., ''15 * 7'')'
+notes: >-
+  Performs basic arithmetic operations using the Calculator app's UI. Limited to
+  simple calculations that can be entered via keystrokes.
 ---
 
 ```applescript

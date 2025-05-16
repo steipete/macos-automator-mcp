@@ -1,19 +1,37 @@
 ---
-title: "Safari: Execute Console Command"
-category: "05_web_browsers"
+title: 'Safari: Execute Console Command'
+category: 07_browsers/safari
 id: safari_execute_console_command
-description: "Executes a JavaScript command in Safari's Web Inspector console and returns the result."
-keywords: ["Safari", "console", "JavaScript", "Web Inspector", "developer tools", "debugging", "web development"]
+description: >-
+  Executes a JavaScript command in Safari's Web Inspector console and returns
+  the result.
+keywords:
+  - Safari
+  - console
+  - JavaScript
+  - Web Inspector
+  - developer tools
+  - debugging
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "JavaScript console command as 'command' in inputData."
-notes: |
+argumentsPrompt: JavaScript console command as 'command' in inputData.
+notes: >
   - Safari must be running with at least one open tab.
+
   - The Develop menu must be enabled in Safari preferences.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
-  - The script will open the Web Inspector, execute the command in the console, and capture the result.
-  - The command should be valid JavaScript that can be executed in a browser console.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
+  - The script will open the Web Inspector, execute the command in the console,
+  and capture the result.
+
+  - The command should be valid JavaScript that can be executed in a browser
+  console.
+
   - Complex commands with multiple lines are supported.
+
   - Results are captured from the console output (with some limitations).
 ---
 

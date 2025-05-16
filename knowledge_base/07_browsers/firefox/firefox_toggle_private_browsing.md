@@ -1,9 +1,17 @@
 ---
-title: "Firefox: Toggle Private Browsing"
-category: "05_web_browsers"
+title: 'Firefox: Toggle Private Browsing'
+category: 07_browsers/firefox
 id: firefox_toggle_private_browsing
-description: "Opens a new Firefox window in private browsing mode or closes the existing private browsing window."
-keywords: ["Firefox", "private browsing", "incognito", "privacy", "browser", "UI scripting"]
+description: >-
+  Opens a new Firefox window in private browsing mode or closes the existing
+  private browsing window.
+keywords:
+  - Firefox
+  - private browsing
+  - incognito
+  - privacy
+  - browser
+  - UI scripting
 language: applescript
 notes: |
   - Firefox must be installed.

@@ -1,12 +1,19 @@
 ---
-title: "Safari: Export Page as PDF"
-category: "05_web_browsers"
+title: 'Safari: Export Page as PDF'
+category: 07_browsers/safari
 id: safari_export_pdf
-description: "Exports the current webpage as a PDF document in Safari."
-keywords: ["Safari", "export PDF", "save as PDF", "webpage to PDF", "PDF export"]
+description: Exports the current webpage as a PDF document in Safari.
+keywords:
+  - Safari
+  - export PDF
+  - save as PDF
+  - webpage to PDF
+  - PDF export
 language: applescript
-argumentsPrompt: "Enter the file path where the PDF should be saved"
-notes: "Exports the current Safari webpage as a PDF file. The file path should be a full POSIX path ending with .pdf"
+argumentsPrompt: Enter the file path where the PDF should be saved
+notes: >-
+  Exports the current Safari webpage as a PDF file. The file path should be a
+  full POSIX path ending with .pdf
 ---
 
 ```applescript

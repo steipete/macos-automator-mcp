@@ -1,13 +1,23 @@
 ---
-title: "Notes: Create Plain Text Note"
-category: "07_productivity_apps"
+title: 'Notes: Create Plain Text Note'
+category: 09_productivity/notes_app
 id: notes_create_plain_text_note
-description: "Creates a new note in Apple Notes with a specified title and plain text body. Optionally specify a folder."
-keywords: ["Notes", "new note", "create note", "text"]
+description: >-
+  Creates a new note in Apple Notes with a specified title and plain text body.
+  Optionally specify a folder.
+keywords:
+  - Notes
+  - new note
+  - create note
+  - text
 language: applescript
 isComplex: true
-argumentsPrompt: "Note title as 'noteTitle', body content as 'noteBody'. Optionally, 'folderName' in inputData."
-notes: "Requires Automation permission for Notes.app. The body is treated as plain text; for HTML use a different method."
+argumentsPrompt: >-
+  Note title as 'noteTitle', body content as 'noteBody'. Optionally,
+  'folderName' in inputData.
+notes: >-
+  Requires Automation permission for Notes.app. The body is treated as plain
+  text; for HTML use a different method.
 ---
 
 ```applescript

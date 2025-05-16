@@ -1,14 +1,28 @@
 ---
-title: "Spotify: Save Current Track"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Save Current Track'
+category: 10_creative/spotify
 id: spotify_save_current_track
-description: "Save the currently playing Spotify track to a file with track details and URI for future reference or sharing."
-keywords: ["Spotify", "save", "export", "track", "info", "URI", "library", "song"]
+description: >-
+  Save the currently playing Spotify track to a file with track details and URI
+  for future reference or sharing.
+keywords:
+  - Spotify
+  - save
+  - export
+  - track
+  - info
+  - URI
+  - library
+  - song
 language: applescript
-parameters: |
-  - output_format (optional): Format for output - "text", "json", or "csv" (default: "text")
+parameters: >
+  - output_format (optional): Format for output - "text", "json", or "csv"
+  (default: "text")
+
   - save_location (optional): File path for saving output (default: desktop)
-  - include_timestamp (optional): Whether to include timestamp - "yes" or "no" (default: "yes")
+
+  - include_timestamp (optional): Whether to include timestamp - "yes" or "no"
+  (default: "yes")
 notes: |
   - Spotify must be running with a track playing or paused.
   - This script saves track information to a file for future reference.

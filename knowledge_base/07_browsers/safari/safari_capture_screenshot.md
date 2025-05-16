@@ -1,20 +1,41 @@
 ---
-title: "Safari: Capture Screenshot"
-category: "05_web_browsers"
+title: 'Safari: Capture Screenshot'
+category: 07_browsers/safari
 id: safari_capture_screenshot
-description: "Captures a screenshot of the current webpage in Safari and saves it to a specified location."
-keywords: ["Safari", "screenshot", "capture", "web development", "testing", "UI", "image"]
+description: >-
+  Captures a screenshot of the current webpage in Safari and saves it to a
+  specified location.
+keywords:
+  - Safari
+  - screenshot
+  - capture
+  - web development
+  - testing
+  - UI
+  - image
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional output path as 'outputPath' in inputData. If not provided, the screenshot will be saved to the Desktop."
-notes: |
+argumentsPrompt: >-
+  Optional output path as 'outputPath' in inputData. If not provided, the
+  screenshot will be saved to the Desktop.
+notes: >
   - Safari must be running with at least one open tab.
+
   - The Develop menu must be enabled in Safari preferences.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
   - The script uses the Web Inspector to capture a full-page screenshot.
-  - If no output path is provided, the screenshot will be saved to the Desktop with a filename based on the current date and time.
-  - The output path should be a complete path including filename with a .png extension.
-  - The script will create a temporary Safari tab to avoid changing the user's current context.
+
+  - If no output path is provided, the screenshot will be saved to the Desktop
+  with a filename based on the current date and time.
+
+  - The output path should be a complete path including filename with a .png
+  extension.
+
+  - The script will create a temporary Safari tab to avoid changing the user's
+  current context.
 ---
 
 This script captures a full-page screenshot of the current webpage in Safari and saves it to the specified location.

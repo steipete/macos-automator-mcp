@@ -1,9 +1,19 @@
 ---
-title: "Core: String Data Type"
-category: "01_applescript_core"
+title: 'Core: String Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_string
-description: "Working with strings (text) in AppleScript, including properties like length, and elements like characters, words, paragraphs."
-keywords: ["string", "text", "data type", "length", "character", "word", "paragraph", "concatenation"]
+description: >-
+  Working with strings (text) in AppleScript, including properties like length,
+  and elements like characters, words, paragraphs.
+keywords:
+  - string
+  - text
+  - data type
+  - length
+  - character
+  - word
+  - paragraph
+  - concatenation
 language: applescript
 notes: |
   - Strings are delimited by double quotes (`""`).

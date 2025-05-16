@@ -1,12 +1,19 @@
 ---
-title: "Photos: Export Selected Photos"
-category: "08_creative_and_document_apps"
+title: 'Photos: Export Selected Photos'
+category: 10_creative/photos_app
 id: photos_export_photos
-description: "Exports selected photos from the Photos app to a specified location."
-keywords: ["Photos", "export photos", "save images", "photo export", "backup photos"]
+description: Exports selected photos from the Photos app to a specified location.
+keywords:
+  - Photos
+  - export photos
+  - save images
+  - photo export
+  - backup photos
 language: applescript
-argumentsPrompt: "Enter the destination folder where photos should be exported"
-notes: "Exports selected photos to the specified folder. Make sure to select the photos in Photos app before running this script."
+argumentsPrompt: Enter the destination folder where photos should be exported
+notes: >-
+  Exports selected photos to the specified folder. Make sure to select the
+  photos in Photos app before running this script.
 ---
 
 ```applescript

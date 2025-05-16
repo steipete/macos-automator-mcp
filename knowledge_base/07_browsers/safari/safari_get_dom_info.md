@@ -1,23 +1,45 @@
 ---
-title: "Safari: Get DOM Information"
-category: "05_web_browsers"
+title: 'Safari: Get DOM Information'
+category: 07_browsers/safari
 id: safari_get_dom_info
-description: "Extracts information from the DOM of the current Safari webpage including elements, attributes, styles, and computed metrics."
-keywords: ["Safari", "DOM", "web scraping", "HTML", "CSS", "elements", "web development", "extraction", "selectors"]
+description: >-
+  Extracts information from the DOM of the current Safari webpage including
+  elements, attributes, styles, and computed metrics.
+keywords:
+  - Safari
+  - DOM
+  - web scraping
+  - HTML
+  - CSS
+  - elements
+  - web development
+  - extraction
+  - selectors
 language: applescript
 isComplex: true
-argumentsPrompt: "CSS selector as 'selector' in inputData, optionally include attribute names to extract as 'attributes' (comma-separated list), and extraction mode as 'mode' ('text', 'html', or 'json')."
-notes: |
+argumentsPrompt: >-
+  CSS selector as 'selector' in inputData, optionally include attribute names to
+  extract as 'attributes' (comma-separated list), and extraction mode as 'mode'
+  ('text', 'html', or 'json').
+notes: >
   - Safari must be running with at least one open tab.
-  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop menu.
+
+  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop
+  menu.
+
   - The script uses CSS selectors to target specific elements on the page.
+
   - Three extraction modes are available:
     - 'text': Extracts only the text content of selected elements
     - 'html': Extracts the HTML markup of selected elements
     - 'json': Returns detailed information including attributes, styles, and metrics in JSON format
   - You can specify particular attributes to extract (e.g., "href,src,data-id")
-  - The script handles iframes by attempting to access their content when possible.
+
+  - The script handles iframes by attempting to access their content when
+  possible.
+
   - Results for multiple elements are returned as an array in JSON format.
+
   - For large pages or many elements, the response might be truncated.
 ---
 

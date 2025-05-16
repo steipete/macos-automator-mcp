@@ -1,16 +1,30 @@
 ---
-title: "Safari: Switch Tab"
-category: "05_web_browsers"
+title: 'Safari: Switch Tab'
+category: 07_browsers/safari
 id: safari_switch_tab
-description: "Switches to a tab with a specific index or one that matches a URL/title pattern in Safari."
-keywords: ["Safari", "switch tab", "browser", "tab management", "navigation"]
+description: >-
+  Switches to a tab with a specific index or one that matches a URL/title
+  pattern in Safari.
+keywords:
+  - Safari
+  - switch tab
+  - browser
+  - tab management
+  - navigation
 language: applescript
 isComplex: true
-argumentsPrompt: "Tab index as 'tabIndex' or search pattern as 'searchPattern' in inputData. If both are provided, tabIndex takes priority."
-notes: |
+argumentsPrompt: >-
+  Tab index as 'tabIndex' or search pattern as 'searchPattern' in inputData. If
+  both are provided, tabIndex takes priority.
+notes: >
   - Safari must be running for this script to work.
-  - You can specify either a tab index (1-based) or a search pattern to match against tab URLs and titles.
-  - If using a search pattern, the script will search in both tab URLs and titles (case-insensitive).
+
+  - You can specify either a tab index (1-based) or a search pattern to match
+  against tab URLs and titles.
+
+  - If using a search pattern, the script will search in both tab URLs and
+  titles (case-insensitive).
+
   - If multiple tabs match the search pattern, the first match will be selected.
 ---
 

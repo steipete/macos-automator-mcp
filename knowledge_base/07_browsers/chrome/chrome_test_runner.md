@@ -1,23 +1,51 @@
 ---
-title: "Chrome: Automated Test Runner"
-category: "05_web_browsers"
+title: 'Chrome: Automated Test Runner'
+category: 07_browsers/chrome
 id: chrome_test_runner
-description: "Runs automated browser tests in Chrome with support for assertions, screenshots, and detailed reporting similar to Playwright or Cypress."
-keywords: ["Chrome", "testing", "automation", "test runner", "assertions", "screenshots", "web development", "QA", "Playwright", "Cypress"]
+description: >-
+  Runs automated browser tests in Chrome with support for assertions,
+  screenshots, and detailed reporting similar to Playwright or Cypress.
+keywords:
+  - Chrome
+  - testing
+  - automation
+  - test runner
+  - assertions
+  - screenshots
+  - web development
+  - QA
+  - Playwright
+  - Cypress
 language: applescript
 isComplex: true
-argumentsPrompt: "Test configuration in inputData. For example: { \"tests\": [{\"name\": \"Homepage Test\", \"url\": \"https://example.com\", \"assertions\": [{\"selector\": \"h1\", \"type\": \"text\", \"expected\": \"Example Domain\"}], \"screenshot\": true}], \"reportPath\": \"/Users/username/Downloads/test-report.json\", \"headless\": false }"
+argumentsPrompt: >-
+  Test configuration in inputData. For example: { "tests": [{"name": "Homepage
+  Test", "url": "https://example.com", "assertions": [{"selector": "h1", "type":
+  "text", "expected": "Example Domain"}], "screenshot": true}], "reportPath":
+  "/Users/username/Downloads/test-report.json", "headless": false }
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running (unless headless mode is specified).
-  - Creates and runs browser tests with assertions on elements, network requests, and page state.
+
+  - Creates and runs browser tests with assertions on elements, network
+  requests, and page state.
+
   - Supports taking screenshots during test execution for visual verification.
-  - Can generate detailed test reports with pass/fail results and timing information.
+
+  - Can generate detailed test reports with pass/fail results and timing
+  information.
+
   - Handles waiting for elements, navigation events, and network requests.
+
   - Can run tests in headless mode for CI/CD integration.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
-  - Requires Full Disk Access permission to save report files outside of user's Downloads folder.
+
+  - Requires Full Disk Access permission to save report files outside of user's
+  Downloads folder.
 ---
 
 This script runs automated browser tests in Chrome with assertion checking, screenshots, and detailed reporting.

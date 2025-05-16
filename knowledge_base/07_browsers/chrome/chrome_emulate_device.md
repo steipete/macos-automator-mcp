@@ -1,18 +1,39 @@
 ---
-title: "Chrome: Emulate Mobile Device"
-category: "05_web_browsers"
+title: 'Chrome: Emulate Mobile Device'
+category: 07_browsers/chrome
 id: chrome_emulate_device
-description: "Configures Chrome DevTools to emulate specific mobile devices, setting viewport sizes, user agent strings, and device pixel ratios for testing responsive designs and mobile-specific behavior."
-keywords: ["Chrome", "DevTools", "mobile", "responsive", "emulation", "device", "testing", "web development"]
+description: >-
+  Configures Chrome DevTools to emulate specific mobile devices, setting
+  viewport sizes, user agent strings, and device pixel ratios for testing
+  responsive designs and mobile-specific behavior.
+keywords:
+  - Chrome
+  - DevTools
+  - mobile
+  - responsive
+  - emulation
+  - device
+  - testing
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Device settings in inputData. For example: { \"deviceName\": \"iPhone 13\" } to use a predefined device, or custom settings: { \"width\": 375, \"height\": 667, \"devicePixelRatio\": 2, \"userAgent\": \"Custom UA string\", \"mobile\": true }. Leave deviceName empty to use custom settings."
-notes: |
+argumentsPrompt: >-
+  Device settings in inputData. For example: { "deviceName": "iPhone 13" } to
+  use a predefined device, or custom settings: { "width": 375, "height": 667,
+  "devicePixelRatio": 2, "userAgent": "Custom UA string", "mobile": true }.
+  Leave deviceName empty to use custom settings.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and configures device emulation.
+
   - Supports both predefined devices and custom device configurations.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
+
   - Changes will persist until emulation is disabled or browser is closed.
 ---
 

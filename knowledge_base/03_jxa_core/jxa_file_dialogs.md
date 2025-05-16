@@ -3,7 +3,13 @@ id: jxa_file_dialogs
 title: File Selection Dialogs with JXA
 description: Use JavaScript for Automation to create file and folder selection dialogs
 language: javascript
-keywords: ["file selection", "folder selection", "file picker", "save dialog", "finder integration"]
+keywords:
+  - file selection
+  - folder selection
+  - file picker
+  - save dialog
+  - finder integration
+category: 03_jxa_core
 ---
 
 # File Selection Dialogs with JXA

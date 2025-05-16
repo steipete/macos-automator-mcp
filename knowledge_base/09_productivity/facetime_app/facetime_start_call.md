@@ -1,12 +1,19 @@
 ---
-title: "FaceTime: Start New Call"
-category: "07_productivity_apps"
+title: 'FaceTime: Start New Call'
+category: 09_productivity/facetime_app
 id: facetime_start_call
-description: "Initiates a new FaceTime call to a specified contact or number."
-keywords: ["FaceTime", "video call", "audio call", "start call", "call contact"]
+description: Initiates a new FaceTime call to a specified contact or number.
+keywords:
+  - FaceTime
+  - video call
+  - audio call
+  - start call
+  - call contact
 language: applescript
-argumentsPrompt: "Enter the contact name, phone number, or email to call"
-notes: "Starts a FaceTime call with the specified recipient. The recipient can be a contact name, phone number, or email associated with an Apple ID."
+argumentsPrompt: 'Enter the contact name, phone number, or email to call'
+notes: >-
+  Starts a FaceTime call with the specified recipient. The recipient can be a
+  contact name, phone number, or email associated with an Apple ID.
 ---
 
 ```applescript

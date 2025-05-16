@@ -1,14 +1,29 @@
 ---
-title: "Sound Output and Input Device Selection"
-category: "02_system_interaction"
+title: Sound Output and Input Device Selection
+category: 04_system/system_preferences_settings
 id: system_sound_io_selection
-description: "Control sound input and output device selection using AppleScript with UI scripting or shell commands."
-keywords: ["sound", "audio", "output device", "input device", "microphone", "speakers", "volume", "mute", "System Settings"]
+description: >-
+  Control sound input and output device selection using AppleScript with UI
+  scripting or shell commands.
+keywords:
+  - sound
+  - audio
+  - output device
+  - input device
+  - microphone
+  - speakers
+  - volume
+  - mute
+  - System Settings
 language: applescript
-notes: |
-  - Two approaches are provided: modern shell-based and UI scripting for fallback
+notes: >
+  - Two approaches are provided: modern shell-based and UI scripting for
+  fallback
+
   - The UI scripting approach will need adjustment based on macOS version
+
   - Device names might vary between systems, check your available devices first
+
   - For some operations, administrator privileges may be required
 ---
 

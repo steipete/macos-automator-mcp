@@ -3,7 +3,13 @@ id: jxa_display_notification
 title: Display Notifications with JXA
 description: Show macOS Notification Center messages using JavaScript for Automation
 language: javascript
-keywords: ["notification", "alert", "user interface", "system integration", "feedback"]
+keywords:
+  - notification
+  - alert
+  - user interface
+  - system integration
+  - feedback
+category: 03_jxa_core
 ---
 
 # Display Notifications with JXA

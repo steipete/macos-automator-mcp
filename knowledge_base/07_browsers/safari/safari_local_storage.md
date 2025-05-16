@@ -1,15 +1,31 @@
 ---
-title: "Safari: Local Storage Management"
-category: "05_web_browsers"
+title: 'Safari: Local Storage Management'
+category: 07_browsers/safari
 id: safari_local_storage
-description: "Manages browser storage in Safari, including localStorage, sessionStorage, cookies, and IndexedDB operations."
-keywords: ["Safari", "localStorage", "sessionStorage", "cookies", "web storage", "web development", "IndexedDB", "browser storage"]
+description: >-
+  Manages browser storage in Safari, including localStorage, sessionStorage,
+  cookies, and IndexedDB operations.
+keywords:
+  - Safari
+  - localStorage
+  - sessionStorage
+  - cookies
+  - web storage
+  - web development
+  - IndexedDB
+  - browser storage
 language: applescript
 isComplex: true
-argumentsPrompt: "Storage operation as 'operation' ('get', 'set', 'remove', 'clear'), storage type as 'storageType' ('local', 'session', 'cookie', 'indexedDB'), key name as 'key', and value as 'value' in inputData."
-notes: |
+argumentsPrompt: >-
+  Storage operation as 'operation' ('get', 'set', 'remove', 'clear'), storage
+  type as 'storageType' ('local', 'session', 'cookie', 'indexedDB'), key name as
+  'key', and value as 'value' in inputData.
+notes: >
   - Safari must be running with at least one open tab.
-  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop menu.
+
+  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop
+  menu.
+
   - The script supports four types of web storage:
     - localStorage: Persistent storage without expiration
     - sessionStorage: Storage that lasts until the tab is closed
@@ -25,7 +41,8 @@ notes: |
     - 'path': Path for the cookie (defaults to '/')
     - 'expires': Expiration date in days (defaults to session)
     - 'secure': Whether the cookie should only be sent over HTTPS
-  - IndexedDB operations are limited to basic read/write with a default object store.
+  - IndexedDB operations are limited to basic read/write with a default object
+  store.
 ---
 
 This script manages browser storage mechanisms in Safari, including localStorage, sessionStorage, cookies, and IndexedDB.

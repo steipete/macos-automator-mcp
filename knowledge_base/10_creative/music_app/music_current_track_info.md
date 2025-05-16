@@ -1,13 +1,27 @@
 ---
-title: "Music: Get Current Track Information"
-category: "08_creative_and_document_apps"
+title: 'Music: Get Current Track Information'
+category: 10_creative/music_app
 id: music_current_track_info
-description: "Retrieves detailed information about the currently playing or selected track in Music.app."
-keywords: ["Music", "iTunes", "current track", "track info", "song details", "artist", "album", "duration", "rating", "Apple Music"]
+description: >-
+  Retrieves detailed information about the currently playing or selected track
+  in Music.app.
+keywords:
+  - Music
+  - iTunes
+  - current track
+  - track info
+  - song details
+  - artist
+  - album
+  - duration
+  - rating
+  - Apple Music
 language: applescript
-notes: |
+notes: >
   - Music.app must be running.
-  - If no track is playing or selected, an error may occur or properties might return `missing value`.
+
+  - If no track is playing or selected, an error may occur or properties might
+  return `missing value`.
 ---
 
 Get details of the current track in the Music app.

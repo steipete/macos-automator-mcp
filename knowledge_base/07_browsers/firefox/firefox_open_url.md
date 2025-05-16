@@ -1,9 +1,14 @@
 ---
-title: "Firefox: Open URL"
-category: "05_web_browsers"
+title: 'Firefox: Open URL'
+category: 07_browsers/firefox
 id: firefox_open_url
-description: "Opens Firefox and loads a specified URL."
-keywords: ["Firefox", "URL", "open", "browser", "navigate"]
+description: Opens Firefox and loads a specified URL.
+keywords:
+  - Firefox
+  - URL
+  - open
+  - browser
+  - navigate
 language: applescript
 notes: |
   - Firefox must be installed.

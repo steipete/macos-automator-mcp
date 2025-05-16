@@ -1,22 +1,43 @@
 ---
-title: "Swinsian: Playlist Management"
-category: "08_creative_and_document_apps"
+title: 'Swinsian: Playlist Management'
+category: 10_creative/swinsian
 id: swinsian_playlist_management
-description: "Manage playlists in Swinsian including listing, creating, modifying, and playing playlists."
-keywords: ["Swinsian", "playlist", "music", "collection", "management", "FLAC", "high-quality audio"]
+description: >-
+  Manage playlists in Swinsian including listing, creating, modifying, and
+  playing playlists.
+keywords:
+  - Swinsian
+  - playlist
+  - music
+  - collection
+  - management
+  - FLAC
+  - high-quality audio
 language: applescript
-parameters: |
-  - action (required): Action to perform - "list", "create", "add_to", "play", "get_tracks"
-  - playlist_name (optional): Name of the playlist to create, modify, or play (required for some actions)
-  - track_location (optional): File path of a track to add to playlist (for add_to action)
-notes: |
+parameters: >
+  - action (required): Action to perform - "list", "create", "add_to", "play",
+  "get_tracks"
+
+  - playlist_name (optional): Name of the playlist to create, modify, or play
+  (required for some actions)
+
+  - track_location (optional): File path of a track to add to playlist (for
+  add_to action)
+notes: >
   - Swinsian must be running for these commands to work.
+
   - The "list" action shows all available playlists.
+
   - The "create" action creates a new playlist with the specified name.
+
   - The "add_to" action adds a track (by file path) to the specified playlist.
+
   - The "play" action plays the specified playlist.
+
   - The "get_tracks" action lists all tracks in the specified playlist.
-  - Swinsian has comprehensive playlist management capabilities through AppleScript.
+
+  - Swinsian has comprehensive playlist management capabilities through
+  AppleScript.
 ---
 
 Manage playlists in Swinsian music player.

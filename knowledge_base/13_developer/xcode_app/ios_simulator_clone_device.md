@@ -1,12 +1,25 @@
 ---
-title: "iOS Simulator: Clone Device with Content"
-category: "developer"
+title: 'iOS Simulator: Clone Device with Content'
+category: 13_developer/xcode_app
 id: ios_simulator_clone_device
-description: "Clones an iOS Simulator device including all its installed apps and content."
-keywords: ["iOS Simulator", "Xcode", "clone", "duplicate", "copy", "backup", "device", "developer", "iOS", "iPadOS"]
+description: Clones an iOS Simulator device including all its installed apps and content.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - clone
+  - duplicate
+  - copy
+  - backup
+  - device
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Source device identifier as 'sourceDevice' (device name or UDID), name for cloned device as 'cloneName', and optional boolean to boot the clone after creation as 'bootAfterCloning' (default is false)."
+argumentsPrompt: >-
+  Source device identifier as 'sourceDevice' (device name or UDID), name for
+  cloned device as 'cloneName', and optional boolean to boot the clone after
+  creation as 'bootAfterCloning' (default is false).
 notes: |
   - Creates an exact copy of an existing simulator device
   - Preserves all installed apps, user settings, files, and data

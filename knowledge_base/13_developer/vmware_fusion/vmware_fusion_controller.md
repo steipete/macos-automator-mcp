@@ -1,9 +1,18 @@
 ---
 title: VMware Fusion VM Controller
-description: AppleScript for managing VMware Fusion virtual machines - list, start, stop, and check VM status
-keywords: [vmware, fusion, vm, virtual machine, controller, automation]
+description: >-
+  AppleScript for managing VMware Fusion virtual machines - list, start, stop,
+  and check VM status
+keywords:
+  - vmware
+  - fusion
+  - vm
+  - virtual machine
+  - controller
+  - automation
 language: applescript
 isComplex: false
+category: 13_developer/vmware_fusion
 ---
 
 # VMware Fusion VM Controller

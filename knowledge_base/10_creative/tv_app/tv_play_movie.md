@@ -1,12 +1,19 @@
 ---
-title: "TV: Play Movie or Show"
-category: "08_creative_and_document_apps"
+title: 'TV: Play Movie or Show'
+category: 10_creative/tv_app
 id: tv_play_movie
-description: "Plays a movie or TV show from your library in the TV app."
-keywords: ["TV app", "play movie", "watch show", "video playback", "Apple TV+"]
+description: Plays a movie or TV show from your library in the TV app.
+keywords:
+  - TV app
+  - play movie
+  - watch show
+  - video playback
+  - Apple TV+
 language: applescript
-argumentsPrompt: "Enter the name of the movie or show to play"
-notes: "Searches for and plays content from your library. Requires that the content is already in your TV app library."
+argumentsPrompt: Enter the name of the movie or show to play
+notes: >-
+  Searches for and plays content from your library. Requires that the content is
+  already in your TV app library.
 ---
 
 ```applescript

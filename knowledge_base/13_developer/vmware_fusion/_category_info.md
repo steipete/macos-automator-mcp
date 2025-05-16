@@ -1,6 +1,7 @@
 ---
 title: VMware Fusion
 description: Scripts for controlling and automating VMware Fusion virtual machines on macOS
+category: 13_developer/vmware_fusion
 ---
 
 This category contains scripts and utilities for automating VMware Fusion virtual machines on macOS. These scripts demonstrate how to:

@@ -1,12 +1,18 @@
 ---
-title: "Messages: Send Message"
-category: "07_productivity_apps"
+title: 'Messages: Send Message'
+category: 09_productivity/messages_app
 id: messages_send_message
-description: "Sends a text message to a specified recipient using the Messages app."
-keywords: ["Messages", "send text", "iMessage", "SMS"]
+description: Sends a text message to a specified recipient using the Messages app.
+keywords:
+  - Messages
+  - send text
+  - iMessage
+  - SMS
 language: applescript
-argumentsPrompt: "Enter the recipient name or phone number and message content"
-notes: "Works with both iMessage and SMS. The recipient can be a contact name, phone number, or Apple ID email."
+argumentsPrompt: Enter the recipient name or phone number and message content
+notes: >-
+  Works with both iMessage and SMS. The recipient can be a contact name, phone
+  number, or Apple ID email.
 ---
 
 ```applescript

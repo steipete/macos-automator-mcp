@@ -1,14 +1,28 @@
 ---
-title: "VLC: Get Current Media Information"
-category: "08_creative_and_document_apps"
+title: 'VLC: Get Current Media Information'
+category: 10_creative/vlc
 id: vlc_current_media_info
-description: "Retrieves detailed information about the currently playing media in VLC Media Player."
-keywords: ["VLC", "current media", "media info", "video", "audio", "duration", "position", "media player"]
+description: >-
+  Retrieves detailed information about the currently playing media in VLC Media
+  Player.
+keywords:
+  - VLC
+  - current media
+  - media info
+  - video
+  - audio
+  - duration
+  - position
+  - media player
 language: applescript
-notes: |
+notes: >
   - VLC Media Player must be running.
+
   - This script works for both audio and video files.
-  - VLC's AppleScript support has some limitations, so not all media properties may be available.
+
+  - VLC's AppleScript support has some limitations, so not all media properties
+  may be available.
+
   - Information retrieved includes name, time position, duration, and path.
 ---
 

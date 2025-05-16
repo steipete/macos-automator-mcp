@@ -1,12 +1,23 @@
 ---
-title: "Mail: Search for Messages"
-category: "07_productivity_apps"
+title: 'Mail: Search for Messages'
+category: 09_productivity/mail_app
 id: mail_search_messages
-description: "Searches for emails matching specified criteria like subject, sender, or content"
-keywords: ["Mail", "email", "search", "filter", "find", "query"]
+description: >-
+  Searches for emails matching specified criteria like subject, sender, or
+  content
+keywords:
+  - Mail
+  - email
+  - search
+  - filter
+  - find
+  - query
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide search text as 'searchTerm', search type as 'searchType' (subject, sender, or content), and mailbox as 'mailboxName' (optional, defaults to 'INBOX')"
+argumentsPrompt: >-
+  Provide search text as 'searchTerm', search type as 'searchType' (subject,
+  sender, or content), and mailbox as 'mailboxName' (optional, defaults to
+  'INBOX')
 notes: |
   - Searches for messages in the specified mailbox across all accounts
   - Can search by subject, sender email, or message content

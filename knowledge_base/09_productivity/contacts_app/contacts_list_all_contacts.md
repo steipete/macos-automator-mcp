@@ -1,11 +1,17 @@
 ---
-title: "Contacts: List All Contacts"
-category: "07_productivity_apps"
+title: 'Contacts: List All Contacts'
+category: 09_productivity/contacts_app
 id: contacts_list_all_contacts
-description: "Retrieves and lists all contacts from the Contacts app."
-keywords: ["Contacts", "address book", "list contacts", "retrieve contacts"]
+description: Retrieves and lists all contacts from the Contacts app.
+keywords:
+  - Contacts
+  - address book
+  - list contacts
+  - retrieve contacts
 language: applescript
-notes: "Returns contact names, emails, and phone numbers. May take longer with large contact databases."
+notes: >-
+  Returns contact names, emails, and phone numbers. May take longer with large
+  contact databases.
 ---
 
 ```applescript

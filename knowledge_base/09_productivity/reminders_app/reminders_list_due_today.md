@@ -1,11 +1,16 @@
 ---
-title: "Reminders: List Items Due Today"
-category: "07_productivity_apps"
+title: 'Reminders: List Items Due Today'
+category: 09_productivity/reminders_app
 id: reminders_list_due_today
-description: "Lists all reminders that are due today."
-keywords: ["Reminders", "due today", "today's tasks", "today's reminders", "day's tasks"]
+description: Lists all reminders that are due today.
+keywords:
+  - Reminders
+  - due today
+  - today's tasks
+  - today's reminders
+  - day's tasks
 language: applescript
-notes: "Displays all reminders due today across all reminder lists, grouped by list."
+notes: 'Displays all reminders due today across all reminder lists, grouped by list.'
 ---
 
 ```applescript

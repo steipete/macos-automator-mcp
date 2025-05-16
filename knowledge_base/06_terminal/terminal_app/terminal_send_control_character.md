@@ -1,11 +1,23 @@
 ---
-title: "Terminal: Send Control Character"
+title: 'Terminal: Send Control Character'
 id: terminal_send_control_character
-category: "04_terminal_emulators"
-description: "Sends a control character (e.g., Ctrl-C, Escape) to the frontmost Terminal.app window by simulating keystrokes."
-keywords: ["Terminal.app", "control character", "Ctrl-C", "escape", "signal", "keystroke", "System Events"]
+category: 06_terminal/terminal_app
+description: >-
+  Sends a control character (e.g., Ctrl-C, Escape) to the frontmost Terminal.app
+  window by simulating keystrokes.
+keywords:
+  - Terminal.app
+  - control character
+  - Ctrl-C
+  - escape
+  - signal
+  - keystroke
+  - System Events
 language: applescript
-argumentsPrompt: "Expects inputData: { \"controlChar\": \"X\" } where X is a single uppercase letter (A-Z) for Ctrl-X, or special strings like \"ESC\" (for Escape key), or \"]\" (for Ctrl-])."
+argumentsPrompt: >-
+  Expects inputData: { "controlChar": "X" } where X is a single uppercase letter
+  (A-Z) for Ctrl-X, or special strings like "ESC" (for Escape key), or "]" (for
+  Ctrl-]).
 isComplex: false
 ---
 

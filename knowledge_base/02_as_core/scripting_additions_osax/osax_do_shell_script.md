@@ -1,16 +1,34 @@
 ---
-title: "StandardAdditions: do shell script Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: do shell script Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_do_shell_script
-description: "Executes a Unix shell command and returns its standard output as a string."
-keywords: ["StandardAdditions", "do shell script", "terminal command", "unix", "bash", "zsh", "execute"]
+description: Executes a Unix shell command and returns its standard output as a string.
+keywords:
+  - StandardAdditions
+  - do shell script
+  - terminal command
+  - unix
+  - bash
+  - zsh
+  - execute
 language: applescript
-notes: |
-  - Always use `quoted form of` for any AppleScript variables or dynamic text passed into the shell command string to prevent errors and security issues with spaces or special characters.
-  - When working with file paths, ALWAYS convert AppleScript paths to POSIX paths before using them with shell commands using `POSIX path of myPath`.
-  - Never use HFS paths (colon-separated) directly in shell commands, as the shell expects POSIX paths (slash-separated).
-  - Can use `with administrator privileges` to run as root (prompts for password).
-  - Errors from the shell command will raise an AppleScript error. Use `try` blocks.
+notes: >
+  - Always use `quoted form of` for any AppleScript variables or dynamic text
+  passed into the shell command string to prevent errors and security issues
+  with spaces or special characters.
+
+  - When working with file paths, ALWAYS convert AppleScript paths to POSIX
+  paths before using them with shell commands using `POSIX path of myPath`.
+
+  - Never use HFS paths (colon-separated) directly in shell commands, as the
+  shell expects POSIX paths (slash-separated).
+
+  - Can use `with administrator privileges` to run as root (prompts for
+  password).
+
+  - Errors from the shell command will raise an AppleScript error. Use `try`
+  blocks.
+
   - Environment is minimal; full paths to executables often needed.
 ---
 

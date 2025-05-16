@@ -1,11 +1,18 @@
 ---
-title: "Stocks: Get Stock Quotes"
-category: "07_productivity_apps"
+title: 'Stocks: Get Stock Quotes'
+category: 09_productivity/stocks_app
 id: stocks_get_quotes
-description: "Retrieves current stock quotes from the Stocks app."
-keywords: ["Stocks", "stock quotes", "financial data", "market prices", "stock market"]
+description: Retrieves current stock quotes from the Stocks app.
+keywords:
+  - Stocks
+  - stock quotes
+  - financial data
+  - market prices
+  - stock market
 language: applescript
-notes: "Gets prices and changes for stocks in your watchlist. The information available may be limited due to the app's UI accessibility."
+notes: >-
+  Gets prices and changes for stocks in your watchlist. The information
+  available may be limited due to the app's UI accessibility.
 ---
 
 ```applescript

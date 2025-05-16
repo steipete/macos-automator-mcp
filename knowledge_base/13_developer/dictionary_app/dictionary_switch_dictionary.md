@@ -1,12 +1,21 @@
 ---
-title: "Dictionary: Switch Dictionary Source"
-category: "developer"
+title: 'Dictionary: Switch Dictionary Source'
+category: 13_developer/dictionary_app
 id: dictionary_switch_dictionary
-description: "Switches between different dictionary sources in the Dictionary app."
-keywords: ["Dictionary", "reference source", "thesaurus", "Oxford", "Apple", "dictionary source"]
+description: Switches between different dictionary sources in the Dictionary app.
+keywords:
+  - Dictionary
+  - reference source
+  - thesaurus
+  - Oxford
+  - Apple
+  - dictionary source
 language: applescript
-argumentsPrompt: "Enter the dictionary source to switch to (e.g., Oxford, American, Thesaurus)"
-notes: "Changes the active dictionary source. Common sources include 'Oxford', 'American', 'Apple', and 'Thesaurus', but actual sources depend on what's installed."
+argumentsPrompt: 'Enter the dictionary source to switch to (e.g., Oxford, American, Thesaurus)'
+notes: >-
+  Changes the active dictionary source. Common sources include 'Oxford',
+  'American', 'Apple', and 'Thesaurus', but actual sources depend on what's
+  installed.
 ---
 
 ```applescript

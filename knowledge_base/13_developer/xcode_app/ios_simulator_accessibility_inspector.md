@@ -1,12 +1,26 @@
 ---
-title: "iOS Simulator: Analyze Accessibility Elements"
-category: "developer"
+title: 'iOS Simulator: Analyze Accessibility Elements'
+category: 13_developer/xcode_app
 id: ios_simulator_accessibility_inspector
-description: "Launches Accessibility Inspector to analyze accessibility elements in iOS Simulator apps."
-keywords: ["iOS Simulator", "Xcode", "accessibility", "inspector", "VoiceOver", "analysis", "developer", "iOS", "iPadOS"]
+description: >-
+  Launches Accessibility Inspector to analyze accessibility elements in iOS
+  Simulator apps.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - accessibility
+  - inspector
+  - VoiceOver
+  - analysis
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional app bundle ID as 'bundleID' (to launch before inspection), optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional boolean to generate report as 'generateReport' (default is false)."
+argumentsPrompt: >-
+  Optional app bundle ID as 'bundleID' (to launch before inspection), optional
+  device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional
+  boolean to generate report as 'generateReport' (default is false).
 notes: |
   - Launches Accessibility Inspector tool for detailed accessibility testing
   - Can automatically launch target app for inspection

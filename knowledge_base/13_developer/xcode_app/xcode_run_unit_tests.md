@@ -1,12 +1,22 @@
 ---
-title: "Xcode: Run Unit Tests"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Run Unit Tests'
+category: 13_developer/xcode_app
 id: xcode_run_unit_tests
-description: "Runs unit tests for an open Xcode project using XCTest."
-keywords: ["Xcode", "XCTest", "unit test", "testing", "XCTAssert", "developer", "iOS", "macOS"]
+description: Runs unit tests for an open Xcode project using XCTest.
+keywords:
+  - Xcode
+  - XCTest
+  - unit test
+  - testing
+  - XCTAssert
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional wait time (in seconds) for tests to complete as 'waitTime' in inputData (default is 60 seconds)"
+argumentsPrompt: >-
+  Optional wait time (in seconds) for tests to complete as 'waitTime' in
+  inputData (default is 60 seconds)
 notes: |
   - Requires Xcode to be already open with a project loaded
   - Uses UI scripting via System Events so requires Accessibility permissions

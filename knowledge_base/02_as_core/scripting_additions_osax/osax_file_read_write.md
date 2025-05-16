@@ -1,16 +1,35 @@
 ---
-title: "StandardAdditions: File Read/Write Operations"
-category: "01_applescript_core"
+title: 'StandardAdditions: File Read/Write Operations'
+category: 02_as_core/scripting_additions_osax
 id: osax_file_read_write
-description: "Covers basic file input/output operations using StandardAdditions: open for access, read, write, close access, get eof, and set eof."
-keywords: ["StandardAdditions", "file access", "read file", "write file", "file io", "eof", "open for access", "close access", "osax"]
+description: >-
+  Covers basic file input/output operations using StandardAdditions: open for
+  access, read, write, close access, get eof, and set eof.
+keywords:
+  - StandardAdditions
+  - file access
+  - read file
+  - write file
+  - file io
+  - eof
+  - open for access
+  - close access
+  - osax
 language: applescript
-notes: |
-  - These commands are for low-level file access. For simple text file reading/writing, `read file` and `write ... to file` are often easier.
-  - `open for access` requires a file path (string or alias) and optionally `write permission`.
+notes: >
+  - These commands are for low-level file access. For simple text file
+  reading/writing, `read file` and `write ... to file` are often easier.
+
+  - `open for access` requires a file path (string or alias) and optionally
+  `write permission`.
+
   - `read` command needs a file reference number (from `open for access`).
-  - `write ... to fileRef ... starting at X` allows writing at specific positions.
+
+  - `write ... to fileRef ... starting at X` allows writing at specific
+  positions.
+
   - `set eof fileRef to 0` truncates a file.
+
   - Always `close access` the file reference when done.
 ---
 

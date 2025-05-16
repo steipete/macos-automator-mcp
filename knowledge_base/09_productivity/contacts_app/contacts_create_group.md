@@ -1,12 +1,17 @@
 ---
-title: "Contacts: Create Contact Group"
-category: "07_productivity_apps"
+title: 'Contacts: Create Contact Group'
+category: 09_productivity/contacts_app
 id: contacts_create_group
-description: "Creates a new contact group in the Contacts app."
-keywords: ["Contacts", "contact group", "group", "organize contacts", "distribution list"]
+description: Creates a new contact group in the Contacts app.
+keywords:
+  - Contacts
+  - contact group
+  - group
+  - organize contacts
+  - distribution list
 language: applescript
-argumentsPrompt: "Enter the group name and optional comma-separated list of contacts to add"
-notes: "Creates a new group and optionally adds specified contacts to it."
+argumentsPrompt: Enter the group name and optional comma-separated list of contacts to add
+notes: Creates a new group and optionally adds specified contacts to it.
 ---
 
 ```applescript

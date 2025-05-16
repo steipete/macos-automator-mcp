@@ -1,6 +1,8 @@
 ---
-title: "Send Email Directly from Mail App"
-description: "Creates and sends an email with specified recipients, subject, body, and optional attachments"
+title: Send Email Directly from Mail App
+description: >-
+  Creates and sends an email with specified recipients, subject, body, and
+  optional attachments
 keywords:
   - mail
   - email
@@ -10,8 +12,8 @@ keywords:
   - attachment
 language: applescript
 id: mail_send_email_direct
-argumentsPrompt: "Provide recipient email, subject, body text, and optional attachment path"
-category: "07_productivity_apps"
+argumentsPrompt: 'Provide recipient email, subject, body text, and optional attachment path'
+category: 09_productivity/mail_app
 ---
 
 This script creates and sends an email directly from Apple Mail without user intervention.

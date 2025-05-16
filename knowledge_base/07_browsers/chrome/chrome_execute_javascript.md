@@ -1,16 +1,29 @@
 ---
-title: "Chrome: Execute JavaScript in Active Tab"
-category: "05_web_browsers"
+title: 'Chrome: Execute JavaScript in Active Tab'
+category: 07_browsers/chrome
 id: chrome_execute_javascript
-description: "Executes a provided JavaScript string in the active tab of the frontmost Google Chrome window."
-keywords: ["Chrome", "JavaScript", "execute javascript", "DOM", "automation"]
+description: >-
+  Executes a provided JavaScript string in the active tab of the frontmost
+  Google Chrome window.
+keywords:
+  - Chrome
+  - JavaScript
+  - execute javascript
+  - DOM
+  - automation
 language: applescript
 isComplex: true
-argumentsPrompt: "JavaScript code string as 'jsCode' in inputData. For example: { \"jsCode\": \"alert('Hello from Chrome!');\" }"
-notes: |
+argumentsPrompt: >-
+  JavaScript code string as 'jsCode' in inputData. For example: { "jsCode":
+  "alert('Hello from Chrome!');" }
+notes: >
   - Google Chrome must be running and have a window with an active tab.
-  - **CRITICAL:** User must enable 'Allow JavaScript from Apple Events' in Chrome's View > Developer menu. This is a one-time setup per user.
-  - For multi-line or complex JavaScript, it's often better to have the JS copy its result to the clipboard, then have AppleScript retrieve it.
+
+  - **CRITICAL:** User must enable 'Allow JavaScript from Apple Events' in
+  Chrome's View > Developer menu. This is a one-time setup per user.
+
+  - For multi-line or complex JavaScript, it's often better to have the JS copy
+  its result to the clipboard, then have AppleScript retrieve it.
 ---
 
 This script allows execution of JavaScript within Google Chrome.

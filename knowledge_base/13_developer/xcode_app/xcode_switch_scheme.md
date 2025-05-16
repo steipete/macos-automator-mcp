@@ -1,12 +1,20 @@
 ---
-title: "Xcode: Switch Scheme"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Switch Scheme'
+category: 13_developer/xcode_app
 id: xcode_switch_scheme
-description: "Changes the active scheme in an open Xcode project."
-keywords: ["Xcode", "scheme", "switch", "select", "configuration", "developer", "iOS", "macOS"]
+description: Changes the active scheme in an open Xcode project.
+keywords:
+  - Xcode
+  - scheme
+  - switch
+  - select
+  - configuration
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Name of the scheme to switch to in 'schemeName' (required)"
+argumentsPrompt: Name of the scheme to switch to in 'schemeName' (required)
 notes: |
   - Requires Xcode to be already open with a project loaded
   - Uses UI scripting via System Events so requires Accessibility permissions

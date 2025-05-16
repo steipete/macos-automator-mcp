@@ -1,14 +1,26 @@
 ---
-title: "Core: Stay-Open Applet Handler 'on idle'"
-category: "01_applescript_core"
+title: 'Core: Stay-Open Applet Handler ''on idle'''
+category: 02_as_core/handlers_and_subroutines
 id: core_handler_on_idle
-description: "Defines a handler that executes periodically if the script is saved as a 'Stay Open' application. Returning a number sets the next idle interval in seconds."
-keywords: ["handler", "idle", "stay open", "applet", "background task", "periodic"]
+description: >-
+  Defines a handler that executes periodically if the script is saved as a 'Stay
+  Open' application. Returning a number sets the next idle interval in seconds.
+keywords:
+  - handler
+  - idle
+  - stay open
+  - applet
+  - background task
+  - periodic
 language: applescript
-notes: |
-  - Script must be saved as an Application with the "Stay open after run handler" checkbox checked.
+notes: >
+  - Script must be saved as an Application with the "Stay open after run
+  handler" checkbox checked.
+
   - The `idle` handler is called automatically by the system.
-  - `return <number_of_seconds>` sets how long to wait before the next `idle` call. Default is 30 seconds if no value or an invalid value is returned.
+
+  - `return <number_of_seconds>` sets how long to wait before the next `idle`
+  call. Default is 30 seconds if no value or an invalid value is returned.
 ---
 
 ```applescript

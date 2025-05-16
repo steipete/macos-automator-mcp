@@ -1,18 +1,35 @@
 ---
-title: "Xcode: Open Instruments for Profiling"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Open Instruments for Profiling'
+category: 13_developer/xcode_app
 id: xcode_open_instruments
-description: "Opens Xcode Instruments for app profiling with a selected template."
-keywords: ["Xcode", "Instruments", "profiling", "performance", "Time Profiler", "Leaks", "developer", "iOS", "macOS"]
+description: Opens Xcode Instruments for app profiling with a selected template.
+keywords:
+  - Xcode
+  - Instruments
+  - profiling
+  - performance
+  - Time Profiler
+  - Leaks
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Profile template to use (e.g., 'Time Profiler', 'Leaks', 'Energy Log', 'Allocations') as 'profileTemplate' in inputData"
-notes: |
+argumentsPrompt: >-
+  Profile template to use (e.g., 'Time Profiler', 'Leaks', 'Energy Log',
+  'Allocations') as 'profileTemplate' in inputData
+notes: >
   - Requires Xcode to be already open with a project loaded
+
   - Uses UI scripting via System Events so requires Accessibility permissions
+
   - Launches the selected Instruments template for profiling
-  - Common templates include: Time Profiler, Leaks, Energy Log, Allocations, etc.
-  - Instruments is a powerful tool for analyzing app performance and memory usage
+
+  - Common templates include: Time Profiler, Leaks, Energy Log, Allocations,
+  etc.
+
+  - Instruments is a powerful tool for analyzing app performance and memory
+  usage
 ---
 
 ```applescript

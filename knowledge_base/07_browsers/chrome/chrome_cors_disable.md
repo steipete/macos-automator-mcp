@@ -1,19 +1,43 @@
 ---
-title: "Chrome: Disable CORS"
-category: "05_web_browsers"
+title: 'Chrome: Disable CORS'
+category: 07_browsers/chrome
 id: chrome_cors_disable
-description: "Disables Cross-Origin Resource Sharing (CORS) restrictions in Chrome for local development and testing of APIs and web applications."
-keywords: ["Chrome", "CORS", "cross-origin", "security", "disable", "development", "testing", "API", "web development"]
+description: >-
+  Disables Cross-Origin Resource Sharing (CORS) restrictions in Chrome for local
+  development and testing of APIs and web applications.
+keywords:
+  - Chrome
+  - CORS
+  - cross-origin
+  - security
+  - disable
+  - development
+  - testing
+  - API
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Options in inputData. Use { \"disable\": true } to disable CORS, { \"disable\": false } to restore normal CORS behavior. Can specify { \"originPatterns\": [\"https://api.example.com/*\"] } to only override specific origins."
-notes: |
-  - This script provides multiple methods to disable CORS including launch flags and extensions.
-  - Opens Chrome with special flags to disable web security if not already running.
+argumentsPrompt: >-
+  Options in inputData. Use { "disable": true } to disable CORS, { "disable":
+  false } to restore normal CORS behavior. Can specify { "originPatterns":
+  ["https://api.example.com/*"] } to only override specific origins.
+notes: >
+  - This script provides multiple methods to disable CORS including launch flags
+  and extensions.
+
+  - Opens Chrome with special flags to disable web security if not already
+  running.
+
   - Can manage Chrome extensions that disable CORS.
+
   - CORS disabling only applies to the Chrome instance launched by this script.
-  - Disabling CORS bypasses security protocols and should only be used for local development.
-  - Closing and reopening Chrome normally will restore standard security settings.
+
+  - Disabling CORS bypasses security protocols and should only be used for local
+  development.
+
+  - Closing and reopening Chrome normally will restore standard security
+  settings.
+
   - Won't affect Chrome windows already open before running this script.
 ---
 

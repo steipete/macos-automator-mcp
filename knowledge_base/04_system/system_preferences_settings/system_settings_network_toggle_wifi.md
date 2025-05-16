@@ -1,12 +1,21 @@
 ---
-title: "System Settings: Toggle Wi-Fi"
-category: "02_system_interaction"
+title: 'System Settings: Toggle Wi-Fi'
+category: 04_system/system_preferences_settings
 id: system_settings_network_toggle_wifi
-description: "Toggles Wi-Fi on or off through System Settings or System Preferences."
-keywords: ["System Settings", "Wi-Fi", "network", "toggle Wi-Fi", "wireless"]
+description: Toggles Wi-Fi on or off through System Settings or System Preferences.
+keywords:
+  - System Settings
+  - Wi-Fi
+  - network
+  - toggle Wi-Fi
+  - wireless
 language: applescript
-argumentsPrompt: "Enter 'on' or 'off' to set Wi-Fi state, or 'toggle' to switch the current state"
-notes: "Controls Wi-Fi connectivity. Supports both System Settings (macOS Ventura and later) and System Preferences (earlier macOS versions)."
+argumentsPrompt: >-
+  Enter 'on' or 'off' to set Wi-Fi state, or 'toggle' to switch the current
+  state
+notes: >-
+  Controls Wi-Fi connectivity. Supports both System Settings (macOS Ventura and
+  later) and System Preferences (earlier macOS versions).
 ---
 
 ```applescript

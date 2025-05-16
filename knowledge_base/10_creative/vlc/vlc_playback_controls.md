@@ -1,15 +1,31 @@
 ---
-title: "VLC: Basic Playback Controls"
-category: "08_creative_and_document_apps"
+title: 'VLC: Basic Playback Controls'
+category: 10_creative/vlc
 id: vlc_playback_controls
-description: "Control basic playback in VLC Media Player including play, pause, stop, and volume."
-keywords: ["VLC", "playback", "play", "pause", "stop", "volume", "media", "video", "audio"]
+description: >-
+  Control basic playback in VLC Media Player including play, pause, stop, and
+  volume.
+keywords:
+  - VLC
+  - playback
+  - play
+  - pause
+  - stop
+  - volume
+  - media
+  - video
+  - audio
 language: applescript
-notes: |
+notes: >
   - These commands target the VLC Media Player application.
+
   - VLC must be running for these commands to work.
-  - VLC's AppleScript support is somewhat limited and focuses mainly on controlling the currently playing item.
-  - Some operations like playlist management are not well supported through AppleScript.
+
+  - VLC's AppleScript support is somewhat limited and focuses mainly on
+  controlling the currently playing item.
+
+  - Some operations like playlist management are not well supported through
+  AppleScript.
 ---
 
 Control basic playback features of VLC Media Player.

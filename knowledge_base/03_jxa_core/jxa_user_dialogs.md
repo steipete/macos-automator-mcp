@@ -3,7 +3,13 @@ id: jxa_user_dialogs
 title: User Dialogs with JXA
 description: Create interactive dialog boxes using JavaScript for Automation
 language: javascript
-keywords: ["dialog", "user input", "alerts", "forms", "UI interaction"]
+keywords:
+  - dialog
+  - user input
+  - alerts
+  - forms
+  - UI interaction
+category: 03_jxa_core
 ---
 
 # User Dialogs with JXA

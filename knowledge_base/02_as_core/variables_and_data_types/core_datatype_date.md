@@ -1,11 +1,19 @@
 ---
-title: "Core: Date Data Type"
-category: "01_applescript_core"
+title: 'Core: Date Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_date
-description: "Working with dates and times in AppleScript."
-keywords: ["date", "time", "data type", "current date", "format", "calculation"]
+description: Working with dates and times in AppleScript.
+keywords:
+  - date
+  - time
+  - data type
+  - current date
+  - format
+  - calculation
 language: applescript
-notes: "AppleScript is sensitive to date string formats. 'date \"string\"' is used for coercion."
+notes: >-
+  AppleScript is sensitive to date string formats. 'date "string"' is used for
+  coercion.
 ---
 
 ```applescript

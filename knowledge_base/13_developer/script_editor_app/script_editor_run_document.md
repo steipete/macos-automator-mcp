@@ -1,9 +1,15 @@
 ---
-title: "Script Editor: Run Document"
-category: "developer"
+title: 'Script Editor: Run Document'
+category: 13_developer/script_editor_app
 id: script_editor_run_document
-description: "Executes an AppleScript document in Script Editor and retrieves its result."
-keywords: ["Script Editor", "run script", "execute", "document", "script result", "automation"]
+description: Executes an AppleScript document in Script Editor and retrieves its result.
+keywords:
+  - Script Editor
+  - run script
+  - execute
+  - document
+  - script result
+  - automation
 language: applescript
 notes: |
   - Script Editor must be running with at least one document open

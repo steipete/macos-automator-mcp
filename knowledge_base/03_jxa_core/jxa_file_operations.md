@@ -1,11 +1,22 @@
 ---
-title: "JXA: File System Operations"
-category: "10_jxa_basics"
+title: 'JXA: File System Operations'
+category: 03_jxa_core
 id: jxa_file_operations
-description: "Examples of file system operations in JXA, including reading, writing, and managing files and folders."
-keywords: ["jxa", "javascript", "file operations", "read file", "write file", "file system", "unicode"]
+description: >-
+  Examples of file system operations in JXA, including reading, writing, and
+  managing files and folders.
+keywords:
+  - jxa
+  - javascript
+  - file operations
+  - read file
+  - write file
+  - file system
+  - unicode
 language: javascript
-notes: "For Unicode support, use the Objective-C bridge approach. Standard JXA file operations are limited to ASCII."
+notes: >-
+  For Unicode support, use the Objective-C bridge approach. Standard JXA file
+  operations are limited to ASCII.
 ---
 
 ```javascript

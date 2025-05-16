@@ -4,11 +4,16 @@ title: Create iTerm2 Dynamic Profiles
 description: Creates and manages iTerm2 dynamic profiles from a template
 language: applescript
 author: Claude
-keywords: ["profiles", "customization", "configuration", "themes", "automation"]
+keywords:
+  - profiles
+  - customization
+  - configuration
+  - themes
+  - automation
 usage_examples:
-  - "Generate multiple SSH profiles for different servers"
-  - "Create a set of themed profiles for different development environments"
-  - "Manage and update iTerm2 profiles programmatically"
+  - Generate multiple SSH profiles for different servers
+  - Create a set of themed profiles for different development environments
+  - Manage and update iTerm2 profiles programmatically
 parameters:
   - name: profileName
     description: Name for the new profile
@@ -19,6 +24,7 @@ parameters:
   - name: command
     description: Initial command to run when the profile is launched
     required: false
+category: 06_terminal/iterm
 ---
 
 # Create iTerm2 Dynamic Profiles

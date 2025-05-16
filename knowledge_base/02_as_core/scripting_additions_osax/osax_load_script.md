@@ -1,15 +1,30 @@
 ---
-title: "StandardAdditions: load script Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: load script Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_load_script
-description: "Loads a compiled script file (.scpt) or script application (.app) into memory as a script object, allowing its handlers and properties to be called."
-keywords: ["StandardAdditions", "load script", "script object", "reusable code", "library", "module", "osax"]
+description: >-
+  Loads a compiled script file (.scpt) or script application (.app) into memory
+  as a script object, allowing its handlers and properties to be called.
+keywords:
+  - StandardAdditions
+  - load script
+  - script object
+  - reusable code
+  - library
+  - module
+  - osax
 language: applescript
-notes: |
-  - `load script` takes a file reference (alias or HFS path string) to a compiled script file (.scpt) or a script application (.app).
+notes: >
+  - `load script` takes a file reference (alias or HFS path string) to a
+  compiled script file (.scpt) or a script application (.app).
+
   - It returns a script object representing the loaded script.
-  - You can then call handlers defined within that script object using `tell scriptObjectName to handlerName()` or `handlerName() of scriptObjectName`.
+
+  - You can then call handlers defined within that script object using `tell
+  scriptObjectName to handlerName()` or `handlerName() of scriptObjectName`.
+
   - Useful for creating reusable code libraries or modules.
+
   - The script being loaded must be compiled; it cannot be plain text.
 ---
 

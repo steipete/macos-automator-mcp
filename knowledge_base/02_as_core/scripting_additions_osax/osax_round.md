@@ -1,9 +1,18 @@
 ---
-title: "StandardAdditions: round Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: round Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_round
-description: "Rounds a number to the nearest integer, with options for rounding direction (up, down, toward zero, to nearest)."
-keywords: ["StandardAdditions", "round", "rounding", "math", "integer", "number", "osax"]
+description: >-
+  Rounds a number to the nearest integer, with options for rounding direction
+  (up, down, toward zero, to nearest).
+keywords:
+  - StandardAdditions
+  - round
+  - rounding
+  - math
+  - integer
+  - number
+  - osax
 language: applescript
 notes: |
   - `round number [rounding direction]`

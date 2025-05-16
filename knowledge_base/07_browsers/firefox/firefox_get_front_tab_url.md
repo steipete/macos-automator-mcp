@@ -1,16 +1,29 @@
 ---
-title: "Firefox: Get URL of Front Tab"
-category: "05_web_browsers"
+title: 'Firefox: Get URL of Front Tab'
+category: 07_browsers/firefox
 id: firefox_get_front_tab_url
-description: "Retrieves the URL of the active tab in the frontmost Firefox window using UI scripting."
-keywords: ["Firefox", "URL", "current tab", "web address", "browser", "clipboard"]
+description: >-
+  Retrieves the URL of the active tab in the frontmost Firefox window using UI
+  scripting.
+keywords:
+  - Firefox
+  - URL
+  - current tab
+  - web address
+  - browser
+  - clipboard
 language: applescript
-notes: |
+notes: >
   - Firefox must be running.
+
   - This script uses UI scripting via System Events.
+
   - Temporarily modifies the clipboard content.
+
   - You may need to enable accessibility permissions for the script to work.
-  - For Firefox 87+, enabling VoiceOver support in Firefox can provide more reliable results (see alternate method in script).
+
+  - For Firefox 87+, enabling VoiceOver support in Firefox can provide more
+  reliable results (see alternate method in script).
 ---
 
 This script retrieves the URL of the front tab in Firefox using UI scripting to simulate keyboard shortcuts. It works by activating Firefox, using keyboard shortcuts to select and copy the URL, and then retrieving it from the clipboard.

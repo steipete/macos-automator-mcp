@@ -1,21 +1,41 @@
 ---
-title: "Audio Hijack: Recordings Management"
-category: "08_creative_and_document_apps"
+title: 'Audio Hijack: Recordings Management'
+category: 10_creative/audio_hijack
 id: audio_hijack_recordings_management
-description: "Manage recordings in Audio Hijack including listing recent recordings, getting recording info, and post-processing actions."
-keywords: ["Audio Hijack", "recordings", "management", "list", "info", "post-processing", "audio files"]
+description: >-
+  Manage recordings in Audio Hijack including listing recent recordings, getting
+  recording info, and post-processing actions.
+keywords:
+  - Audio Hijack
+  - recordings
+  - management
+  - list
+  - info
+  - post-processing
+  - audio files
 language: applescript
-parameters: |
-  - action (required): Action to perform - "list", "info", "open_folder", "recent"
-  - recording_id (optional): ID of the recording to manage (required for 'info' action)
-  - limit (optional): Number of recent recordings to list (default: 10, for 'list' and 'recent' actions)
-notes: |
+parameters: >
+  - action (required): Action to perform - "list", "info", "open_folder",
+  "recent"
+
+  - recording_id (optional): ID of the recording to manage (required for 'info'
+  action)
+
+  - limit (optional): Number of recent recordings to list (default: 10, for
+  'list' and 'recent' actions)
+notes: >
   - Audio Hijack must be installed on the system.
+
   - The "list" action shows all recordings with their details.
+
   - The "info" action provides detailed information about a specific recording.
+
   - The "open_folder" action opens the Recordings folder in Finder.
+
   - The "recent" action lists only the most recent recordings.
-  - Audio Hijack's recordings management varies by version; this script is designed for Audio Hijack 3+.
+
+  - Audio Hijack's recordings management varies by version; this script is
+  designed for Audio Hijack 3+.
 ---
 
 Manage recordings in Audio Hijack.

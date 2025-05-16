@@ -1,10 +1,26 @@
 ---
 title: Media Conversion Utility
-category: 08_creative_and_document_apps
+category: 10_creative/image_events_app
 id: media_conversion_utility
-description: A utility script for converting media files between formats, including images, audio, and video using macOS built-in tools.
+description: >-
+  A utility script for converting media files between formats, including images,
+  audio, and video using macOS built-in tools.
 language: applescript
-keywords: [convert, media, image, audio, video, format, png, jpg, webp, gif, mp3, wav, mp4, mov]
+keywords:
+  - convert
+  - media
+  - image
+  - audio
+  - video
+  - format
+  - png
+  - jpg
+  - webp
+  - gif
+  - mp3
+  - wav
+  - mp4
+  - mov
 ---
 
 # Media Conversion Utility

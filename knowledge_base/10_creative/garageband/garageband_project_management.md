@@ -1,21 +1,46 @@
 ---
-title: "GarageBand: Project Management"
-category: "08_creative_and_document_apps"
+title: 'GarageBand: Project Management'
+category: 10_creative/garageband
 id: garageband_project_management
-description: "Manage GarageBand projects including creating, opening, saving, and exporting projects."
-keywords: ["GarageBand", "project", "save", "open", "export", "new", "management", "music production"]
+description: >-
+  Manage GarageBand projects including creating, opening, saving, and exporting
+  projects.
+keywords:
+  - GarageBand
+  - project
+  - save
+  - open
+  - export
+  - new
+  - management
+  - music production
 language: applescript
-parameters: |
-  - action (required): Action to perform - "new", "open", "save", "export", "close"
-  - file_path (optional): Path for file operations (required for open/export actions)
-  - template (optional): Template name for new project (e.g., "Electronic", "Hip Hop", "Voice")
-notes: |
+parameters: >
+  - action (required): Action to perform - "new", "open", "save", "export",
+  "close"
+
+  - file_path (optional): Path for file operations (required for open/export
+  actions)
+
+  - template (optional): Template name for new project (e.g., "Electronic", "Hip
+  Hop", "Voice")
+notes: >
   - GarageBand must be running for most of these commands to work.
-  - GarageBand has limited AppleScript support, so this script uses UI automation.
-  - For the "open" action, provide a full path to a GarageBand project file (.band).
-  - For the "export" action, provide a directory path where the project should be exported.
-  - Templates are not always consistent between GarageBand versions, so template selection may vary.
-  - This script requires Accessibility permissions to be granted for the script runner.
+
+  - GarageBand has limited AppleScript support, so this script uses UI
+  automation.
+
+  - For the "open" action, provide a full path to a GarageBand project file
+  (.band).
+
+  - For the "export" action, provide a directory path where the project should
+  be exported.
+
+  - Templates are not always consistent between GarageBand versions, so template
+  selection may vary.
+
+  - This script requires Accessibility permissions to be granted for the script
+  runner.
 ---
 
 Manage GarageBand projects with automation.

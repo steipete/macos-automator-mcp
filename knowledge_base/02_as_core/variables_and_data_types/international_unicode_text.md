@@ -1,14 +1,28 @@
 ---
-title: "International and Unicode Text in AppleScript"
-category: "01_applescript_core"
+title: International and Unicode Text in AppleScript
+category: 02_as_core/variables_and_data_types
 id: core_datatype_international_unicode_text
-description: "Working with international character sets and Unicode text in AppleScript for multilingual applications."
-keywords: ["international text", "Unicode text", "localization", "i18n", "UTF-8", "character encoding", "multi-byte", "non-Latin"]
+description: >-
+  Working with international character sets and Unicode text in AppleScript for
+  multilingual applications.
+keywords:
+  - international text
+  - Unicode text
+  - localization
+  - i18n
+  - UTF-8
+  - character encoding
+  - multi-byte
+  - non-Latin
 language: applescript
-notes: |
-  - International text and Unicode text are specialized data types for handling non-ASCII characters
+notes: >
+  - International text and Unicode text are specialized data types for handling
+  non-ASCII characters
+
   - Modern macOS primarily uses Unicode (UTF-8/UTF-16) for text encoding
-  - The distinction between these types is less relevant in modern AppleScript versions, but still important for compatibility
+
+  - The distinction between these types is less relevant in modern AppleScript
+  versions, but still important for compatibility
 ---
 
 AppleScript provides specialized text data types for handling non-ASCII text and multilingual requirements. This is crucial for creating localized scripts and working with diverse writing systems.

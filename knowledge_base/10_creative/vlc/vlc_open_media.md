@@ -1,20 +1,38 @@
 ---
-title: "VLC: Open Media File or URL"
-category: "08_creative_and_document_apps"
+title: 'VLC: Open Media File or URL'
+category: 10_creative/vlc
 id: vlc_open_media
-description: "Open a local media file or streaming URL in VLC Media Player."
-keywords: ["VLC", "open file", "play file", "open URL", "stream", "video", "audio", "media player"]
+description: Open a local media file or streaming URL in VLC Media Player.
+keywords:
+  - VLC
+  - open file
+  - play file
+  - open URL
+  - stream
+  - video
+  - audio
+  - media player
 language: applescript
-parameters: |
+parameters: >
   - media_path (required): Path to the local media file or streaming URL to open
-  - start_time (optional): Position in seconds where playback should start (default: 0)
-  - fullscreen (optional): Whether to start in fullscreen mode - "yes" or "no" (default: "no")
-notes: |
+
+  - start_time (optional): Position in seconds where playback should start
+  (default: 0)
+
+  - fullscreen (optional): Whether to start in fullscreen mode - "yes" or "no"
+  (default: "no")
+notes: >
   - VLC Media Player must be running or will be launched automatically.
-  - This script works with local files, DVDs, network streams, and other media sources.
+
+  - This script works with local files, DVDs, network streams, and other media
+  sources.
+
   - For local files, either full paths or file:// URLs can be used.
+
   - For streaming, use a valid URL (http://, rtsp://, etc.).
-  - The script can optionally start playback at a specific time position and in fullscreen mode.
+
+  - The script can optionally start playback at a specific time position and in
+  fullscreen mode.
 ---
 
 Open and play a media file or URL in VLC Media Player.

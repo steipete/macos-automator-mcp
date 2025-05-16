@@ -1,12 +1,21 @@
 ---
-title: "Calculator: Switch Calculator View"
-category: "developer"
+title: 'Calculator: Switch Calculator View'
+category: 13_developer/calculator_app
 id: calculator_switch_view
-description: "Switches between the different calculator views (Basic, Scientific, Programmer)."
-keywords: ["Calculator", "view mode", "scientific calculator", "programmer calculator", "basic calculator"]
+description: >-
+  Switches between the different calculator views (Basic, Scientific,
+  Programmer).
+keywords:
+  - Calculator
+  - view mode
+  - scientific calculator
+  - programmer calculator
+  - basic calculator
 language: applescript
-argumentsPrompt: "Enter the calculator view to switch to (Basic, Scientific, or Programmer)"
-notes: "Changes the Calculator app's view mode. Valid options are 'Basic', 'Scientific', or 'Programmer'."
+argumentsPrompt: 'Enter the calculator view to switch to (Basic, Scientific, or Programmer)'
+notes: >-
+  Changes the Calculator app's view mode. Valid options are 'Basic',
+  'Scientific', or 'Programmer'.
 ---
 
 ```applescript

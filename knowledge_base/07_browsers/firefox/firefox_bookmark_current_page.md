@@ -1,9 +1,17 @@
 ---
-title: "Firefox: Bookmark Current Page"
-category: "05_web_browsers"
+title: 'Firefox: Bookmark Current Page'
+category: 07_browsers/firefox
 id: firefox_bookmark_current_page
-description: "Bookmarks the current page in Firefox, with options to specify folder and add tags."
-keywords: ["Firefox", "bookmark", "current page", "save bookmark", "browser", "UI scripting"]
+description: >-
+  Bookmarks the current page in Firefox, with options to specify folder and add
+  tags.
+keywords:
+  - Firefox
+  - bookmark
+  - current page
+  - save bookmark
+  - browser
+  - UI scripting
 language: applescript
 notes: |
   - Firefox must be running.

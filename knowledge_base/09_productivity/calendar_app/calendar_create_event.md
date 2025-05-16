@@ -1,12 +1,19 @@
 ---
-title: "Calendar: Create New Event"
-category: "07_productivity_apps"
+title: 'Calendar: Create New Event'
+category: 09_productivity/calendar_app
 id: calendar_create_event
-description: "Creates a new event in the Calendar app with specified details."
-keywords: ["Calendar", "create event", "schedule event", "appointment", "meeting"]
+description: Creates a new event in the Calendar app with specified details.
+keywords:
+  - Calendar
+  - create event
+  - schedule event
+  - appointment
+  - meeting
 language: applescript
-argumentsPrompt: "Enter the event title, date/time, duration, and calendar name"
-notes: "Creates a new event with the specified details. Date format should be 'YYYY-MM-DD HH:MM:SS'. Duration is in minutes."
+argumentsPrompt: 'Enter the event title, date/time, duration, and calendar name'
+notes: >-
+  Creates a new event with the specified details. Date format should be
+  'YYYY-MM-DD HH:MM:SS'. Duration is in minutes.
 ---
 
 ```applescript

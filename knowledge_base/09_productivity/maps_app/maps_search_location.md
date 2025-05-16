@@ -1,12 +1,17 @@
 ---
-title: "Maps: Search for Location"
-category: "07_productivity_apps"
+title: 'Maps: Search for Location'
+category: 09_productivity/maps_app
 id: maps_search_location
-description: "Searches for a specific location in the Maps app."
-keywords: ["Maps", "search location", "find place", "directions", "address search"]
+description: Searches for a specific location in the Maps app.
+keywords:
+  - Maps
+  - search location
+  - find place
+  - directions
+  - address search
 language: applescript
-argumentsPrompt: "Enter the location or address to search for"
-notes: "Opens the Maps app and performs a search for the specified location."
+argumentsPrompt: Enter the location or address to search for
+notes: Opens the Maps app and performs a search for the specified location.
 ---
 
 ```applescript

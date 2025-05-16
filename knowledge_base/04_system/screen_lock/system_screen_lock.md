@@ -1,11 +1,20 @@
 ---
-title: "System Screen Lock"
-category: "02_system_interaction"
+title: System Screen Lock
+category: 04_system/screen_lock
 id: system_screen_lock
-description: "Locks the screen on macOS using keyboard shortcut simulation or login window accessibility"
-keywords: ["screen lock", "security", "login window", "keyboard shortcut", "System Events"]
+description: >-
+  Locks the screen on macOS using keyboard shortcut simulation or login window
+  accessibility
+keywords:
+  - screen lock
+  - security
+  - login window
+  - keyboard shortcut
+  - System Events
 language: applescript
-notes: "Works on macOS High Sierra (10.13) and newer. Requires accessibility permissions for System Events."
+notes: >-
+  Works on macOS High Sierra (10.13) and newer. Requires accessibility
+  permissions for System Events.
 ---
 
 ```applescript

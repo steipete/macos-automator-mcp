@@ -1,15 +1,29 @@
 ---
-title: "AppleScript Constants: The 'constant' Data Type"
-category: "01_applescript_core"
+title: 'AppleScript Constants: The ''constant'' Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_constant
-description: "Explains AppleScript's 'constant' data type, which represents named constant values used by applications."
-keywords: ["constant", "data type", "enumeration", "application constants", "symbolic values", "type coercion"]
+description: >-
+  Explains AppleScript's 'constant' data type, which represents named constant
+  values used by applications.
+keywords:
+  - constant
+  - data type
+  - enumeration
+  - application constants
+  - symbolic values
+  - type coercion
 language: applescript
-notes: |
+notes: >
   - Constants are enumerated values defined by applications or AppleScript
-  - They represent symbolic values that have meaning within an application's context
-  - Constants are often returned by application properties and can be used as parameters
-  - While constants have a symbolic representation, they can be coerced to strings
+
+  - They represent symbolic values that have meaning within an application's
+  context
+
+  - Constants are often returned by application properties and can be used as
+  parameters
+
+  - While constants have a symbolic representation, they can be coerced to
+  strings
 ---
 
 In AppleScript, the `constant` data type represents symbolic values with specific meanings in a particular context. Applications define constants to represent specific states, modes, or options.

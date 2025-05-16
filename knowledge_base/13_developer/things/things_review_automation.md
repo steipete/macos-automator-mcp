@@ -4,10 +4,16 @@ title: Automated Review System for Things
 description: Script to automate daily and weekly reviews in Things
 author: steipete
 language: applescript
-tags: things, productivity, task management, review, gtd, automation
-keywords: [gtd, daily-review, weekly-review, productivity-report, task-cleanup]
+tags: 'things, productivity, task management, review, gtd, automation'
+keywords:
+  - gtd
+  - daily-review
+  - weekly-review
+  - productivity-report
+  - task-cleanup
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Automated Review System for Things

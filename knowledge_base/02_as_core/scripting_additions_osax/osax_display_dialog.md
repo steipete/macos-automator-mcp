@@ -1,15 +1,34 @@
 ---
-title: "StandardAdditions: display dialog Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: display dialog Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_display_dialog
-description: "Displays a modal dialog box with a message, optional input field, buttons, and icon."
-keywords: ["StandardAdditions", "display dialog", "dialog", "alert", "prompt", "user input", "osax"]
+description: >-
+  Displays a modal dialog box with a message, optional input field, buttons, and
+  icon.
+keywords:
+  - StandardAdditions
+  - display dialog
+  - dialog
+  - alert
+  - prompt
+  - user input
+  - osax
 language: applescript
-notes: |
+notes: >
   - `display dialog` is a versatile command for user interaction.
-  - Returns a record containing `button returned` and, if applicable, `text returned`.
-  - If the user cancels (e.g., presses Escape or a designated Cancel button without `cancelButton` specified in `buttons`), an error (number -128) is raised. Use a `try` block for robust error handling.
-  - Common parameters: `default answer "text"`, `hidden answer true`, `buttons {"Btn1", "Btn2", ...}`, `default button "BtnName"` or `default button number`, `cancel button "BtnName"` or `cancel button number`, `with title "Title"`, `with icon file/alias` or `with icon note/stop/caution`, `giving up after seconds`.
+
+  - Returns a record containing `button returned` and, if applicable, `text
+  returned`.
+
+  - If the user cancels (e.g., presses Escape or a designated Cancel button
+  without `cancelButton` specified in `buttons`), an error (number -128) is
+  raised. Use a `try` block for robust error handling.
+
+  - Common parameters: `default answer "text"`, `hidden answer true`, `buttons
+  {"Btn1", "Btn2", ...}`, `default button "BtnName"` or `default button number`,
+  `cancel button "BtnName"` or `cancel button number`, `with title "Title"`,
+  `with icon file/alias` or `with icon note/stop/caution`, `giving up after
+  seconds`.
 ---
 
 `display dialog` is a key command for interacting with the user.

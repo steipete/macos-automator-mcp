@@ -1,18 +1,36 @@
 ---
-title: "Spotify: URI Handler"
-category: "08_creative_and_document_apps"
+title: 'Spotify: URI Handler'
+category: 10_creative/spotify
 id: spotify_uri_handler
-description: "Play Spotify content using Spotify URIs for tracks, albums, artists, playlists, and shows."
-keywords: ["Spotify", "URI", "play track", "play album", "play artist", "play playlist", "spotify links"]
+description: >-
+  Play Spotify content using Spotify URIs for tracks, albums, artists,
+  playlists, and shows.
+keywords:
+  - Spotify
+  - URI
+  - play track
+  - play album
+  - play artist
+  - play playlist
+  - spotify links
 language: applescript
-parameters: |
-  - spotifyUri (required): Spotify URI or ID to play (e.g., "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" or "4iV5W9uYEdYUVa79Axb7Rh")
-  - type (optional): Type of content - "track", "album", "artist", "playlist", "show", or "episode" (default: auto-detect from URI)
-notes: |
+parameters: >
+  - spotifyUri (required): Spotify URI or ID to play (e.g.,
+  "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" or "4iV5W9uYEdYUVa79Axb7Rh")
+
+  - type (optional): Type of content - "track", "album", "artist", "playlist",
+  "show", or "episode" (default: auto-detect from URI)
+notes: >
   - Spotify must be running.
-  - Spotify URIs are in the format: spotify:type:id (e.g., spotify:track:4iV5W9uYEdYUVa79Axb7Rh)
-  - You can extract IDs from Spotify URLs: https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh → 4iV5W9uYEdYUVa79Axb7Rh
-  - This script can handle both full URIs and just the ID with type specified separately.
+
+  - Spotify URIs are in the format: spotify:type:id (e.g.,
+  spotify:track:4iV5W9uYEdYUVa79Axb7Rh)
+
+  - You can extract IDs from Spotify URLs:
+  https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh → 4iV5W9uYEdYUVa79Axb7Rh
+
+  - This script can handle both full URIs and just the ID with type specified
+  separately.
 ---
 
 Play Spotify content using URIs for various content types.

@@ -1,12 +1,21 @@
 ---
-title: "Xcode: Clean Project"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Clean Project'
+category: 13_developer/xcode_app
 id: xcode_clean_project
-description: "Cleans an Xcode project by removing build artifacts and intermediate files."
-keywords: ["Xcode", "clean", "build", "project", "developer", "iOS", "macOS"]
+description: Cleans an Xcode project by removing build artifacts and intermediate files.
+keywords:
+  - Xcode
+  - clean
+  - build
+  - project
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional wait time (in seconds) after clean starts as 'waitTime' in inputData (default is 30 seconds)"
+argumentsPrompt: >-
+  Optional wait time (in seconds) after clean starts as 'waitTime' in inputData
+  (default is 30 seconds)
 notes: |
   - Requires Xcode to be already open with a project loaded
   - Uses UI scripting via System Events so requires Accessibility permissions

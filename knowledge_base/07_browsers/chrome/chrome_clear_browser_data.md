@@ -1,19 +1,40 @@
 ---
-title: "Chrome: Clear Browser Data"
-category: "05_web_browsers"
+title: 'Chrome: Clear Browser Data'
+category: 07_browsers/chrome
 id: chrome_clear_browser_data
-description: "Clears various types of browser data from Chrome including cache, cookies, history, and more with options for time ranges."
-keywords: ["Chrome", "clear data", "cache", "cookies", "history", "browser data", "privacy", "web development"]
+description: >-
+  Clears various types of browser data from Chrome including cache, cookies,
+  history, and more with options for time ranges.
+keywords:
+  - Chrome
+  - clear data
+  - cache
+  - cookies
+  - history
+  - browser data
+  - privacy
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Data clearing options in inputData. For example: { \"dataTypes\": [\"cache\", \"cookies\"], \"timeRange\": \"last_hour\" }. Available dataTypes: cache, cookies, history, passwords, formData, localStorage, downloads. Available timeRanges: last_hour, last_day, last_week, last_month, all_time."
-notes: |
+argumentsPrompt: >-
+  Data clearing options in inputData. For example: { "dataTypes": ["cache",
+  "cookies"], "timeRange": "last_hour" }. Available dataTypes: cache, cookies,
+  history, passwords, formData, localStorage, downloads. Available timeRanges:
+  last_hour, last_day, last_week, last_month, all_time.
+notes: >
   - Google Chrome must be running.
-  - Opens Chrome's Clear Browsing Data dialog and automates the selection process.
+
+  - Opens Chrome's Clear Browsing Data dialog and automates the selection
+  process.
+
   - Requires Accessibility permissions for UI scripting via System Events.
+
   - Can clear multiple data types in a single operation.
+
   - Supports various time ranges for selective clearing.
-  - This script respects Chrome's security model, so it cannot bypass confirmation dialogs.
+
+  - This script respects Chrome's security model, so it cannot bypass
+  confirmation dialogs.
 ---
 
 This script automates clearing various types of browser data from Chrome with options for time ranges.

@@ -1,12 +1,19 @@
 ---
-title: "Messages: Create Group Chat"
-category: "07_productivity_apps"
+title: 'Messages: Create Group Chat'
+category: 09_productivity/messages_app
 id: messages_create_group_chat
-description: "Creates a new group chat with multiple recipients in the Messages app."
-keywords: ["Messages", "group chat", "new conversation", "multiple recipients", "group message"]
+description: Creates a new group chat with multiple recipients in the Messages app.
+keywords:
+  - Messages
+  - group chat
+  - new conversation
+  - multiple recipients
+  - group message
 language: applescript
-argumentsPrompt: "Enter comma-separated list of contacts for the group chat"
-notes: "Creates a new group conversation with the specified contacts. Contacts can be names, phone numbers, or Apple ID emails."
+argumentsPrompt: Enter comma-separated list of contacts for the group chat
+notes: >-
+  Creates a new group conversation with the specified contacts. Contacts can be
+  names, phone numbers, or Apple ID emails.
 ---
 
 ```applescript

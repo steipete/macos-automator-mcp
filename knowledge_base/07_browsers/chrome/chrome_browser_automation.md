@@ -1,17 +1,41 @@
 ---
-title: "Chrome: Advanced Browser Automation"
-category: "05_web_browsers"
+title: 'Chrome: Advanced Browser Automation'
+category: 07_browsers/chrome
 id: chrome_browser_automation
-description: "Performs advanced multi-step browser automation in Chrome similar to Playwright or Puppeteer, executing sequences of navigation, clicking, typing, waiting, and extracting data."
-keywords: ["Chrome", "automation", "Playwright", "Puppeteer", "testing", "scraping", "clicking", "typing", "navigation", "web development"]
+description: >-
+  Performs advanced multi-step browser automation in Chrome similar to
+  Playwright or Puppeteer, executing sequences of navigation, clicking, typing,
+  waiting, and extracting data.
+keywords:
+  - Chrome
+  - automation
+  - Playwright
+  - Puppeteer
+  - testing
+  - scraping
+  - clicking
+  - typing
+  - navigation
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "JSON automation steps array as 'steps' in inputData. For example: { \"steps\": [{\"action\":\"navigate\",\"url\":\"https://example.com\"}, {\"action\":\"click\",\"selector\":\"#login-button\"}, {\"action\":\"type\",\"selector\":\"#username\",\"text\":\"testuser\"}, {\"action\":\"wait\",\"ms\":1000}, {\"action\":\"extract\",\"selector\":\"h1.title\"}] }. See notes for all supported actions."
+argumentsPrompt: >-
+  JSON automation steps array as 'steps' in inputData. For example: { "steps":
+  [{"action":"navigate","url":"https://example.com"},
+  {"action":"click","selector":"#login-button"},
+  {"action":"type","selector":"#username","text":"testuser"},
+  {"action":"wait","ms":1000}, {"action":"extract","selector":"h1.title"}] }.
+  See notes for all supported actions.
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
-  - Executes a sequence of automation steps in order, with results returned as JSON.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
+  - Executes a sequence of automation steps in order, with results returned as
+  JSON.
+
   - Supported actions include:
     - `navigate`: Go to a URL
     - `click`: Click on an element matching a selector
@@ -26,8 +50,11 @@ notes: |
     - `select`: Select an option in a dropdown
     - `evaluate`: Execute custom JavaScript
   - Returns detailed results for each step with success/failure status.
+
   - Stops execution and returns an error if any required step fails.
-  - Steps can be marked as optional with `"required": false` to continue despite failures.
+
+  - Steps can be marked as optional with `"required": false` to continue despite
+  failures.
 ---
 
 This script executes advanced multi-step browser automation in Chrome, similar to Playwright or Puppeteer.

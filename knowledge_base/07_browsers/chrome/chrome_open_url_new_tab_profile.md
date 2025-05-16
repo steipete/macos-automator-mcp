@@ -1,16 +1,31 @@
 ---
-title: "Chrome: Open URL in New Tab (Specific Profile)"
-category: "05_web_browsers"
+title: 'Chrome: Open URL in New Tab (Specific Profile)'
+category: 07_browsers/chrome
 id: chrome_open_url_new_tab_profile
-description: "Opens a specified URL in Google Chrome, potentially in a specific user profile, creating a new tab if Chrome is already open."
-keywords: ["chrome", "new tab", "open url", "profile", "navigation", "shell"]
+description: >-
+  Opens a specified URL in Google Chrome, potentially in a specific user
+  profile, creating a new tab if Chrome is already open.
+keywords:
+  - chrome
+  - new tab
+  - open url
+  - profile
+  - navigation
+  - shell
 language: applescript
 isComplex: true
-argumentsPrompt: "URL as 'targetURL'. Optionally, profile directory name (e.g., 'Profile 1' or 'Default') as 'profileDir' and boolean 'newWindow' in inputData."
-notes: |
+argumentsPrompt: >-
+  URL as 'targetURL'. Optionally, profile directory name (e.g., 'Profile 1' or
+  'Default') as 'profileDir' and boolean 'newWindow' in inputData.
+notes: >
   - To find profile directory names, navigate to `chrome://version` in Chrome.
-  - If `profileDir` is specified, it uses `do shell script` to launch Chrome with that profile.
-  - If Chrome is already running with the desired profile, it will just open a new tab. If a different profile is active, it might open a new window with the specified profile.
+
+  - If `profileDir` is specified, it uses `do shell script` to launch Chrome
+  with that profile.
+
+  - If Chrome is already running with the desired profile, it will just open a
+  new tab. If a different profile is active, it might open a new window with the
+  specified profile.
 ---
 
 ```applescript

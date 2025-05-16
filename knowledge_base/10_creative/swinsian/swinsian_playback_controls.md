@@ -1,15 +1,33 @@
 ---
-title: "Swinsian: Basic Playback Controls"
-category: "08_creative_and_document_apps"
+title: 'Swinsian: Basic Playback Controls'
+category: 10_creative/swinsian
 id: swinsian_playback_controls
-description: "Control basic playback in Swinsian including play, pause, stop, next, previous, and volume adjustment."
-keywords: ["Swinsian", "playback", "play", "pause", "stop", "next track", "previous track", "volume", "music", "FLAC"]
+description: >-
+  Control basic playback in Swinsian including play, pause, stop, next,
+  previous, and volume adjustment.
+keywords:
+  - Swinsian
+  - playback
+  - play
+  - pause
+  - stop
+  - next track
+  - previous track
+  - volume
+  - music
+  - FLAC
 language: applescript
-notes: |
+notes: >
   - Swinsian must be running for these commands to work.
-  - Swinsian is an advanced music player for macOS that supports FLAC, MP3, and other formats.
+
+  - Swinsian is an advanced music player for macOS that supports FLAC, MP3, and
+  other formats.
+
   - The play/pause commands toggle playback state.
-  - Swinsian has robust AppleScript support for controlling all aspects of playback.
+
+  - Swinsian has robust AppleScript support for controlling all aspects of
+  playback.
+
   - Volume is set as a percentage from 0-100.
 ---
 

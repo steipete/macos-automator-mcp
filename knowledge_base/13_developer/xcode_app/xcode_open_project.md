@@ -1,12 +1,19 @@
 ---
-title: "Xcode: Open Project or Workspace"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Open Project or Workspace'
+category: 13_developer/xcode_app
 id: xcode_open_project
-description: "Opens an Xcode project or workspace file."
-keywords: ["Xcode", "open", "project", "workspace", "developer", "iOS", "macOS"]
+description: Opens an Xcode project or workspace file.
+keywords:
+  - Xcode
+  - open
+  - project
+  - workspace
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: false
-argumentsPrompt: "Absolute POSIX path to .xcodeproj or .xcworkspace in 'projectPath'"
+argumentsPrompt: Absolute POSIX path to .xcodeproj or .xcworkspace in 'projectPath'
 notes: |
   - Works with both .xcodeproj and .xcworkspace files
   - Handles already opened projects gracefully

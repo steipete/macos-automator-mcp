@@ -1,16 +1,28 @@
 ---
-title: "Xcode: Build Project via xcodebuild Shell Command"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Build Project via xcodebuild Shell Command'
+category: 13_developer/xcode_app
 id: xcode_build_project_shell
-description: "Builds an Xcode project or workspace using the 'xcodebuild' command-line tool."
-keywords: ["Xcode", "build", "compile", "xcodebuild", "shell", "developer"]
+description: Builds an Xcode project or workspace using the 'xcodebuild' command-line tool.
+keywords:
+  - Xcode
+  - build
+  - compile
+  - xcodebuild
+  - shell
+  - developer
 language: applescript
 isComplex: true
-argumentsPrompt: "Absolute POSIX path to .xcodeproj or .xcworkspace as 'projectPath', and scheme name as 'schemeName' in inputData. Optionally, configuration (e.g., 'Debug', 'Release') as 'configName'."
-notes: |
+argumentsPrompt: >-
+  Absolute POSIX path to .xcodeproj or .xcworkspace as 'projectPath', and scheme
+  name as 'schemeName' in inputData. Optionally, configuration (e.g., 'Debug',
+  'Release') as 'configName'.
+notes: >
   - This method is generally more reliable than UI scripting Xcode for builds.
+
   - The output of `xcodebuild` is returned, which can be extensive.
-  - Ensure `xcodebuild` command-line tools are installed and configured (`xcode-select -p`).
+
+  - Ensure `xcodebuild` command-line tools are installed and configured
+  (`xcode-select -p`).
 ---
 
 ```applescript

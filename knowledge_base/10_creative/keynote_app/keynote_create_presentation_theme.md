@@ -1,12 +1,18 @@
 ---
-title: "Keynote: Create New Presentation from Theme"
-category: "08_creative_and_document_apps"
+title: 'Keynote: Create New Presentation from Theme'
+category: 10_creative/keynote_app
 id: keynote_create_presentation_theme
-description: "Creates a new Keynote presentation using a specified theme name."
-keywords: ["Keynote", "presentation", "new document", "theme"]
+description: Creates a new Keynote presentation using a specified theme name.
+keywords:
+  - Keynote
+  - presentation
+  - new document
+  - theme
 language: applescript
 isComplex: true
-argumentsPrompt: "Name of the Keynote theme (e.g., 'Black', 'White', 'Gradient') as 'themeName' in inputData."
+argumentsPrompt: >-
+  Name of the Keynote theme (e.g., 'Black', 'White', 'Gradient') as 'themeName'
+  in inputData.
 notes: |
   - Keynote must be installed. Requires Automation permission for Keynote.app.
   - Theme names are case-sensitive and must match those available in Keynote.

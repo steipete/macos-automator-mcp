@@ -1,12 +1,26 @@
 ---
-title: "iOS Simulator: List Available Devices"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: List Available Devices'
+category: 13_developer/xcode_app
 id: ios_simulator_list_devices
-description: "Lists all available iOS, iPadOS, watchOS, and tvOS simulator devices."
-keywords: ["iOS Simulator", "Xcode", "device", "list", "UDID", "runtime", "developer", "iOS", "iPadOS", "watchOS", "tvOS"]
+description: 'Lists all available iOS, iPadOS, watchOS, and tvOS simulator devices.'
+keywords:
+  - iOS Simulator
+  - Xcode
+  - device
+  - list
+  - UDID
+  - runtime
+  - developer
+  - iOS
+  - iPadOS
+  - watchOS
+  - tvOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional filter string to search for specific device types (e.g., 'iPhone', 'iPad', 'Watch') as 'deviceFilter' in inputData. Optional boolean to show only booted devices as 'onlyBootedDevices' (default is false)."
+argumentsPrompt: >-
+  Optional filter string to search for specific device types (e.g., 'iPhone',
+  'iPad', 'Watch') as 'deviceFilter' in inputData. Optional boolean to show only
+  booted devices as 'onlyBootedDevices' (default is false).
 notes: |
   - Uses xcrun simctl to list available simulator devices
   - Shows device name, runtime version, state, and UDID

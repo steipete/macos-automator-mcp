@@ -1,12 +1,27 @@
 ---
-title: "iOS Simulator: Configure Accessibility Features"
-category: "developer"
+title: 'iOS Simulator: Configure Accessibility Features'
+category: 13_developer/xcode_app
 id: ios_simulator_accessibility
-description: "Configures accessibility features in iOS Simulator for testing app accessibility."
-keywords: ["iOS Simulator", "Xcode", "accessibility", "VoiceOver", "testing", "AX", "developer", "iOS", "iPadOS"]
+description: >-
+  Configures accessibility features in iOS Simulator for testing app
+  accessibility.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - accessibility
+  - VoiceOver
+  - testing
+  - AX
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Accessibility feature as 'feature' ('voiceover', 'invert-colors', 'reduce-motion', 'bold-text', 'increase-contrast', 'reduce-transparency', 'zoom'), action as 'action' ('enable', 'disable'), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Accessibility feature as 'feature' ('voiceover', 'invert-colors',
+  'reduce-motion', 'bold-text', 'increase-contrast', 'reduce-transparency',
+  'zoom'), action as 'action' ('enable', 'disable'), and optional device
+  identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Configures accessibility features in simulator
   - Helps test app accessibility compliance

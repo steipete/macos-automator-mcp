@@ -1,9 +1,15 @@
 ---
-title: "Core: Boolean Data Type"
-category: "01_applescript_core"
+title: 'Core: Boolean Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_boolean
-description: "Working with boolean (true/false) values in AppleScript."
-keywords: ["boolean", "true", "false", "data type", "logical", "condition"]
+description: Working with boolean (true/false) values in AppleScript.
+keywords:
+  - boolean
+  - 'true'
+  - 'false'
+  - data type
+  - logical
+  - condition
 language: applescript
 notes: |
   - Booleans are fundamental for conditional logic and flow control.

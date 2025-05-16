@@ -11,9 +11,9 @@ keywords:
   - workflow
   - command-line
 usage_examples:
-  - "Open Ghostty terminal with specific commands"
-  - "Create a multi-pane Ghostty workspace"
-  - "Integrate Ghostty with Alfred workflows"
+  - Open Ghostty terminal with specific commands
+  - Create a multi-pane Ghostty workspace
+  - Integrate Ghostty with Alfred workflows
 parameters:
   - name: command
     description: Command to execute in Ghostty
@@ -21,6 +21,7 @@ parameters:
   - name: workDir
     description: Working directory to start in
     required: false
+category: 06_terminal/ghostty
 ---
 
 # Automate Ghostty Terminal

@@ -1,16 +1,31 @@
 ---
-title: "Script Editor: Save Document"
-category: "developer"
+title: 'Script Editor: Save Document'
+category: 13_developer/script_editor_app
 id: script_editor_save_document
-description: "Saves a Script Editor document to disk as a script file, applet, or other format."
-keywords: ["Script Editor", "save document", "script file", "save as", "applet", "export", "SCPT"]
+description: >-
+  Saves a Script Editor document to disk as a script file, applet, or other
+  format.
+keywords:
+  - Script Editor
+  - save document
+  - script file
+  - save as
+  - applet
+  - export
+  - SCPT
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide save path as 'savePath', file format as 'saveFormat' (optional), and stay open flag as 'stayOpen' (optional, boolean) in inputData."
-notes: |
+argumentsPrompt: >-
+  Provide save path as 'savePath', file format as 'saveFormat' (optional), and
+  stay open flag as 'stayOpen' (optional, boolean) in inputData.
+notes: >
   - Script Editor must be running with at least one document open
+
   - The script will be compiled before saving if necessary
-  - Common file formats include script (.scpt), application (.app), or text (.applescript)
+
+  - Common file formats include script (.scpt), application (.app), or text
+  (.applescript)
+
   - For applications, you can specify a stay-open behavior
 ---
 

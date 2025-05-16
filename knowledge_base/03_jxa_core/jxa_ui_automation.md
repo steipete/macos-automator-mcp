@@ -1,10 +1,23 @@
 ---
 title: JXA UI Automation
-category: 10_jxa_basics
+category: 03_jxa_core
 id: jxa_ui_automation
-description: Comprehensive UI automation using JavaScript for Automation (JXA) to interact with macOS applications, control UI elements, and perform accessibility-based interactions.
+description: >-
+  Comprehensive UI automation using JavaScript for Automation (JXA) to interact
+  with macOS applications, control UI elements, and perform accessibility-based
+  interactions.
 language: javascript
-keywords: [jxa, javascript, automation, ui, accessibility, systemevents, click, button, interaction, form]
+keywords:
+  - jxa
+  - javascript
+  - automation
+  - ui
+  - accessibility
+  - systemevents
+  - click
+  - button
+  - interaction
+  - form
 ---
 
 # JXA UI Automation

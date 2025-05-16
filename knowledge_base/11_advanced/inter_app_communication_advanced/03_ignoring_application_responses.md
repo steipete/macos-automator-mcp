@@ -1,15 +1,30 @@
 ---
-title: "Advanced: 'ignoring application responses' Block"
-category: "11_advanced_techniques"
+title: 'Advanced: ''ignoring application responses'' Block'
+category: 11_advanced/inter_app_communication_advanced
 id: advanced_ignoring_responses
-description: "Explains how to use 'ignoring application responses' to send commands without waiting for completion or handling errors from the target application."
-keywords: ["Apple Events", "ignoring application responses", "asynchronous", "fire and forget", "error handling", "performance"]
+description: >-
+  Explains how to use 'ignoring application responses' to send commands without
+  waiting for completion or handling errors from the target application.
+keywords:
+  - Apple Events
+  - ignoring application responses
+  - asynchronous
+  - fire and forget
+  - error handling
+  - performance
 language: applescript
-notes: |
-  - `ignoring application responses ... end ignoring` tells AppleScript not to wait for the target application to acknowledge or complete the command.
-  - This can speed up scripts that send many commands to slow applications, or when the outcome of a command isn't critical.
-  - Errors from the commands within the block are not reported back to the calling script.
-  - Use with caution, as you lose confirmation that the command succeeded or any return value.
+notes: >
+  - `ignoring application responses ... end ignoring` tells AppleScript not to
+  wait for the target application to acknowledge or complete the command.
+
+  - This can speed up scripts that send many commands to slow applications, or
+  when the outcome of a command isn't critical.
+
+  - Errors from the commands within the block are not reported back to the
+  calling script.
+
+  - Use with caution, as you lose confirmation that the command succeeded or any
+  return value.
 ---
 
 The `ignoring application responses` block allows scripts to send commands to an application without waiting for it to finish processing them or return a result.

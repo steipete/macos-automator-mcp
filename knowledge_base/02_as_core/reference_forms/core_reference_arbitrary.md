@@ -1,14 +1,26 @@
 ---
-title: "Core: Arbitrary Element Reference Form ('some')"
-category: "01_applescript_core"
+title: 'Core: Arbitrary Element Reference Form (''some'')'
+category: 02_as_core/reference_forms
 id: core_reference_arbitrary
-description: "Accessing an arbitrary or random element from a collection using 'some element'."
-keywords: ["reference form", "arbitrary", "some", "random element", "any element"]
+description: >-
+  Accessing an arbitrary or random element from a collection using 'some
+  element'.
+keywords:
+  - reference form
+  - arbitrary
+  - some
+  - random element
+  - any element
 language: applescript
-notes: |
-  - `some element` (e.g., `some file`, `some item`) returns one unspecified element from the collection.
-  - It's not guaranteed to be cryptographically random, but provides a way to pick an item without specifying which one.
-  - If the collection is empty, attempting to get `some element` will result in an error.
+notes: >
+  - `some element` (e.g., `some file`, `some item`) returns one unspecified
+  element from the collection.
+
+  - It's not guaranteed to be cryptographically random, but provides a way to
+  pick an item without specifying which one.
+
+  - If the collection is empty, attempting to get `some element` will result in
+  an error.
 ---
 
 The Arbitrary Element form (`some element`) selects an unspecified item from a collection.

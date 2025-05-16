@@ -1,11 +1,22 @@
 ---
-title: "JXA: System Events and UI Control"
-category: "10_jxa_basics"
+title: 'JXA: System Events and UI Control'
+category: 03_jxa_core
 id: jxa_system_events_ui_control
-description: "Demonstrates how to control UI elements, send keystrokes, and interact with menu items using JXA and System Events."
-keywords: ["jxa", "javascript", "system events", "ui automation", "keystroke", "menu control", "ui scripting"]
+description: >-
+  Demonstrates how to control UI elements, send keystrokes, and interact with
+  menu items using JXA and System Events.
+keywords:
+  - jxa
+  - javascript
+  - system events
+  - ui automation
+  - keystroke
+  - menu control
+  - ui scripting
 language: javascript
-notes: "Requires accessibility permissions to be granted to Script Editor or Terminal. Use with caution as UI structures may change across macOS versions."
+notes: >-
+  Requires accessibility permissions to be granted to Script Editor or Terminal.
+  Use with caution as UI structures may change across macOS versions.
 ---
 
 ```javascript

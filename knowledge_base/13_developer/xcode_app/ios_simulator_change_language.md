@@ -1,12 +1,27 @@
 ---
-title: "iOS Simulator: Change Language and Region"
-category: "developer"
+title: 'iOS Simulator: Change Language and Region'
+category: 13_developer/xcode_app
 id: ios_simulator_change_language
-description: "Changes the language and region settings of an iOS Simulator device."
-keywords: ["iOS Simulator", "Xcode", "language", "locale", "region", "internationalization", "localization", "i18n", "developer", "iOS", "iPadOS"]
+description: Changes the language and region settings of an iOS Simulator device.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - language
+  - locale
+  - region
+  - internationalization
+  - localization
+  - i18n
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Language code as 'languageCode' (e.g., 'en-US', 'fr-FR', 'ja-JP'), optional region code as 'regionCode' (defaults to match language if not specified), optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional boolean to restart simulator as 'restartSimulator' (default is true)."
+argumentsPrompt: >-
+  Language code as 'languageCode' (e.g., 'en-US', 'fr-FR', 'ja-JP'), optional
+  region code as 'regionCode' (defaults to match language if not specified),
+  optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and
+  optional boolean to restart simulator as 'restartSimulator' (default is true).
 notes: |
   - Changes simulator language and region settings
   - Useful for testing app localization without manual setting changes

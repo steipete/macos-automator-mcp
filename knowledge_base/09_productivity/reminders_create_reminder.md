@@ -1,11 +1,32 @@
 ---
-title: "Reminders: Create New Reminder"
+title: 'Reminders: Create New Reminder'
 id: reminders_create_reminder
-category: "07_productivity_apps"
-description: "Adds a new reminder to a specified list (or default list) with a name, and optional due date, priority, and body/notes."
-keywords: ["Reminders", "to-do", "task", "new reminder", "schedule"]
+category: 09_productivity
+description: >-
+  Adds a new reminder to a specified list (or default list) with a name, and
+  optional due date, priority, and body/notes.
+keywords:
+  - Reminders
+  - to-do
+  - task
+  - new reminder
+  - schedule
 language: applescript
-argumentsPrompt: "Expects inputData with:\n- reminderName (string, required): The name of the reminder.\n- listName (string, optional): The Reminders list to add to. Defaults to the default list.\n- dueDateString (string, optional): The due date (e.g., \"12/25/2023 10:00 AM\").\n- priorityNum (integer, optional): Priority (0 for none, 1-9. Typically 1=High, 5=Medium, 9=Low).\n- bodyText (string, optional): Notes for the reminder."
+argumentsPrompt: >-
+  Expects inputData with:
+
+  - reminderName (string, required): The name of the reminder.
+
+  - listName (string, optional): The Reminders list to add to. Defaults to the
+  default list.
+
+  - dueDateString (string, optional): The due date (e.g., "12/25/2023 10:00
+  AM").
+
+  - priorityNum (integer, optional): Priority (0 for none, 1-9. Typically
+  1=High, 5=Medium, 9=Low).
+
+  - bodyText (string, optional): Notes for the reminder.
 isComplex: true
 ---
 

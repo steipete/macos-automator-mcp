@@ -1,15 +1,27 @@
 ---
-title: "Safari: Execute JavaScript in Front Tab and Get Result"
-category: "05_web_browsers"
+title: 'Safari: Execute JavaScript in Front Tab and Get Result'
+category: 07_browsers/safari
 id: safari_execute_js_get_result
-description: "Executes a JavaScript string in the frontmost Safari document and returns its result."
-keywords: ["safari", "javascript", "do javascript", "dom", "automation", "execute"]
+description: >-
+  Executes a JavaScript string in the frontmost Safari document and returns its
+  result.
+keywords:
+  - safari
+  - javascript
+  - do javascript
+  - dom
+  - automation
+  - execute
 language: applescript
 isComplex: true
-argumentsPrompt: "JavaScript code to execute as 'jsCode' in inputData."
-notes: |
-  - CRITICAL: Safari > Develop menu > "Allow JavaScript from Apple Events" must be CHECKED.
-  - The JavaScript should ideally return a string, number, or boolean, or an array of these for AppleScript to handle easily. Complex objects might not coerce well.
+argumentsPrompt: JavaScript code to execute as 'jsCode' in inputData.
+notes: >
+  - CRITICAL: Safari > Develop menu > "Allow JavaScript from Apple Events" must
+  be CHECKED.
+
+  - The JavaScript should ideally return a string, number, or boolean, or an
+  array of these for AppleScript to handle easily. Complex objects might not
+  coerce well.
 ---
 
 ```applescript

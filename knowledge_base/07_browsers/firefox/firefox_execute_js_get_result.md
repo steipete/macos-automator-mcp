@@ -1,15 +1,25 @@
 ---
-title: "Firefox: Execute JavaScript and Get Result"
-category: "05_web_browsers"
+title: 'Firefox: Execute JavaScript and Get Result'
+category: 07_browsers/firefox
 id: firefox_execute_js_get_result
-description: "Executes JavaScript in the front tab of Firefox and returns the result."
-keywords: ["Firefox", "JavaScript", "execute", "browser", "automation", "JS"]
+description: Executes JavaScript in the front tab of Firefox and returns the result.
+keywords:
+  - Firefox
+  - JavaScript
+  - execute
+  - browser
+  - automation
+  - JS
 language: applescript
-notes: |
+notes: >
   - Firefox must be running.
+
   - This script uses UI scripting and the clipboard for output.
+
   - You may need to enable accessibility permissions for the script to work.
-  - This works by opening the Web Console, executing the JS, and copying the result.
+
+  - This works by opening the Web Console, executing the JS, and copying the
+  result.
 ---
 
 This script executes JavaScript in the current tab of Firefox and returns the result. Since Firefox has limited AppleScript support, this script uses UI scripting to open the Web Console, execute the JavaScript, and retrieve the result.

@@ -1,14 +1,24 @@
 ---
-title: "StandardAdditions: delay Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: delay Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_delay
-description: "Pauses script execution for a specified number of seconds."
-keywords: ["StandardAdditions", "delay", "pause", "wait", "sleep", "timing", "osax"]
+description: Pauses script execution for a specified number of seconds.
+keywords:
+  - StandardAdditions
+  - delay
+  - pause
+  - wait
+  - sleep
+  - timing
+  - osax
 language: applescript
-notes: |
+notes: >
   - The `delay` command takes a number (integer or real) representing seconds.
+
   - Fractional seconds are allowed (e.g., `delay 0.5`).
-  - Useful for timing, waiting for UI elements to appear, or pacing script actions.
+
+  - Useful for timing, waiting for UI elements to appear, or pacing script
+  actions.
 ---
 
 Pauses the script for a specified duration.

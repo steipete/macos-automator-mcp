@@ -1,7 +1,9 @@
 ---
 id: ghostty_send_text
 title: Send Text to Ghostty Without Executing
-description: Sends text to a Ghostty terminal window without automatically executing the command
+description: >-
+  Sends text to a Ghostty terminal window without automatically executing the
+  command
 language: applescript
 author: Claude
 keywords:
@@ -11,16 +13,17 @@ keywords:
   - scripting
   - keyboard-automation
 usage_examples:
-  - "Type a complex command in Ghostty without executing it"
-  - "Paste multi-line text into Ghostty for editing before execution"
-  - "Prepare a command for editing before running it"
+  - Type a complex command in Ghostty without executing it
+  - Paste multi-line text into Ghostty for editing before execution
+  - Prepare a command for editing before running it
 parameters:
   - name: text
     description: The text to send to Ghostty
     required: true
   - name: executeCommand
-    description: "Whether to press Return after sending the text (default: false)"
+    description: 'Whether to press Return after sending the text (default: false)'
     required: false
+category: 06_terminal/ghostty
 ---
 
 # Send Text to Ghostty Without Executing

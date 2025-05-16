@@ -1,12 +1,19 @@
 ---
-title: "Keynote: Get and Set Presenter Notes"
-category: "08_creative_and_document_apps"
+title: 'Keynote: Get and Set Presenter Notes'
+category: 10_creative/keynote_app
 id: keynote_presenter_notes
-description: "Gets or sets the presenter notes for the current slide in Keynote."
-keywords: ["Keynote", "presenter notes", "notes", "slide notes", "presentation"]
+description: Gets or sets the presenter notes for the current slide in Keynote.
+keywords:
+  - Keynote
+  - presenter notes
+  - notes
+  - slide notes
+  - presentation
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional: Text to set as presenter notes as 'notesText' in inputData. If not provided, it gets current notes. Assumes a presentation is open."
+argumentsPrompt: >-
+  Optional: Text to set as presenter notes as 'notesText' in inputData. If not
+  provided, it gets current notes. Assumes a presentation is open.
 notes: |
   - A Keynote presentation must be open and a slide selected.
   - Requires Automation permission for Keynote.app.

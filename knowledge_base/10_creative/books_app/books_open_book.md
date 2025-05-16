@@ -1,12 +1,19 @@
 ---
-title: "Books: Open Book by Title"
-category: "08_creative_and_document_apps"
+title: 'Books: Open Book by Title'
+category: 10_creative/books_app
 id: books_open_book
-description: "Opens a book by title in the Books app."
-keywords: ["Books", "Apple Books", "open book", "ebook", "read book"]
+description: Opens a book by title in the Books app.
+keywords:
+  - Books
+  - Apple Books
+  - open book
+  - ebook
+  - read book
 language: applescript
-argumentsPrompt: "Enter the title of the book to open"
-notes: "Searches for a book by title in your library. Requires the Books app to be configured with your Apple ID and library."
+argumentsPrompt: Enter the title of the book to open
+notes: >-
+  Searches for a book by title in your library. Requires the Books app to be
+  configured with your Apple ID and library.
 ---
 
 ```applescript

@@ -1,23 +1,47 @@
 ---
-title: "Music: Library Management"
-category: "08_creative_and_document_apps"
+title: 'Music: Library Management'
+category: 10_creative/music_app
 id: music_library_management
-description: "Manage Apple Music library, including adding tracks, updating metadata, and organizing content."
-keywords: ["Apple Music", "Music", "iTunes", "library", "tracks", "metadata", "rating", "organize", "add tracks"]
+description: >-
+  Manage Apple Music library, including adding tracks, updating metadata, and
+  organizing content.
+keywords:
+  - Apple Music
+  - Music
+  - iTunes
+  - library
+  - tracks
+  - metadata
+  - rating
+  - organize
+  - add tracks
 language: applescript
-parameters: |
-  - action (required): Action to perform - "stats", "rate_current", "update_genre", "add_file", "top_rated"
+parameters: >
+  - action (required): Action to perform - "stats", "rate_current",
+  "update_genre", "add_file", "top_rated"
+
   - rating (optional): Star rating (1-5) for rate_current action
+
   - genre (optional): Genre name for update_genre action
+
   - file_path (optional): File path for add_file action
-notes: |
+notes: >
   - Music.app must be running.
-  - The "stats" action shows library statistics like track count, total time, etc.
-  - The "rate_current" action sets the rating for the currently playing track (1-5 stars).
+
+  - The "stats" action shows library statistics like track count, total time,
+  etc.
+
+  - The "rate_current" action sets the rating for the currently playing track
+  (1-5 stars).
+
   - The "update_genre" action changes the genre of the currently playing track.
+
   - The "add_file" action adds a local audio file to the library.
+
   - The "top_rated" action shows your highest rated tracks.
-  - Some operations may not work on Apple Music (streaming) content, only on your local library.
+
+  - Some operations may not work on Apple Music (streaming) content, only on
+  your local library.
 ---
 
 Manage your Apple Music library.

@@ -1,12 +1,23 @@
 ---
-title: "Pages: Table Operations"
-category: "08_creative_and_document_apps"
+title: 'Pages: Table Operations'
+category: 10_creative/pages_app
 id: pages_table_operations
-description: "Create and manipulate tables in Pages documents with formatting options."
-keywords: ["Pages", "table", "cells", "formatting", "borders", "colors", "document"]
+description: Create and manipulate tables in Pages documents with formatting options.
+keywords:
+  - Pages
+  - table
+  - cells
+  - formatting
+  - borders
+  - colors
+  - document
 language: applescript
-argumentsPrompt: "Enter the document path, table dimensions (rows and columns), and optional formatting parameters"
-notes: "Creates or modifies tables in Pages documents. The document path should be a full POSIX path to an existing .pages file."
+argumentsPrompt: >-
+  Enter the document path, table dimensions (rows and columns), and optional
+  formatting parameters
+notes: >-
+  Creates or modifies tables in Pages documents. The document path should be a
+  full POSIX path to an existing .pages file.
 ---
 
 ```applescript

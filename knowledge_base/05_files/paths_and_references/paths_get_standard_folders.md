@@ -1,14 +1,28 @@
 ---
-title: "Paths: Get Path to Standard Folders"
-category: "03_file_system_and_finder"
+title: 'Paths: Get Path to Standard Folders'
+category: 05_files/paths_and_references
 id: paths_get_standard_folders
-description: "Uses AppleScript's 'path to' command to reliably get paths to standard macOS folders like Desktop, Documents, Application Support, etc., for different domains."
-keywords: ["path to", "standard folders", "desktop", "documents", "application support", "home folder", "user domain"]
+description: >-
+  Uses AppleScript's 'path to' command to reliably get paths to standard macOS
+  folders like Desktop, Documents, Application Support, etc., for different
+  domains.
+keywords:
+  - path to
+  - standard folders
+  - desktop
+  - documents
+  - application support
+  - home folder
+  - user domain
 language: applescript
-notes: |
-  - Valid domains: `user domain`, `local domain`, `system domain`, `network domain`.
+notes: >
+  - Valid domains: `user domain`, `local domain`, `system domain`, `network
+  domain`.
+
   - Returns an `alias` object, which can be coerced to a POSIX path string.
-  - For a list of folder keywords, open Script Editor, then File > Open Dictionary... > StandardAdditions.osax > `path to` command.
+
+  - For a list of folder keywords, open Script Editor, then File > Open
+  Dictionary... > StandardAdditions.osax > `path to` command.
 ---
 
 The `path to` command is the most reliable way to get locations of standard folders.

@@ -1,12 +1,19 @@
 ---
-title: "Screen Time: Configure App Limits"
-category: "02_system_interaction"
+title: 'Screen Time: Configure App Limits'
+category: 04_system/screen_time
 id: screen_time_app_limits
-description: "Sets up app time limits in Screen Time."
-keywords: ["Screen Time", "app limits", "time limits", "usage control", "app restrictions"]
+description: Sets up app time limits in Screen Time.
+keywords:
+  - Screen Time
+  - app limits
+  - time limits
+  - usage control
+  - app restrictions
 language: applescript
-argumentsPrompt: "Enter the app name and the daily time limit in hours and minutes"
-notes: "Configures time limits for specific apps. Requires Screen Time to be enabled and may require authentication."
+argumentsPrompt: Enter the app name and the daily time limit in hours and minutes
+notes: >-
+  Configures time limits for specific apps. Requires Screen Time to be enabled
+  and may require authentication.
 ---
 
 ```applescript

@@ -1,11 +1,17 @@
 ---
-title: "Core: Integer Data Type"
-category: "01_applescript_core"
+title: 'Core: Integer Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_integer
-description: "Working with integer (whole number) values in AppleScript."
-keywords: ["integer", "number", "whole number", "data type", "math", "arithmetic"]
+description: Working with integer (whole number) values in AppleScript.
+keywords:
+  - integer
+  - number
+  - whole number
+  - data type
+  - math
+  - arithmetic
 language: applescript
-notes: "Integers are exact whole numbers."
+notes: Integers are exact whole numbers.
 ---
 
 Integers are used for calculations involving whole numbers.

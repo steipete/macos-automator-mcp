@@ -1,20 +1,45 @@
 ---
-title: "Chrome: Accessibility Inspector"
-category: "05_web_browsers"
+title: 'Chrome: Accessibility Inspector'
+category: 07_browsers/chrome
 id: chrome_accessibility_inspector
-description: "Runs Chrome's Accessibility Inspector on a webpage or specific element, generating a comprehensive accessibility audit report or accessibility tree."
-keywords: ["Chrome", "accessibility", "a11y", "audit", "inspector", "WCAG", "screen reader", "testing", "web development"]
+description: >-
+  Runs Chrome's Accessibility Inspector on a webpage or specific element,
+  generating a comprehensive accessibility audit report or accessibility tree.
+keywords:
+  - Chrome
+  - accessibility
+  - a11y
+  - audit
+  - inspector
+  - WCAG
+  - screen reader
+  - testing
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Options in inputData. For example: { \"selector\": \"#main-content\" } to audit a specific element, { \"generateReport\": true } for a full audit report, or { \"showTree\": true } to view the accessibility tree. Can also specify { \"standards\": [\"wcag2a\", \"wcag2aa\"] } to test against specific accessibility standards."
+argumentsPrompt: >-
+  Options in inputData. For example: { "selector": "#main-content" } to audit a
+  specific element, { "generateReport": true } for a full audit report, or {
+  "showTree": true } to view the accessibility tree. Can also specify {
+  "standards": ["wcag2a", "wcag2aa"] } to test against specific accessibility
+  standards.
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and activates the Accessibility panel.
+
   - Can run on the entire page or a specific element using CSS selectors.
-  - Supports generating detailed accessibility audit reports with issues and suggestions.
-  - Can visualize the accessibility tree used by screen readers and assistive technologies.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Supports generating detailed accessibility audit reports with issues and
+  suggestions.
+
+  - Can visualize the accessibility tree used by screen readers and assistive
+  technologies.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
 ---
 

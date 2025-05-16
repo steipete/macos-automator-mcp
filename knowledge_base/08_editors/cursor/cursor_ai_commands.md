@@ -11,13 +11,16 @@ keywords:
   - editor
   - keyboard-shortcuts
 usage_examples:
-  - "Generate code with Cursor AI"
-  - "Explain selected code in Cursor"
-  - "Chat with Cursor AI about current code"
+  - Generate code with Cursor AI
+  - Explain selected code in Cursor
+  - Chat with Cursor AI about current code
 parameters:
   - name: command
-    description: "Command to execute (generate, explain, chat, improve, fix_errors, complete_code)"
+    description: >-
+      Command to execute (generate, explain, chat, improve, fix_errors,
+      complete_code)
     required: true
+category: 08_editors/cursor
 ---
 
 # Trigger Cursor AI commands

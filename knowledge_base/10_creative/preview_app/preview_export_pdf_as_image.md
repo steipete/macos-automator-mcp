@@ -1,12 +1,18 @@
 ---
-title: "Preview: Export PDF as Image"
-category: "08_creative_and_document_apps"
+title: 'Preview: Export PDF as Image'
+category: 10_creative/preview_app
 id: preview_export_pdf_as_image
-description: "Exports a PDF file as an image using Preview."
-keywords: ["Preview", "export PDF", "convert PDF to image", "PDF to JPEG"]
+description: Exports a PDF file as an image using Preview.
+keywords:
+  - Preview
+  - export PDF
+  - convert PDF to image
+  - PDF to JPEG
 language: applescript
-argumentsPrompt: "Enter the source PDF path and destination image path"
-notes: "Exports the first page of a PDF as a JPEG image. Both source and destination should be absolute POSIX paths."
+argumentsPrompt: Enter the source PDF path and destination image path
+notes: >-
+  Exports the first page of a PDF as a JPEG image. Both source and destination
+  should be absolute POSIX paths.
 ---
 
 ```applescript

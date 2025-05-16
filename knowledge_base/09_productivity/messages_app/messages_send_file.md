@@ -1,12 +1,19 @@
 ---
-title: "Messages: Send File Attachment"
-category: "07_productivity_apps"
+title: 'Messages: Send File Attachment'
+category: 09_productivity/messages_app
 id: messages_send_file
-description: "Sends a file as an attachment in the Messages app."
-keywords: ["Messages", "send file", "attachment", "file sharing", "send document"]
+description: Sends a file as an attachment in the Messages app.
+keywords:
+  - Messages
+  - send file
+  - attachment
+  - file sharing
+  - send document
 language: applescript
-argumentsPrompt: "Enter the recipient name and the file path to send"
-notes: "Attaches and sends a file to a specified contact. The file path should be a full POSIX path."
+argumentsPrompt: Enter the recipient name and the file path to send
+notes: >-
+  Attaches and sends a file to a specified contact. The file path should be a
+  full POSIX path.
 ---
 
 ```applescript

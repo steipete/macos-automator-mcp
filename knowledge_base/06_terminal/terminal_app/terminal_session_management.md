@@ -1,11 +1,24 @@
 ---
-title: "Terminal: Session Management"
+title: 'Terminal: Session Management'
 id: terminal_session_management
-category: "04_terminal_emulators"
-description: "Saves and restores Terminal.app window arrangements, including tabs, window positions, and working directories."
-keywords: ["Terminal.app", "session", "window", "arrangement", "save", "restore", "management", "tabs", "layout"]
+category: 06_terminal/terminal_app
+description: >-
+  Saves and restores Terminal.app window arrangements, including tabs, window
+  positions, and working directories.
+keywords:
+  - Terminal.app
+  - session
+  - window
+  - arrangement
+  - save
+  - restore
+  - management
+  - tabs
+  - layout
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"action\": \"save\", \"restore\", \"list\", or \"delete\", \"name\": \"arrangement name\" } (name defaults to \"Default\" if omitted)."
+argumentsPrompt: >-
+  Expects inputData with: { "action": "save", "restore", "list", or "delete",
+  "name": "arrangement name" } (name defaults to "Default" if omitted).
 isComplex: true
 ---
 

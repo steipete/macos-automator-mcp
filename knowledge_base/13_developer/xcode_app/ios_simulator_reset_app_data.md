@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Reset App Data"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Reset App Data'
+category: 13_developer/xcode_app
 id: ios_simulator_reset_app_data
-description: "Resets app data for a specific app on the iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "reset", "app data", "delete", "clean", "developer", "iOS", "iPadOS"]
+description: Resets app data for a specific app on the iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - reset
+  - app data
+  - delete
+  - clean
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App bundle ID as 'bundleID', optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional boolean to reinstall app after reset as 'reinstallApp' (default is false)."
+argumentsPrompt: >-
+  App bundle ID as 'bundleID', optional device identifier as 'deviceIdentifier'
+  (defaults to 'booted'), and optional boolean to reinstall app after reset as
+  'reinstallApp' (default is false).
 notes: |
   - Removes app data while keeping the app installed
   - Useful for testing first-launch experiences repeatedly

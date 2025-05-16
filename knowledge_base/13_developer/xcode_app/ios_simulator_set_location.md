@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Set Device Location"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Set Device Location'
+category: 13_developer/xcode_app
 id: ios_simulator_set_location
-description: "Sets a custom GPS location for an iOS Simulator device."
-keywords: ["iOS Simulator", "Xcode", "location", "GPS", "coordinates", "CoreLocation", "developer", "iOS", "iPadOS"]
+description: Sets a custom GPS location for an iOS Simulator device.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - location
+  - GPS
+  - coordinates
+  - CoreLocation
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Latitude as 'latitude', longitude as 'longitude', optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional location name as 'locationName' for easy identification."
+argumentsPrompt: >-
+  Latitude as 'latitude', longitude as 'longitude', optional device identifier
+  as 'deviceIdentifier' (defaults to 'booted'), and optional location name as
+  'locationName' for easy identification.
 notes: |
   - Simulates GPS location for location-aware app testing
   - Can specify any latitude/longitude coordinates

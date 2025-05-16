@@ -1,18 +1,39 @@
 ---
-title: "iOS Simulator: Manage App Privacy Permissions"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Manage App Privacy Permissions'
+category: 13_developer/xcode_app
 id: ios_simulator_privacy_permissions
-description: "Manages privacy permissions for an app in the iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "privacy", "permissions", "camera", "photos", "location", "contacts", "developer", "iOS", "iPadOS"]
+description: Manages privacy permissions for an app in the iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - privacy
+  - permissions
+  - camera
+  - photos
+  - location
+  - contacts
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App bundle ID as 'bundleID', permission type as 'permissionType' (e.g., 'photos', 'camera', 'location', 'contacts', 'calendar', 'microphone', or 'all'), action as 'action' ('grant', 'revoke', or 'reset'), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
-notes: |
+argumentsPrompt: >-
+  App bundle ID as 'bundleID', permission type as 'permissionType' (e.g.,
+  'photos', 'camera', 'location', 'contacts', 'calendar', 'microphone', or
+  'all'), action as 'action' ('grant', 'revoke', or 'reset'), and optional
+  device identifier as 'deviceIdentifier' (defaults to 'booted').
+notes: >
   - Manages app privacy permissions without manual interaction
-  - Available permission types: photos, camera, location, contacts, calendar, microphone, etc.
+
+  - Available permission types: photos, camera, location, contacts, calendar,
+  microphone, etc.
+
   - Supports grant, revoke, and reset actions
+
   - Reset action returns permission to "undefined" state, showing prompt again
+
   - Useful for testing permission flows and different permission states
+
   - Requires the app to be installed on the simulator
 ---
 

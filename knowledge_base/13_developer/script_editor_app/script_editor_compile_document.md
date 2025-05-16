@@ -1,9 +1,17 @@
 ---
-title: "Script Editor: Compile Document"
-category: "developer"
+title: 'Script Editor: Compile Document'
+category: 13_developer/script_editor_app
 id: script_editor_compile_document
-description: "Compiles an AppleScript document in Script Editor to check for syntax errors and prepare it for execution."
-keywords: ["Script Editor", "compile", "check syntax", "AppleScript", "document", "validation"]
+description: >-
+  Compiles an AppleScript document in Script Editor to check for syntax errors
+  and prepare it for execution.
+keywords:
+  - Script Editor
+  - compile
+  - check syntax
+  - AppleScript
+  - document
+  - validation
 language: applescript
 notes: |
   - Script Editor must be running with at least one document open

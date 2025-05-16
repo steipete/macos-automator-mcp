@@ -1,12 +1,17 @@
 ---
-title: "App Store: Search for Apps"
-category: "developer"
+title: 'App Store: Search for Apps'
+category: 13_developer/app_store_app
 id: app_store_search
-description: "Searches for applications in the Mac App Store."
-keywords: ["App Store", "search apps", "find applications", "software search", "app discovery"]
+description: Searches for applications in the Mac App Store.
+keywords:
+  - App Store
+  - search apps
+  - find applications
+  - software search
+  - app discovery
 language: applescript
-argumentsPrompt: "Enter the search query for apps"
-notes: "Searches the Mac App Store for applications matching the specified query."
+argumentsPrompt: Enter the search query for apps
+notes: Searches the Mac App Store for applications matching the specified query.
 ---
 
 ```applescript

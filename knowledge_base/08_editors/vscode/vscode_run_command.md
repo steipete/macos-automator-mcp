@@ -11,13 +11,14 @@ keywords:
   - automation
   - shortcut
 usage_examples:
-  - "Open terminal in VS Code"
-  - "Run build task in VS Code"
-  - "Toggle sidebar in VS Code"
+  - Open terminal in VS Code
+  - Run build task in VS Code
+  - Toggle sidebar in VS Code
 parameters:
   - name: command
-    description: The command to execute (e.g., 'workbench.action.terminal.toggleTerminal')
+    description: 'The command to execute (e.g., ''workbench.action.terminal.toggleTerminal'')'
     required: true
+category: 08_editors/vscode
 ---
 
 # Run VS Code command

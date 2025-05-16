@@ -1,12 +1,27 @@
 ---
-title: "iOS Simulator: Set App Launch Arguments"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Set App Launch Arguments'
+category: 13_developer/xcode_app
 id: ios_simulator_launch_arguments
-description: "Launches an app in iOS Simulator with custom launch arguments and environment variables."
-keywords: ["iOS Simulator", "Xcode", "launch arguments", "environment variables", "testing", "debug", "developer", "iOS", "iPadOS"]
+description: >-
+  Launches an app in iOS Simulator with custom launch arguments and environment
+  variables.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - launch arguments
+  - environment variables
+  - testing
+  - debug
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App bundle ID as 'bundleID', optional launch arguments as 'launchArgs' (comma-separated list), optional environment variables as 'environmentVars' (JSON object), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  App bundle ID as 'bundleID', optional launch arguments as 'launchArgs'
+  (comma-separated list), optional environment variables as 'environmentVars'
+  (JSON object), and optional device identifier as 'deviceIdentifier' (defaults
+  to 'booted').
 notes: |
   - Launches apps with custom launch arguments and environment variables
   - Useful for enabling testing modes and debug features

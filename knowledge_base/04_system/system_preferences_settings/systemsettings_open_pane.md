@@ -1,16 +1,30 @@
 ---
-title: "System Settings: Open Specific Preference Pane"
-category: "02_system_interaction"
+title: 'System Settings: Open Specific Preference Pane'
+category: 04_system/system_preferences_settings
 id: systemsettings_open_pane
-description: "Opens System Settings (or System Preferences on older macOS) to a specific preference pane by its ID or localized name."
-keywords: ["system settings", "system preferences", "open pane", "ui scripting", "configuration"]
+description: >-
+  Opens System Settings (or System Preferences on older macOS) to a specific
+  preference pane by its ID or localized name.
+keywords:
+  - system settings
+  - system preferences
+  - open pane
+  - ui scripting
+  - configuration
 language: applescript
 isComplex: true
-argumentsPrompt: "Pane ID (e.g., 'com.apple.preference.network', 'com.apple.preference.displays') as 'paneID' OR Localized Pane Name (e.g., 'Network', 'Displays') as 'paneName' in inputData."
-notes: |
+argumentsPrompt: >-
+  Pane ID (e.g., 'com.apple.preference.network',
+  'com.apple.preference.displays') as 'paneID' OR Localized Pane Name (e.g.,
+  'Network', 'Displays') as 'paneName' in inputData.
+notes: >
   - UI Scripting is used if direct pane ID opening fails or for older systems.
+
   - Pane IDs are more stable but harder to find. Localized names can change.
-  - Tested on macOS [Specify Version if possible, e.g., Ventura 13.x]. Highly fragile across macOS versions.
+
+  - Tested on macOS [Specify Version if possible, e.g., Ventura 13.x]. Highly
+  fragile across macOS versions.
+
   - Requires Automation & Accessibility for System Settings/Preferences.
 ---
 

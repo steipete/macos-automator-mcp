@@ -1,9 +1,14 @@
 ---
-title: "Firefox: Open URL in New Tab"
-category: "05_web_browsers"
+title: 'Firefox: Open URL in New Tab'
+category: 07_browsers/firefox
 id: firefox_open_url_new_tab
-description: "Opens a specified URL in a new tab in Firefox."
-keywords: ["Firefox", "URL", "new tab", "browser", "tab"]
+description: Opens a specified URL in a new tab in Firefox.
+keywords:
+  - Firefox
+  - URL
+  - new tab
+  - browser
+  - tab
 language: applescript
 notes: |
   - Firefox must be running.

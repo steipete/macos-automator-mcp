@@ -1,30 +1,63 @@
 ---
 id: find_kill_process_by_port
 title: Find and Kill Process by Port Number
-description: AppleScript function to identify which process is using a specific TCP port and optionally terminate it.
+description: >-
+  AppleScript function to identify which process is using a specific TCP port
+  and optionally terminate it.
 language: applescript
-compatibility: macOS Sonoma, Ventura, Monterey, Big Sur, Catalina
+compatibility: 'macOS Sonoma, Ventura, Monterey, Big Sur, Catalina'
 author: Claude
-tags: [network, ports, process management, tcp, kill process]
-keywords: [network, ports, tcp, process management, lsof, kill process, port finder, port conflict]
-guide: |
-  This script provides a function to identify which process is using a specific TCP port
-  and optionally terminate the process. It's useful for troubleshooting port conflicts
+tags:
+  - network
+  - ports
+  - process management
+  - tcp
+  - kill process
+keywords:
+  - network
+  - ports
+  - tcp
+  - process management
+  - lsof
+  - kill process
+  - port finder
+  - port conflict
+guide: >
+  This script provides a function to identify which process is using a specific
+  TCP port
+
+  and optionally terminate the process. It's useful for troubleshooting port
+  conflicts
+
   when developing web applications or network services.
-  
+
+
   The script:
-  1. Takes a port number and a boolean flag indicating whether to kill the process
+
+  1. Takes a port number and a boolean flag indicating whether to kill the
+  process
+
   2. Uses the `lsof` command to find processes listening on the specified port
+
   3. Extracts the process ID (PID) and name from the command output
+
   4. Optionally terminates the process if requested
+
   5. Returns information about the process or appropriate error messages
-  
+
+
   To use this script:
+
   - Call `findProcessByPort(portNumber, shouldKill)` with the port to check
-  - Set shouldKill to true to terminate the process, false to just get information
-  
+
+  - Set shouldKill to true to terminate the process, false to just get
+  information
+
+
   Requirements:
+
   - macOS (uses lsof and kill commands)
+
   - Administrator privileges might be required to terminate certain processes
 sample_snippets:
   - title: Initial version
@@ -143,7 +176,7 @@ sample_snippets:
       end findProcessByPort
 arguments:
   - name: portNumber
-    description: The TCP port number to check (e.g., 8080)
+    description: 'The TCP port number to check (e.g., 8080)'
     type: number
     required: true
   - name: shouldKill
@@ -151,6 +184,7 @@ arguments:
     type: boolean
     required: false
     default: false
+category: 12_network/port_management
 ---
 
 ```applescript

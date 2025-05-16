@@ -1,11 +1,24 @@
 ---
-title: "File Encryption and Decryption"
-category: "03_file_system_and_finder"
+title: File Encryption and Decryption
+category: 05_files/security_operations
 id: file_encryption_decryption
-description: "Encrypts and decrypts files securely using various macOS encryption methods including disk images, OpenSSL, and GPG"
-keywords: ["encryption", "decryption", "security", "password", "hdiutil", "diskimage", "OpenSSL", "GPG", "files"]
+description: >-
+  Encrypts and decrypts files securely using various macOS encryption methods
+  including disk images, OpenSSL, and GPG
+keywords:
+  - encryption
+  - decryption
+  - security
+  - password
+  - hdiutil
+  - diskimage
+  - OpenSSL
+  - GPG
+  - files
 language: applescript
-notes: "Uses macOS built-in tools for encryption. For OpenSSL and GPG methods, these tools need to be installed (GPG is optional, OpenSSL comes with macOS)."
+notes: >-
+  Uses macOS built-in tools for encryption. For OpenSSL and GPG methods, these
+  tools need to be installed (GPG is optional, OpenSSL comes with macOS).
 ---
 
 ```applescript

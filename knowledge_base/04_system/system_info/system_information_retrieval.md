@@ -1,11 +1,23 @@
 ---
-title: "System Information Retrieval"
-category: "02_system_interaction"
+title: System Information Retrieval
+category: 04_system/system_info
 id: system_information_retrieval
-description: "Retrieves various system information including macOS version, hardware details, storage info, and more"
-keywords: ["system info", "macOS version", "hardware", "storage", "memory", "battery", "network", "System Events"]
+description: >-
+  Retrieves various system information including macOS version, hardware
+  details, storage info, and more
+keywords:
+  - system info
+  - macOS version
+  - hardware
+  - storage
+  - memory
+  - battery
+  - network
+  - System Events
 language: applescript
-notes: "Different information requires different permissions. Some functions use shell commands for data that isn't directly accessible through AppleScript."
+notes: >-
+  Different information requires different permissions. Some functions use shell
+  commands for data that isn't directly accessible through AppleScript.
 ---
 
 ```applescript

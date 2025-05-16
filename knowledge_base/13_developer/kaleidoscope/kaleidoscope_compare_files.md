@@ -4,10 +4,16 @@ title: Compare Files with Kaleidoscope
 description: Use AppleScript to open and compare files in Kaleidoscope
 author: steipete
 language: applescript
-tags: kaleidoscope, diff, compare, files
-keywords: ["kaleidoscope", "file comparison", "diff", "url scheme", "file diff"]
+tags: 'kaleidoscope, diff, compare, files'
+keywords:
+  - kaleidoscope
+  - file comparison
+  - diff
+  - url scheme
+  - file diff
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/kaleidoscope
 ---
 
 # Compare Files with Kaleidoscope

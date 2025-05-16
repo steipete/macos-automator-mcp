@@ -1,7 +1,7 @@
 ---
 id: jetbrains_open_project
 title: Open project in JetBrains IDE
-description: Opens a project in a specific JetBrains IDE (IntelliJ, WebStorm, etc.)
+description: 'Opens a project in a specific JetBrains IDE (IntelliJ, WebStorm, etc.)'
 language: applescript
 author: Claude
 keywords:
@@ -11,16 +11,19 @@ keywords:
   - development
   - workspace
 usage_examples:
-  - "Open a project in IntelliJ IDEA"
-  - "Open a project in WebStorm"
-  - "Open a project in PyCharm"
+  - Open a project in IntelliJ IDEA
+  - Open a project in WebStorm
+  - Open a project in PyCharm
 parameters:
   - name: ideName
-    description: The name of the JetBrains IDE (e.g., 'IntelliJ IDEA', 'WebStorm', 'PyCharm')
+    description: >-
+      The name of the JetBrains IDE (e.g., 'IntelliJ IDEA', 'WebStorm',
+      'PyCharm')
     required: true
   - name: projectPath
     description: Path to the project to open (POSIX path)
     required: true
+category: 08_editors/jetbrains
 ---
 
 # Open project in JetBrains IDE

@@ -1,14 +1,27 @@
 ---
-title: "Spotify: Get Current Track Information"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Get Current Track Information'
+category: 10_creative/spotify
 id: spotify_current_track_info
-description: "Retrieves detailed information about the currently playing track in Spotify."
-keywords: ["Spotify", "current track", "track info", "song details", "artist", "album", "duration", "music"]
+description: Retrieves detailed information about the currently playing track in Spotify.
+keywords:
+  - Spotify
+  - current track
+  - track info
+  - song details
+  - artist
+  - album
+  - duration
+  - music
 language: applescript
-notes: |
+notes: >
   - Spotify must be running.
-  - If no track is playing, some properties might return empty or default values.
-  - The script provides track name, artist, album, duration, artwork URL, and track URI.
+
+  - If no track is playing, some properties might return empty or default
+  values.
+
+  - The script provides track name, artist, album, duration, artwork URL, and
+  track URI.
+
   - Track URI can be used with Spotify's API or URI schemes for direct access.
 ---
 

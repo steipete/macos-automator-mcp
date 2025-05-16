@@ -1,12 +1,18 @@
 ---
-title: "Contacts: Search by Name"
-category: "07_productivity_apps"
+title: 'Contacts: Search by Name'
+category: 09_productivity/contacts_app
 id: contacts_search_by_name
-description: "Searches for contacts in the Contacts app by name."
-keywords: ["Contacts", "search contacts", "find contact", "name search"]
+description: Searches for contacts in the Contacts app by name.
+keywords:
+  - Contacts
+  - search contacts
+  - find contact
+  - name search
 language: applescript
-argumentsPrompt: "Enter the name to search for"
-notes: "Performs a partial match search on contact names. Returns matching contacts with their details."
+argumentsPrompt: Enter the name to search for
+notes: >-
+  Performs a partial match search on contact names. Returns matching contacts
+  with their details.
 ---
 
 ```applescript

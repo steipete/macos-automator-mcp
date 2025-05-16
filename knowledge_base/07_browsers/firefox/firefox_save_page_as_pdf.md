@@ -1,9 +1,16 @@
 ---
-title: "Firefox: Save Page as PDF"
-category: "05_web_browsers"
+title: 'Firefox: Save Page as PDF'
+category: 07_browsers/firefox
 id: firefox_save_page_as_pdf
-description: "Saves the current Firefox page as a PDF file using UI automation."
-keywords: ["Firefox", "PDF", "save", "export", "print to PDF", "browser", "UI scripting"]
+description: Saves the current Firefox page as a PDF file using UI automation.
+keywords:
+  - Firefox
+  - PDF
+  - save
+  - export
+  - print to PDF
+  - browser
+  - UI scripting
 language: applescript
 notes: |
   - Firefox must be running.

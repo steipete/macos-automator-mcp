@@ -4,10 +4,15 @@ title: Git Commit and Push
 description: Automates the Git commit and push process for a repository
 language: applescript
 author: Claude
-keywords: ["git automation", "version control", "commit workflow", "repository management", "code versioning"]
+keywords:
+  - git automation
+  - version control
+  - commit workflow
+  - repository management
+  - code versioning
 usage_examples:
-  - "Commit and push changes in a git repository"
-  - "Automate routine code commits"
+  - Commit and push changes in a git repository
+  - Automate routine code commits
 parameters:
   - name: repoPath
     description: Path to the Git repository (POSIX path)
@@ -15,6 +20,7 @@ parameters:
   - name: commitMessage
     description: Message for the commit
     required: true
+category: 13_developer/git
 ---
 
 # Git Commit and Push

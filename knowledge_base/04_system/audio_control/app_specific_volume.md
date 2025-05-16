@@ -1,22 +1,46 @@
 ---
-title: "System: App-Specific Volume Control"
-category: "02_system_interaction"
+title: 'System: App-Specific Volume Control'
+category: 04_system/audio_control
 id: app_specific_volume
-description: "Control volume levels for specific applications independently from the system volume."
-keywords: ["volume", "audio", "app-specific", "application", "sound", "control", "mixer"]
+description: >-
+  Control volume levels for specific applications independently from the system
+  volume.
+keywords:
+  - volume
+  - audio
+  - app-specific
+  - application
+  - sound
+  - control
+  - mixer
 language: applescript
-parameters: |
-  - app_name (required): Name of the application to control (e.g., "Safari", "Music", "Spotify")
+parameters: >
+  - app_name (required): Name of the application to control (e.g., "Safari",
+  "Music", "Spotify")
+
   - action (required): Action to perform - "get", "set", "mute", "unmute"
+
   - volume_level (optional): Volume level to set (0-100) for "set" action
-notes: |
+notes: >
   - This script requires a third-party utility for full functionality.
-  - The most reliable way to control per-app volume is with utilities like Background Music or Sound Control.
-  - The script will attempt to use various methods to control app-specific volume.
-  - For Safari, Chrome, and some other browsers, HTML5 audio can be controlled via JavaScript.
-  - For apps with AppleScript support, their own volume commands will be used if available.
-  - For other apps, the script will provide instructions for installing a third-party utility.
-  - Some actions may require accessibility permissions to be granted to the script runner.
+
+  - The most reliable way to control per-app volume is with utilities like
+  Background Music or Sound Control.
+
+  - The script will attempt to use various methods to control app-specific
+  volume.
+
+  - For Safari, Chrome, and some other browsers, HTML5 audio can be controlled
+  via JavaScript.
+
+  - For apps with AppleScript support, their own volume commands will be used if
+  available.
+
+  - For other apps, the script will provide instructions for installing a
+  third-party utility.
+
+  - Some actions may require accessibility permissions to be granted to the
+  script runner.
 ---
 
 Control volume levels for specific applications independently from the system volume.

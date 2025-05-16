@@ -1,24 +1,34 @@
 ---
 id: iterm_send_text
 title: Send Text to iTerm2 Without Executing
-description: Sends text to an iTerm2 window or pane without automatically executing the command
+description: >-
+  Sends text to an iTerm2 window or pane without automatically executing the
+  command
 language: applescript
 author: Claude
-keywords: ["input", "typing", "automation", "command", "interactive"]
+keywords:
+  - input
+  - typing
+  - automation
+  - command
+  - interactive
 usage_examples:
-  - "Type a complex command in iTerm2 without executing it"
-  - "Paste multi-line text into iTerm2 for editing before execution"
-  - "Fill in form-like CLI interfaces that require user input"
+  - Type a complex command in iTerm2 without executing it
+  - Paste multi-line text into iTerm2 for editing before execution
+  - Fill in form-like CLI interfaces that require user input
 parameters:
   - name: text
     description: The text to send to iTerm2
     required: true
   - name: executeCommand
-    description: "Whether to press Return after sending the text (default: false)"
+    description: 'Whether to press Return after sending the text (default: false)'
     required: false
   - name: targetSession
-    description: Target session by criteria - number, name, or "active" (default is "active")
+    description: >-
+      Target session by criteria - number, name, or "active" (default is
+      "active")
     required: false
+category: 06_terminal/iterm
 ---
 
 # Send Text to iTerm2 Without Executing

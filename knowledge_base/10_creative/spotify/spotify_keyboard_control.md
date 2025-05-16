@@ -1,17 +1,34 @@
 ---
-title: "Spotify: Keyboard Shortcut Control"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Keyboard Shortcut Control'
+category: 10_creative/spotify
 id: spotify_keyboard_control
-description: "Control Spotify using keyboard shortcuts via System Events, useful for programming media keys or automating controls."
-keywords: ["Spotify", "keyboard shortcuts", "media keys", "hotkeys", "system events", "play", "pause", "next", "previous"]
+description: >-
+  Control Spotify using keyboard shortcuts via System Events, useful for
+  programming media keys or automating controls.
+keywords:
+  - Spotify
+  - keyboard shortcuts
+  - media keys
+  - hotkeys
+  - system events
+  - play
+  - pause
+  - next
+  - previous
 language: applescript
-parameters: |
-  - action (required): The action to perform. Options: "playpause", "next", "previous", "volumeup", "volumedown", "mute"
-notes: |
+parameters: >
+  - action (required): The action to perform. Options: "playpause", "next",
+  "previous", "volumeup", "volumedown", "mute"
+notes: >
   - This script uses UI Automation to send keyboard shortcuts to Spotify.
+
   - Spotify must be running and in focus for the keyboard shortcuts to work.
-  - This approach is useful when direct AppleScript commands aren't available or working.
-  - May require Accessibility permissions for System Events to function properly.
+
+  - This approach is useful when direct AppleScript commands aren't available or
+  working.
+
+  - May require Accessibility permissions for System Events to function
+  properly.
 ---
 
 Control Spotify using keyboard shortcuts via System Events.

@@ -1,12 +1,26 @@
 ---
-title: "iOS Simulator: Configure Touch Indicators"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Configure Touch Indicators'
+category: 13_developer/xcode_app
 id: ios_simulator_touch_indicators
-description: "Configures touch indicators and visual feedback in iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "touch", "indicators", "visual", "feedback", "interaction", "developer", "iOS", "iPadOS"]
+description: Configures touch indicators and visual feedback in iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - touch
+  - indicators
+  - visual
+  - feedback
+  - interaction
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: false
-argumentsPrompt: "Enable touch indicators as 'enableTouchIndicators' ('true' or 'false'), optional boolean to enable edge gestures highlights as 'enableEdgeGestures' (default matches enableTouchIndicators), and optional boolean to show touch points coordinates as 'showCoordinates' (default is false)."
+argumentsPrompt: >-
+  Enable touch indicators as 'enableTouchIndicators' ('true' or 'false'),
+  optional boolean to enable edge gestures highlights as 'enableEdgeGestures'
+  (default matches enableTouchIndicators), and optional boolean to show touch
+  points coordinates as 'showCoordinates' (default is false).
 notes: |
   - Shows visual indicators for touches and gestures in simulator
   - Useful for demonstrations, tutorials, and recordings

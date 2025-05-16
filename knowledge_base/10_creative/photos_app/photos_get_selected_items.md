@@ -1,11 +1,15 @@
 ---
-title: "Photos: Get Selected Items"
-category: "08_creative_and_document_apps"
+title: 'Photos: Get Selected Items'
+category: 10_creative/photos_app
 id: photos_get_selected_items
-description: "Retrieves information about currently selected photos in the Photos app."
-keywords: ["Photos", "selected photos", "photo information", "image selection"]
+description: Retrieves information about currently selected photos in the Photos app.
+keywords:
+  - Photos
+  - selected photos
+  - photo information
+  - image selection
 language: applescript
-notes: "Returns a list of selected photos with their names, IDs, and creation dates."
+notes: 'Returns a list of selected photos with their names, IDs, and creation dates.'
 ---
 
 ```applescript

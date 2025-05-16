@@ -1,12 +1,18 @@
 ---
-title: "Preview: Open File"
-category: "08_creative_and_document_apps"
+title: 'Preview: Open File'
+category: 10_creative/preview_app
 id: preview_open_file
-description: "Opens a specified file in the Preview application."
-keywords: ["Preview", "open file", "view document", "view image"]
+description: Opens a specified file in the Preview application.
+keywords:
+  - Preview
+  - open file
+  - view document
+  - view image
 language: applescript
-argumentsPrompt: "Enter the file path to open"
-notes: "Works with PDF documents and common image formats. Use POSIX paths for best compatibility."
+argumentsPrompt: Enter the file path to open
+notes: >-
+  Works with PDF documents and common image formats. Use POSIX paths for best
+  compatibility.
 ---
 
 ```applescript

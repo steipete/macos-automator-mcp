@@ -1,14 +1,30 @@
 ---
-title: "VOX: Basic Playback Controls"
-category: "08_creative_and_document_apps"
+title: 'VOX: Basic Playback Controls'
+category: 10_creative/vox
 id: vox_playback_controls
-description: "Control basic playback in VOX Music Player including play, pause, next, previous, and volume."
-keywords: ["VOX", "playback", "play", "pause", "stop", "next track", "previous track", "volume", "music", "FLAC"]
+description: >-
+  Control basic playback in VOX Music Player including play, pause, next,
+  previous, and volume.
+keywords:
+  - VOX
+  - playback
+  - play
+  - pause
+  - stop
+  - next track
+  - previous track
+  - volume
+  - music
+  - FLAC
 language: applescript
-notes: |
+notes: >
   - These commands target the VOX Music Player application.
+
   - VOX must be running for these commands to work.
-  - VOX is a high-quality music player that supports formats like FLAC, MP3, AAC, and more.
+
+  - VOX is a high-quality music player that supports formats like FLAC, MP3,
+  AAC, and more.
+
   - Player state values: 1 = playing, 0 = paused, 2 = stopped.
 ---
 

@@ -3,19 +3,33 @@ id: weather_get_forecast
 title: Get Weather Forecast
 description: Script to retrieve weather forecast for upcoming days
 language: applescript
-tags: ['weather', 'api', 'network', 'forecast', 'utility']
-keywords: ['weather', 'forecast', 'prediction', 'daily', 'meteorology']
+tags:
+  - weather
+  - api
+  - network
+  - forecast
+  - utility
+keywords:
+  - weather
+  - forecast
+  - prediction
+  - daily
+  - meteorology
 completion_prompt: Get weather forecast for a location
-required_arguments: ['location']
-optional_arguments: ['days', 'units']
+required_arguments:
+  - location
+optional_arguments:
+  - days
+  - units
 arguments_sample_value:
-  location: "London"
-  days: "3"
-  units: "c"
+  location: London
+  days: '3'
+  units: c
 argument_descriptions:
-  location: "Location name or postal code (e.g., 'London' or '90210')"
-  days: "Number of forecast days (1-7)"
-  units: "Temperature units ('c' for Celsius, 'f' for Fahrenheit)"
+  location: 'Location name or postal code (e.g., ''London'' or ''90210'')'
+  days: Number of forecast days (1-7)
+  units: 'Temperature units (''c'' for Celsius, ''f'' for Fahrenheit)'
+category: 13_developer/weather_app
 ---
 
 # Get Weather Forecast

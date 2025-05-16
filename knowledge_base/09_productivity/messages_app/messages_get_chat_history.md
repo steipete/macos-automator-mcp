@@ -1,12 +1,19 @@
 ---
-title: "Messages: Get Chat History"
-category: "07_productivity_apps"
+title: 'Messages: Get Chat History'
+category: 09_productivity/messages_app
 id: messages_get_chat_history
-description: "Retrieves message history from a specific chat in the Messages app."
-keywords: ["Messages", "chat history", "message history", "conversation history", "text history"]
+description: Retrieves message history from a specific chat in the Messages app.
+keywords:
+  - Messages
+  - chat history
+  - message history
+  - conversation history
+  - text history
 language: applescript
-argumentsPrompt: "Enter the name of the contact or chat to retrieve history from"
-notes: "Retrieves recent messages from a specific chat conversation. Limited to a reasonable number of messages to avoid performance issues."
+argumentsPrompt: Enter the name of the contact or chat to retrieve history from
+notes: >-
+  Retrieves recent messages from a specific chat conversation. Limited to a
+  reasonable number of messages to avoid performance issues.
 ---
 
 ```applescript

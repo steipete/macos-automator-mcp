@@ -1,12 +1,25 @@
 ---
-title: "iOS Simulator: Add Photos to Library"
-category: "developer"
+title: 'iOS Simulator: Add Photos to Library'
+category: 13_developer/xcode_app
 id: ios_simulator_add_photos
-description: "Adds photos and videos to an iOS Simulator's Photo Library."
-keywords: ["iOS Simulator", "Xcode", "photos", "images", "videos", "media", "Photos app", "developer", "iOS", "iPadOS"]
+description: Adds photos and videos to an iOS Simulator's Photo Library.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - photos
+  - images
+  - videos
+  - media
+  - Photos app
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Path to media file or directory as 'mediaPath', optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional boolean to process directories recursively as 'recursive' (default is false)."
+argumentsPrompt: >-
+  Path to media file or directory as 'mediaPath', optional device identifier as
+  'deviceIdentifier' (defaults to 'booted'), and optional boolean to process
+  directories recursively as 'recursive' (default is false).
 notes: |
   - Adds photos, images, and videos to simulator's Photos app
   - Supports most common image formats (JPEG, PNG, GIF, HEIC)

@@ -1,16 +1,27 @@
 ---
-title: "Safari: Open URL"
-category: "05_web_browsers"
+title: 'Safari: Open URL'
+category: 07_browsers/safari
 id: safari_open_url
-description: "Opens a specified URL in Safari (in the current window or a new window if Safari is not already running)."
-keywords: ["Safari", "URL", "open", "browser", "web", "navigate"]
+description: >-
+  Opens a specified URL in Safari (in the current window or a new window if
+  Safari is not already running).
+keywords:
+  - Safari
+  - URL
+  - open
+  - browser
+  - web
+  - navigate
 language: applescript
 isComplex: false
-argumentsPrompt: "URL to open as 'url' in inputData."
-notes: |
+argumentsPrompt: URL to open as 'url' in inputData.
+notes: >
   - The script will launch Safari if it's not already running.
+
   - If Safari is already running, the URL will open in the current window.
-  - The URL should be properly formatted (including the http:// or https:// prefix).
+
+  - The URL should be properly formatted (including the http:// or https://
+  prefix).
 ---
 
 This script opens a specified URL in Safari.

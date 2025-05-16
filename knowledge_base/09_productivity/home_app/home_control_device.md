@@ -1,13 +1,28 @@
 ---
-title: "Home App: Control Smart Home Device"
-category: "07_productivity_apps"
+title: 'Home App: Control Smart Home Device'
+category: 09_productivity/home_app
 id: home_control_device
-description: "Controls a smart home device (turn on/off, adjust brightness/temperature) in the Home app by its name and optionally room location."
-keywords: ["Home", "HomeKit", "smart home", "device control", "automation", "System Events", "UI scripting"]
+description: >-
+  Controls a smart home device (turn on/off, adjust brightness/temperature) in
+  the Home app by its name and optionally room location.
+keywords:
+  - Home
+  - HomeKit
+  - smart home
+  - device control
+  - automation
+  - System Events
+  - UI scripting
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide: 'deviceName' (required), 'roomName' (optional), 'action' (required, one of: 'toggle', 'on', 'off', 'brightness', 'temperature'), and 'value' (required for brightness/temperature) in inputData."
-notes: "Requires Accessibility permissions. Uses UI scripting as Home app has limited AppleScript support. Home app must be configured with your HomeKit devices. Actions depend on device capabilities."
+argumentsPrompt: >-
+  Provide: 'deviceName' (required), 'roomName' (optional), 'action' (required,
+  one of: 'toggle', 'on', 'off', 'brightness', 'temperature'), and 'value'
+  (required for brightness/temperature) in inputData.
+notes: >-
+  Requires Accessibility permissions. Uses UI scripting as Home app has limited
+  AppleScript support. Home app must be configured with your HomeKit devices.
+  Actions depend on device capabilities.
 ---
 
 ```applescript

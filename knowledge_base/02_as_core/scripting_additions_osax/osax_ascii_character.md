@@ -1,13 +1,21 @@
 ---
-title: "StandardAdditions: ASCII character Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: ASCII character Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_ascii_character
-description: "Converts an ASCII number (0-255) to its corresponding character."
-keywords: ["StandardAdditions", "ASCII character", "character code", "ASCII to char", "osax"]
+description: Converts an ASCII number (0-255) to its corresponding character.
+keywords:
+  - StandardAdditions
+  - ASCII character
+  - character code
+  - ASCII to char
+  - osax
 language: applescript
-notes: |
+notes: >
   - Input must be an integer between 0 and 255 (inclusive).
-  - Useful for generating characters that are hard to type or for specific control characters (though many control characters won't have a visible representation).
+
+  - Useful for generating characters that are hard to type or for specific
+  control characters (though many control characters won't have a visible
+  representation).
 ---
 
 ```applescript

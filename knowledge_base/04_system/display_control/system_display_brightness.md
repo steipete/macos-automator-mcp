@@ -1,11 +1,20 @@
 ---
-title: "System Display Brightness Control"
-category: "02_system_interaction"
+title: System Display Brightness Control
+category: 04_system/display_control
 id: system_display_brightness
-description: "Controls the brightness of the Mac's built-in display with precise increments"
-keywords: ["brightness", "display", "screen", "backlight", "System Events", "keyboard", "control"]
+description: Controls the brightness of the Mac's built-in display with precise increments
+keywords:
+  - brightness
+  - display
+  - screen
+  - backlight
+  - System Events
+  - keyboard
+  - control
 language: applescript
-notes: "Works on MacBooks and iMacs with adjustable brightness. Requires accessibility permissions for System Events."
+notes: >-
+  Works on MacBooks and iMacs with adjustable brightness. Requires accessibility
+  permissions for System Events.
 ---
 
 ```applescript

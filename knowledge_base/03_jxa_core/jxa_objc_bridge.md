@@ -1,11 +1,22 @@
 ---
-title: "JXA: Objective-C Bridge"
-category: "10_jxa_basics"
+title: 'JXA: Objective-C Bridge'
+category: 03_jxa_core
 id: jxa_objc_bridge
-description: "Demonstrates how to use the Objective-C bridge in JXA to access macOS frameworks and native functionality."
-keywords: ["jxa", "javascript", "objective-c", "objc bridge", "foundation", "appkit", "cocoa"]
+description: >-
+  Demonstrates how to use the Objective-C bridge in JXA to access macOS
+  frameworks and native functionality.
+keywords:
+  - jxa
+  - javascript
+  - objective-c
+  - objc bridge
+  - foundation
+  - appkit
+  - cocoa
 language: javascript
-notes: "The ObjC bridge provides access to powerful macOS APIs but may require deeper understanding of the Cocoa frameworks."
+notes: >-
+  The ObjC bridge provides access to powerful macOS APIs but may require deeper
+  understanding of the Cocoa frameworks.
 ---
 
 ```javascript

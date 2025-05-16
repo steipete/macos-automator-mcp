@@ -1,10 +1,18 @@
 ---
 title: Safari Security Testing
-category: "05_web_browsers"
+category: 07_browsers/safari
 id: safari_security_testing
-description: Tests security aspects of a webpage in Safari including HTTPS status, mixed content, content security policy, and basic XSS detection
+description: >-
+  Tests security aspects of a webpage in Safari including HTTPS status, mixed
+  content, content security policy, and basic XSS detection
 language: applescript
-keywords: [safari, security, https, csp, xss, mixed-content]
+keywords:
+  - safari
+  - security
+  - https
+  - csp
+  - xss
+  - mixed-content
 ---
 
 # Safari Security Testing

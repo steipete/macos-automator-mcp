@@ -1,6 +1,6 @@
 ---
-title: "Choose File Dialog"
-description: "Displays a file selection dialog to allow the user to select a file"
+title: Choose File Dialog
+description: Displays a file selection dialog to allow the user to select a file
 keywords:
   - file
   - dialog
@@ -9,7 +9,7 @@ keywords:
   - OSAX
   - scripting addition
 language: applescript
-category: "01_applescript_core"
+category: 02_as_core/scripting_additions_osax
 ---
 
 This script demonstrates the `choose file` scripting addition, which shows a standard file selection dialog.

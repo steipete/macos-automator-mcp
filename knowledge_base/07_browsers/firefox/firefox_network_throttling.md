@@ -1,9 +1,19 @@
 ---
-title: "Firefox: Network Throttling"
-category: "05_web_browsers"
+title: 'Firefox: Network Throttling'
+category: 07_browsers/firefox
 id: firefox_network_throttling
-description: "Controls Firefox's network throttling feature in Developer Tools to simulate various internet connection speeds."
-keywords: ["Firefox", "network throttling", "web development", "performance testing", "slow connection", "bandwidth", "latency", "DevTools"]
+description: >-
+  Controls Firefox's network throttling feature in Developer Tools to simulate
+  various internet connection speeds.
+keywords:
+  - Firefox
+  - network throttling
+  - web development
+  - performance testing
+  - slow connection
+  - bandwidth
+  - latency
+  - DevTools
 language: applescript
 notes: |
   - Firefox must be running.

@@ -1,11 +1,18 @@
 ---
-title: "JXA Basics: Introduction and Syntax"
-category: "10_jxa_basics"
+title: 'JXA Basics: Introduction and Syntax'
+category: 03_jxa_core
 id: jxa_introduction_syntax
-description: "Basic syntax for JavaScript for Automation (JXA), including how to target applications and execute commands."
-keywords: ["jxa", "javascript", "automation", "syntax", "Application object"]
+description: >-
+  Basic syntax for JavaScript for Automation (JXA), including how to target
+  applications and execute commands.
+keywords:
+  - jxa
+  - javascript
+  - automation
+  - syntax
+  - Application object
 language: javascript
-notes: "JXA scripts are run using `osascript -l JavaScript`."
+notes: JXA scripts are run using `osascript -l JavaScript`.
 ---
 
 JXA allows macOS automation using JavaScript.

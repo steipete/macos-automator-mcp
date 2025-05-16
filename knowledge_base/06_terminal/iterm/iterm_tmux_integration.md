@@ -11,9 +11,9 @@ keywords:
   - remote-connection
   - collaboration
 usage_examples:
-  - "Connect to a remote tmux session with native iTerm2 interface"
-  - "Set up a local tmux environment with multiple windows"
-  - "Attach to an existing tmux session"
+  - Connect to a remote tmux session with native iTerm2 interface
+  - Set up a local tmux environment with multiple windows
+  - Attach to an existing tmux session
 parameters:
   - name: host
     description: Optional hostname for remote tmux (leave empty for local)
@@ -24,6 +24,7 @@ parameters:
   - name: createNew
     description: Whether to create a new session if it doesn't exist (true/false)
     required: false
+category: 06_terminal/iterm
 ---
 
 # iTerm2 tmux Integration

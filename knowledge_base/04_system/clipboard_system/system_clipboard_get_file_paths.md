@@ -1,11 +1,20 @@
 ---
-title: "System Clipboard: Get File Paths (if any)"
-category: "02_system_interaction"
+title: 'System Clipboard: Get File Paths (if any)'
+category: 04_system/clipboard_system
 id: system_clipboard_get_file_paths
-description: "Checks if the clipboard contains file references (e.g., copied from Finder) and returns their POSIX paths."
-keywords: ["clipboard", "file path", "copy files", "Finder selection", "System Events"]
+description: >-
+  Checks if the clipboard contains file references (e.g., copied from Finder)
+  and returns their POSIX paths.
+keywords:
+  - clipboard
+  - file path
+  - copy files
+  - Finder selection
+  - System Events
 language: applescript
-notes: "Returns a newline-separated string of paths or an informational message. Uses System Events for robust clipboard access."
+notes: >-
+  Returns a newline-separated string of paths or an informational message. Uses
+  System Events for robust clipboard access.
 ---
 
 ```applescript

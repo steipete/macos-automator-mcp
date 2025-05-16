@@ -1,11 +1,18 @@
 ---
-title: "TextEdit: Get and Set Text of Front Document"
-category: "08_creative_and_document_apps"
+title: 'TextEdit: Get and Set Text of Front Document'
+category: 10_creative/textedit_app
 id: textedit_get_set_text
-description: "Retrieves the entire text content of the frontmost TextEdit document, or sets it."
-keywords: ["TextEdit", "text content", "document", "read text", "write text"]
+description: >-
+  Retrieves the entire text content of the frontmost TextEdit document, or sets
+  it.
+keywords:
+  - TextEdit
+  - text content
+  - document
+  - read text
+  - write text
 language: applescript
-notes: "TextEdit must be running and have a document open (for getting text)."
+notes: TextEdit must be running and have a document open (for getting text).
 ---
 
 **Get Text:**

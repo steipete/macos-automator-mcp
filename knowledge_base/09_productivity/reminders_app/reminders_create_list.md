@@ -1,12 +1,17 @@
 ---
-title: "Reminders: Create New List"
-category: "07_productivity_apps"
+title: 'Reminders: Create New List'
+category: 09_productivity/reminders_app
 id: reminders_create_list
-description: "Creates a new list in the Reminders app."
-keywords: ["Reminders", "create list", "reminder list", "to-do list", "task list"]
+description: Creates a new list in the Reminders app.
+keywords:
+  - Reminders
+  - create list
+  - reminder list
+  - to-do list
+  - task list
 language: applescript
-argumentsPrompt: "Enter the name for the new reminders list"
-notes: "Creates a new list in the Reminders app with the specified name."
+argumentsPrompt: Enter the name for the new reminders list
+notes: Creates a new list in the Reminders app with the specified name.
 ---
 
 ```applescript

@@ -3,13 +3,22 @@ id: weather_app_open
 title: Open the Weather App on macOS
 description: Script to open the macOS Weather app (macOS Ventura and later)
 language: applescript
-tags: ['weather', 'utility', 'application']
-keywords: ['weather', 'application', 'launch', 'ventura', 'macos']
+tags:
+  - weather
+  - utility
+  - application
+keywords:
+  - weather
+  - application
+  - launch
+  - ventura
+  - macos
 completion_prompt: Open the Weather app on macOS
 required_arguments: []
 optional_arguments: []
 arguments_sample_value: {}
 argument_descriptions: {}
+category: 13_developer/weather_app
 ---
 
 # Open the Weather App on macOS

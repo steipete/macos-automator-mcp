@@ -1,14 +1,24 @@
 ---
-title: "StandardAdditions: info for Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: info for Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_info_for
-description: "Retrieves a record of metadata about a specified file or folder alias."
-keywords: ["StandardAdditions", "info for", "file metadata", "folder metadata", "attributes", "alias"]
+description: Retrieves a record of metadata about a specified file or folder alias.
+keywords:
+  - StandardAdditions
+  - info for
+  - file metadata
+  - folder metadata
+  - attributes
+  - alias
 language: applescript
-notes: |
+notes: >
   - Input must be an `alias` or `file` object.
-  - Returns a record containing properties like name, creation date, modification date, size, kind, visible, locked, default application, etc.
-  - File `size` is the logical size. `physical size` (if available as a separate property or via Finder) is size on disk.
+
+  - Returns a record containing properties like name, creation date,
+  modification date, size, kind, visible, locked, default application, etc.
+
+  - File `size` is the logical size. `physical size` (if available as a separate
+  property or via Finder) is size on disk.
 ---
 
 ```applescript

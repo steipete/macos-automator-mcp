@@ -4,10 +4,16 @@ title: Compare Clipboard with File in Kaleidoscope
 description: Use AppleScript to compare clipboard contents with a file in Kaleidoscope
 author: steipete
 language: applescript
-tags: kaleidoscope, diff, compare, clipboard
-keywords: ["kaleidoscope", "clipboard", "compare", "url scheme", "diff tool"]
+tags: 'kaleidoscope, diff, compare, clipboard'
+keywords:
+  - kaleidoscope
+  - clipboard
+  - compare
+  - url scheme
+  - diff tool
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/kaleidoscope
 ---
 
 # Compare Clipboard with File in Kaleidoscope

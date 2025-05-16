@@ -1,9 +1,21 @@
 ---
-title: "Core: Index Reference Form"
-category: "01_applescript_core"
+title: 'Core: Index Reference Form'
+category: 02_as_core/reference_forms
 id: core_reference_index
-description: "Accessing elements within containers (lists, strings, application elements) by their numerical index."
-keywords: ["reference form", "index", "item", "character", "word", "paragraph", "list access", "string element", "1-indexed", "negative index"]
+description: >-
+  Accessing elements within containers (lists, strings, application elements) by
+  their numerical index.
+keywords:
+  - reference form
+  - index
+  - item
+  - character
+  - word
+  - paragraph
+  - list access
+  - string element
+  - 1-indexed
+  - negative index
 language: applescript
 notes: |
   - AppleScript indices are 1-based (the first item is `item 1`).

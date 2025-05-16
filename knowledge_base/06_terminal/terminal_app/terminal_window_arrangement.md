@@ -1,11 +1,26 @@
 ---
-title: "Terminal: Window and Tab Arrangement"
+title: 'Terminal: Window and Tab Arrangement'
 id: terminal_window_arrangement
-category: "04_terminal_emulators"
-description: "Arranges Terminal.app windows and tabs according to predefined layouts or custom specifications."
-keywords: ["Terminal.app", "window", "tab", "arrange", "layout", "grid", "cascade", "position", "organize"]
+category: 06_terminal/terminal_app
+description: >-
+  Arranges Terminal.app windows and tabs according to predefined layouts or
+  custom specifications.
+keywords:
+  - Terminal.app
+  - window
+  - tab
+  - arrange
+  - layout
+  - grid
+  - cascade
+  - position
+  - organize
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"layout\": \"grid\", \"cascade\", \"horizontal\", \"vertical\", or \"custom\", \"positions\": [{\"x\": 0, \"y\": 0, \"width\": 800, \"height\": 600}], \"gridRows\": 2, \"gridColumns\": 2 } (specific parameters depend on selected layout)."
+argumentsPrompt: >-
+  Expects inputData with: { "layout": "grid", "cascade", "horizontal",
+  "vertical", or "custom", "positions": [{"x": 0, "y": 0, "width": 800,
+  "height": 600}], "gridRows": 2, "gridColumns": 2 } (specific parameters depend
+  on selected layout).
 isComplex: true
 ---
 

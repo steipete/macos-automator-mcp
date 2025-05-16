@@ -1,12 +1,27 @@
 ---
-title: "iOS Simulator: Simulate Biometric Authentication"
-category: "developer"
+title: 'iOS Simulator: Simulate Biometric Authentication'
+category: 13_developer/xcode_app
 id: ios_simulator_biometric_auth
-description: "Simulates Touch ID or Face ID authentication success or failure in the iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "biometric", "Face ID", "Touch ID", "authentication", "developer", "iOS", "iPadOS"]
+description: >-
+  Simulates Touch ID or Face ID authentication success or failure in the iOS
+  Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - biometric
+  - Face ID
+  - Touch ID
+  - authentication
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Authentication result as 'authResult' ('success' or 'failure'), optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional biometric type as 'biometricType' ('touchid' or 'faceid' - defaults to the device's native biometric type)."
+argumentsPrompt: >-
+  Authentication result as 'authResult' ('success' or 'failure'), optional
+  device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional
+  biometric type as 'biometricType' ('touchid' or 'faceid' - defaults to the
+  device's native biometric type).
 notes: |
   - Simulates biometric authentication events in simulator
   - Can trigger success or failure states for testing

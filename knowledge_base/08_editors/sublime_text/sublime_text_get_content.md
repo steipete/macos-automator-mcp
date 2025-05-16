@@ -11,13 +11,14 @@ keywords:
   - file-content
   - text-selection
 usage_examples:
-  - "Get the content of the currently active file in Sublime Text"
-  - "Extract selected text from Sublime Text"
+  - Get the content of the currently active file in Sublime Text
+  - Extract selected text from Sublime Text
 parameters:
   - name: selectionOnly
-    description: If 'true', gets only the selected text; otherwise gets entire file content
+    description: 'If ''true'', gets only the selected text; otherwise gets entire file content'
     required: false
-    default: "false"
+    default: 'false'
+category: 08_editors/sublime_text
 ---
 
 # Get content from Sublime Text

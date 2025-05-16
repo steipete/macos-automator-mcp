@@ -1,18 +1,34 @@
 ---
-title: "Chrome: Bookmark Operations"
-category: "05_web_browsers"
+title: 'Chrome: Bookmark Operations'
+category: 07_browsers/chrome
 id: chrome_bookmark_operations
-description: "Performs operations with Chrome bookmarks including adding the current page to bookmarks or a specific folder."
-keywords: ["Chrome", "bookmarks", "add bookmark", "bookmark folder", "browser"]
+description: >-
+  Performs operations with Chrome bookmarks including adding the current page to
+  bookmarks or a specific folder.
+keywords:
+  - Chrome
+  - bookmarks
+  - add bookmark
+  - bookmark folder
+  - browser
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional folder path as 'folderPath' in inputData. For example: { \"folderPath\": \"Google/Work\" } or {} to save to the Bookmarks Bar."
-notes: |
+argumentsPrompt: >-
+  Optional folder path as 'folderPath' in inputData. For example: {
+  "folderPath": "Google/Work" } or {} to save to the Bookmarks Bar.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - When providing a folder path, use forward slash '/' as the separator.
-  - The script can add the current tab to the Bookmarks Bar (default) or a specific folder.
-  - If the specified folder doesn't exist, the bookmark will be added to the Bookmarks Bar.
-  - For custom folder support, the script uses JavaScript to locate the folders and add the bookmark.
+
+  - The script can add the current tab to the Bookmarks Bar (default) or a
+  specific folder.
+
+  - If the specified folder doesn't exist, the bookmark will be added to the
+  Bookmarks Bar.
+
+  - For custom folder support, the script uses JavaScript to locate the folders
+  and add the bookmark.
 ---
 
 This script adds the current tab to Chrome bookmarks, optionally in a specified folder.

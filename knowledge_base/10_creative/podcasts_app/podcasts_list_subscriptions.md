@@ -1,11 +1,18 @@
 ---
-title: "Podcasts: List Subscriptions"
-category: "08_creative_and_document_apps"
+title: 'Podcasts: List Subscriptions'
+category: 10_creative/podcasts_app
 id: podcasts_list_subscriptions
-description: "Lists all subscribed podcasts in the Podcasts app."
-keywords: ["Podcasts", "subscriptions", "podcast list", "subscribed shows", "podcast library"]
+description: Lists all subscribed podcasts in the Podcasts app.
+keywords:
+  - Podcasts
+  - subscriptions
+  - podcast list
+  - subscribed shows
+  - podcast library
 language: applescript
-notes: "Returns a list of all podcasts you're subscribed to in the Podcasts app. Useful for discovering what podcasts are available for automation."
+notes: >-
+  Returns a list of all podcasts you're subscribed to in the Podcasts app.
+  Useful for discovering what podcasts are available for automation.
 ---
 
 ```applescript

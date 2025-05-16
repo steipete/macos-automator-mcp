@@ -1,11 +1,24 @@
 ---
-title: "Terminal: Split Pane Management"
+title: 'Terminal: Split Pane Management'
 id: terminal_split_pane
-category: "04_terminal_emulators"
-description: "Creates and manages split panes in Terminal.app through UI automation of menu commands."
-keywords: ["Terminal.app", "split", "pane", "vertical", "horizontal", "divide", "window", "UI automation"]
+category: 06_terminal/terminal_app
+description: >-
+  Creates and manages split panes in Terminal.app through UI automation of menu
+  commands.
+keywords:
+  - Terminal.app
+  - split
+  - pane
+  - vertical
+  - horizontal
+  - divide
+  - window
+  - UI automation
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"action\": \"create\", \"close\", or \"navigate\", \"direction\": \"horizontal\" or \"vertical\" (for create), \"target\": \"next\", \"previous\", \"up\", \"down\", \"left\", or \"right\" (for navigate) }"
+argumentsPrompt: >-
+  Expects inputData with: { "action": "create", "close", or "navigate",
+  "direction": "horizontal" or "vertical" (for create), "target": "next",
+  "previous", "up", "down", "left", or "right" (for navigate) }
 isComplex: true
 ---
 

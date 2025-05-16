@@ -1,11 +1,21 @@
 ---
-title: "System Notification Center"
-category: "02_system_interaction"
+title: System Notification Center
+category: 04_system/notifications
 id: system_notification_center
-description: "Creates and manages user notifications in macOS Notification Center using AppleScript and JXA"
-keywords: ["notification", "alert", "Notification Center", "user notification", "JXA", "display notification"]
+description: >-
+  Creates and manages user notifications in macOS Notification Center using
+  AppleScript and JXA
+keywords:
+  - notification
+  - alert
+  - Notification Center
+  - user notification
+  - JXA
+  - display notification
 language: applescript
-notes: "Shows both AppleScript and JavaScript for Automation methods for creating notifications. Sound names must be valid system sound names."
+notes: >-
+  Shows both AppleScript and JavaScript for Automation methods for creating
+  notifications. Sound names must be valid system sound names.
 ---
 
 ```applescript

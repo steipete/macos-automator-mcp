@@ -1,9 +1,18 @@
 ---
 title: Parallels Desktop VM Controller
-description: Script for managing Parallels Desktop virtual machines - list, start, stop, and check VM status
-keywords: [parallels, desktop, vm, virtual machine, controller, automation]
+description: >-
+  Script for managing Parallels Desktop virtual machines - list, start, stop,
+  and check VM status
+keywords:
+  - parallels
+  - desktop
+  - vm
+  - virtual machine
+  - controller
+  - automation
 language: applescript
 isComplex: false
+category: 13_developer/parallels_desktop
 ---
 
 # Parallels Desktop VM Controller

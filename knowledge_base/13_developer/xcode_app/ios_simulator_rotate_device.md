@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Rotate Device"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Rotate Device'
+category: 13_developer/xcode_app
 id: ios_simulator_rotate_device
-description: "Rotates iOS Simulator device to specific orientation."
-keywords: ["iOS Simulator", "Xcode", "rotation", "orientation", "landscape", "portrait", "developer", "iOS", "iPadOS"]
+description: Rotates iOS Simulator device to specific orientation.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - rotation
+  - orientation
+  - landscape
+  - portrait
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: false
-argumentsPrompt: "Orientation as 'orientation' ('portrait', 'landscape-left', 'landscape-right', 'portrait-upsidedown'), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Orientation as 'orientation' ('portrait', 'landscape-left', 'landscape-right',
+  'portrait-upsidedown'), and optional device identifier as 'deviceIdentifier'
+  (defaults to 'booted').
 notes: |
   - Rotates the simulator to specified orientation
   - Tests app responsiveness to rotation changes

@@ -1,15 +1,23 @@
 ---
 id: terminal_find_kill_process_by_port
 title: Find Process Using Port and Optionally Kill It
-description: Identifies which process is using a specific port and provides the option to kill it
+description: >-
+  Identifies which process is using a specific port and provides the option to
+  kill it
 language: applescript
 platform: macOS
 kb_path: 04_terminal_emulators/terminal_app
 author: Claude
 version: 1.0.0
-keywords: ["port", "process", "kill", "network", "troubleshooting"]
+keywords:
+  - port
+  - process
+  - kill
+  - network
+  - troubleshooting
 required_permissions:
   - Network access
+category: 06_terminal/terminal_app
 ---
 
 # Find Process Using Port and Optionally Kill It

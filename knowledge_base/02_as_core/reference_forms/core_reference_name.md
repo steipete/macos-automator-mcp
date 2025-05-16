@@ -1,14 +1,26 @@
 ---
-title: "Core: Name Reference Form"
-category: "01_applescript_core"
+title: 'Core: Name Reference Form'
+category: 02_as_core/reference_forms
 id: core_reference_name
-description: "Accessing objects by their specified name (e.g., files, applications, windows)."
-keywords: ["reference form", "name", "file name", "application name", "window name", "object specifier"]
+description: >-
+  Accessing objects by their specified name (e.g., files, applications,
+  windows).
+keywords:
+  - reference form
+  - name
+  - file name
+  - application name
+  - window name
+  - object specifier
 language: applescript
-notes: |
+notes: >
   - This form is common when dealing with applications that have named elements.
-  - The exact name must be known and is usually case-insensitive, but this can depend on the application.
-  - If multiple items have the same name, this form usually refers to the first one found unless combined with other specifiers.
+
+  - The exact name must be known and is usually case-insensitive, but this can
+  depend on the application.
+
+  - If multiple items have the same name, this form usually refers to the first
+  one found unless combined with other specifiers.
 ---
 
 Objects can often be referred to directly by their name.

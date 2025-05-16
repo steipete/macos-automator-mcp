@@ -1,11 +1,28 @@
 ---
-title: "Terminal: Direct File Operations"
+title: 'Terminal: Direct File Operations'
 id: terminal_file_operations
-category: "04_terminal_emulators"
-description: "Performs common file operations directly through terminal without requiring manual command entry, supporting drag-and-drop paths."
-keywords: ["terminal", "file", "operations", "copy", "move", "delete", "create", "extract", "compress", "chmod", "permissions"]
+category: 06_terminal
+description: >-
+  Performs common file operations directly through terminal without requiring
+  manual command entry, supporting drag-and-drop paths.
+keywords:
+  - terminal
+  - file
+  - operations
+  - copy
+  - move
+  - delete
+  - create
+  - extract
+  - compress
+  - chmod
+  - permissions
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"operation\": \"copy\", \"move\", \"delete\", \"create\", \"extract\", \"compress\", \"chmod\", \"source\": \"/path/to/source\", \"destination\": \"/path/to/destination\", \"content\": \"file content if creating\", \"permissions\": \"755 for chmod\" }"
+argumentsPrompt: >-
+  Expects inputData with: { "operation": "copy", "move", "delete", "create",
+  "extract", "compress", "chmod", "source": "/path/to/source", "destination":
+  "/path/to/destination", "content": "file content if creating", "permissions":
+  "755 for chmod" }
 isComplex: true
 ---
 

@@ -1,18 +1,37 @@
 ---
-title: "iOS Simulator: Send Push Notification"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Send Push Notification'
+category: 13_developer/xcode_app
 id: ios_simulator_send_notification
-description: "Sends a test push notification to an app running in the iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "push notification", "APNS", "test", "debug", "developer", "iOS", "iPadOS"]
+description: Sends a test push notification to an app running in the iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - push notification
+  - APNS
+  - test
+  - debug
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App bundle ID as 'bundleID', notification title as 'title', notification body as 'body', optional badge number as 'badge', optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional custom data as 'customData' in JSON format."
-notes: |
+argumentsPrompt: >-
+  App bundle ID as 'bundleID', notification title as 'title', notification body
+  as 'body', optional badge number as 'badge', optional device identifier as
+  'deviceIdentifier' (defaults to 'booted'), and optional custom data as
+  'customData' in JSON format.
+notes: >
   - Creates and sends push notification payload to simulator
+
   - Requires Xcode 11.4 or newer which supports simulator push notifications
+
   - Can include custom data in the notification payload
+
   - Useful for testing push notification handling without server setup
-  - The app must be configured for push notifications and have requested permission
+
+  - The app must be configured for push notifications and have requested
+  permission
+
   - Works with currently running simulators only
 ---
 

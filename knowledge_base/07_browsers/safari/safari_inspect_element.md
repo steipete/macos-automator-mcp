@@ -1,17 +1,35 @@
 ---
-title: "Safari: Inspect Element"
-category: "05_web_browsers"
+title: 'Safari: Inspect Element'
+category: 07_browsers/safari
 id: safari_inspect_element
-description: "Opens Safari's Web Inspector and activates the element selection tool to inspect page elements."
-keywords: ["Safari", "Web Inspector", "inspect element", "developer tools", "HTML", "CSS", "debugging", "web development", "DOM"]
+description: >-
+  Opens Safari's Web Inspector and activates the element selection tool to
+  inspect page elements.
+keywords:
+  - Safari
+  - Web Inspector
+  - inspect element
+  - developer tools
+  - HTML
+  - CSS
+  - debugging
+  - web development
+  - DOM
 language: applescript
 isComplex: false
-notes: |
+notes: >
   - Safari must be running with at least one open tab.
+
   - The Develop menu must be enabled in Safari preferences.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
-  - The script opens the Web Inspector in Elements mode and activates the element selection tool.
-  - This allows the user to click any element on the page to inspect its HTML and CSS.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
+  - The script opens the Web Inspector in Elements mode and activates the
+  element selection tool.
+
+  - This allows the user to click any element on the page to inspect its HTML
+  and CSS.
 ---
 
 This script opens Safari's Web Inspector and activates the element inspection tool for selecting and analyzing page elements.

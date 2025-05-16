@@ -1,19 +1,30 @@
 ---
-title: "Safari: Open Web Inspector"
-category: "05_web_browsers"
+title: 'Safari: Open Web Inspector'
+category: 07_browsers/safari
 id: safari_open_web_inspector
-description: "Opens the Web Inspector (Developer Tools) for the current tab in Safari."
-keywords: ["Safari", "Web Inspector", "developer tools", "debugging", "web development", "inspect", "DevTools"]
+description: Opens the Web Inspector (Developer Tools) for the current tab in Safari.
+keywords:
+  - Safari
+  - Web Inspector
+  - developer tools
+  - debugging
+  - web development
+  - inspect
+  - DevTools
 language: applescript
 isComplex: false
-notes: |
+notes: >
   - Safari must be running with at least one open tab.
+
   - The Develop menu must be enabled in Safari preferences:
     1. Open Safari Preferences/Settings
     2. Go to Advanced tab
     3. Check "Show Develop menu in menu bar"
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
-  - The script will first try to use the keyboard shortcut (Command+Option+I), and if that fails, it will try using the menu.
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
+  - The script will first try to use the keyboard shortcut (Command+Option+I),
+  and if that fails, it will try using the menu.
 ---
 
 This script opens the Web Inspector for the current tab in Safari using keyboard shortcut or menu selection.
