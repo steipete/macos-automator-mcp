@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-05-16
+
 ### Changed
 - Refactored `src/server.ts` by extracting placeholder substitution logic into `src/placeholderSubstitutor.ts` for improved modularity.
 - Refactored `scripts/validate-kb.ts` into multiple focused modules (`kbReport.ts`, `kbFileValidator.ts`, `kbPathProcessor.ts`) for better maintainability.
