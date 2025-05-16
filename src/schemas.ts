@@ -47,7 +47,9 @@ export const GetScriptingTipsInputSchema = z.object({
     .describe("Keyword to search within tip titles, content, keywords, or IDs."),
   listCategories: z.boolean().optional().default(false)
     .describe("If true, returns only the list of available categories and their descriptions. Overrides other parameters."),
-  refreshDatabase: z.boolean().optional().describe("If true, forces a reload of the knowledge base before processing the request.")
+  refreshDatabase: z.boolean().optional().describe("If true, forces a reload of the knowledge base before processing the request."),
+  limit: z.number().int().positive().optional().default(10)
+    .describe("Maximum number of results to return. Default is 10."),
 });
 
 export type GetScriptingTipsInput = z.infer<typeof GetScriptingTipsInputSchema>;
