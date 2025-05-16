@@ -13,6 +13,18 @@ import type { KnowledgeBaseIndex, ScriptingTip, KnowledgeCategory } from './scri
 
 const logger = new Logger('KnowledgeBaseService');
 
+// --- Constants ---
+const PRIMARY_SEARCH_THRESHOLD = 0.4;
+const BROAD_SEARCH_THRESHOLD = 0.7;
+
+const FUSE_OPTIONS_KEYS = [
+  { name: 'title', weight: 0.4 },
+  { name: 'id', weight: 0.3 },
+  { name: 'keywords', weight: 0.2 },
+  { name: 'description', weight: 0.1 },
+  { name: 'script', weight: 0.05 }
+];
+
 // Re-export the core KB access functions for server.ts to use
 export { getKnowledgeBase, forceReloadKnowledgeBase, conditionallyInitializeKnowledgeBase };
 
@@ -24,22 +36,24 @@ function searchTips(tipsToSearch: ScriptingTip[], searchTerm: string, customThre
   const fuseOptions = {
     isCaseSensitive: false,
     includeScore: false,
-    shouldSort: true, 
-    threshold: customThreshold !== undefined ? customThreshold : 0.4, // Use custom or default
-    keys: [
-      { name: 'title', weight: 0.4 },
-      { name: 'id', weight: 0.3 },
-      { name: 'keywords', weight: 0.2 },
-      { name: 'description', weight: 0.1 },
-      { name: 'script', weight: 0.05 }
-    ]
+    shouldSort: true,
+    threshold: customThreshold !== undefined ? customThreshold : PRIMARY_SEARCH_THRESHOLD, // Use custom or default
+    keys: FUSE_OPTIONS_KEYS
   };
   const fuse = new Fuse(tipsToSearch, fuseOptions);
   return fuse.search(searchTerm).map(result => result.item);
 }
 
+function formatCategoryTitle(category: string): string {
+  return category.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+}
+
+function generateNoResultsMessage(category?: string, searchTerm?: string): string {
+  return `No tips found matching your criteria (Category: ${category || 'All Categories'}, SearchTerm: ${searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
+}
+
 function formatResultsToMarkdown(
-    groupedResults: { category: KnowledgeCategory; tips: ScriptingTip[] }[], 
+    groupedResults: { category: KnowledgeCategory; tips: ScriptingTip[] }[],
     inputCategory?: KnowledgeCategory | string // Allow string for input.category
 ): string {
   if (groupedResults.length === 0) {
@@ -48,25 +62,83 @@ function formatResultsToMarkdown(
   return groupedResults
     .sort((a, b) => (a.category as string).localeCompare(b.category as string))
     .map(catResult => {
-      const categoryTitle = (catResult.category as string).replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+      const categoryTitle = formatCategoryTitle(catResult.category as string);
       // Only add category header if we are not already in a specific category view (i.e., input.category was not set)
-      const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\n`; 
+      const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\\n`;
       const tipMarkdown = catResult.tips.map(tip => `
 ### ${tip.title}
-${tip.description ? `*${tip.description}*\n` : ''}
+${tip.description ? `*${tip.description}*\\n` : ''}
 \`\`\`${tip.language}
 ${tip.script.trim()}
 \`\`\`
-${tip.id ? `**Runnable ID:** \`${tip.id}\`\n` : ''}
-${tip.argumentsPrompt ? `**Inputs Needed (if run by ID):** ${tip.argumentsPrompt}\n` : ''}
-${tip.keywords && tip.keywords.length > 0 ? `**Keywords:** ${tip.keywords.join(', ')}\n` : ''}
-${tip.notes ? `**Note:**\n${tip.notes.split('\n').map(n => `> ${n}`).join('\n')}\n` : ''}
-      `).join('\n---\n');
+${tip.id ? `**Runnable ID:** \`${tip.id}\`\\n` : ''}
+${tip.argumentsPrompt ? `**Inputs Needed (if run by ID):** ${tip.argumentsPrompt}\\n` : ''}
+${tip.keywords && tip.keywords.length > 0 ? `**Keywords:** ${tip.keywords.join(', ')}\\n` : ''}
+${tip.notes ? `**Note:**\\n${tip.notes.split('\\n').map(n => `> ${n}`).join('\\n')}\\n` : ''}
+      `).join('\\n---\\n');
       return categoryHeader + tipMarkdown;
-    }).join('\n\n');
+    }).join('\\n\\n');
 }
 
-// --- Main Service Function --- 
+// --- Helper Functions for getScriptingTipsService ---
+
+function handleListCategories(kb: KnowledgeBaseIndex): string {
+  if (kb.categories.length === 0) {
+    return "No tip categories available. Knowledge base might be empty or failed to load.";
+  }
+  const categoryList = kb.categories
+    .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
+    .join('\n');
+  return `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+}
+
+interface SearchResult {
+  tips: ScriptingTip[];
+  notice: string;
+}
+
+function performSearch(kb: KnowledgeBaseIndex, category?: string, searchTerm?: string): SearchResult {
+  const searchTermLower = searchTerm?.toLowerCase() ?? '';
+  const tipsToConsider: ScriptingTip[] = category
+    ? kb.tips.filter((t: ScriptingTip) => t.category === category)
+    : kb.tips;
+
+  let filteredTips: ScriptingTip[] = searchTips(tipsToConsider, searchTermLower, PRIMARY_SEARCH_THRESHOLD);
+  let broadSearchNotice = "";
+
+  if (filteredTips.length === 0 && searchTermLower) {
+    logger.debug('Primary search yielded no results, trying broader search.', { searchTerm: searchTermLower, category });
+    filteredTips = searchTips(tipsToConsider, searchTermLower, BROAD_SEARCH_THRESHOLD);
+    if (filteredTips.length > 0) {
+      broadSearchNotice = `No direct matches found. The following tips are potentially relevant based on a broader search (threshold: ${BROAD_SEARCH_THRESHOLD}):\n\n`;
+      logger.debug('Broad search yielded results.', { count: filteredTips.length });
+    }
+  }
+  return { tips: filteredTips, notice: broadSearchNotice };
+}
+
+function groupTipsByCategory(tips: ScriptingTip[], specificCategory?: string): { category: KnowledgeCategory; tips: ScriptingTip[] }[] {
+  const resultsToFormat: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
+  if (specificCategory) {
+    if (tips.length > 0) {
+      resultsToFormat.push({ category: specificCategory as KnowledgeCategory, tips });
+    }
+  } else {
+    const groupedByCat: Record<string, ScriptingTip[]> = tips.reduce((acc, tip) => {
+      const catKey = tip.category as string;
+      if (!acc[catKey]) acc[catKey] = [];
+      acc[catKey].push(tip);
+      return acc;
+    }, {} as Record<string, ScriptingTip[]>);
+
+    for (const catKey of Object.keys(groupedByCat)) {
+      resultsToFormat.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey] });
+    }
+  }
+  return resultsToFormat;
+}
+
+// --- Main Service Function (Refactored) --- 
 
 export async function getScriptingTipsService(
   input: GetScriptingTipsInput,
@@ -83,64 +155,27 @@ export async function getScriptingTipsService(
   }
 
   if (input.listCategories || (!input.category && !input.searchTerm)) {
-    let message: string;
-    if (kb.categories.length === 0) {
-      message = "No tip categories available. Knowledge base might be empty or failed to load.";
-    } else {
-      const categoryList = kb.categories
-        .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
-        .join('\n');
-      message = `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
-    }
-    return message + serverInfoString;
+    const listCategoriesMessage = handleListCategories(kb);
+    return listCategoriesMessage + serverInfoString;
   }
 
-  const searchTermLower = input.searchTerm?.toLowerCase() ?? '';
-  
-  const tipsToConsider: ScriptingTip[] = input.category
-    ? kb.tips.filter((t: ScriptingTip) => t.category === input.category)
-    : kb.tips;
+  const searchResult = performSearch(kb, input.category, input.searchTerm);
 
-  let filteredTips: ScriptingTip[] = searchTips(tipsToConsider, searchTermLower, 0.4); // Primary search
-  let broadSearchNotice = "";
-
-  if (filteredTips.length === 0 && searchTermLower) {
-    logger.debug('Primary search yielded no results, trying broader search.', { searchTerm: searchTermLower, category: input.category });
-    const broaderThreshold = 0.7;
-    filteredTips = searchTips(tipsToConsider, searchTermLower, broaderThreshold);
-    if (filteredTips.length > 0) {
-      broadSearchNotice = `No direct matches found. The following tips are potentially relevant based on a broader search (threshold: ${broaderThreshold}):\n\n`;
-      logger.debug('Broad search yielded results.', { count: filteredTips.length });
-    }
+  if (searchResult.tips.length === 0) {
+    const noResultsMessage = generateNoResultsMessage(input.category, input.searchTerm);
+    return noResultsMessage + serverInfoString;
   }
+
+  const categorizedTips = groupTipsByCategory(searchResult.tips, input.category);
+  const formattedTips = formatResultsToMarkdown(categorizedTips, input.category as KnowledgeCategory | undefined);
 
   let outputMessage: string;
-  if (filteredTips.length === 0) {
-    outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
+  if (formattedTips.trim() === "") { // Should ideally not happen if searchResult.tips had items
+      logger.warn('Formatted tips were empty despite having search results.', {input, searchResultTipsCount: searchResult.tips.length});
+      outputMessage = generateNoResultsMessage(input.category, input.searchTerm);
   } else {
-    const resultsToFormat: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
-    if (input.category) {
-      if (filteredTips.length > 0) {
-         resultsToFormat.push({ category: input.category as KnowledgeCategory, tips: filteredTips });
-      }
-    } else {
-      const groupedByCat: Record<string, ScriptingTip[]> = filteredTips.reduce((acc, tip) => {
-        const catKey = tip.category as string;
-        if (!acc[catKey]) acc[catKey] = [];
-        acc[catKey].push(tip);
-        return acc;
-      }, {} as Record<string, ScriptingTip[]>);
-
-      for (const catKey of Object.keys(groupedByCat)) {
-        resultsToFormat.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey] });
-      }
-    }
-    const formattedTips = formatResultsToMarkdown(resultsToFormat, input.category as KnowledgeCategory | undefined);
-    if (formattedTips === "") { 
-        outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
-    } else {
-        outputMessage = broadSearchNotice + formattedTips;
-    }
+      outputMessage = searchResult.notice + formattedTips;
   }
+  
   return outputMessage + serverInfoString;
 }
