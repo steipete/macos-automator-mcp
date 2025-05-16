@@ -170,6 +170,13 @@ async function main() {
         }
         
         const outputContent: { type: 'text'; text: string }[] = [];
+
+        if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
+          const logsHeader = "\n--- Substitution Logs ---\n";
+          const logsString = substitutionLogs.join('\n');
+          result.stdout = `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}`;
+        }
+
         outputContent.push({ type: 'text', text: result.stdout });
 
         if (input.includeExecutedScriptInOutput) {
