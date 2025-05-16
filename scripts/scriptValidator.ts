@@ -2,7 +2,22 @@ import fs from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import matter from 'gray-matter';
-import { logErrorToReport, report } from './kbReport.js';
+
+// Define report types locally since kbReport.js is missing
+interface ValidationReport {
+  scriptSyntaxValidated?: number;
+  scriptSyntaxErrors?: number;
+}
+
+const report: ValidationReport = {
+  scriptSyntaxValidated: 0,
+  scriptSyntaxErrors: 0
+};
+
+function logErrorToReport(filePath: string, message: string, isLocalKbIssue = false): void {
+  const prefix = isLocalKbIssue ? "LOCAL_KB " : "";
+  console.error(`ERROR: ${prefix}[${filePath}] ${message}`);
+}
 
 const execPromise = promisify(exec);
 
