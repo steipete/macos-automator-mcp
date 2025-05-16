@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Playlist Operations'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_playlist_operations
 description: >-
   Interact with Spotify playlists including listing available playlists,

@@ -1,6 +1,6 @@
 ---
 title: 'Shortcuts: Create New Folder'
-category: 13_developer/shortcuts_app
+category: 13_developer
 id: shortcuts_create_folder
 description: Creates a new folder in the Shortcuts app to organize shortcuts.
 keywords:

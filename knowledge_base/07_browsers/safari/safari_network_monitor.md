@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Network Monitor'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_network_monitor
 description: >-
   Opens Safari's Web Inspector in Network tab to monitor network requests and

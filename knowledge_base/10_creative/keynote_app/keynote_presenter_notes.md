@@ -1,6 +1,6 @@
 ---
 title: 'Keynote: Get and Set Presenter Notes'
-category: 10_creative/keynote_app
+category: 10_creative
 id: keynote_presenter_notes
 description: Gets or sets the presenter notes for the current slide in Keynote.
 keywords:

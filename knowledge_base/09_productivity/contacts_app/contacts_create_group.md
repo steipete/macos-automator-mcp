@@ -1,6 +1,6 @@
 ---
 title: 'Contacts: Create Contact Group'
-category: 09_productivity/contacts_app
+category: 09_productivity
 id: contacts_create_group
 description: Creates a new contact group in the Contacts app.
 keywords:

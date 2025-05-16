@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: summarize Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_summarize
 description: >-
   Attempts to create a summary of a given text or the content of a text file.

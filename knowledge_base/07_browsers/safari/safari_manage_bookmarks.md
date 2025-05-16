@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Manage Bookmarks'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_manage_bookmarks
 description: >-
   Creates, edits, or deletes Safari bookmarks including folders and Reading List

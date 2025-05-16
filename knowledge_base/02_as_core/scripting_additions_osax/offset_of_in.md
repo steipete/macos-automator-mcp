@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: offset of...in Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_offset_of_in
 description: Finds the position of a substring within a string or an item within a list.
 keywords:

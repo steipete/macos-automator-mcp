@@ -1,6 +1,6 @@
 ---
 title: Calendar Event Creator
-category: 09_productivity/calendar_app
+category: 09_productivity
 id: calendar_event_creator
 description: >-
   Creates calendar events with custom details, recurrence, alerts, and attendees

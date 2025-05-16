@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: display dialog Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_display_dialog
 description: >-
   Displays a modal dialog box with a message, optional input field, buttons, and

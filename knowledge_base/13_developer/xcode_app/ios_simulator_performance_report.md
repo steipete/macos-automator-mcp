@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Generate Performance Report'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_performance_report
 description: Generates a system performance report for an app running in iOS Simulator.
 keywords:

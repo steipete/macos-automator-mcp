@@ -1,6 +1,6 @@
 ---
 title: 'Reminders: Create New Reminder'
-category: 09_productivity/reminders_app
+category: 09_productivity
 id: reminders_create_simple_reminder
 description: Creates a new reminder in the Reminders app with specified details.
 keywords:

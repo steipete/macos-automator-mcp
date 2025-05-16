@@ -1,6 +1,6 @@
 ---
 title: 'Paths: Create Alias Object from HFS Path String'
-category: 05_files/paths_and_references
+category: 05_files
 id: paths_create_alias_from_hfs
 description: >-
   Demonstrates how to create an AppleScript 'alias' object from a

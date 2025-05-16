@@ -1,6 +1,6 @@
 ---
 title: 'Electron Editors (VS Code): Get Active Editor Content via DevTools JS'
-category: 08_editors/electron_editors
+category: 08_editors
 id: electron_vscode_get_editor_content_js
 description: >-
   Retrieves text from VS Code's active editor using JavaScript injection into

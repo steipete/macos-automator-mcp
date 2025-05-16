@@ -1,6 +1,6 @@
 ---
 title: 'GarageBand: Project Management'
-category: 10_creative/garageband
+category: 10_creative
 id: garageband_project_management
 description: >-
   Manage GarageBand projects including creating, opening, saving, and exporting

@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Emulate Mobile Device'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_emulate_device
 description: >-
   Configures Chrome DevTools to emulate specific mobile devices, setting

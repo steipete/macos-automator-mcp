@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: load script Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_load_script
 description: >-
   Loads a compiled script file (.scpt) or script application (.app) into memory

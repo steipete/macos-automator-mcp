@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Playback Position Control'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_playback_position
 description: >-
   Control the playback position within the current Spotify track, showing time

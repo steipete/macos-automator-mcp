@@ -1,6 +1,6 @@
 ---
 title: 'Image Events: Get Image Dimensions'
-category: 10_creative/image_events_app
+category: 10_creative
 id: image_events_get_dimensions
 description: >-
   Uses Image Events to open an image and retrieve its width and height in

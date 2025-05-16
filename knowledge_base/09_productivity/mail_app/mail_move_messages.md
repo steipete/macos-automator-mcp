@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Move Messages to Folder'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_move_messages
 description: Moves selected or filtered messages to a specified target mailbox
 keywords:

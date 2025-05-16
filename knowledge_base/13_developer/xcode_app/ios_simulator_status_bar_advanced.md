@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Advanced Status Bar Control'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_status_bar_advanced
 description: >-
   Provides advanced control of iOS Simulator status bar appearance including

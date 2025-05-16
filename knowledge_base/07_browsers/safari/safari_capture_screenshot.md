@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Capture Screenshot'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_capture_screenshot
 description: >-
   Captures a screenshot of the current webpage in Safari and saves it to a

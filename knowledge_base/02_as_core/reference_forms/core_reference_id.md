@@ -1,6 +1,6 @@
 ---
 title: 'Core: ID Reference Form'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_id
 description: 'Accessing objects by their unique ID (e.g., process ID, window ID).'
 keywords:

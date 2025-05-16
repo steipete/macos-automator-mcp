@@ -1,6 +1,6 @@
 ---
 title: Batch File Operations
-category: 05_files/batch_operations
+category: 05_files
 id: batch_file_operations
 description: >-
   Performs batch operations on multiple files including renaming, moving,

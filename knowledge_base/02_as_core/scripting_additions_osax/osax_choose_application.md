@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: choose application Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_choose_application
 description: >-
   Displays a dialog allowing the user to select an application. Returns an alias

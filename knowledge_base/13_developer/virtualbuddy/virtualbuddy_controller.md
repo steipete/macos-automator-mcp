@@ -265,7 +265,7 @@ sample_snippets:
               return false
           end try
       end isVirtualMachineRunning
-category: 13_developer/virtualbuddy
+category: 13_developer
 ---
 
 ```applescript

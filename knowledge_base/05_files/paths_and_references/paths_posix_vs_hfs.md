@@ -1,6 +1,6 @@
 ---
 title: 'Paths: Understanding POSIX and HFS+ Paths'
-category: 05_files/paths_and_references
+category: 05_files
 id: paths_posix_vs_hfs
 description: >-
   Explains the difference between POSIX (slash-separated) and HFS+

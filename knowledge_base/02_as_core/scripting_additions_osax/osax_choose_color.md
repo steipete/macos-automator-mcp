@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: choose color Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_choose_color
 description: >-
   Displays the standard macOS color picker dialog and returns the selected color

@@ -1,6 +1,6 @@
 ---
 title: 'Keynote: Create New Presentation from Theme'
-category: 10_creative/keynote_app
+category: 10_creative
 id: keynote_create_presentation_theme
 description: Creates a new Keynote presentation using a specified theme name.
 keywords:

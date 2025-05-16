@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: CSS Selector Finder'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_css_selector_finder
 description: >-
   Finds optimal CSS selectors for web elements using various strategies

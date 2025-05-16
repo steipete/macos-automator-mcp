@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: URI Handler'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_uri_handler
 description: >-
   Play Spotify content using Spotify URIs for tracks, albums, artists,

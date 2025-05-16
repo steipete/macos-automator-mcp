@@ -1,6 +1,6 @@
 ---
 title: 'Core: Alias Data Type'
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_alias
 description: >-
   Working with aliases in AppleScript, which are dynamic references to file

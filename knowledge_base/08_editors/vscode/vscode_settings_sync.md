@@ -21,7 +21,7 @@ parameters:
   - name: includeExtensions
     description: Whether to include extensions in the backup (true/false)
     required: false
-category: 08_editors/vscode
+category: 08_editors
 ---
 
 # Sync VS Code Settings Between Machines

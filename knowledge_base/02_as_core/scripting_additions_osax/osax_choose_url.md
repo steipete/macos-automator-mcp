@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: choose URL Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_choose_url
 description: >-
   Displays a dialog for the user to enter or select a URL. Returns the entered

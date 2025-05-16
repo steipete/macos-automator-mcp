@@ -1,6 +1,6 @@
 ---
 title: Email Workflow Automator
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_workflow_automator
 description: >-
   Advanced script to automate common email workflows including template

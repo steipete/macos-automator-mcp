@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Geolocation Spoofing'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_geolocation_spoofing
 description: >-
   Spoofs geolocation data in Chrome to simulate specific geographic locations

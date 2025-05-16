@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Configure Touch Indicators'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_touch_indicators
 description: Configures touch indicators and visual feedback in iOS Simulator.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Set App Launch Arguments'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_launch_arguments
 description: >-
   Launches an app in iOS Simulator with custom launch arguments and environment

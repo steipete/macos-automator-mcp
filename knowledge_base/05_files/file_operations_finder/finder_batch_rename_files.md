@@ -1,6 +1,6 @@
 ---
 title: 'Finder: Batch Rename Files'
-category: 05_files/file_operations_finder
+category: 05_files
 id: finder_batch_rename_files
 description: Renames multiple files in a folder according to a pattern.
 keywords:

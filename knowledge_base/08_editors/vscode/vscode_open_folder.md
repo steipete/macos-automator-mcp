@@ -17,7 +17,7 @@ parameters:
   - name: folderPath
     description: The path to the folder to open (POSIX path)
     required: true
-category: 08_editors/vscode
+category: 08_editors
 ---
 
 # Open folder in VS Code

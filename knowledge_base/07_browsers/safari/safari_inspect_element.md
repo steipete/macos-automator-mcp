@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Inspect Element'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_inspect_element
 description: >-
   Opens Safari's Web Inspector and activates the element selection tool to

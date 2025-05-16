@@ -1,7 +1,9 @@
 ---
-title: "Sublime Text"
-description: "Scripts for interacting with Sublime Text, a sophisticated text editor for code, markup, and prose."
-category: "08_editors/sublime_text"
+title: Sublime Text
+description: >-
+  Scripts for interacting with Sublime Text, a sophisticated text editor for
+  code, markup, and prose.
+category: 08_editors
 ---
 
 This subcategory contains scripts for automating Sublime Text, a powerful and customizable text editor popular among developers. The scripts provide functionality for common operations such as opening files and folders, manipulating text, managing projects, and working with Package Control. These automations help streamline workflows by allowing direct interaction with Sublime Text from AppleScript.

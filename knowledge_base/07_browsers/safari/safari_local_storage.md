@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Local Storage Management'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_local_storage
 description: >-
   Manages browser storage in Safari, including localStorage, sessionStorage,

@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Set Document Text'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_set_text
 description: >-
   Sets the text content of a Script Editor document, allowing programmatic

@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Run Unit Tests'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_run_unit_tests
 description: Runs unit tests for an open Xcode project using XCTest.
 keywords:

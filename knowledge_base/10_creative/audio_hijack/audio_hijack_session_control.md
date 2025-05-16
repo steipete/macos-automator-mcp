@@ -1,6 +1,6 @@
 ---
 title: 'Audio Hijack: Session Control'
-category: 10_creative/audio_hijack
+category: 10_creative
 id: audio_hijack_session_control
 description: >-
   Control Audio Hijack sessions including starting, stopping, and checking the

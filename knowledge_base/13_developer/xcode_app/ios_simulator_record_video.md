@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Record Screen Video'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_record_video
 description: Records a video of an iOS simulator screen for a specified duration.
 keywords:

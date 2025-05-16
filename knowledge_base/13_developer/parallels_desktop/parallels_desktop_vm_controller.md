@@ -160,7 +160,7 @@ sample_snippets:
               display dialog "Failed to suspend '" & vmName & "': " & errMsg buttons {"OK"} default button "OK" with icon stop
           end try
       end suspendVM
-category: 13_developer/parallels_desktop
+category: 13_developer
 ---
 
 ```applescript

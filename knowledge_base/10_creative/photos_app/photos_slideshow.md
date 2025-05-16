@@ -1,6 +1,6 @@
 ---
 title: 'Photos: Start Slideshow'
-category: 10_creative/photos_app
+category: 10_creative
 id: photos_slideshow
 description: Starts a slideshow of selected photos or an album in the Photos app.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Reload Page'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_reload_page
 description: Reloads (refreshes) the current page in the active Safari tab.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Execute Console Command'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_execute_console_command
 description: >-
   Executes a JavaScript command in Safari's Web Inspector console and returns

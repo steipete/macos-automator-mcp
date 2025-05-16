@@ -1,6 +1,6 @@
 ---
 title: 'Core: Relative Reference Form'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_relative
 description: >-
   Accessing objects based on their position relative to another known object

@@ -1,6 +1,6 @@
 ---
 title: 'FaceTime: Enable Live Captions'
-category: 09_productivity/facetime_app
+category: 09_productivity
 id: facetime_live_captions
 description: >-
   Enables Live Captions for a FaceTime call to show real-time text

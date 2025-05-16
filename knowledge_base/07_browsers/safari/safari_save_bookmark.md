@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Save Bookmark'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_save_bookmark
 description: Saves the current webpage as a bookmark in Safari.
 keywords:

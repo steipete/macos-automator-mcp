@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Open Developer Tools'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_open_devtools
 description: >-
   Opens Chrome DevTools for the active tab using keyboard shortcuts or menu

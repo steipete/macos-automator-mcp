@@ -18,7 +18,7 @@ required_arguments: []
 optional_arguments: []
 arguments_sample_value: {}
 argument_descriptions: {}
-category: 13_developer/weather_app
+category: 13_developer
 ---
 
 # Open the Weather App on macOS

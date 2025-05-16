@@ -1,6 +1,6 @@
 ---
 title: 'Swinsian: Playlist Management'
-category: 10_creative/swinsian
+category: 10_creative
 id: swinsian_playlist_management
 description: >-
   Manage playlists in Swinsian including listing, creating, modifying, and

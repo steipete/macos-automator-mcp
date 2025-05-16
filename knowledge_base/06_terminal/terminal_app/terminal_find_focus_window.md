@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Find and Focus Windows or Tabs'
 id: terminal_find_focus_window
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Searches for Terminal.app windows or tabs by title, command, or process, then
   brings the matching window to the front.

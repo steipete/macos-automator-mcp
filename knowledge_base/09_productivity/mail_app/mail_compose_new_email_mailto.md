@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Compose New Email (via mailto URL)'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_compose_new_email_mailto
 description: >-
   Creates a new email in Mail.app with specified recipient, subject, and body

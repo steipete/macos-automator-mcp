@@ -1,6 +1,6 @@
 ---
 title: 'Swinsian: Basic Playback Controls'
-category: 10_creative/swinsian
+category: 10_creative
 id: swinsian_playback_controls
 description: >-
   Control basic playback in Swinsian including play, pause, stop, next,

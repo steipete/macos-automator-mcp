@@ -1,6 +1,6 @@
 ---
 title: 'Keychain Access: Retrieve Password'
-category: 13_developer/security
+category: 13_developer
 id: keychain_get_password
 description: >-
   Retrieves a stored password from the macOS Keychain using the security

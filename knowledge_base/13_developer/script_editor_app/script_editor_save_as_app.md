@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Save Document As Application'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_save_as_app
 description: Saves the frontmost Script Editor document as an application (applet).
 keywords:

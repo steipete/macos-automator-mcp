@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Reset App Data'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_reset_app_data
 description: Resets app data for a specific app on the iOS Simulator.
 keywords:

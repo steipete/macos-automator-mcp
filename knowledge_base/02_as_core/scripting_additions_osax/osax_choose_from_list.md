@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: choose from list Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_choose_from_list
 description: Displays a dialog prompting the user to choose one or more items from a list.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Screen Time: Configure App Limits'
-category: 04_system/screen_time
+category: 04_system
 id: screen_time_app_limits
 description: Sets up app time limits in Screen Time.
 keywords:

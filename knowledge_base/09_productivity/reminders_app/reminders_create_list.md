@@ -1,6 +1,6 @@
 ---
 title: 'Reminders: Create New List'
-category: 09_productivity/reminders_app
+category: 09_productivity
 id: reminders_create_list
 description: Creates a new list in the Reminders app.
 keywords:

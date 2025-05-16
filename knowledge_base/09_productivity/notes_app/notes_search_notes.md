@@ -1,6 +1,6 @@
 ---
 title: 'Notes: Search for Notes'
-category: 09_productivity/notes_app
+category: 09_productivity
 id: notes_search_notes
 description: Searches for notes containing specific text in the Notes app.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Core: Stay-Open Applet Handler ''on quit'''
-category: 02_as_core/handlers_and_subroutines
+category: 02_as_core
 id: core_handler_on_quit
 description: >-
   Defines a handler that executes when a stay-open applet is commanded to quit,

@@ -1,6 +1,6 @@
 ---
 title: 'Music: Search and Play'
-category: 10_creative/music_app
+category: 10_creative
 id: music_search_and_play
 description: 'Search Apple Music library for songs, artists, or albums and play the results.'
 keywords:

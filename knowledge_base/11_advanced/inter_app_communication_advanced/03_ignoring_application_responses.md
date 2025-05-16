@@ -1,6 +1,6 @@
 ---
 title: 'Advanced: ''ignoring application responses'' Block'
-category: 11_advanced/inter_app_communication_advanced
+category: 11_advanced
 id: advanced_ignoring_responses
 description: >-
   Explains how to use 'ignoring application responses' to send commands without

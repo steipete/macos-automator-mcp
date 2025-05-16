@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Open URL'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_open_url
 description: Opens Firefox and loads a specified URL.
 keywords:

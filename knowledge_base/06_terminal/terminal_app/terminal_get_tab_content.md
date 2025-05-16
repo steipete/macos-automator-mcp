@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Get Current Tab Content'
 id: terminal_get_tab_content
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Retrieves the full text content (scrollback history) of the currently active
   tab in the frontmost Terminal.app window.

@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Toggle Private Browsing'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_toggle_private_browsing
 description: >-
   Opens a new Firefox window in private browsing mode or closes the existing

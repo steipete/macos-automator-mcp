@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Save Document'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_save_document
 description: >-
   Saves a Script Editor document to disk as a script file, applet, or other

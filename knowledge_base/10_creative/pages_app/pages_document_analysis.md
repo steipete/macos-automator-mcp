@@ -1,6 +1,6 @@
 ---
 title: 'Pages: Document Analysis and Statistics'
-category: 10_creative/pages_app
+category: 10_creative
 id: pages_document_analysis
 description: >-
   Analyzes a Pages document to extract statistics, structure, and readability

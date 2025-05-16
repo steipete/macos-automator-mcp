@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Get DOM Information'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_get_dom_info
 description: >-
   Extracts information from the DOM of the current Safari webpage including

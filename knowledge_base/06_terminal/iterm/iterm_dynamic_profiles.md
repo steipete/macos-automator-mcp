@@ -24,7 +24,7 @@ parameters:
   - name: command
     description: Initial command to run when the profile is launched
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # Create iTerm2 Dynamic Profiles

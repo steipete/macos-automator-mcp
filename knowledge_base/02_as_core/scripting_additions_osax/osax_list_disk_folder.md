@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: list disks and list folder Commands'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_list_disk_folder
 description: Lists mounted disk volumes and the contents of a specified folder.
 keywords:

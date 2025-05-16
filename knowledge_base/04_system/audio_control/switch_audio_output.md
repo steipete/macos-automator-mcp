@@ -1,6 +1,6 @@
 ---
 title: 'System: Switch Audio Output Device'
-category: 04_system/audio_control
+category: 04_system
 id: switch_audio_output
 description: >-
   Switch between different audio output devices on macOS, such as speakers,

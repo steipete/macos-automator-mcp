@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: delay Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_delay
 description: Pauses script execution for a specified number of seconds.
 keywords:

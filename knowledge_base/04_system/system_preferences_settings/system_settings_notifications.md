@@ -1,6 +1,6 @@
 ---
 title: 'System Settings: Configure Notifications'
-category: 04_system/system_preferences_settings
+category: 04_system
 id: system_settings_notifications
 description: Toggles Do Not Disturb or Focus modes for notifications in macOS.
 keywords:

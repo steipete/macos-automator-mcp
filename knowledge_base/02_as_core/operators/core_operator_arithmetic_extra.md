@@ -1,6 +1,6 @@
 ---
 title: 'Core: Arithmetic Operators (div, mod, ^)'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_arithmetic_extra
 description: >-
   Covers the integer division (div), modulo (mod), and exponentiation (^)

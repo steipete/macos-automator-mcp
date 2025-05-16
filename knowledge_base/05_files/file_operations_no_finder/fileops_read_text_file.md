@@ -1,6 +1,6 @@
 ---
 title: 'File Ops (No Finder): Read Text File Content'
-category: 05_files/file_operations_no_finder
+category: 05_files
 id: fileops_read_text_file
 description: >-
   Reads the entire content of a specified text file using StandardAdditions.

@@ -1,6 +1,6 @@
 ---
 title: 'Calculator: Perform Basic Calculation'
-category: 13_developer/calculator_app
+category: 13_developer
 id: calculator_perform_calculation
 description: Performs a basic calculation using the macOS Calculator app.
 keywords:

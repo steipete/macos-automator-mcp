@@ -1,6 +1,6 @@
 ---
 title: 'Logic Pro: Basic Controls'
-category: 10_creative/logic_pro
+category: 10_creative
 id: logic_pro_basic_controls
 description: >-
   Control basic playback and transport functions in Logic Pro including play,

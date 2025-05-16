@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Launch and Control iOS Simulator'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_launch_simulator
 description: Launches the iOS Simulator and controls it through menu commands.
 keywords:

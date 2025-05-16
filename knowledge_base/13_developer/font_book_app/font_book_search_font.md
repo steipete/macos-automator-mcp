@@ -1,6 +1,6 @@
 ---
 title: 'Font Book: Search for Font'
-category: 13_developer/font_book_app
+category: 13_developer
 id: font_book_search_font
 description: Searches for a specific font in Font Book.
 keywords:

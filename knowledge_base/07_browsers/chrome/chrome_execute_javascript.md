@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Execute JavaScript in Active Tab'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_execute_javascript
 description: >-
   Executes a provided JavaScript string in the active tab of the frontmost

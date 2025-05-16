@@ -1,6 +1,6 @@
 ---
 title: 'Pages: Export as PDF'
-category: 10_creative/pages_app
+category: 10_creative
 id: pages_export_as_pdf
 description: Exports a Pages document as a PDF file.
 keywords:

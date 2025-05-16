@@ -20,7 +20,7 @@ parameters:
   - name: commitMessage
     description: Message for the commit
     required: true
-category: 13_developer/git
+category: 13_developer
 ---
 
 # Git Commit and Push

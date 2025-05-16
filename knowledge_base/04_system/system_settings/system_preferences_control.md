@@ -1,6 +1,6 @@
 ---
 title: System Preferences Control
-category: 04_system/system_settings
+category: 04_system
 id: system_preferences_control
 description: >-
   Controls various system preferences and settings through AppleScript including

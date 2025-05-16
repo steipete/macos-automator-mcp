@@ -1,6 +1,6 @@
 ---
 title: 'Music: Get Current Track Information'
-category: 10_creative/music_app
+category: 10_creative
 id: music_current_track_info
 description: >-
   Retrieves detailed information about the currently playing or selected track

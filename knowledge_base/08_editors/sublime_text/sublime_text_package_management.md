@@ -21,7 +21,7 @@ parameters:
   - name: packageName
     description: The name of the package to install or remove
     required: false
-category: 08_editors/sublime_text
+category: 08_editors
 ---
 
 # Manage Sublime Text packages

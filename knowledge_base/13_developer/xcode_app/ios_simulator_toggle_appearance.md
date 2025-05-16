@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Toggle Dark/Light Mode'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_toggle_appearance
 description: Toggles between Dark and Light appearance modes in iOS Simulator.
 keywords:

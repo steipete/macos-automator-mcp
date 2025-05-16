@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Compile and Run Active Script'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_compile_run
 description: Tells Script Editor to compile and then run its frontmost document.
 keywords:

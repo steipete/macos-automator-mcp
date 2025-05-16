@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Manage Pasteboard'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_pasteboard
 description: Manages clipboard content between Mac and iOS Simulator device.
 keywords:

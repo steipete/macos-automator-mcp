@@ -1,6 +1,6 @@
 ---
 title: 'Keychain Access: Lock and Unlock Keychains'
-category: 13_developer/security
+category: 13_developer
 id: keychain_lock_unlock
 description: >-
   Lock and unlock macOS keychains programmatically using the security

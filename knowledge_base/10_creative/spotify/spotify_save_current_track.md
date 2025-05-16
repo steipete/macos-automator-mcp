@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Save Current Track'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_save_current_track
 description: >-
   Save the currently playing Spotify track to a file with track details and URI

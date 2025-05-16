@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: time to GMT Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_time_to_gmt
 description: >-
   Returns the difference in seconds between the computer's local time zone and

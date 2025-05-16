@@ -1,6 +1,6 @@
 ---
 title: 'Paths: Get Path to Standard Folders'
-category: 05_files/paths_and_references
+category: 05_files
 id: paths_get_standard_folders
 description: >-
   Uses AppleScript's 'path to' command to reliably get paths to standard macOS

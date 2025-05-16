@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Batch Archive Old Messages'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_batch_archive
 description: >-
   Automatically archives messages older than a specified number of days from

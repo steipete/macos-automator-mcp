@@ -1,6 +1,6 @@
 ---
 title: 'Dictionary: Switch Dictionary Source'
-category: 13_developer/dictionary_app
+category: 13_developer
 id: dictionary_switch_dictionary
 description: Switches between different dictionary sources in the Dictionary app.
 keywords:

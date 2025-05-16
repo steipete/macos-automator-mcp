@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Check for Missing Replies'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_check_for_replies
 description: >-
   Identifies sent messages that have not received replies after a specified

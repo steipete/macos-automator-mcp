@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: List All Tabs'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_list_all_tabs
 description: Lists all open tabs in the frontmost Firefox window using UI scripting.
 keywords:

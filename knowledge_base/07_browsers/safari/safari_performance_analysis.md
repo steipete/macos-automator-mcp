@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Performance Analysis'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_performance_analysis
 description: >-
   Analyzes and reports on the performance of webpages in Safari, including load

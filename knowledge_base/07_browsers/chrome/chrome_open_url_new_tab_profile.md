@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Open URL in New Tab (Specific Profile)'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_open_url_new_tab_profile
 description: >-
   Opens a specified URL in Google Chrome, potentially in a specific user

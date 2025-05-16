@@ -1,6 +1,6 @@
 ---
 title: 'System: Volume Control'
-category: 04_system/audio_control
+category: 04_system
 id: system_volume_control
 description: 'Control system volume, mute status, and audio output devices on macOS.'
 keywords:

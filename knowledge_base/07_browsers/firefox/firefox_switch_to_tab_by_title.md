@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Switch to Tab by Title'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_switch_to_tab_by_title
 description: Switches to a Firefox tab based on its title or partial title match.
 keywords:

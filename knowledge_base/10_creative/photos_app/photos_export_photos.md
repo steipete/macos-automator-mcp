@@ -1,6 +1,6 @@
 ---
 title: 'Photos: Export Selected Photos'
-category: 10_creative/photos_app
+category: 10_creative
 id: photos_export_photos
 description: Exports selected photos from the Photos app to a specified location.
 keywords:

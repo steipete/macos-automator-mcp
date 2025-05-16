@@ -1,6 +1,6 @@
 ---
 title: 'Core: Logical Operators (and, or, not)'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_logical
 description: >-
   Explains the logical operators 'and', 'or', and 'not' for combining boolean

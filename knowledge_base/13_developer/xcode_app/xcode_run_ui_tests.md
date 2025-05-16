@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Run UI Tests'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_run_ui_tests
 description: Runs UI tests for an open Xcode project using XCTest UI testing framework.
 keywords:

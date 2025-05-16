@@ -1,6 +1,6 @@
 ---
 title: 'Core: String Prefix/Suffix Operators'
-category: 02_as_core/operators
+category: 02_as_core
 id: core_operator_string_prefix_suffix
 description: 'Covers string operators like ''starts with'', ''ends with'', and their negations.'
 keywords:

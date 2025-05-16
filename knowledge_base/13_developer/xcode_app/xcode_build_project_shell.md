@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Build Project via xcodebuild Shell Command'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_build_project_shell
 description: Builds an Xcode project or workspace using the 'xcodebuild' command-line tool.
 keywords:

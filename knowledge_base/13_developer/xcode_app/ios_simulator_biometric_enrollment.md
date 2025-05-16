@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Manage Biometric Enrollment'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_biometric_enrollment
 description: Manages Touch ID and Face ID enrollment and settings in iOS Simulator.
 keywords:

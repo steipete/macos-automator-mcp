@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: File Read/Write Operations'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_file_read_write
 description: >-
   Covers basic file input/output operations using StandardAdditions: open for

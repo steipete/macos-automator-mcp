@@ -1,6 +1,6 @@
 ---
 title: System Information Retrieval
-category: 04_system/system_info
+category: 04_system
 id: system_information_retrieval
 description: >-
   Retrieves various system information including macOS version, hardware

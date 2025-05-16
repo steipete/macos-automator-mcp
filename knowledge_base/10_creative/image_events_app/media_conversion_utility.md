@@ -1,6 +1,6 @@
 ---
 title: Media Conversion Utility
-category: 10_creative/image_events_app
+category: 10_creative
 id: media_conversion_utility
 description: >-
   A utility script for converting media files between formats, including images,

@@ -1,6 +1,6 @@
 ---
 title: 'Books: Get Current Book Info'
-category: 10_creative/books_app
+category: 10_creative
 id: books_get_current_book
 description: Retrieves information about the currently open book in the Books app.
 keywords:

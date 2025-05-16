@@ -18,7 +18,7 @@ parameters:
     description: 'If ''true'', gets only the selected text; otherwise gets entire file content'
     required: false
     default: 'false'
-category: 08_editors/sublime_text
+category: 08_editors
 ---
 
 # Get content from Sublime Text

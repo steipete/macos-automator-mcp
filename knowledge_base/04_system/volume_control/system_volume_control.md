@@ -1,6 +1,6 @@
 ---
 title: System Volume Control
-category: 04_system/volume_control
+category: 04_system
 id: system_volume_control_manager
 description: Controls system audio output volume with precise increments and mute toggling
 keywords:

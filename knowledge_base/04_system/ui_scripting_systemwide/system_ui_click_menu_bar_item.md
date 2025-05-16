@@ -1,6 +1,6 @@
 ---
 title: 'System UI: Click Menu Bar Item of Frontmost App'
-category: 04_system/ui_scripting_systemwide
+category: 04_system
 id: system_ui_click_menu_bar_item
 description: >-
   Clicks a top-level menu bar item (e.g., 'File', 'Edit') of the currently

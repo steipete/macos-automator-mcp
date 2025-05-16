@@ -1,6 +1,6 @@
 ---
 title: 'Chrome: Intercept Network Requests'
-category: 07_browsers/chrome
+category: 07_browsers
 id: chrome_intercept_network_requests
 description: >-
   Intercepts and modifies Chrome network requests and responses for testing,

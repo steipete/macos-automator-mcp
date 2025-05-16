@@ -1,6 +1,6 @@
 ---
 title: 'Messages: Create Group Chat'
-category: 09_productivity/messages_app
+category: 09_productivity
 id: messages_create_group_chat
 description: Creates a new group chat with multiple recipients in the Messages app.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: Safari Security Testing
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_security_testing
 description: >-
   Tests security aspects of a webpage in Safari including HTTPS status, mixed

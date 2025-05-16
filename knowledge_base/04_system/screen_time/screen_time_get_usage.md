@@ -1,6 +1,6 @@
 ---
 title: 'Screen Time: Get App Usage'
-category: 04_system/screen_time
+category: 04_system
 id: screen_time_get_usage
 description: Retrieves app usage statistics from Screen Time.
 keywords:

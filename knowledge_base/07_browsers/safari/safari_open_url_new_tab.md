@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Open URL in New Tab'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_open_url_new_tab
 description: Opens a specified URL in a new tab in Safari.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'TextEdit: Get and Set Text of Front Document'
-category: 10_creative/textedit_app
+category: 10_creative
 id: textedit_get_set_text
 description: >-
   Retrieves the entire text content of the frontmost TextEdit document, or sets

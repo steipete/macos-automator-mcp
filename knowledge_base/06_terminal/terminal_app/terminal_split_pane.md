@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Split Pane Management'
 id: terminal_split_pane
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: >-
   Creates and manages split panes in Terminal.app through UI automation of menu
   commands.

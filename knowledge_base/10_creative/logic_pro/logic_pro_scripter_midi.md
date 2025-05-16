@@ -1,6 +1,6 @@
 ---
 title: 'Logic Pro: Scripter MIDI Plugin'
-category: 10_creative/logic_pro
+category: 10_creative
 id: logic_pro_scripter_midi
 description: >-
   Automate the Scripter MIDI effect plugin in Logic Pro to generate, modify, and

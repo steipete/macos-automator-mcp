@@ -1,6 +1,6 @@
 ---
 title: System Window Arrangement
-category: 04_system/window_management
+category: 04_system
 id: system_window_arrangement
 description: 'Controls window positions, sizes, and arrangements for multiple applications'
 keywords:

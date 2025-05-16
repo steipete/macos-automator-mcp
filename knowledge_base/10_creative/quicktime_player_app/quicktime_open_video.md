@@ -1,6 +1,6 @@
 ---
 title: 'QuickTime Player: Open Video File'
-category: 10_creative/quicktime_player_app
+category: 10_creative
 id: quicktime_open_video
 description: Opens a video file in QuickTime Player.
 keywords:

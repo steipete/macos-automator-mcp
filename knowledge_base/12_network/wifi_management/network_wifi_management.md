@@ -1,6 +1,6 @@
 ---
 title: WiFi Network Management
-category: 12_network/wifi_management
+category: 12_network
 id: network_wifi_management
 description: >-
   Manages WiFi connections including turning WiFi on/off, scanning for networks,

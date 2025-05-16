@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Analyze Accessibility Elements'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_accessibility_inspector
 description: >-
   Launches Accessibility Inspector to analyze accessibility elements in iOS

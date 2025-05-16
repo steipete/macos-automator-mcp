@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Capture Screenshot'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_capture_screenshot
 description: Captures a screenshot of a webpage using Firefox's built-in screenshot tool.
 keywords:

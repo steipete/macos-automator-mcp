@@ -1,6 +1,6 @@
 ---
 title: 'Contacts: Export Contact as vCard'
-category: 09_productivity/contacts_app
+category: 09_productivity
 id: contacts_export_vcard
 description: Exports a contact as a vCard file (.vcf) to a specified location.
 keywords:

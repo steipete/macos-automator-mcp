@@ -1,6 +1,6 @@
 ---
 title: 'Audirvana: Playback Controls'
-category: 10_creative/audirvana
+category: 10_creative
 id: audirvana_playback_controls
 description: >-
   Control basic playback in Audirvana including play, pause, next, previous, and

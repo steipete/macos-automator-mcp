@@ -25,7 +25,7 @@ parameters:
   - name: clientCommand
     description: Command to start the client (optional)
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # Set up iTerm2 Development Environment

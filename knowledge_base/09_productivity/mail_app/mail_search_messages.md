@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Search for Messages'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_search_messages
 description: >-
   Searches for emails matching specified criteria like subject, sender, or

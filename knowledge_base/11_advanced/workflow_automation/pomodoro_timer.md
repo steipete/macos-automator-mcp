@@ -1,6 +1,6 @@
 ---
 title: Pomodoro Timer
-category: 11_advanced/workflow_automation
+category: 11_advanced
 id: pomodoro_timer
 description: >-
   Implements a Pomodoro technique timer with customizable work/break intervals,

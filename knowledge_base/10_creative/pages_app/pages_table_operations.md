@@ -1,6 +1,6 @@
 ---
 title: 'Pages: Table Operations'
-category: 10_creative/pages_app
+category: 10_creative
 id: pages_table_operations
 description: Create and manipulate tables in Pages documents with formatting options.
 keywords:

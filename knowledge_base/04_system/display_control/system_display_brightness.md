@@ -1,6 +1,6 @@
 ---
 title: System Display Brightness Control
-category: 04_system/display_control
+category: 04_system
 id: system_display_brightness
 description: Controls the brightness of the Mac's built-in display with precise increments
 keywords:

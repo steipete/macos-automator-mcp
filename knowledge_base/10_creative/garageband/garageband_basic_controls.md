@@ -1,6 +1,6 @@
 ---
 title: 'GarageBand: Basic Controls'
-category: 10_creative/garageband
+category: 10_creative
 id: garageband_basic_controls
 description: >-
   Control basic playback and transport functions in GarageBand including play,

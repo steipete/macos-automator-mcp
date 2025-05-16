@@ -1,6 +1,6 @@
 ---
 title: 'Dictionary: Look Up Word'
-category: 13_developer/dictionary_app
+category: 13_developer
 id: dictionary_look_up_word
 description: Looks up a word in the macOS Dictionary app.
 keywords:

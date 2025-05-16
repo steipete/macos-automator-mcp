@@ -1,6 +1,6 @@
 ---
 title: 'Safari: List All Tabs'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_list_all_tabs
 description: >-
   Retrieves a list of all open tabs in all Safari windows, including their

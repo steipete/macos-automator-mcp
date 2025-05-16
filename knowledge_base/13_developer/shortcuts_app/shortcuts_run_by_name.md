@@ -1,6 +1,6 @@
 ---
 title: 'Shortcuts: Run Shortcut by Name'
-category: 13_developer/shortcuts_app
+category: 13_developer
 id: shortcuts_run_by_name
 description: >-
   Executes a specified macOS Shortcut by its name. Optionally provide input to

@@ -13,7 +13,7 @@ keywords:
   - inspect
 language: applescript
 isComplex: false
-category: 13_developer/docker
+category: 13_developer
 ---
 
 # Docker Container Controller

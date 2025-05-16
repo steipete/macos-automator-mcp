@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Run Project'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_run_project
 description: 'Runs an open Xcode project, launching the app in the simulator or on a device.'
 keywords:

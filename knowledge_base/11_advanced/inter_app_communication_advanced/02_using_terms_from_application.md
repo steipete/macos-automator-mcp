@@ -1,6 +1,6 @@
 ---
 title: 'Advanced: ''using terms from application'' Block'
-category: 11_advanced/inter_app_communication_advanced
+category: 11_advanced
 id: advanced_using_terms_from
 description: >-
   Explains how to use the 'using terms from application' block to resolve

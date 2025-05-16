@@ -1,6 +1,6 @@
 ---
 title: 'Electron Editors: Open DevTools & Inject JavaScript'
-category: 08_editors/electron_editors
+category: 08_editors
 id: electron_editors_devtools_js_inject
 description: >-
   Opens Developer Tools in a frontmost Electron-based editor (VS Code, Cursor,

@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Open URL in New Tab'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_open_url_new_tab
 description: Opens a specified URL in a new tab in Firefox.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Firefox: Get URL of Front Tab'
-category: 07_browsers/firefox
+category: 07_browsers
 id: firefox_get_front_tab_url
 description: >-
   Retrieves the URL of the active tab in the frontmost Firefox window using UI

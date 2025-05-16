@@ -24,7 +24,7 @@ parameters:
   - name: target
     description: 'Where to apply the title - window, tab, or session'
     required: false
-category: 06_terminal/iterm
+category: 06_terminal
 ---
 
 # Manage iTerm2 Window and Tab Titles

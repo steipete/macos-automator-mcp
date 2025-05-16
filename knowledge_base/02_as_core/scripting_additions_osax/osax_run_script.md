@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: run script Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_run_script
 description: >-
   Executes a script object, script file, or script applet from within another

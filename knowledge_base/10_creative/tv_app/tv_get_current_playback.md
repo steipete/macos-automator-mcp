@@ -1,6 +1,6 @@
 ---
 title: 'TV: Get Current Playback Info'
-category: 10_creative/tv_app
+category: 10_creative
 id: tv_get_current_playback
 description: Retrieves information about the currently playing content in the TV app.
 keywords:

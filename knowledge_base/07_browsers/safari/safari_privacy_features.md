@@ -1,6 +1,6 @@
 ---
 title: 'Safari: Manage Privacy Features'
-category: 07_browsers/safari
+category: 07_browsers
 id: safari_privacy_features
 description: >-
   Controls Safari's privacy features like private browsing, tracking prevention,

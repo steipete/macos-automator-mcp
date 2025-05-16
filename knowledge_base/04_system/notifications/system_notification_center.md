@@ -1,6 +1,6 @@
 ---
 title: System Notification Center
-category: 04_system/notifications
+category: 04_system
 id: system_notification_center
 description: >-
   Creates and manages user notifications in macOS Notification Center using

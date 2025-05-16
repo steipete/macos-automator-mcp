@@ -1,6 +1,6 @@
 ---
 title: 'Script Editor: Open Script File'
-category: 13_developer/script_editor_app
+category: 13_developer
 id: script_editor_open_file
 description: Opens an AppleScript file in Script Editor.
 keywords:

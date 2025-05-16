@@ -1,6 +1,6 @@
 ---
 title: 'Logic Pro: Project Management'
-category: 10_creative/logic_pro
+category: 10_creative
 id: logic_pro_project_management
 description: >-
   Manage Logic Pro projects including creating, opening, saving, and backing up

@@ -4,7 +4,7 @@ description: >-
   Scripts for controlling mouse/trackpad tracking speed, scrolling behavior, and
   checking system memory status in macOS
 author: Claude
-category: 04_system/system_preferences_settings
+category: 04_system
 subcategory: system_preferences_settings
 keywords:
   - mouse

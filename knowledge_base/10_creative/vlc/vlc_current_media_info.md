@@ -1,6 +1,6 @@
 ---
 title: 'VLC: Get Current Media Information'
-category: 10_creative/vlc
+category: 10_creative
 id: vlc_current_media_info
 description: >-
   Retrieves detailed information about the currently playing media in VLC Media

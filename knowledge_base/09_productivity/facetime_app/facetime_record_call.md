@@ -1,6 +1,6 @@
 ---
 title: 'FaceTime: Record Call'
-category: 09_productivity/facetime_app
+category: 09_productivity
 id: facetime_record_call
 description: Records a FaceTime call using the built-in recording feature.
 keywords:

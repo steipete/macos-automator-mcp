@@ -1,6 +1,6 @@
 ---
 title: 'Keynote: Export Presentation (PDF, PowerPoint)'
-category: 10_creative/keynote_app
+category: 10_creative
 id: keynote_export_presentation
 description: Exports the frontmost Keynote presentation to PDF or PowerPoint format.
 keywords:

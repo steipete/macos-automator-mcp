@@ -29,7 +29,7 @@ parameters:
     description: 'The operation to perform (list, start, stop, suspend, status)'
     required: false
     default: list
-category: 13_developer/parallels_desktop
+category: 13_developer
 ---
 
 # Parallels Desktop VM Management

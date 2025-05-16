@@ -1,6 +1,6 @@
 ---
 title: 'Podcasts: List Subscriptions'
-category: 10_creative/podcasts_app
+category: 10_creative
 id: podcasts_list_subscriptions
 description: Lists all subscribed podcasts in the Podcasts app.
 keywords:

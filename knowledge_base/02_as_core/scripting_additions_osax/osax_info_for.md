@@ -1,6 +1,6 @@
 ---
 title: 'StandardAdditions: info for Command'
-category: 02_as_core/scripting_additions_osax
+category: 02_as_core
 id: osax_info_for
 description: Retrieves a record of metadata about a specified file or folder alias.
 keywords:

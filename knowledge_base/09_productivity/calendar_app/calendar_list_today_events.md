@@ -1,6 +1,6 @@
 ---
 title: 'Calendar: List Events for Today'
-category: 09_productivity/calendar_app
+category: 09_productivity
 id: calendar_list_today_events
 description: >-
   Retrieves and lists all events scheduled for the current day from all

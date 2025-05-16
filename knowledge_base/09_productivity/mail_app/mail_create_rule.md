@@ -1,6 +1,6 @@
 ---
 title: 'Mail: Create Mail Rule'
-category: 09_productivity/mail_app
+category: 09_productivity
 id: mail_create_rule
 description: Creates a new rule in Mail app for automatically handling incoming messages.
 keywords:

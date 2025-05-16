@@ -1,6 +1,6 @@
 ---
 title: 'System Preferences: Switch Network Locations'
-category: 04_system/system_preferences_settings
+category: 04_system
 id: system_network_location_switching
 description: >-
   Switch between network locations using shell commands, enabling easy

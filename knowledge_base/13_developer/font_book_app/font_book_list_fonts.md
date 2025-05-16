@@ -1,6 +1,6 @@
 ---
 title: 'Font Book: List Available Fonts'
-category: 13_developer/font_book_app
+category: 13_developer
 id: font_book_list_fonts
 description: Lists available fonts from Font Book application.
 keywords:

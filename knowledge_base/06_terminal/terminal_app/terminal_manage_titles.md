@@ -1,7 +1,7 @@
 ---
 title: 'Terminal: Manage Window and Tab Titles'
 id: terminal_manage_titles
-category: 06_terminal/terminal_app
+category: 06_terminal
 description: 'Sets, gets, or resets custom titles for Terminal.app windows and tabs.'
 keywords:
   - Terminal.app

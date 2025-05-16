@@ -1,6 +1,6 @@
 ---
 title: 'FaceTime: Create FaceTime Link'
-category: 09_productivity/facetime_app
+category: 09_productivity
 id: facetime_create_link
 description: Creates a FaceTime link that can be shared with others.
 keywords:

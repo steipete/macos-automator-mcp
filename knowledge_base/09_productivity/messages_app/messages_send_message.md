@@ -1,6 +1,6 @@
 ---
 title: 'Messages: Send Message'
-category: 09_productivity/messages_app
+category: 09_productivity
 id: messages_send_message
 description: Sends a text message to a specified recipient using the Messages app.
 keywords:

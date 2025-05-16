@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Configure Keyboard Settings'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_keyboard_settings
 description: Configures hardware keyboard settings for iOS Simulator.
 keywords:

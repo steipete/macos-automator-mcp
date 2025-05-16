@@ -1,6 +1,6 @@
 ---
 title: 'Core: Name Reference Form'
-category: 02_as_core/reference_forms
+category: 02_as_core
 id: core_reference_name
 description: >-
   Accessing objects by their specified name (e.g., files, applications,

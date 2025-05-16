@@ -1,6 +1,6 @@
 ---
 title: 'AppleScript Constants: The ''constant'' Data Type'
-category: 02_as_core/variables_and_data_types
+category: 02_as_core
 id: core_datatype_constant
 description: >-
   Explains AppleScript's 'constant' data type, which represents named constant

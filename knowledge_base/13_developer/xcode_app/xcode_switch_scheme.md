@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Switch Scheme'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_switch_scheme
 description: Changes the active scheme in an open Xcode project.
 keywords:

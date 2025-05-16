@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Clone Device with Content'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_clone_device
 description: Clones an iOS Simulator device including all its installed apps and content.
 keywords:

@@ -1,6 +1,6 @@
 ---
 title: 'Reminders: List Items Due Today'
-category: 09_productivity/reminders_app
+category: 09_productivity
 id: reminders_list_due_today
 description: Lists all reminders that are due today.
 keywords:

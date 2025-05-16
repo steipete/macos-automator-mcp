@@ -1,6 +1,6 @@
 ---
 title: 'Core: Droplet Handler ''on open'''
-category: 02_as_core/handlers_and_subroutines
+category: 02_as_core
 id: core_handler_on_open_droplet
 description: >-
   Defines a handler that executes when files or folders are dropped onto the

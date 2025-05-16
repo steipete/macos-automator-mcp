@@ -21,7 +21,7 @@ parameters:
   - name: title
     description: New title text (for 'set' action only)
     required: false
-category: 06_terminal/ghostty
+category: 06_terminal
 ---
 
 # Manage Ghostty Window Titles

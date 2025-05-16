@@ -1,6 +1,6 @@
 ---
 title: 'Date, Time, and Timezone Settings'
-category: 04_system/system_preferences_settings
+category: 04_system
 id: system_date_time_timezone
 description: >-
   Control date, time, and timezone settings on macOS using AppleScript with

@@ -1,6 +1,6 @@
 ---
 title: 'iOS Simulator: Rotate Device'
-category: 13_developer/xcode_app
+category: 13_developer
 id: ios_simulator_rotate_device
 description: Rotates iOS Simulator device to specific orientation.
 keywords:

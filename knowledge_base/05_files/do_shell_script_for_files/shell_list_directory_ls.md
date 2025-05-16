@@ -1,6 +1,6 @@
 ---
 title: 'Shell: List Directory Contents (ls -la)'
-category: 05_files/do_shell_script_for_files
+category: 05_files
 id: shell_list_directory_ls
 description: >-
   Uses 'do shell script' with 'ls -la' to get a detailed listing of a

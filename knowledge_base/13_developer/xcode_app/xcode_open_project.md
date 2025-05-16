@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Open Project or Workspace'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_open_project
 description: Opens an Xcode project or workspace file.
 keywords:

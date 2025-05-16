@@ -1,6 +1,6 @@
 ---
 title: 'Keynote: Add New Slide with Master'
-category: 10_creative/keynote_app
+category: 10_creative
 id: keynote_add_slide_master
 description: >-
   Adds a new slide to the current Keynote presentation using a specified master

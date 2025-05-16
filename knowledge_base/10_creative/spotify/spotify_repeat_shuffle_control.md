@@ -1,6 +1,6 @@
 ---
 title: 'Spotify: Repeat and Shuffle Control'
-category: 10_creative/spotify
+category: 10_creative
 id: spotify_repeat_shuffle_control
 description: Control Spotify's repeat and shuffle settings via AppleScript.
 keywords:

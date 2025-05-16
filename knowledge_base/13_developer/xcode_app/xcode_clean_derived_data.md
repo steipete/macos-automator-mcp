@@ -1,6 +1,6 @@
 ---
 title: 'Xcode: Clean Derived Data and Module Cache'
-category: 13_developer/xcode_app
+category: 13_developer
 id: xcode_clean_derived_data
 description: Cleans Xcode's derived data and module cache to fix common build issues.
 keywords:

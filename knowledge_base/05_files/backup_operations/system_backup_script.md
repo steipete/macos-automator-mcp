@@ -1,6 +1,6 @@
 ---
 title: System Backup Script
-category: 05_files/backup_operations
+category: 05_files
 id: system_backup_script
 description: >-
   Creates customizable backups of important files and folders with scheduling,

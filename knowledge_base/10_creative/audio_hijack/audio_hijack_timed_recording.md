@@ -1,6 +1,6 @@
 ---
 title: 'Audio Hijack: Timed Recording'
-category: 10_creative/audio_hijack
+category: 10_creative
 id: audio_hijack_timed_recording
 description: >-
   Start a timed recording in Audio Hijack that will automatically stop after a
