@@ -1,499 +1,61 @@
 // src/services/knowledgeBaseService.ts
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import matter from 'gray-matter';
-import { fileURLToPath } from 'node:url'; // Import for robust pathing
-import os from 'node:os'; // Added for home directory resolution
-import type {
-  ScriptingTip,
-  KnowledgeBaseIndex,
-  KnowledgeCategory,
-  SharedHandler,
-  TipFrontmatter
-} from './scriptingKnowledge.types.js';
-import type { GetScriptingTipsInput } from '../schemas.js'; // Changed to type-only import
+// Old content is largely removed and replaced.
+// We now import KB management from KnowledgeBaseManager.ts
+// and getScriptingTipsService is refactored with internal helpers.
+
+import type { GetScriptingTipsInput } from '../schemas.js';
 import { Logger } from '../logger.js';
 import Fuse from 'fuse.js';
+import {
+  getKnowledgeBase,
+  forceReloadKnowledgeBase,
+  conditionallyInitializeKnowledgeBase
+} from './KnowledgeBaseManager.js'; // Import from the new manager
+import type { KnowledgeBaseIndex, ScriptingTip, KnowledgeCategory } from './scriptingKnowledge.types.js';
 
 const logger = new Logger('KnowledgeBaseService');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Re-export the core KB access functions for server.ts to use
+export { getKnowledgeBase, forceReloadKnowledgeBase, conditionallyInitializeKnowledgeBase };
 
-const KNOWLEDGE_BASE_ROOT_DIR_NAME = 'knowledge_base';
-// Adjusted path to be relative to this file, assuming knowledge_base is at project root
-const KNOWLEDGE_BASE_DIR = path.resolve(__dirname, '..', '..', KNOWLEDGE_BASE_ROOT_DIR_NAME);
-const SHARED_HANDLERS_DIR_NAME = '_shared_handlers';
+// --- Helper functions for getScriptingTipsService --- 
 
-const LOCAL_KB_ENV_VAR = 'LOCAL_KB_PATH';
-const DEFAULT_LOCAL_KB_PATH = path.join(os.homedir(), '.macos-automator', 'knowledge_base');
-
-let indexedKnowledgeBase: KnowledgeBaseIndex | null = null;
-let isLoadingKnowledgeBase = false; // Type inferred
-let knowledgeBaseLoadPromise: Promise<KnowledgeBaseIndex> | null = null;
-
-function parseMarkdownTipFile(
-  fileContent: string,
-  filePath: string
-): { frontmatter: TipFrontmatter, body: string, script: string | null, determinedLanguage: 'applescript' | 'javascript' } | null {
-  try {
-    const { data, content: markdownBody } = matter(fileContent);
-    const frontmatter = data as TipFrontmatter;
-
-    if (!frontmatter.title) {
-      logger.warn('Markdown tip file missing title in frontmatter', { filePath });
-      return null;
-    }
-
-    let script: string | null = null;
-    let determinedLanguage: 'applescript' | 'javascript' = frontmatter.language || 'applescript';
-
-    const asMatch = markdownBody.match(/```applescript\s*\n([\s\S]*?)\n```/i);
-    const jsMatch = markdownBody.match(/```javascript\s*\n([\s\S]*?)\n```/i);
-
-    if (asMatch) {
-      script = asMatch[1].trim();
-      determinedLanguage = 'applescript';
-    } else if (jsMatch) {
-      script = jsMatch[1].trim();
-      determinedLanguage = 'javascript';
-    }
-
-    return { frontmatter, body: markdownBody, script, determinedLanguage };
-  } catch (e: unknown) {
-    logger.error('Failed to parse Markdown tip file', { filePath, error: (e as Error).message });
-    return null;
+function searchTips(tipsToSearch: ScriptingTip[], searchTerm: string): ScriptingTip[] {
+  if (!searchTerm) {
+    // If no search term, return all tips, sorted by title for consistency
+    return [...tipsToSearch].sort((a, b) => a.title.localeCompare(b.title));
   }
+
+  const fuseOptions = {
+    isCaseSensitive: false,
+    includeScore: false,
+    shouldSort: true, // Fuse.js will sort by relevance
+    threshold: 0.4,
+    keys: [
+      { name: 'title', weight: 0.4 },
+      { name: 'id', weight: 0.3 },
+      { name: 'keywords', weight: 0.2 },
+      { name: 'description', weight: 0.1 },
+      { name: 'script', weight: 0.05 }
+    ]
+  };
+  const fuse = new Fuse(tipsToSearch, fuseOptions);
+  return fuse.search(searchTerm).map(result => result.item);
 }
 
-async function getLocalKnowledgeBasePath(): Promise<string> {
-  const customPath = process.env[LOCAL_KB_ENV_VAR];
-  if (customPath) {
-    logger.info(`Using custom local knowledge base path from LOCAL_KB_PATH: ${customPath}`);
-    return path.resolve(customPath.startsWith('~') ? customPath.replace('~', os.homedir()) : customPath);
+function formatResultsToMarkdown(
+    groupedResults: { category: KnowledgeCategory; tips: ScriptingTip[] }[], 
+    inputCategory?: KnowledgeCategory | string // Allow string for input.category
+): string {
+  if (groupedResults.length === 0) {
+    return ""; // Caller will prepend a more specific message
   }
-  logger.info(`Using default local knowledge base path: ${DEFAULT_LOCAL_KB_PATH}`);
-  return DEFAULT_LOCAL_KB_PATH;
-}
-
-// Helper function to load tips and handlers from a given base path
-async function loadKnowledgeBaseFromPath(
-  basePath: string, 
-  isLocalKb: boolean, 
-  categories: KnowledgeBaseIndex['categories'],
-  allTips: ScriptingTip[],
-  sharedHandlers: SharedHandler[],
-  encounteredTipIds: Set<string>
-): Promise<void> {
-  logger.info(`Loading knowledge base from path: ${basePath}`);
-  
-  // Helper function to recursively find tips in directories
-  async function findTipsRecursively(
-    currentScanPath: string, 
-    categoryId: KnowledgeCategory, 
-    currentEncounteredTipIds: Set<string>
-  ): Promise<{ count: number; files: ScriptingTip[] }> {
-    logger.debug('Recursively scanning directory for tips', { currentScanPath, categoryId });
-    
-    let entries: import('node:fs').Dirent[];
-    try {
-      entries = await fs.readdir(currentScanPath, { withFileTypes: true });
-    } catch (error) {
-      // Log if not ENOENT, or if it's local KB (where we might expect it not to exist)
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT' || isLocalKb) {
-        logger.warn('Failed to read directory in findTipsRecursively, skipping.', { 
-          currentScanPath, 
-          categoryId, 
-          errorMessage: (error instanceof Error ? error.message : String(error)),
-          isLocalKb
-        });
-      }
-      return { count: 0, files: [] };
-    }
-    
-    let currentLevelCount = 0;
-    const currentLevelFiles: ScriptingTip[] = [];
-    
-    for (const entry of entries) {
-      const entryPath = path.join(currentScanPath, entry.name);
-      
-      try {
-        if (entry.isDirectory()) {
-          const subDirResult = await findTipsRecursively(entryPath, categoryId, currentEncounteredTipIds);
-          currentLevelCount += subDirResult.count;
-          currentLevelFiles.push(...subDirResult.files);
-        } else if (entry.isFile() && entry.name.endsWith('.md') && !entry.name.startsWith('_')) {
-          let fileContent: string;
-          try {
-            fileContent = await fs.readFile(entryPath, 'utf-8');
-          } catch (fileReadError) {
-            logger.warn('Failed to read file in findTipsRecursively, skipping file.', {
-              entryPath,
-              categoryId,
-              errorMessage: (fileReadError instanceof Error ? fileReadError.message : String(fileReadError))
-            });
-            continue;
-          }
-          
-          const parsedFile = parseMarkdownTipFile(fileContent, entryPath);
-
-          if (parsedFile?.frontmatter?.title) {
-            const fm = parsedFile.frontmatter;
-            const baseName = path.basename(entry.name, '.md').replace(/^\d+[_.-]?\s*/, '').replace(/\s+/g, '_');
-            
-            const relativePathFromCategory = path.relative(path.join(basePath, categoryId), path.dirname(entryPath));
-            const pathPrefix = relativePathFromCategory && relativePathFromCategory !== '.' ? 
-              `${relativePathFromCategory.replace(/\//g, '_').replace(/\\/g, '_')}_` : '';
-            const tipId = fm.id || `${categoryId}_${pathPrefix}${baseName}`;
-
-            if (currentEncounteredTipIds.has(tipId) && !isLocalKb) { // Only warn for duplicates in non-local KB, local overrides
-              logger.warn('Duplicate Tip ID resolved in primary KB. Ensure unique frontmatter IDs or filenames.', { tipId, filePath: entryPath });
-            }
-            currentEncounteredTipIds.add(tipId); // Add to encountered, local will override if processed later
-
-            if (parsedFile.script) {
-              const newTip: ScriptingTip = {
-                id: tipId,
-                category: categoryId,
-                title: fm.title,
-                description: fm.description,
-                script: parsedFile.script,
-                language: parsedFile.determinedLanguage,
-                keywords: Array.isArray(fm.keywords) ? fm.keywords.map(String) : (fm.keywords ? [String(fm.keywords)] : []),
-                notes: fm.notes,
-                filePath: entryPath, // Store the actual path for reference
-                isComplex: fm.isComplex !== undefined ? fm.isComplex : (parsedFile.script.length > 250),
-                argumentsPrompt: fm.argumentsPrompt,
-                isLocal: isLocalKb // Mark if the tip is from local KB
-              };
-              
-              // If it's a local KB and the tip ID already exists, replace the existing one
-              const existingTipIndex = allTips.findIndex(t => t.id === tipId);
-              if (isLocalKb && existingTipIndex !== -1) {
-                logger.info(`Overriding tip with local version: ${tipId}`, { oldPath: allTips[existingTipIndex].filePath, newPath: entryPath });
-                allTips[existingTipIndex] = newTip;
-                // We don't increment currentLevelCount here as it's an override, not a new tip for category count purposes
-              } else {
-                currentLevelFiles.push(newTip);
-                currentLevelCount++;
-              }
-              logger.debug('Found scriptable tip', { tipId, categoryId, isLocalKb, newTip: !isLocalKb || existingTipIndex === -1 });
-            } else {
-              logger.debug("Conceptual tip (no script block)", { title: fm.title, path: entryPath, isLocalKb });
-            }
-          }
-        }
-      } catch (entryError) {
-        logger.warn('Error processing entry in findTipsRecursively, skipping entry.', {
-          entryPath,
-          categoryId,
-          isLocalKb,
-          errorMessage: (entryError instanceof Error ? entryError.message : String(entryError))
-        });
-      }
-    }
-    
-    return { count: currentLevelCount, files: currentLevelFiles };
-  }
-
-  // Load shared handlers from this path
-  const sharedHandlersPath = path.join(basePath, SHARED_HANDLERS_DIR_NAME);
-  try {
-    const handlerFiles = await fs.readdir(sharedHandlersPath, { withFileTypes: true });
-    for (const handlerFile of handlerFiles) {
-      if (handlerFile.isFile() && (handlerFile.name.endsWith('.applescript') || handlerFile.name.endsWith('.js'))) {
-        const filePath = path.join(sharedHandlersPath, handlerFile.name);
-        const content = await fs.readFile(filePath, 'utf-8');
-        const handlerName = path.basename(handlerFile.name, path.extname(handlerFile.name));
-        const language = (handlerFile.name.endsWith('.js') ? 'javascript' : 'applescript') as 'javascript' | 'applescript';
-        
-        const existingHandlerIndex = sharedHandlers.findIndex(h => h.name === handlerName && h.language === language);
-        const newHandler: SharedHandler = { name: handlerName, content, filePath, language, isLocal: isLocalKb };
-
-        if (isLocalKb && existingHandlerIndex !== -1) {
-          logger.info(`Overriding shared handler with local version: ${handlerName} (${language})`, { oldPath: sharedHandlers[existingHandlerIndex].filePath, newPath: filePath });
-          sharedHandlers[existingHandlerIndex] = newHandler;
-        } else if (existingHandlerIndex === -1) { // Only add if no existing handler (even from another local path if we had multiple)
-          sharedHandlers.push(newHandler);
-        }
-        logger.debug('Loaded shared handler', { name: handlerName, language, isLocalKb, newHandler: existingHandlerIndex === -1 });
-      }
-    }
-  } catch (e: unknown) {
-    const error = e as NodeJS.ErrnoException;
-    if (error.code !== 'ENOENT') {
-       logger.warn('Error reading _shared_handlers directory. Skipping.', { path: sharedHandlersPath, error: error.message, isLocalKb });
-    } else {
-       logger.info('_shared_handlers directory not found. Skipping shared handlers.', { path: sharedHandlersPath, isLocalKb });
-    }
-  }
-
-  // Scan categories in this path
-  let categoryDirEntries: import('node:fs').Dirent[];
-  try {
-    categoryDirEntries = await fs.readdir(basePath, { withFileTypes: true });
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT' || !isLocalKb) { // Don't warn ENOENT for local if it's expected not to exist
-        logger.warn('Failed to read base directory for categories, skipping.', { 
-            basePath, 
-            isLocalKb, 
-            errorMessage: (error instanceof Error ? error.message : String(error))
-        });
-    }
-    return; // Cannot proceed if base directory cannot be read
-  }
-
-  for (const categoryDirEntry of categoryDirEntries) {
-    if (categoryDirEntry.isDirectory() && categoryDirEntry.name !== SHARED_HANDLERS_DIR_NAME) {
-      const categoryId = categoryDirEntry.name as KnowledgeCategory;
-      const categoryPath = path.join(basePath, categoryId);
-      let categoryDescription = `Tips and examples for ${categoryId.replace(/_/g, ' ')}.`;
-      const categoryInfoPath = path.join(categoryPath, '_category_info.md');
-      const existingCategory = categories.find(c => c.id === categoryId);
-      
-      try {
-          const catInfoContent = await fs.readFile(categoryInfoPath, 'utf-8');
-          const { data } = matter(catInfoContent);
-          const catFm = data as TipFrontmatter;
-          if (catFm?.description) {
-              categoryDescription = catFm.description;
-          }
-      } catch {
-          /* No _category_info.md or error parsing, use default. */
-      }
-
-      const categoryScanResults = await findTipsRecursively(categoryPath, categoryId, encounteredTipIds);
-      
-      if (categoryScanResults.files.length > 0) {
-        // Add new files to allTips, local files would have already replaced existing ones if ID matched
-        // We only add files that are not already there (by reference, which means they are new from this pass)
-        for (const newTip of categoryScanResults.files) {
-            if (!allTips.find(t => t.id === newTip.id)) { // Check if it's truly a new tip, not an override
-                allTips.push(newTip);
-            }
-        }
-      }
-
-      if (existingCategory) {
-        if (isLocalKb) {
-            // Update description if local _category_info.md provides one
-            // And add new tip counts from the local source for this category
-            // Note: The original logic for category.tipCount needs to be re-evaluated. 
-            // It should sum unique tips for that category across both sources.
-            // For now, we just ensure the category exists and its description might be updated.
-            // Tip count will be based on the final allTips array filtered by category.
-            existingCategory.description = categoryDescription; // Local _category_info can override description
-            logger.debug('Updated existing category with local data', { categoryId, isLocalKb });
-        }
-      } else if (categoryScanResults.count > 0 || categoryScanResults.files.some(f => allTips.find(t => t.id === f.id && t.category === categoryId))) {
-        // Add new category if it has new tips or if local files contribute to an existing category ID not yet in `categories` list.
-        categories.push({ 
-            id: categoryId, 
-            description: categoryDescription, 
-            tipCount: 0 // Will be recalculated later
-        });
-        logger.debug('Added new category', { categoryId, isLocalKb });
-      }
-    }
-  }
-}
-
-async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
-  indexedKnowledgeBase = null;
-  logger.info('Starting: Load and index knowledge base from Markdown files...');
-  const categories: KnowledgeBaseIndex['categories'] = [];
-  const allTips: ScriptingTip[] = [];
-  const sharedHandlers: SharedHandler[] = [];
-  const encounteredTipIds = new Set<string>(); // Shared across all loading paths
-
-  // Load from the standard knowledge base first
-  try {
-    await fs.access(KNOWLEDGE_BASE_DIR); // Check if the main knowledge_base dir exists
-    logger.info(`Standard knowledge base path found: ${KNOWLEDGE_BASE_DIR}. Loading...`);
-    await loadKnowledgeBaseFromPath(KNOWLEDGE_BASE_DIR, false, categories, allTips, sharedHandlers, encounteredTipIds);
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      logger.warn(`Standard knowledge base directory not found at ${KNOWLEDGE_BASE_DIR}. This is likely an npm package installation issue.`);
-      logger.warn('To fix this issue, ensure the package was published correctly with the knowledge_base directory included.');
-      logger.warn('If running via npx, try installing the package globally first: npm install -g @steipete/macos-automator-mcp');
-      
-      // Create an empty category to prevent other code from breaking
-      categories.push({
-        id: 'no_knowledge_base_found',
-        description: 'ERROR: Knowledge base directory missing. The package may be corrupted or not installed correctly.',
-        tipCount: 0
-      });
-    } else {
-      logger.error(`Error accessing standard knowledge base: ${KNOWLEDGE_BASE_DIR}`, { 
-        error: (error as Error).message,
-        stack: (error as Error).stack
-      });
-    }
-  }
-
-  // Then load from the local knowledge base, potentially overriding tips and handlers
-  const localKbPath = await getLocalKnowledgeBasePath();
-  try {
-      await fs.access(localKbPath); // Check if local path exists
-      logger.info(`Local knowledge base path found: ${localKbPath}. Loading additional tips.`);
-      await loadKnowledgeBaseFromPath(localKbPath, true, categories, allTips, sharedHandlers, encounteredTipIds);
-  } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-          logger.info(`Local knowledge base path not found or not accessible: ${localKbPath}. Skipping.`);
-      } else {
-          logger.warn(`Error accessing local knowledge base path: ${localKbPath}. Skipping.`, { error: (error as Error).message });
-      }
-  }
-
-  // Recalculate tip counts for categories based on the final merged list of tips
-  for (const cat of categories) {
-    cat.tipCount = allTips.filter(tip => tip.category === cat.id).length;
-  }
-  // Filter out categories with no tips after merging
-  const finalCategories = categories.filter(cat => cat.tipCount > 0);
-
-  // Sort results
-  finalCategories.sort((a, b) => a.id.localeCompare(b.id));
-  allTips.sort((a, b) => a.id.localeCompare(b.id));
-  sharedHandlers.sort((a,b) => `${a.language}_${a.name}`.localeCompare(`${b.language}_${b.name}`));
-
-  indexedKnowledgeBase = { categories: finalCategories, tips: allTips, sharedHandlers };
-  logger.info(
-    `Knowledge base loading complete: ${finalCategories.length} categories, ` +
-    `${allTips.length} scriptable tips (${allTips.filter(t=>t.isLocal).length} local), ` +
-    `${sharedHandlers.length} shared handlers (${sharedHandlers.filter(h=>h.isLocal).length} local).`
-  );
-
-  return indexedKnowledgeBase;
-}
-
-// Exported function to allow explicit reloading
-export async function forceReloadKnowledgeBase(): Promise<KnowledgeBaseIndex> {
-  logger.info('Forcing knowledge base reload...');
-  indexedKnowledgeBase = null;
-  knowledgeBaseLoadPromise = null;
-  isLoadingKnowledgeBase = false; 
-  return getKnowledgeBase(); // This will trigger a fresh load
-}
-
-export async function getKnowledgeBase(): Promise<KnowledgeBaseIndex> {
-    if (indexedKnowledgeBase && !isLoadingKnowledgeBase) {
-        return indexedKnowledgeBase;
-    }
-    if (isLoadingKnowledgeBase && knowledgeBaseLoadPromise) {
-        logger.debug('Knowledge base is currently loading, awaiting existing promise.');
-        return knowledgeBaseLoadPromise;
-    }
-    isLoadingKnowledgeBase = true;
-    knowledgeBaseLoadPromise = actualLoadAndIndexKnowledgeBase().finally(() => {
-        isLoadingKnowledgeBase = false;
-    });
-    return knowledgeBaseLoadPromise;
-}
-
-// New function for conditional eager initialization
-export async function conditionallyInitializeKnowledgeBase(eagerMode: boolean): Promise<void> {
-  if (eagerMode) {
-    logger.info('KB_PARSING is set to eager. Initializing knowledge base at startup...');
-    try {
-      await getKnowledgeBase(); // This will trigger loading if not already done
-      logger.info('Eager initialization of knowledge base complete.');
-    } catch (error) {
-      logger.error('Error during eager initialization of knowledge base', { 
-        errorMessage: (error instanceof Error ? error.message : String(error)),
-        stack: (error instanceof Error ? error.stack : undefined)
-      });
-      // Depending on policy, might want to re-throw or handle so server doesn't start, 
-      // but for now, just log and continue.
-    }
-  } else {
-    logger.info('KB_PARSING is lazy (or not set). Knowledge base will load on first use.');
-  }
-}
-
-export async function getScriptingTipsService(
-  input: GetScriptingTipsInput,
-  serverInfo?: { startTime: string; mode: string }
-): Promise<string> {
-  if (input.refreshDatabase) {
-    await forceReloadKnowledgeBase();
-  }
-  const kb = await getKnowledgeBase();
-
-  let serverInfoString = "";
-  if (serverInfo) {
-    // Ensure it starts with newlines if it's going to be appended, and includes a separator.
-    serverInfoString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}`;
-  }
-
-  if (input.listCategories || (!input.category && !input.searchTerm)) {
-    let message: string; // Explicitly typed
-    if (kb.categories.length === 0) {
-      message = "No tip categories available. Knowledge base might be empty or failed to load.";
-    } else {
-      const categoryList = kb.categories
-        .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
-        .join('\n');
-      message = `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
-    }
-    return message + serverInfoString;
-  }
-
-  const results: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
-  const searchTermLower = input.searchTerm?.toLowerCase() ?? '';
-
-  const tipsToSearch = input.category && kb.categories.find(c => c.id === input.category)
-    ? kb.tips.filter((t: ScriptingTip) => t.category === input.category)
-    : kb.tips;
-
-  if (searchTermLower) {
-    const fuseOptions = {
-      isCaseSensitive: false,
-      includeScore: false,
-      shouldSort: true,
-      threshold: 0.4,
-      keys: [
-        { name: 'title', weight: 0.4 },
-        { name: 'id', weight: 0.3 },
-        { name: 'keywords', weight: 0.2 },
-        { name: 'description', weight: 0.1 },
-        { name: 'script', weight: 0.05 }
-      ]
-    };
-    const fuse = new Fuse(tipsToSearch, fuseOptions);
-    const fuseResults = fuse.search(searchTermLower);
-    const filteredTips: ScriptingTip[] = fuseResults.map(result => result.item);
-
-    const groupedByCat: Record<string, ScriptingTip[]> = filteredTips.reduce((acc: Record<string, ScriptingTip[]>, tip: ScriptingTip) => {
-      const categoryKey: string = tip.category as string;
-      if (!acc[categoryKey]) {
-        acc[categoryKey] = [];
-      }
-      acc[categoryKey].push(tip);
-      return acc;
-    }, {} as Record<string, ScriptingTip[]>);
-
-    for (const catKeyString of Object.keys(groupedByCat)) {
-        const categoryValue: KnowledgeCategory = catKeyString as KnowledgeCategory;
-        const tipsForCategory: ScriptingTip[] = groupedByCat[catKeyString];
-        results.push({ category: categoryValue, tips: tipsForCategory.sort((a: ScriptingTip, b: ScriptingTip) => a.title.localeCompare(b.title)) });
-    }
-
-  } else if (input.category) {
-    const tipsForCategory = kb.tips.filter(t => t.category === input.category).sort((a, b) => a.title.localeCompare(b.title));
-    if (tipsForCategory.length > 0) {
-      results.push({ category: input.category, tips: tipsForCategory });
-    }
-  }
-
-  let outputMessage: string;
-
-  if (results.length === 0) {
-    outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
-  } else {
-    outputMessage = results.sort((a, b) => (a.category as string).localeCompare(b.category as string)).map(catResult => {
+  return groupedResults
+    .sort((a, b) => (a.category as string).localeCompare(b.category as string))
+    .map(catResult => {
       const categoryTitle = (catResult.category as string).replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
-      const categoryHeader = `## Tips: ${categoryTitle}\n`;
+      // Only add category header if we are not already in a specific category view (i.e., input.category was not set)
+      const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\n`; 
       const tipMarkdown = catResult.tips.map(tip => `
 ### ${tip.title}
 ${tip.description ? `*${tip.description}*\n` : ''}
@@ -507,6 +69,81 @@ ${tip.notes ? `**Note:**\n${tip.notes.split('\n').map(n => `> ${n}`).join('\n')}
       `).join('\n---\n');
       return categoryHeader + tipMarkdown;
     }).join('\n\n');
+}
+
+// --- Main Service Function --- 
+
+export async function getScriptingTipsService(
+  input: GetScriptingTipsInput,
+  serverInfo?: { startTime: string; mode: string }
+): Promise<string> {
+  if (input.refreshDatabase) {
+    await forceReloadKnowledgeBase(); // Uses imported function
+  }
+  const kb: KnowledgeBaseIndex = await getKnowledgeBase(); // Uses imported function
+
+  let serverInfoString = "";
+  if (serverInfo) {
+    serverInfoString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}`;
+  }
+
+  if (input.listCategories || (!input.category && !input.searchTerm)) {
+    let message: string;
+    if (kb.categories.length === 0) {
+      message = "No tip categories available. Knowledge base might be empty or failed to load.";
+    } else {
+      const categoryList = kb.categories
+        .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
+        .join('\n');
+      message = `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+    }
+    return message + serverInfoString;
+  }
+
+  const searchTermLower = input.searchTerm?.toLowerCase() ?? '';
+  
+  // Determine the initial set of tips to consider (either all tips or tips from a specific category)
+  const tipsToConsider: ScriptingTip[] = input.category
+    ? kb.tips.filter((t: ScriptingTip) => t.category === input.category)
+    : kb.tips;
+
+  // Filter tips using the search term (if provided)
+  const filteredTips: ScriptingTip[] = searchTips(tipsToConsider, searchTermLower);
+
+  let outputMessage: string;
+  if (filteredTips.length === 0) {
+    outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
+  } else {
+    const resultsToFormat: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
+    if (input.category) {
+      // If already filtered by a category, all filteredTips belong to this single category
+      if (filteredTips.length > 0) {
+         resultsToFormat.push({ category: input.category as KnowledgeCategory, tips: filteredTips });
+      }
+    } else {
+      // If not pre-filtered by category, group the search results by their respective categories
+      const groupedByCat: Record<string, ScriptingTip[]> = filteredTips.reduce((acc, tip) => {
+        const catKey = tip.category as string;
+        if (!acc[catKey]) acc[catKey] = [];
+        acc[catKey].push(tip);
+        return acc;
+      }, {} as Record<string, ScriptingTip[]>);
+
+      for (const catKey of Object.keys(groupedByCat)) {
+        resultsToFormat.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey] });
+      }
+    }
+    // Format the results into markdown. Pass input.category to conditionally hide category headers.
+    const formattedTips = formatResultsToMarkdown(resultsToFormat, input.category as KnowledgeCategory | undefined);
+    if (formattedTips === "") { // Should only happen if resultsToFormat was empty but filteredTips was not (edge case)
+        outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
+    } else {
+        outputMessage = formattedTips;
+    }
   }
   return outputMessage + serverInfoString;
 }
+
+// Ensure all old function definitions (parseMarkdownTipFile, getLocalKnowledgeBasePath, loadKnowledgeBaseFromPath, 
+// findTipsRecursively, actualLoadAndIndexKnowledgeBase, and the old versions of getKnowledgeBase, 
+// forceReloadKnowledgeBase, conditionallyInitializeKnowledgeBase) are GONE from this file.
