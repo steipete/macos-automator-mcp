@@ -1,6 +1,6 @@
 {
   "name": "@steipete/macos-automator-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "MCP Server to execute AppleScript and JXA on macOS.",
   "type": "module",
   "main": "dist/server.js",
@@ -43,7 +43,6 @@
     "@modelcontextprotocol/sdk": "^1.11.3",
     "fuse.js": "^7.1.0",
     "gray-matter": "^4.0.3",
-    "js-yaml": "^4.1.0",
     "zod": "^3.24.4"
   },
   "devDependencies": {

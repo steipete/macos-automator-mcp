@@ -18,11 +18,7 @@ This script creates a new folder on the desktop with a specified name.
 
 ```applescript
 -- Define folder name (can be replaced with --MCP_INPUT:folderName placeholder)
-set folderName to "--MCP_INPUT:folderName" 
-
-if folderName is missing value or folderName is "" then
-  set folderName to "New Folder"
-end if
+set folderName to "New Folder" -- --MCP_INPUT:folderName
 
 tell application "Finder"
   -- Get reference to the desktop
