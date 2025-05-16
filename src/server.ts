@@ -45,10 +45,6 @@ const EXECUTION_MODE_INFO = IS_RUNNING_FROM_SRC ? 'TypeScript source (e.g., via 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
 
-// Helper functions for KB script argument substitution - MOVED to placeholderSubstitutor.ts
-// function escapeForAppleScriptStringLiteral(value: string): string { ... }
-// function valueToAppleScriptLiteral(value: unknown): string { ... }
-
 // Define raw shapes for tool registration (required by newer SDK versions)
 const ExecuteScriptInputShape = {
   scriptContent: z.string().optional(),
@@ -120,10 +116,6 @@ async function main() {
         finalArgumentsForScriptFile = []; 
 
         if (tip.script) { // Check if tip.script exists before substitution
-            // Log char codes for initial script content for deep debugging of quotes (Handled by substitutor if needed)
-            // logger.debug('[SUBSTITUTION_DEEP_DEBUG] Initial char codes for script', { ... });
-
-            // Placeholder substitution logic MOVED to placeholderSubstitutor.ts
             const substitutionResult: SubstitutionResult = substitutePlaceholders({
                 scriptContent: tip.script, // Use tip.script directly
                 inputData: input.inputData,
@@ -133,12 +125,6 @@ async function main() {
 
             scriptContentToExecute = substitutionResult.substitutedScript;
             substitutionLogs = substitutionResult.logs;
-
-            // Log messages previously in the substitution block can be emitted here if needed,
-            // or rely on logs from substitutePlaceholders if it had its own logger.
-            // For now, substitutionLogs are collected and added to output as before.
-            
-            // logger.debug related to substitution steps are now inside substitutePlaceholders or covered by returned logs.
         }
         logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
       } else if (input.scriptPath || input.scriptContent) {

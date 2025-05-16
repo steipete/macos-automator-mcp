@@ -7,14 +7,9 @@ import { processKnowledgeBasePath } from './kbPathProcessor.js';
 // Constants
 const KNOWLEDGE_BASE_ROOT_DIR_NAME = 'knowledge_base';
 const EMBEDDED_KNOWLEDGE_BASE_DIR = path.resolve(process.cwd(), KNOWLEDGE_BASE_ROOT_DIR_NAME);
-// SHARED_HANDLERS_DIR_NAME is now in kbPathProcessor.ts
 
 const LOCAL_KB_ENV_VAR = 'LOCAL_KB_PATH';
 const DEFAULT_LOCAL_KB_PATH = path.join(os.homedir(), '.macos-automator', 'knowledge_base');
-
-// TipFrontmatter interface is now in kbFileValidator.ts
-// ValidationReport interface and report object are now in kbReport.ts
-// logError and logWarning are replaced by logErrorToReport and logWarningToReport from kbReport.ts
 
 function getLocalKnowledgeBasePath(cliArgPath?: string): string {
   if (cliArgPath) {
@@ -29,11 +24,6 @@ function getLocalKnowledgeBasePath(cliArgPath?: string): string {
   console.info(`Using default local knowledge base path: ${DEFAULT_LOCAL_KB_PATH}`);
   return DEFAULT_LOCAL_KB_PATH;
 }
-
-// validateTipFile is now in kbFileValidator.ts
-// validateSharedHandlerFile is now in kbFileValidator.ts
-// validateTipFilesRecursively is now in kbPathProcessor.ts
-// processKnowledgeBasePath is now imported from kbPathProcessor.ts
 
 async function validateKnowledgeBase(): Promise<void> {
   let localKbPathArg: string | undefined;

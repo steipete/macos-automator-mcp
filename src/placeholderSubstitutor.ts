@@ -4,12 +4,10 @@ export interface SubstitutionResult {
 }
 
 // Helper functions for KB script argument substitution
-// (Moved from server.ts)
 export function escapeForAppleScriptStringLiteral(value: string): string {
     return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
 
-// (Moved from server.ts)
 export function valueToAppleScriptLiteral(value: unknown): string {
     if (typeof value === 'string') {
         return escapeForAppleScriptStringLiteral(value);
@@ -48,16 +46,10 @@ export function substitutePlaceholders(
 
     const logSub = (message: string, data: unknown) => {
         const logEntry = `[SUBST] ${message} ${JSON.stringify(data)}`;
-        // console.debug(logEntry); // Let the caller handle detailed logging if needed
         if (includeSubstitutionLogs) {
             substitutionLogs.push(logEntry);
         }
     };
-
-    // Log char codes for initial script content for deep debugging of quotes
-    // This might be too verbose for a general utility; consider making it conditional or removing
-    // const charCodes = Array.from(currentScriptContent).map(char => char.charCodeAt(0));
-    // logSub('[SUBSTITUTION_DEEP_DEBUG] Initial char codes for script', { first100CharCodes: charCodes.slice(0,100), last100CharCodes: charCodes.slice(-100) });
 
     // JS-style ${inputData.key}
     const jsInputDataRegex = /\\$\\{inputData\\.(\\w+)\\}/g;

@@ -1,7 +1,5 @@
 // src/services/knowledgeBaseService.ts
-// Old content is largely removed and replaced.
-// We now import KB management from KnowledgeBaseManager.ts
-// and getScriptingTipsService is refactored with internal helpers.
+// Service for accessing and searching the scripting knowledge base.
 
 import type { GetScriptingTipsInput } from '../schemas.js';
 import { Logger } from '../logger.js';

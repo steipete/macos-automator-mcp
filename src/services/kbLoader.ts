@@ -6,10 +6,7 @@ import { Logger } from '../logger.js'; // Assuming logger is one level up
 
 const logger = new Logger('KBLoader');
 
-// Original KNOWLEDGE_BASE_ROOT_DIR_NAME and SHARED_HANDLERS_DIR_NAME might not be needed here
-// if kbLoader only processes a given base path.
-// For now, keep SHARED_HANDLERS_DIR_NAME if it's used intrinsically by loadKnowledgeBaseFromPath logic.
-const SHARED_HANDLERS_DIR_NAME = '_shared_handlers';
+const SHARED_HANDLERS_DIR_NAME = '_shared_handlers'; // Used for locating shared handlers within a KB path
 
 export interface ParsedTipFile {
   frontmatter: TipFrontmatter;
@@ -57,8 +54,7 @@ export interface LoadedKnowledgePath {
     sharedHandlers: SharedHandler[];
 }
 
-// This function is a refactor of the original loadKnowledgeBaseFromPath and its recursive helper.
-// It now focuses on loading from a single basePath and doesn't merge directly into global collections.
+// Loads tips, categories, and shared handlers from a given base knowledge base path.
 export async function loadTipsAndHandlersFromPath(
   basePath: string, 
   isLocalKb: boolean
