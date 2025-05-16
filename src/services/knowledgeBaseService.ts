@@ -160,16 +160,37 @@ export async function getScriptingTipsService(
     serverDetailsString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}${versionInfo}`;
   }
 
-  if (input.listCategories || (!input.category && !input.searchTerm)) {
-    // Pass version to handleListCategories, serverDetailsString is for the footer
-    const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
-    // Append the generic server details footer that now also includes version
-    return listCategoriesMessage + serverDetailsString; 
+  // Handle listCategories separately as it overrides other filters and limit
+  if (input.listCategories || (!input.category && !input.searchTerm && !input.limit)) { // Also check !input.limit for default case
+    // If only listCategories is true, or no search/category/limit is given, show categories.
+    if (input.listCategories || (!input.category && !input.searchTerm)) {
+        const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
+        return listCategoriesMessage + serverDetailsString;
+    }
+    // If only a limit is provided without search/category, it implies a general listing which we don't support separately from search/category. Show categories.
+    // This edge case might be better handled by schema validation (e.g. limit requires searchTerm or category)
+    // For now, falling back to listCategories is a safe default.
+    if(input.limit && !input.category && !input.searchTerm){
+        const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
+        return `${listCategoriesMessage}\\n\\nNote: \`limit\` parameter is applied to search results or category browsing, not general listing.${serverDetailsString}`;
+    }
   }
 
   const searchResult = performSearch(kb, input.category, input.searchTerm);
+  let noticeAboutLimit = "";
+  // Default limit is now set in the schema with default(10)
+  const actualLimit = input.limit; // Will always have a value due to schema default
 
-  if (searchResult.tips.length === 0) {
+  // Apply limit only if we are not listing categories (already handled) and there are tips
+  // And if a searchTerm or category was actually provided for the search.
+  if (!input.listCategories && (input.searchTerm || input.category) && searchResult.tips.length > 0) {
+    if (searchResult.tips.length > actualLimit) {
+      noticeAboutLimit = `Showing the first ${actualLimit} of ${searchResult.tips.length} matching tips. Use the \`limit\` parameter to adjust this. (Default is 10).\n\n`;
+      searchResult.tips = searchResult.tips.slice(0, actualLimit);
+    }
+  }
+
+  if (searchResult.tips.length === 0 && !input.listCategories) { // Don't show no results if listCategories was implicitly shown
     const noResultsMessage = generateNoResultsMessage(input.category, input.searchTerm);
     return noResultsMessage + serverDetailsString;
   }
@@ -178,12 +199,22 @@ export async function getScriptingTipsService(
   const formattedTips = formatResultsToMarkdown(categorizedTips, input.category as KnowledgeCategory | undefined);
 
   let outputMessage: string;
-  if (formattedTips.trim() === "") { // Should ideally not happen if searchResult.tips had items
-      logger.warn('Formatted tips were empty despite having search results.', {input, searchResultTipsCount: searchResult.tips.length});
-      outputMessage = generateNoResultsMessage(input.category, input.searchTerm);
+  if (formattedTips.trim() === "") { 
+      if (input.listCategories || (!input.category && !input.searchTerm)) { // Avoid double no-results message if categories were shown
+        outputMessage = ""; // Categories were already listed, or will be if no other criteria met
+      } else {
+        logger.warn('Formatted tips were empty despite having search results (after potential limit).', {input, searchResultTipsCount: searchResult.tips.length});
+        outputMessage = generateNoResultsMessage(input.category, input.searchTerm);
+      }
   } else {
-      outputMessage = searchResult.notice + formattedTips;
+      outputMessage = searchResult.notice + noticeAboutLimit + formattedTips;
   }
   
+  // If we reached here and outputMessage is empty (e.g. only limit was specified), default to listCategories
+  if (outputMessage.trim() === "" && !input.listCategories && !(input.searchTerm || input.category) ) {
+    const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
+    return `${listCategoriesMessage}\\n\\nNote: \`limit\` parameter applies to search results or category browsing.${serverDetailsString}`;
+  }
+
   return outputMessage + serverDetailsString;
 }

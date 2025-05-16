@@ -3,6 +3,7 @@
 ## 0.2.0 - 2025-05-16
 - Greatly increased knowledge base, esp. around web browsers & terminal.
 - Add a two-step fuzzy search to inspire agents.
+- Add default limit (10) for search results to improve response times.
 - The script linter now also lints AppleScript and JXA.
 - Improved knowledge base parsing performance.
 - Improved file structure, split up large files.
