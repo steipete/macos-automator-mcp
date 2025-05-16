@@ -1,1 +1,1 @@
-AGENT.md
+.cursor/rules/agent.mdc
