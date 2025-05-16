@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.1 - 2025-05-16
+- Limit search to 10 items by default.
+
 ## 0.2.0 - 2025-05-16
 - Greatly increased knowledge base, esp. around web browsers & terminal.
 - Add a two-step fuzzy search to inspire agents.
