@@ -16,6 +16,7 @@ const logger = new Logger('KnowledgeBaseService');
 // --- Constants ---
 const PRIMARY_SEARCH_THRESHOLD = 0.4;
 const BROAD_SEARCH_THRESHOLD = 0.7;
+const MAX_OUTPUT_LINES = 500; // New constant for max output lines
 
 const FUSE_OPTIONS_KEYS = [
   { name: 'title', weight: 0.4 },
@@ -52,20 +53,9 @@ function generateNoResultsMessage(category?: string, searchTerm?: string): strin
   return `No tips found matching your criteria (Category: ${category || 'All Categories'}, SearchTerm: ${searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
 }
 
-function formatResultsToMarkdown(
-    groupedResults: { category: KnowledgeCategory; tips: ScriptingTip[] }[],
-    inputCategory?: KnowledgeCategory | string // Allow string for input.category
-): string {
-  if (groupedResults.length === 0) {
-    return ""; // Caller will prepend a more specific message
-  }
-  return groupedResults
-    .sort((a, b) => (a.category as string).localeCompare(b.category as string))
-    .map(catResult => {
-      const categoryTitle = formatCategoryTitle(catResult.category as string);
-      // Only add category header if we are not already in a specific category view (i.e., input.category was not set)
-      const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\\n`;
-      const tipMarkdown = catResult.tips.map(tip => `
+// New helper function to format a single tip to its Markdown block
+function formatSingleTipToMarkdownBlock(tip: ScriptingTip): string {
+  return `
 ### ${tip.title}
 ${tip.description ? `*${tip.description}*\\n` : ''}
 \`\`\`${tip.language}
@@ -75,9 +65,66 @@ ${tip.id ? `**Runnable ID:** \`${tip.id}\`\\n` : ''}
 ${tip.argumentsPrompt ? `**Inputs Needed (if run by ID):** ${tip.argumentsPrompt}\\n` : ''}
 ${tip.keywords && tip.keywords.length > 0 ? `**Keywords:** ${tip.keywords.join(', ')}\\n` : ''}
 ${tip.notes ? `**Note:**\\n${tip.notes.split('\\n').map(n => `> ${n}`).join('\\n')}\\n` : ''}
-      `).join('\\n---\\n');
-      return categoryHeader + tipMarkdown;
-    }).join('\\n\\n');
+`;
+}
+
+function formatResultsToMarkdown(
+    groupedResults: { category: KnowledgeCategory; tips: ScriptingTip[] }[],
+    inputCategory?: KnowledgeCategory | string // Allow string for input.category
+): { markdownOutput: string; lineLimitNotice: string; tipsRenderedCount: number } { // Updated return type
+  if (groupedResults.length === 0) {
+    return { markdownOutput: "", lineLimitNotice: "", tipsRenderedCount: 0 };
+  }
+
+  let cumulativeLineCount = 0;
+  let lineLimitNotice = "";
+  const outputParts: string[] = [];
+  let tipsRenderedCount = 0;
+  let firstTipRendered = false;
+
+  for (const catResult of groupedResults.sort((a, b) => (a.category as string).localeCompare(b.category as string))) {
+    if (lineLimitNotice) break; // Stop if limit was already hit in a previous category
+
+    const categoryTitle = formatCategoryTitle(catResult.category as string);
+    const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\\n`;
+    const categoryHeaderLines = categoryHeader.split('\n').length -1; // -1 because split creates one extra for trailing newline
+
+    // Check if category header itself can be added (only if not the first tip overall or if it fits)
+    if (firstTipRendered && cumulativeLineCount + categoryHeaderLines > MAX_OUTPUT_LINES) {
+        lineLimitNotice = `\\n--- Output truncated due to exceeding ~${MAX_OUTPUT_LINES} line limit. ---`;
+        break;
+    }
+    if (categoryHeader) {
+        outputParts.push(categoryHeader);
+        cumulativeLineCount += categoryHeaderLines;
+    }
+
+    for (let i = 0; i < catResult.tips.length; i++) {
+      const tip = catResult.tips[i];
+      const tipMarkdown = formatSingleTipToMarkdownBlock(tip);
+      const tipLines = tipMarkdown.split('\n').length - 1;
+      const separator = (tipsRenderedCount > 0 || (tipsRenderedCount === 0 && categoryHeader)) ? '\\n---\\n' : ''; // Add separator if not the very first item
+      const separatorLines = separator.split('\n').length -1;
+
+      if (!firstTipRendered) {
+        // Always render the first tip, regardless of its length
+        if (separator) outputParts.push(separator);
+        outputParts.push(tipMarkdown);
+        cumulativeLineCount += separatorLines + tipLines;
+        tipsRenderedCount++;
+        firstTipRendered = true;
+      } else if (cumulativeLineCount + separatorLines + tipLines <= MAX_OUTPUT_LINES) {
+        if (separator) outputParts.push(separator);
+        outputParts.push(tipMarkdown);
+        cumulativeLineCount += separatorLines + tipLines;
+        tipsRenderedCount++;
+      } else {
+        lineLimitNotice = `\\n--- Output truncated due to exceeding ~${MAX_OUTPUT_LINES} line limit. Some tips may have been omitted. ---`;
+        break; // Stop adding more tips from this category
+      }
+    }
+  }
+  return { markdownOutput: outputParts.join(''), lineLimitNotice, tipsRenderedCount };
 }
 
 // --- Helper Functions for getScriptingTipsService ---
@@ -196,7 +243,9 @@ export async function getScriptingTipsService(
   }
 
   const categorizedTips = groupTipsByCategory(searchResult.tips, input.category);
-  const formattedTips = formatResultsToMarkdown(categorizedTips, input.category as KnowledgeCategory | undefined);
+  const formattingResult = formatResultsToMarkdown(categorizedTips, input.category as KnowledgeCategory | undefined);
+  const formattedTips = formattingResult.markdownOutput;
+  const lineLimitNotice = formattingResult.lineLimitNotice;
 
   let outputMessage: string;
   if (formattedTips.trim() === "") { 
@@ -207,7 +256,7 @@ export async function getScriptingTipsService(
         outputMessage = generateNoResultsMessage(input.category, input.searchTerm);
       }
   } else {
-      outputMessage = searchResult.notice + noticeAboutLimit + formattedTips;
+      outputMessage = searchResult.notice + noticeAboutLimit + lineLimitNotice + formattedTips;
   }
   
   // If we reached here and outputMessage is empty (e.g. only limit was specified), default to listCategories
