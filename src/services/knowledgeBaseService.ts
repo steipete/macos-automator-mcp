@@ -82,7 +82,7 @@ ${tip.notes ? `**Note:**\\n${tip.notes.split('\\n').map(n => `> ${n}`).join('\\n
 
 // --- Helper Functions for getScriptingTipsService ---
 
-function handleListCategories(kb: KnowledgeBaseIndex): string {
+function handleListCategories(kb: KnowledgeBaseIndex, version?: string): string {
   if (kb.categories.length === 0) {
     return "No tip categories available. Knowledge base might be empty or failed to load.";
   }
@@ -91,8 +91,9 @@ function handleListCategories(kb: KnowledgeBaseIndex): string {
     .join('\n');
 
   const totalTipCount = kb.categories.reduce((sum, cat) => sum + (cat.tipCount || 0), 0);
+  const versionString = version ? `\nmacos_automator version: ${version}` : "";
 
-  return `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nTotal Scripts Available: ${totalTipCount}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+  return `## Available AppleScript/JXA Tip Categories:${versionString}\n${categoryList}\n\nTotal Scripts Available: ${totalTipCount}\nVisit https://github.com/steipete/macos-automator-mcp to contribute your AppleScripts\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
 }
 
 interface SearchResult {
@@ -145,28 +146,32 @@ function groupTipsByCategory(tips: ScriptingTip[], specificCategory?: string): {
 
 export async function getScriptingTipsService(
   input: GetScriptingTipsInput,
-  serverInfo?: { startTime: string; mode: string }
+  serverInfo?: { startTime: string; mode: string; version?: string }
 ): Promise<string> {
   if (input.refreshDatabase) {
     await forceReloadKnowledgeBase();
   }
   const kb: KnowledgeBaseIndex = await getKnowledgeBase();
 
-  let serverInfoString = "";
+  let serverDetailsString = "";
   if (serverInfo) {
-    serverInfoString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}`;
+    const versionInfo = serverInfo.version ? ` Version: ${serverInfo.version}` : "";
+    // Keep original serverInfoString for other parts, but handle version separately in handleListCategories
+    serverDetailsString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}${versionInfo}`;
   }
 
   if (input.listCategories || (!input.category && !input.searchTerm)) {
-    const listCategoriesMessage = handleListCategories(kb);
-    return listCategoriesMessage + serverInfoString;
+    // Pass version to handleListCategories, serverDetailsString is for the footer
+    const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
+    // Append the generic server details footer that now also includes version
+    return listCategoriesMessage + serverDetailsString; 
   }
 
   const searchResult = performSearch(kb, input.category, input.searchTerm);
 
   if (searchResult.tips.length === 0) {
     const noResultsMessage = generateNoResultsMessage(input.category, input.searchTerm);
-    return noResultsMessage + serverInfoString;
+    return noResultsMessage + serverDetailsString;
   }
 
   const categorizedTips = groupTipsByCategory(searchResult.tips, input.category);
@@ -180,5 +185,5 @@ export async function getScriptingTipsService(
       outputMessage = searchResult.notice + formattedTips;
   }
   
-  return outputMessage + serverInfoString;
+  return outputMessage + serverDetailsString;
 }

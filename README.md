@@ -25,7 +25,6 @@ The knowledge base is loaded lazily on first use for fast server startup.
     - **Accessibility Permissions:** For UI scripting via "System Events" (e.g., simulating clicks, keystrokes).
         - Go to: System Settings > Privacy & Security > Accessibility.
         - Add the application running the server (e.g., Terminal) to the list and ensure its checkbox is ticked.
-        - See example: `docs/accessibility-permissions-example.png` (placeholder image).
     - First-time attempts to control a new application or use accessibility features may still trigger a macOS confirmation prompt, even if pre-authorized. The server itself cannot grant these permissions.
 
 ## Installation & Usage
