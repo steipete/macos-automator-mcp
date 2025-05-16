@@ -54,11 +54,14 @@ All notable changes to this project will be documented in this file.
 - Basic knowledge base structure and example tips.
 - Validation script (`validate-kb.ts`) for the knowledge base.
 
+## 0.2.0 - 2025-05-16
+- Greatly increased knowledge base, esp. around web browsers & terminal.
+- Add a two-step fuzzy search to inspire agents.
+- The script linter now also lints AppleScript and JXA.
+- Improved knowledge base parsing performance.
+- Improved file structure, split up large files.
+- Reorganized knowledge base with shorter, more intuitive folder names.
+- Moved JXA basics to position 03 (after AppleScript core) for better logical ordering.
+
 ## 0.1.4 - 2025-05-15
-- Version bump to resolve npm versioning conflict.
-
-## 0.1.3 - 2025-05-15
-- Fix CLI symlink start: resolve real paths to ensure server starts when invoked via npx or global install.
-
-## 0.1.2 - 2025-05-15
 - Initial release. 
