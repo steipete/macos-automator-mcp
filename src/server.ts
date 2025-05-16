@@ -162,6 +162,13 @@ async function main() {
            logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
         }
         
+        // Check for error pattern in stdout and set isError accordingly
+        let isError = false;
+        const errorPattern = /^\s*error[:\s-]/i;
+        if (errorPattern.test(result.stdout)) {
+          isError = true;
+        }
+        
         const outputContent: { type: 'text'; text: string }[] = [];
 
         if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
@@ -169,7 +176,7 @@ async function main() {
           const logsString = substitutionLogs.join('\n');
           result.stdout = `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}`;
         }
-        
+
         outputContent.push({ type: 'text', text: result.stdout });
 
         if (input.includeExecutedScriptInOutput) {
@@ -181,7 +188,7 @@ async function main() {
           }
           outputContent.push({ type: 'text', text: scriptIdentifier });
         }
-        return { content: outputContent };
+        return { content: outputContent, isError };
 
       } catch (error: unknown) {
         const execError = error as ScriptExecutionError;

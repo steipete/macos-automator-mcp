@@ -140,6 +140,46 @@ Scripts can be provided as inline content (`scriptContent`), an absolute file pa
     }
     ```
 
+**Response Format:**
+
+The `execute_script` tool returns a response in the following format:
+
+```typescript
+{
+  content: Array<{
+    type: 'text';
+    text: string;
+  }>;
+  isError?: boolean;
+}
+```
+
+- `content`: An array of text content items containing the script output
+- `isError`: (boolean, optional) Set to `true` when the script execution produced an error. This flag is set when:
+  - The script output (stdout) starts with "Error" (case-insensitive)
+  - This helps clients easily determine if the execution failed without parsing the output text
+
+**Example Response (Success):**
+```json
+{
+  "content": [{
+    "type": "text",
+    "text": "Script executed successfully"
+  }]
+}
+```
+
+**Example Response (Error):**
+```json
+{
+  "content": [{
+    "type": "text",
+    "text": "Error: Cannot find application 'Safari'"
+  }],
+  "isError": true
+}
+```
+
 ### 2. `get_scripting_tips`
 
 Retrieves AppleScript/JXA tips, examples, and runnable script details from the server's knowledge base. Useful for discovering available scripts, their functionalities, and how to use them with `execute_script` (especially `kbScriptId`).
