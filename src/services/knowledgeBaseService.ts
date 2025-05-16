@@ -89,7 +89,10 @@ function handleListCategories(kb: KnowledgeBaseIndex): string {
   const categoryList = kb.categories
     .map(cat => `- **${cat.id}**: ${cat.description} (${cat.tipCount} tips)`)
     .join('\n');
-  return `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+
+  const totalTipCount = kb.categories.reduce((sum, cat) => sum + (cat.tipCount || 0), 0);
+
+  return `## Available AppleScript/JXA Tip Categories:\n${categoryList}\n\nTotal Scripts Available: ${totalTipCount}\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
 }
 
 interface SearchResult {
