@@ -18,19 +18,16 @@ const logger = new Logger('KnowledgeBaseService');
 // Re-export the core KB access functions for server.ts to use
 export { getKnowledgeBase, forceReloadKnowledgeBase, conditionallyInitializeKnowledgeBase };
 
-// --- Helper functions for getScriptingTipsService --- 
-
-function searchTips(tipsToSearch: ScriptingTip[], searchTerm: string): ScriptingTip[] {
+function searchTips(tipsToSearch: ScriptingTip[], searchTerm: string, customThreshold?: number): ScriptingTip[] {
   if (!searchTerm) {
-    // If no search term, return all tips, sorted by title for consistency
     return [...tipsToSearch].sort((a, b) => a.title.localeCompare(b.title));
   }
 
   const fuseOptions = {
     isCaseSensitive: false,
     includeScore: false,
-    shouldSort: true, // Fuse.js will sort by relevance
-    threshold: 0.4,
+    shouldSort: true, 
+    threshold: customThreshold !== undefined ? customThreshold : 0.4, // Use custom or default
     keys: [
       { name: 'title', weight: 0.4 },
       { name: 'id', weight: 0.3 },
@@ -78,9 +75,9 @@ export async function getScriptingTipsService(
   serverInfo?: { startTime: string; mode: string }
 ): Promise<string> {
   if (input.refreshDatabase) {
-    await forceReloadKnowledgeBase(); // Uses imported function
+    await forceReloadKnowledgeBase();
   }
-  const kb: KnowledgeBaseIndex = await getKnowledgeBase(); // Uses imported function
+  const kb: KnowledgeBaseIndex = await getKnowledgeBase();
 
   let serverInfoString = "";
   if (serverInfo) {
@@ -102,13 +99,22 @@ export async function getScriptingTipsService(
 
   const searchTermLower = input.searchTerm?.toLowerCase() ?? '';
   
-  // Determine the initial set of tips to consider (either all tips or tips from a specific category)
   const tipsToConsider: ScriptingTip[] = input.category
     ? kb.tips.filter((t: ScriptingTip) => t.category === input.category)
     : kb.tips;
 
-  // Filter tips using the search term (if provided)
-  const filteredTips: ScriptingTip[] = searchTips(tipsToConsider, searchTermLower);
+  let filteredTips: ScriptingTip[] = searchTips(tipsToConsider, searchTermLower, 0.4); // Primary search
+  let broadSearchNotice = "";
+
+  if (filteredTips.length === 0 && searchTermLower) {
+    logger.debug('Primary search yielded no results, trying broader search.', { searchTerm: searchTermLower, category: input.category });
+    const broaderThreshold = 0.7;
+    filteredTips = searchTips(tipsToConsider, searchTermLower, broaderThreshold);
+    if (filteredTips.length > 0) {
+      broadSearchNotice = `No direct matches found. The following tips are potentially relevant based on a broader search (threshold: ${broaderThreshold}):\n\n`;
+      logger.debug('Broad search yielded results.', { count: filteredTips.length });
+    }
+  }
 
   let outputMessage: string;
   if (filteredTips.length === 0) {
@@ -116,12 +122,10 @@ export async function getScriptingTipsService(
   } else {
     const resultsToFormat: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
     if (input.category) {
-      // If already filtered by a category, all filteredTips belong to this single category
       if (filteredTips.length > 0) {
          resultsToFormat.push({ category: input.category as KnowledgeCategory, tips: filteredTips });
       }
     } else {
-      // If not pre-filtered by category, group the search results by their respective categories
       const groupedByCat: Record<string, ScriptingTip[]> = filteredTips.reduce((acc, tip) => {
         const catKey = tip.category as string;
         if (!acc[catKey]) acc[catKey] = [];
@@ -133,17 +137,12 @@ export async function getScriptingTipsService(
         resultsToFormat.push({ category: catKey as KnowledgeCategory, tips: groupedByCat[catKey] });
       }
     }
-    // Format the results into markdown. Pass input.category to conditionally hide category headers.
     const formattedTips = formatResultsToMarkdown(resultsToFormat, input.category as KnowledgeCategory | undefined);
-    if (formattedTips === "") { // Should only happen if resultsToFormat was empty but filteredTips was not (edge case)
+    if (formattedTips === "") { 
         outputMessage = `No tips found matching your criteria (Category: ${input.category || 'All Categories'}, SearchTerm: ${input.searchTerm || 'None'}). Try \`listCategories: true\` to see available categories.`;
     } else {
-        outputMessage = formattedTips;
+        outputMessage = broadSearchNotice + formattedTips;
     }
   }
   return outputMessage + serverInfoString;
 }
-
-// Ensure all old function definitions (parseMarkdownTipFile, getLocalKnowledgeBasePath, loadKnowledgeBaseFromPath, 
-// findTipsRecursively, actualLoadAndIndexKnowledgeBase, and the old versions of getKnowledgeBase, 
-// forceReloadKnowledgeBase, conditionallyInitializeKnowledgeBase) are GONE from this file.
