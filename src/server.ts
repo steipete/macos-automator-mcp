@@ -10,7 +10,7 @@ import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
 import { Logger } from './logger.js';
 import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas.js';
 import { ScriptExecutor } from './ScriptExecutor.js';
-import type { ScriptExecutionError, ExecuteScriptResponse }  from './types.js';
+import type { ScriptExecutionError }  from './types.js';
 // import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
 import { substitutePlaceholders } from './placeholderSubstitutor.js'; // Value import
