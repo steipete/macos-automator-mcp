@@ -2,6 +2,7 @@
 
 ## 0.2.2 - 2025-05-16
 - Limit search output to 500 lines to prevent overly large responses.
+- Restructure JXA examples.
 
 ## 0.2.1 - 2025-05-16
 - Limit search to 10 items by default.
