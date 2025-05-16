@@ -1,18 +1,34 @@
 ---
-title: "Spotify: Search and Play"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Search and Play'
+category: 10_creative/spotify
 id: spotify_search_and_play
-description: "Search for tracks, albums, or artists in Spotify and play the results."
-keywords: ["Spotify", "search", "play", "track", "album", "artist", "query", "music"]
+description: 'Search for tracks, albums, or artists in Spotify and play the results.'
+keywords:
+  - Spotify
+  - search
+  - play
+  - track
+  - album
+  - artist
+  - query
+  - music
 language: applescript
-parameters: |
+parameters: >
   - searchQuery (required): The search term to look for in Spotify
-  - searchType (optional): Type of search: "track", "album", "artist" or "playlist" (default: "track")
-notes: |
+
+  - searchType (optional): Type of search: "track", "album", "artist" or
+  "playlist" (default: "track")
+notes: >
   - Spotify must be running.
-  - Search functionality in AppleScript is limited. For more advanced searches, the Spotify Web API is recommended.
-  - This script provides a basic search mechanism that works with Spotify's AppleScript capabilities.
-  - The search may open Spotify's search interface rather than returning results directly in some cases.
+
+  - Search functionality in AppleScript is limited. For more advanced searches,
+  the Spotify Web API is recommended.
+
+  - This script provides a basic search mechanism that works with Spotify's
+  AppleScript capabilities.
+
+  - The search may open Spotify's search interface rather than returning results
+  directly in some cases.
 ---
 
 Search for content in Spotify and play the results.

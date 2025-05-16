@@ -1,21 +1,43 @@
 ---
-title: "Music: Search and Play"
-category: "08_creative_and_document_apps"
+title: 'Music: Search and Play'
+category: 10_creative/music_app
 id: music_search_and_play
-description: "Search Apple Music library for songs, artists, or albums and play the results."
-keywords: ["Apple Music", "Music", "iTunes", "search", "find", "play", "artist", "album", "song", "track"]
+description: 'Search Apple Music library for songs, artists, or albums and play the results.'
+keywords:
+  - Apple Music
+  - Music
+  - iTunes
+  - search
+  - find
+  - play
+  - artist
+  - album
+  - song
+  - track
 language: applescript
-parameters: |
+parameters: >
   - search_term (required): The search term to look for
-  - search_type (optional): Type of search: "songs", "albums", "artists", "playlists", or "all" (default: "songs")
-  - play_results (optional): Whether to play the first search result - "yes" or "no" (default: "no")
-notes: |
+
+  - search_type (optional): Type of search: "songs", "albums", "artists",
+  "playlists", or "all" (default: "songs")
+
+  - play_results (optional): Whether to play the first search result - "yes" or
+  "no" (default: "no")
+notes: >
   - Music.app must be running.
+
   - The search is performed on your local library, not the Apple Music service.
-  - To search Apple Music streaming service, you would need to use the Music app's interface directly.
+
+  - To search Apple Music streaming service, you would need to use the Music
+  app's interface directly.
+
   - The search_type parameter determines which type of items to search for.
-  - If play_results is "yes", the first matching item will be played automatically.
-  - The script returns a list of up to 10 results, showing titles, artists, and albums where applicable.
+
+  - If play_results is "yes", the first matching item will be played
+  automatically.
+
+  - The script returns a list of up to 10 results, showing titles, artists, and
+  albums where applicable.
 ---
 
 Search Apple Music library and optionally play results.

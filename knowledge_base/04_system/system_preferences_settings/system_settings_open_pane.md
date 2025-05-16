@@ -1,12 +1,21 @@
 ---
-title: "System Settings: Open Specific Pane"
-category: "02_system_interaction"
+title: 'System Settings: Open Specific Pane'
+category: 04_system/system_preferences_settings
 id: system_settings_open_pane
-description: "Opens System Settings (formerly System Preferences) to a specific settings pane."
-keywords: ["System Settings", "System Preferences", "settings", "preferences", "control panel"]
+description: >-
+  Opens System Settings (formerly System Preferences) to a specific settings
+  pane.
+keywords:
+  - System Settings
+  - System Preferences
+  - settings
+  - preferences
+  - control panel
 language: applescript
-argumentsPrompt: "Enter the name of the settings pane to open"
-notes: "Works with macOS Ventura and later (System Settings) as well as older versions (System Preferences)."
+argumentsPrompt: Enter the name of the settings pane to open
+notes: >-
+  Works with macOS Ventura and later (System Settings) as well as older versions
+  (System Preferences).
 ---
 
 ```applescript

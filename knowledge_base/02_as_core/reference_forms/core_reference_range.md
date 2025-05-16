@@ -1,14 +1,26 @@
 ---
-title: "Core: Range Reference Form"
-category: "01_applescript_core"
+title: 'Core: Range Reference Form'
+category: 02_as_core/reference_forms
 id: core_reference_range
-description: "Accessing a contiguous series of elements by specifying a start and end index."
-keywords: ["reference form", "range", "items X thru Y", "characters A to B", "slice", "sublist", "substring"]
+description: Accessing a contiguous series of elements by specifying a start and end index.
+keywords:
+  - reference form
+  - range
+  - items X thru Y
+  - characters A to B
+  - slice
+  - sublist
+  - substring
 language: applescript
-notes: |
-  - Specifies a sequence of elements from a start index to an end index, inclusive.
-  - Can use `items X through Y`, `items X thru Y`, `items from X to Y`, or `characters X to Y`.
-  - If the end index is before the start index, an empty list or string may result, or an error depending on context.
+notes: >
+  - Specifies a sequence of elements from a start index to an end index,
+  inclusive.
+
+  - Can use `items X through Y`, `items X thru Y`, `items from X to Y`, or
+  `characters X to Y`.
+
+  - If the end index is before the start index, an empty list or string may
+  result, or an error depending on context.
 ---
 
 The Range reference form selects a sequence of elements.

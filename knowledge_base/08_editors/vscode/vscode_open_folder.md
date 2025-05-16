@@ -11,12 +11,13 @@ keywords:
   - editor
   - workspace
 usage_examples:
-  - "Open the current Finder selection in VS Code"
-  - "Open a specific project folder in VS Code"
+  - Open the current Finder selection in VS Code
+  - Open a specific project folder in VS Code
 parameters:
   - name: folderPath
     description: The path to the folder to open (POSIX path)
     required: true
+category: 08_editors/vscode
 ---
 
 # Open folder in VS Code

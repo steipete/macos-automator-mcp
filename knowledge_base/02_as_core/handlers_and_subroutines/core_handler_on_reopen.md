@@ -1,15 +1,31 @@
 ---
-title: "Core: Stay-Open Applet Handler 'on reopen'"
-category: "01_applescript_core"
+title: 'Core: Stay-Open Applet Handler ''on reopen'''
+category: 02_as_core/handlers_and_subroutines
 id: core_handler_on_reopen
-description: "Defines a handler that executes when a running stay-open applet is reactivated (e.g., by clicking its Dock icon or opening it again from Finder)."
-keywords: ["handler", "on reopen", "reopen", "stay open", "applet", "reactivate", "activate"]
+description: >-
+  Defines a handler that executes when a running stay-open applet is reactivated
+  (e.g., by clicking its Dock icon or opening it again from Finder).
+keywords:
+  - handler
+  - on reopen
+  - reopen
+  - stay open
+  - applet
+  - reactivate
+  - activate
 language: applescript
-notes: |
-  - This handler is for scripts saved as an Application with the "Stay open after run handler" option checked.
-  - It's called when the applet is already running and the user tries to "open" it again.
-  - Common use: bring the applet's windows to the front, refresh data, or show a status panel.
-  - The `on run` handler is NOT called again when an applet is reopened; `on reopen` is called instead.
+notes: >
+  - This handler is for scripts saved as an Application with the "Stay open
+  after run handler" option checked.
+
+  - It's called when the applet is already running and the user tries to "open"
+  it again.
+
+  - Common use: bring the applet's windows to the front, refresh data, or show a
+  status panel.
+
+  - The `on run` handler is NOT called again when an applet is reopened; `on
+  reopen` is called instead.
 ---
 
 This handler defines behavior for when a running stay-open applet is reactivated.

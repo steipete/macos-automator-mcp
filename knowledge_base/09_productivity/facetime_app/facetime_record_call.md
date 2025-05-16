@@ -1,11 +1,18 @@
 ---
-title: "FaceTime: Record Call"
-category: "07_productivity_apps"
+title: 'FaceTime: Record Call'
+category: 09_productivity/facetime_app
 id: facetime_record_call
-description: "Records a FaceTime call using the built-in recording feature."
-keywords: ["FaceTime", "record call", "video recording", "call recording", "screen recording"]
+description: Records a FaceTime call using the built-in recording feature.
+keywords:
+  - FaceTime
+  - record call
+  - video recording
+  - call recording
+  - screen recording
 language: applescript
-notes: "Uses the SharePlay screen recording feature to record FaceTime calls. Available in macOS Monterey (12) and later."
+notes: >-
+  Uses the SharePlay screen recording feature to record FaceTime calls.
+  Available in macOS Monterey (12) and later.
 ---
 
 ```applescript

@@ -1,13 +1,24 @@
 ---
 id: home_list_devices
 title: List All Home Devices and Rooms
-description: Launches the Home app and retrieves a list of all rooms and devices/accessories with their status information
+description: >-
+  Launches the Home app and retrieves a list of all rooms and
+  devices/accessories with their status information
 language: applescript
-contributors: ["Claude AI"]
-created: 2024-05-16
-category: 07_productivity_apps
-platforms: ["macOS"]
-keywords: ["Home app", "HomeKit", "smart home", "accessories", "rooms", "device status", "home automation"]
+contributors:
+  - Claude AI
+created: 2024-05-16T00:00:00.000Z
+category: 09_productivity/home_app
+platforms:
+  - macOS
+keywords:
+  - Home app
+  - HomeKit
+  - smart home
+  - accessories
+  - rooms
+  - device status
+  - home automation
 requirements:
   - System Events accessibility permissions
   - Home app configured with at least one HomeKit device

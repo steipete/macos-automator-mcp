@@ -1,11 +1,18 @@
 ---
-title: "App Store: Open Account Page"
-category: "developer"
+title: 'App Store: Open Account Page'
+category: 13_developer/app_store_app
 id: app_store_open_account
-description: "Opens the account page in the Mac App Store."
-keywords: ["App Store", "account", "Apple ID", "purchased apps", "account settings"]
+description: Opens the account page in the Mac App Store.
+keywords:
+  - App Store
+  - account
+  - Apple ID
+  - purchased apps
+  - account settings
 language: applescript
-notes: "Opens the account page in the Mac App Store showing purchased apps, subscriptions, and account settings."
+notes: >-
+  Opens the account page in the Mac App Store showing purchased apps,
+  subscriptions, and account settings.
 ---
 
 ```applescript

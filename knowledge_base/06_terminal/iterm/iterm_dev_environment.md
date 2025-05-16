@@ -4,10 +4,17 @@ title: Set up iTerm2 development environment
 description: Creates a multi-pane iTerm2 development environment for a project
 language: applescript
 author: Claude
-keywords: ["terminal", "development", "workspace", "panes", "project setup"]
+keywords:
+  - terminal
+  - development
+  - workspace
+  - panes
+  - project setup
 usage_examples:
-  - "Set up a development environment for a web project with server, client, and terminal panes"
-  - "Create a standardized multi-pane terminal workspace"
+  - >-
+    Set up a development environment for a web project with server, client, and
+    terminal panes
+  - Create a standardized multi-pane terminal workspace
 parameters:
   - name: projectPath
     description: Path to the project directory (POSIX path)
@@ -18,6 +25,7 @@ parameters:
   - name: clientCommand
     description: Command to start the client (optional)
     required: false
+category: 06_terminal/iterm
 ---
 
 # Set up iTerm2 Development Environment

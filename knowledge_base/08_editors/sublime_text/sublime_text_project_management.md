@@ -1,7 +1,7 @@
 ---
 id: sublime_text_project_management
 title: Manage Sublime Text projects
-description: Create, open, or switch between Sublime Text projects
+description: 'Create, open, or switch between Sublime Text projects'
 language: applescript
 author: Claude
 keywords:
@@ -11,16 +11,19 @@ keywords:
   - organization
   - project switching
 usage_examples:
-  - "Create a new Sublime Text project for a folder"
-  - "Open an existing Sublime Text project"
-  - "Switch between open projects"
+  - Create a new Sublime Text project for a folder
+  - Open an existing Sublime Text project
+  - Switch between open projects
 parameters:
   - name: action
-    description: The action to perform ('create', 'open', or 'switch')
+    description: 'The action to perform (''create'', ''open'', or ''switch'')'
     required: true
   - name: projectPath
-    description: The path to the project file (.sublime-project) or folder (for create action)
+    description: >-
+      The path to the project file (.sublime-project) or folder (for create
+      action)
     required: false
+category: 08_editors/sublime_text
 ---
 
 # Manage Sublime Text projects

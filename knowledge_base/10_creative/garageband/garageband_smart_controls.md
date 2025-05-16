@@ -1,19 +1,38 @@
 ---
-title: "GarageBand: Smart Controls"
-category: "08_creative_and_document_apps"
+title: 'GarageBand: Smart Controls'
+category: 10_creative/garageband
 id: garageband_smart_controls
-description: "Access and control GarageBand's Smart Controls interface for adjusting effects and parameters on instrument and audio tracks."
-keywords: ["GarageBand", "smart controls", "effects", "mixing", "instrument", "parameters", "music production"]
+description: >-
+  Access and control GarageBand's Smart Controls interface for adjusting effects
+  and parameters on instrument and audio tracks.
+keywords:
+  - GarageBand
+  - smart controls
+  - effects
+  - mixing
+  - instrument
+  - parameters
+  - music production
 language: applescript
-parameters: |
-  - track_name (optional): Name of the track to select for controlling (if empty, uses currently selected track)
-notes: |
+parameters: >
+  - track_name (optional): Name of the track to select for controlling (if
+  empty, uses currently selected track)
+notes: >
   - GarageBand must be running with a project open.
-  - Smart Controls allow access to the most important effect parameters for each track.
+
+  - Smart Controls allow access to the most important effect parameters for each
+  track.
+
   - This script uses UI automation to navigate to and toggle Smart Controls.
-  - Due to UI variations between GarageBand versions, some operations may need adjustment.
-  - The script demonstrates several basic Smart Controls operations but cannot access all parameters reliably.
-  - This script requires Accessibility permissions to be granted for the script runner.
+
+  - Due to UI variations between GarageBand versions, some operations may need
+  adjustment.
+
+  - The script demonstrates several basic Smart Controls operations but cannot
+  access all parameters reliably.
+
+  - This script requires Accessibility permissions to be granted for the script
+  runner.
 ---
 
 Access and control GarageBand's Smart Controls interface.

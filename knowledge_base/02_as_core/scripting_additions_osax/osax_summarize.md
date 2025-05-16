@@ -1,12 +1,23 @@
 ---
-title: "StandardAdditions: summarize Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: summarize Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_summarize
-description: "Attempts to create a summary of a given text or the content of a text file. The length of the summary can be specified in sentences."
-keywords: ["StandardAdditions", "summarize", "text summary", "osax", "natural language"]
+description: >-
+  Attempts to create a summary of a given text or the content of a text file.
+  The length of the summary can be specified in sentences.
+keywords:
+  - StandardAdditions
+  - summarize
+  - text summary
+  - osax
+  - natural language
 language: applescript
 isComplex: true
-argumentsPrompt: "Text to summarize as 'textToSummarize', OR an alias to a text file as 'fileAliasToSummarize'. Number of sentences for summary as 'numberOfSentences' (integer) in inputData. Provide one of textToSummarize or fileAliasToSummarize."
+argumentsPrompt: >-
+  Text to summarize as 'textToSummarize', OR an alias to a text file as
+  'fileAliasToSummarize'. Number of sentences for summary as 'numberOfSentences'
+  (integer) in inputData. Provide one of textToSummarize or
+  fileAliasToSummarize.
 notes: |
   - The quality of summarization can vary.
   - Works best with well-structured prose.

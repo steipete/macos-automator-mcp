@@ -1,13 +1,22 @@
 ---
-title: "Core: ID Reference Form"
-category: "01_applescript_core"
+title: 'Core: ID Reference Form'
+category: 02_as_core/reference_forms
 id: core_reference_id
-description: "Accessing objects by their unique ID (e.g., process ID, window ID)."
-keywords: ["reference form", "id", "process id", "pid", "window id", "unique identifier"]
+description: 'Accessing objects by their unique ID (e.g., process ID, window ID).'
+keywords:
+  - reference form
+  - id
+  - process id
+  - pid
+  - window id
+  - unique identifier
 language: applescript
-notes: |
-  - IDs are usually unique numerical identifiers for objects like application processes or windows.
+notes: >
+  - IDs are usually unique numerical identifiers for objects like application
+  processes or windows.
+
   - This form is very specific and reliable if the ID is known and stable.
+
   - Useful with `System Events` for managing processes or windows.
 ---
 

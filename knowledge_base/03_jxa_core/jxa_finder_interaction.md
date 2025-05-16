@@ -1,11 +1,20 @@
 ---
-title: "JXA: Interacting with Finder"
-category: "10_jxa_basics"
+title: 'JXA: Interacting with Finder'
+category: 03_jxa_core
 id: jxa_finder_interaction
-description: "Demonstrates basic Finder operations like getting Desktop items and creating a folder using JXA."
-keywords: ["jxa", "javascript", "finder", "file system", "automation"]
+description: >-
+  Demonstrates basic Finder operations like getting Desktop items and creating a
+  folder using JXA.
+keywords:
+  - jxa
+  - javascript
+  - finder
+  - file system
+  - automation
 language: javascript
-notes: "Finder object names and properties in JXA often mirror AppleScript but use JavaScript syntax (camelCase, array indexing)."
+notes: >-
+  Finder object names and properties in JXA often mirror AppleScript but use
+  JavaScript syntax (camelCase, array indexing).
 ---
 
 ```javascript

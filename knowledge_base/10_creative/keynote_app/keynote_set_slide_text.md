@@ -1,16 +1,33 @@
 ---
-title: "Keynote: Set Title and Body Text of Current Slide"
-category: "08_creative_and_document_apps"
+title: 'Keynote: Set Title and Body Text of Current Slide'
+category: 10_creative/keynote_app
 id: keynote_set_slide_text
-description: "Sets the title and body text content of the current slide in the frontmost Keynote presentation."
-keywords: ["Keynote", "slide text", "title", "body", "content", "text item", "presentation"]
+description: >-
+  Sets the title and body text content of the current slide in the frontmost
+  Keynote presentation.
+keywords:
+  - Keynote
+  - slide text
+  - title
+  - body
+  - content
+  - text item
+  - presentation
 language: applescript
 isComplex: true
-argumentsPrompt: "Title text as 'titleText' and body text as 'bodyText' for the current slide in inputData. Assumes a presentation is open and has a slide selected."
-notes: |
+argumentsPrompt: >-
+  Title text as 'titleText' and body text as 'bodyText' for the current slide in
+  inputData. Assumes a presentation is open and has a slide selected.
+notes: >
   - A Keynote presentation must be open and a slide selected.
-  - This script attempts to set the object text of the slide's placeholder text items for title and body.
-  - This relies on the current slide having conventional placeholder items for title and body. If the master slide is blank or uses non-standard placeholders, this may not work as expected.
+
+  - This script attempts to set the object text of the slide's placeholder text
+  items for title and body.
+
+  - This relies on the current slide having conventional placeholder items for
+  title and body. If the master slide is blank or uses non-standard
+  placeholders, this may not work as expected.
+
   - Requires Automation permission for Keynote.app.
 ---
 

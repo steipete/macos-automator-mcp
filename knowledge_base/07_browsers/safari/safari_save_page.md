@@ -1,14 +1,28 @@
 ---
-title: "Safari: Save Webpage"
-category: "05_web_browsers"
+title: 'Safari: Save Webpage'
+category: 07_browsers/safari
 id: safari_save_page
-description: "Saves the current Safari webpage in various formats including HTML, PDF, and web archive."
-keywords: ["Safari", "save page", "download", "PDF", "web archive", "HTML", "offline", "archiving", "screenshot"]
+description: >-
+  Saves the current Safari webpage in various formats including HTML, PDF, and
+  web archive.
+keywords:
+  - Safari
+  - save page
+  - download
+  - PDF
+  - web archive
+  - HTML
+  - offline
+  - archiving
+  - screenshot
 language: applescript
 isComplex: true
-argumentsPrompt: "Save format as 'format' ('pdf', 'webarchive', 'html', 'text', 'image'), output path as 'outputPath', and optional parameters in inputData."
-notes: |
+argumentsPrompt: >-
+  Save format as 'format' ('pdf', 'webarchive', 'html', 'text', 'image'), output
+  path as 'outputPath', and optional parameters in inputData.
+notes: >
   - Safari must be running with at least one open tab.
+
   - The script supports several output formats:
     - 'pdf': Saves the page as a PDF document
     - 'webarchive': Saves as a Safari Web Archive (preserves most functionality)
@@ -19,9 +33,14 @@ notes: |
     - 'includeBackground': Whether to include background images/colors (default: true)
     - 'printHeaders': Whether to include headers/footers (default: false)
     - 'paperSize': Paper size for PDF ('A4', 'Letter', etc., default: 'A4')
-  - If no output path is provided, files will be saved to the Desktop with an auto-generated name.
-  - The script uses Safari's native Save As functionality when possible, or JavaScript for formats that require it.
-  - Some websites may restrict certain saving operations due to security settings.
+  - If no output path is provided, files will be saved to the Desktop with an
+  auto-generated name.
+
+  - The script uses Safari's native Save As functionality when possible, or
+  JavaScript for formats that require it.
+
+  - Some websites may restrict certain saving operations due to security
+  settings.
 ---
 
 This script saves the current Safari webpage in various formats including PDF, Web Archive, and HTML.

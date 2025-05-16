@@ -1,11 +1,26 @@
 ---
-title: "Multi-Terminal Coordination"
+title: Multi-Terminal Coordination
 id: terminal_multi_coordination
-category: "04_terminal_emulators"
-description: "Coordinates actions across multiple terminal windows, tabs, or panes, such as broadcasting input or synchronizing commands."
-keywords: ["terminal", "coordination", "broadcast", "multi", "sync", "iTerm2", "Terminal.app", "Ghostty", "input", "parallel"]
+category: 06_terminal
+description: >-
+  Coordinates actions across multiple terminal windows, tabs, or panes, such as
+  broadcasting input or synchronizing commands.
+keywords:
+  - terminal
+  - coordination
+  - broadcast
+  - multi
+  - sync
+  - iTerm2
+  - Terminal.app
+  - Ghostty
+  - input
+  - parallel
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"action\": \"broadcast\", \"echo\", or \"parallel\", \"text\": \"command to send\", \"terminals\": [\"Terminal.app\", \"iTerm2\", \"Ghostty\"], \"targets\": [\"specific list of targets\"], \"executeCommands\": true/false }"
+argumentsPrompt: >-
+  Expects inputData with: { "action": "broadcast", "echo", or "parallel",
+  "text": "command to send", "terminals": ["Terminal.app", "iTerm2", "Ghostty"],
+  "targets": ["specific list of targets"], "executeCommands": true/false }
 isComplex: true
 ---
 

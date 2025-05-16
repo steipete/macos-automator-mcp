@@ -1,12 +1,19 @@
 ---
-title: "Mail: Create Mail Rule"
-category: "07_productivity_apps"
+title: 'Mail: Create Mail Rule'
+category: 09_productivity/mail_app
 id: mail_create_rule
-description: "Creates a new rule in Mail app for automatically handling incoming messages."
-keywords: ["Mail", "mail rule", "filter", "email automation", "message rule"]
+description: Creates a new rule in Mail app for automatically handling incoming messages.
+keywords:
+  - Mail
+  - mail rule
+  - filter
+  - email automation
+  - message rule
 language: applescript
-argumentsPrompt: "Enter rule name, search criteria, and action details"
-notes: "Creates a rule that can automatically process incoming messages based on specified criteria."
+argumentsPrompt: 'Enter rule name, search criteria, and action details'
+notes: >-
+  Creates a rule that can automatically process incoming messages based on
+  specified criteria.
 ---
 
 ```applescript

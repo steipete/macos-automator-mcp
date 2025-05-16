@@ -1,10 +1,21 @@
 ---
 title: Folder Cleanup Operations
-category: 03_file_system_and_finder
+category: 05_files/batch_operations
 id: folder_cleanup_operations
-description: Comprehensive folder cleanup script to organize and maintain folder structures, including removing empty directories, sorting files by type, and cleaning up old files.
+description: >-
+  Comprehensive folder cleanup script to organize and maintain folder
+  structures, including removing empty directories, sorting files by type, and
+  cleaning up old files.
 language: applescript
-keywords: [cleanup, organize, folders, files, sort, remove, empty, duplicates]
+keywords:
+  - cleanup
+  - organize
+  - folders
+  - files
+  - sort
+  - remove
+  - empty
+  - duplicates
 ---
 
 # Folder Cleanup Operations

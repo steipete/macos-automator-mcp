@@ -1,14 +1,26 @@
 ---
-title: "Core: Relative Reference Form"
-category: "01_applescript_core"
+title: 'Core: Relative Reference Form'
+category: 02_as_core/reference_forms
 id: core_reference_relative
-description: "Accessing objects based on their position relative to another known object (e.g., item before/after)."
-keywords: ["reference form", "relative", "before", "after", "positional", "object specifier"]
+description: >-
+  Accessing objects based on their position relative to another known object
+  (e.g., item before/after).
+keywords:
+  - reference form
+  - relative
+  - before
+  - after
+  - positional
+  - object specifier
 language: applescript
-notes: |
-  - This form is useful when the exact index or name is not known, but the relationship to another element is.
+notes: >
+  - This form is useful when the exact index or name is not known, but the
+  relationship to another element is.
+
   - Requires a container context (e.g., items in a folder, paragraphs in text).
-  - If the anchor item is the first or last, requesting an item `before` the first or `after` the last will result in an error.
+
+  - If the anchor item is the first or last, requesting an item `before` the
+  first or `after` the last will result in an error.
 ---
 
 Objects can be referenced by their position relative to another object.

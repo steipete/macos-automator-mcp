@@ -4,10 +4,16 @@ title: Get To-Dos from Things
 description: Use AppleScript to retrieve to-dos from Things app with filtering options
 author: steipete
 language: applescript
-tags: things, productivity, task management, to-do, filters
-keywords: [filtering, query, todo-list, properties, fetch]
+tags: 'things, productivity, task management, to-do, filters'
+keywords:
+  - filtering
+  - query
+  - todo-list
+  - properties
+  - fetch
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Get To-Dos from Things

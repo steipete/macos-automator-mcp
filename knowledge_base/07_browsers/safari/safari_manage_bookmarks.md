@@ -1,19 +1,43 @@
 ---
-title: "Safari: Manage Bookmarks"
-category: "05_web_browsers"
+title: 'Safari: Manage Bookmarks'
+category: 07_browsers/safari
 id: safari_manage_bookmarks
-description: "Creates, edits, or deletes Safari bookmarks including folders and Reading List items."
-keywords: ["Safari", "bookmarks", "favorites", "reading list", "browser", "web", "add bookmark", "edit bookmark", "delete bookmark"]
+description: >-
+  Creates, edits, or deletes Safari bookmarks including folders and Reading List
+  items.
+keywords:
+  - Safari
+  - bookmarks
+  - favorites
+  - reading list
+  - browser
+  - web
+  - add bookmark
+  - edit bookmark
+  - delete bookmark
 language: applescript
 isComplex: true
-argumentsPrompt: "Action type as 'action' ('add', 'edit', 'delete'), URL as 'url', title as 'title', folder path as 'folder', and optionally reading list flag as 'addToReadingList' in inputData."
-notes: |
+argumentsPrompt: >-
+  Action type as 'action' ('add', 'edit', 'delete'), URL as 'url', title as
+  'title', folder path as 'folder', and optionally reading list flag as
+  'addToReadingList' in inputData.
+notes: >
   - Safari must be running for this script to work.
-  - The script can manage bookmarks in the Favorites Bar, Bookmarks Menu, or any other bookmark folder.
-  - For the 'folder' parameter, use slash-separated paths like 'Favorites Bar/Work' or 'Bookmarks Menu/Reference'.
-  - Set 'addToReadingList' to 'true' to add an item to the Reading List instead of regular bookmarks.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
-  - Some operations may be slower due to UI automation, especially when working with deeply nested folders.
+
+  - The script can manage bookmarks in the Favorites Bar, Bookmarks Menu, or any
+  other bookmark folder.
+
+  - For the 'folder' parameter, use slash-separated paths like 'Favorites
+  Bar/Work' or 'Bookmarks Menu/Reference'.
+
+  - Set 'addToReadingList' to 'true' to add an item to the Reading List instead
+  of regular bookmarks.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
+  - Some operations may be slower due to UI automation, especially when working
+  with deeply nested folders.
 ---
 
 This script manages Safari bookmarks, allowing you to add, edit, or delete bookmarks and folders.

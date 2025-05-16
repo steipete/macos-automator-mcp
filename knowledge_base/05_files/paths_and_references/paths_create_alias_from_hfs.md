@@ -1,14 +1,25 @@
 ---
-title: "Paths: Create Alias Object from HFS Path String"
-category: "03_file_system_and_finder"
+title: 'Paths: Create Alias Object from HFS Path String'
+category: 05_files/paths_and_references
 id: paths_create_alias_from_hfs
-description: "Demonstrates how to create an AppleScript 'alias' object from a colon-separated HFS+ path string."
-keywords: ["alias", "HFS path", "file reference", "object"]
+description: >-
+  Demonstrates how to create an AppleScript 'alias' object from a
+  colon-separated HFS+ path string.
+keywords:
+  - alias
+  - HFS path
+  - file reference
+  - object
 language: applescript
-notes: |
-  - The path must exist for an alias to be created successfully, otherwise it will error.
-  - An `alias` object maintains its link to the file/folder even if the item is moved (within the same volume).
-  - A `file` object created from a path string is just a path specifier and doesn't track moves.
+notes: >
+  - The path must exist for an alias to be created successfully, otherwise it
+  will error.
+
+  - An `alias` object maintains its link to the file/folder even if the item is
+  moved (within the same volume).
+
+  - A `file` object created from a path string is just a path specifier and
+  doesn't track moves.
 ---
 
 ```applescript

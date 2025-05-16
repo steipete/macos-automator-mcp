@@ -2,6 +2,7 @@
 title: Weather App
 description: AppleScripts for interacting with weather data and services
 order: 1
+category: 13_developer/weather_app
 ---
 
 # Weather App Scripts

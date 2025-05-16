@@ -1,9 +1,8 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import matter from 'gray-matter';
-import { logErrorToReport, logWarningToReport, report } from './kbReport.js';
+import { logErrorToReport, report } from './kbReport.js';
 
 const execPromise = promisify(exec);
 
@@ -34,16 +33,18 @@ async function validateScriptSyntax(
         await execPromise(`osacompile -l JavaScript -e '${escapedScript}' -o /dev/null`);
       }
       return { isValid: true };
-    } catch (error: any) {
+    } catch (error) {
+      const errorObj = error as { stderr?: string; stdout?: string; message?: string };
       return { 
         isValid: false, 
-        error: error.stderr || error.stdout || error.message || 'Unknown error during syntax validation'
+        error: errorObj.stderr || errorObj.stdout || errorObj.message || 'Unknown error during syntax validation'
       };
     }
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return { 
       isValid: false, 
-      error: `Failed to validate script: ${error.message}` 
+      error: `Failed to validate script: ${errorMessage}` 
     };
   }
 }
@@ -101,13 +102,14 @@ export async function validateTipScriptSyntax(
     }
 
     return true;
-  } catch (error: any) {
+  } catch (error) {
     // Count validation failures as syntax errors for reporting
     report.scriptSyntaxErrors++;
     
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logErrorToReport(
       filePath,
-      `Failed to validate script syntax: ${error.message}`,
+      `Failed to validate script syntax: ${errorMessage}`,
       isLocalKb
     );
     return false;

@@ -1,24 +1,30 @@
 ---
 id: iterm_session_management
 title: iTerm2 Session Management
-description: Saves, restores, and manages iTerm2 window arrangements and sessions
+description: 'Saves, restores, and manages iTerm2 window arrangements and sessions'
 language: applescript
 author: Claude
-keywords: ["arrangements", "layouts", "sessions", "persistence", "workflow"]
+keywords:
+  - arrangements
+  - layouts
+  - sessions
+  - persistence
+  - workflow
 usage_examples:
-  - "Save the current iTerm2 window arrangement for later restoration"
-  - "Restore a previously saved window arrangement with all tabs and panes"
-  - "Create named session configurations for different workflows"
+  - Save the current iTerm2 window arrangement for later restoration
+  - Restore a previously saved window arrangement with all tabs and panes
+  - Create named session configurations for different workflows
 parameters:
   - name: action
-    description: Action to perform - save, restore, list, or delete
+    description: 'Action to perform - save, restore, list, or delete'
     required: true
   - name: name
-    description: Name of the arrangement to save, restore, or delete
+    description: 'Name of the arrangement to save, restore, or delete'
     required: false
   - name: includeContents
-    description: Whether to save terminal contents (true/false, default false)
+    description: 'Whether to save terminal contents (true/false, default false)'
     required: false
+category: 06_terminal/iterm
 ---
 
 # iTerm2 Session Management

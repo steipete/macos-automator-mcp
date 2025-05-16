@@ -1,11 +1,20 @@
 ---
-title: "System Volume Control"
-category: "02_system_interaction"
+title: System Volume Control
+category: 04_system/volume_control
 id: system_volume_control_manager
-description: "Controls system audio output volume with precise increments and mute toggling"
-keywords: ["volume", "audio", "sound", "mute", "unmute", "speakers", "output volume"]
+description: Controls system audio output volume with precise increments and mute toggling
+keywords:
+  - volume
+  - audio
+  - sound
+  - mute
+  - unmute
+  - speakers
+  - output volume
 language: applescript
-notes: "Volume can be set from 0 to 100. Supports muting/unmuting and incremental changes."
+notes: >-
+  Volume can be set from 0 to 100. Supports muting/unmuting and incremental
+  changes.
 ---
 
 ```applescript

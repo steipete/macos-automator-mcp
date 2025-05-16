@@ -1,11 +1,25 @@
 ---
-title: "Mail Automation Script"
-category: "07_productivity_apps"
+title: Mail Automation Script
+category: 09_productivity/mail_app
 id: mail_automation_script
-description: "Automates various email tasks in Apple Mail including sending, filtering, organizing, searching, and template-based responses"
-keywords: ["email", "mail", "automation", "templates", "filter", "organize", "search", "attachment", "Apple Mail", "message"]
+description: >-
+  Automates various email tasks in Apple Mail including sending, filtering,
+  organizing, searching, and template-based responses
+keywords:
+  - email
+  - mail
+  - automation
+  - templates
+  - filter
+  - organize
+  - search
+  - attachment
+  - Apple Mail
+  - message
 language: applescript
-notes: "Works with Apple Mail application on macOS. Some operations require Mail to be the frontmost application."
+notes: >-
+  Works with Apple Mail application on macOS. Some operations require Mail to be
+  the frontmost application.
 ---
 
 ```applescript

@@ -1,12 +1,19 @@
 ---
-title: "Pages: Create New Document"
-category: "08_creative_and_document_apps"
+title: 'Pages: Create New Document'
+category: 10_creative/pages_app
 id: pages_create_document
-description: "Creates a new document in Pages with specified content."
-keywords: ["Pages", "document", "word processing", "create document", "text document"]
+description: Creates a new document in Pages with specified content.
+keywords:
+  - Pages
+  - document
+  - word processing
+  - create document
+  - text document
 language: applescript
-argumentsPrompt: "Enter the title and content for the new document, and where to save it"
-notes: "Creates a new Pages document with title and text content. The file path should be a full POSIX path ending with .pages"
+argumentsPrompt: 'Enter the title and content for the new document, and where to save it'
+notes: >-
+  Creates a new Pages document with title and text content. The file path should
+  be a full POSIX path ending with .pages
 ---
 
 ```applescript

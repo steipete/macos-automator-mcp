@@ -1,9 +1,15 @@
 ---
-title: "Firefox: Switch to Tab by Title"
-category: "05_web_browsers"
+title: 'Firefox: Switch to Tab by Title'
+category: 07_browsers/firefox
 id: firefox_switch_to_tab_by_title
-description: "Switches to a Firefox tab based on its title or partial title match."
-keywords: ["Firefox", "tab", "switch tab", "find tab", "browser", "UI scripting"]
+description: Switches to a Firefox tab based on its title or partial title match.
+keywords:
+  - Firefox
+  - tab
+  - switch tab
+  - find tab
+  - browser
+  - UI scripting
 language: applescript
 notes: |
   - Firefox must be running.

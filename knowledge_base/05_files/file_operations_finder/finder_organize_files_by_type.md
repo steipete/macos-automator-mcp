@@ -1,12 +1,21 @@
 ---
-title: "Finder: Organize Files by Type"
-category: "03_file_system_and_finder"
+title: 'Finder: Organize Files by Type'
+category: 05_files/file_operations_finder
 id: finder_organize_files_by_type
-description: "Organizes files in a folder by their file type, moving them into type-specific subfolders."
-keywords: ["Finder", "organize files", "file sorting", "file management", "categorize files"]
+description: >-
+  Organizes files in a folder by their file type, moving them into type-specific
+  subfolders.
+keywords:
+  - Finder
+  - organize files
+  - file sorting
+  - file management
+  - categorize files
 language: applescript
-argumentsPrompt: "Enter the folder path to organize"
-notes: "Organizes files by type (images, documents, audio, video, etc.) into subfolders. The source folder must exist."
+argumentsPrompt: Enter the folder path to organize
+notes: >-
+  Organizes files by type (images, documents, audio, video, etc.) into
+  subfolders. The source folder must exist.
 ---
 
 ```applescript

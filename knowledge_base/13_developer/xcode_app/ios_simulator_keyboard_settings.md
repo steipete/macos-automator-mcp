@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Configure Keyboard Settings"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Configure Keyboard Settings'
+category: 13_developer/xcode_app
 id: ios_simulator_keyboard_settings
-description: "Configures hardware keyboard settings for iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "keyboard", "hardware", "input", "settings", "developer", "iOS", "iPadOS"]
+description: Configures hardware keyboard settings for iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - keyboard
+  - hardware
+  - input
+  - settings
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Enable hardware keyboard as 'enableHardwareKeyboard' ('true' or 'false'), optional device identifier as 'deviceIdentifier' (defaults to all devices), optional boolean to show keyboard as 'showKeyboard' (default is false)."
+argumentsPrompt: >-
+  Enable hardware keyboard as 'enableHardwareKeyboard' ('true' or 'false'),
+  optional device identifier as 'deviceIdentifier' (defaults to all devices),
+  optional boolean to show keyboard as 'showKeyboard' (default is false).
 notes: |
   - Controls hardware keyboard connection to simulator
   - Disabling forces on-screen keyboard for testing

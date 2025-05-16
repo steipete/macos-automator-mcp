@@ -1,11 +1,24 @@
 ---
-title: "Terminal: Find and Focus Windows or Tabs"
+title: 'Terminal: Find and Focus Windows or Tabs'
 id: terminal_find_focus_window
-category: "04_terminal_emulators"
-description: "Searches for Terminal.app windows or tabs by title, command, or process, then brings the matching window to the front."
-keywords: ["Terminal.app", "window", "tab", "focus", "find", "search", "activate", "front"]
+category: 06_terminal/terminal_app
+description: >-
+  Searches for Terminal.app windows or tabs by title, command, or process, then
+  brings the matching window to the front.
+keywords:
+  - Terminal.app
+  - window
+  - tab
+  - focus
+  - find
+  - search
+  - activate
+  - front
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"searchType\": \"title, command, or process\", \"searchTerm\": \"text to search for\", \"partialMatch\": true/false } (partialMatch defaults to true if omitted)."
+argumentsPrompt: >-
+  Expects inputData with: { "searchType": "title, command, or process",
+  "searchTerm": "text to search for", "partialMatch": true/false } (partialMatch
+  defaults to true if omitted).
 isComplex: true
 ---
 

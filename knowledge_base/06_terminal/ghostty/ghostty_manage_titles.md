@@ -11,16 +11,17 @@ keywords:
   - customization
   - organization
 usage_examples:
-  - "Set a descriptive title for a Ghostty window"
-  - "Reset a Ghostty window title to its default value"
-  - "Get the current title of a Ghostty window"
+  - Set a descriptive title for a Ghostty window
+  - Reset a Ghostty window title to its default value
+  - Get the current title of a Ghostty window
 parameters:
   - name: action
-    description: Action to perform - set, get, or reset
+    description: 'Action to perform - set, get, or reset'
     required: true
   - name: title
     description: New title text (for 'set' action only)
     required: false
+category: 06_terminal/ghostty
 ---
 
 # Manage Ghostty Window Titles

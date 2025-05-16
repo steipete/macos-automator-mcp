@@ -1,12 +1,20 @@
 ---
-title: "Script Editor: Save Document As Application"
-category: "developer"
+title: 'Script Editor: Save Document As Application'
+category: 13_developer/script_editor_app
 id: script_editor_save_as_app
-description: "Saves the frontmost Script Editor document as an application (applet)."
-keywords: ["Script Editor", "save script", "applet", "application", "export"]
+description: Saves the frontmost Script Editor document as an application (applet).
+keywords:
+  - Script Editor
+  - save script
+  - applet
+  - application
+  - export
 language: applescript
 isComplex: true
-argumentsPrompt: "Absolute POSIX path (including .app extension) to save the applet as 'savePath' in inputData. Optionally, boolean 'stayOpen', 'showStartupScreen' in inputData."
+argumentsPrompt: >-
+  Absolute POSIX path (including .app extension) to save the applet as
+  'savePath' in inputData. Optionally, boolean 'stayOpen', 'showStartupScreen'
+  in inputData.
 notes: |
   - Script Editor must be frontmost with a document open.
   - `savePath` should end with `.app`.

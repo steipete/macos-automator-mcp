@@ -1,11 +1,18 @@
 ---
-title: "Voice Memos: Record New Memo"
-category: "08_creative_and_document_apps"
+title: 'Voice Memos: Record New Memo'
+category: 10_creative/voice_memos_app
 id: voice_memos_record_new
-description: "Starts recording a new voice memo in the Voice Memos app."
-keywords: ["Voice Memos", "record audio", "voice recording", "audio capture", "sound recording"]
+description: Starts recording a new voice memo in the Voice Memos app.
+keywords:
+  - Voice Memos
+  - record audio
+  - voice recording
+  - audio capture
+  - sound recording
 language: applescript
-notes: "Launches the Voice Memos app and starts a new recording. The script does not stop the recording automatically; you'll need to do that manually."
+notes: >-
+  Launches the Voice Memos app and starts a new recording. The script does not
+  stop the recording automatically; you'll need to do that manually.
 ---
 
 ```applescript

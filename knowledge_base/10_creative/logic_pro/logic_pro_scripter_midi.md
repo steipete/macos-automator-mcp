@@ -1,20 +1,39 @@
 ---
-title: "Logic Pro: Scripter MIDI Plugin"
-category: "08_creative_and_document_apps"
+title: 'Logic Pro: Scripter MIDI Plugin'
+category: 10_creative/logic_pro
 id: logic_pro_scripter_midi
-description: "Automate the Scripter MIDI effect plugin in Logic Pro to generate, modify, and process MIDI data with JavaScript."
-keywords: ["Logic Pro", "Scripter", "MIDI", "plugin", "JavaScript", "automation", "music production", "MIDI processing"]
+description: >-
+  Automate the Scripter MIDI effect plugin in Logic Pro to generate, modify, and
+  process MIDI data with JavaScript.
+keywords:
+  - Logic Pro
+  - Scripter
+  - MIDI
+  - plugin
+  - JavaScript
+  - automation
+  - music production
+  - MIDI processing
 language: applescript
 parameters: |
   - script_path (optional): Path to a JavaScript file to load into Scripter
-notes: |
+notes: >
   - Logic Pro must be running with a project open.
+
   - Scripter is a powerful MIDI effect plugin in Logic Pro that uses JavaScript.
-  - This script demonstrates adding a Scripter plugin to a track and loading code.
-  - If no script_path is provided, a simple example MIDI chord script will be used.
+
+  - This script demonstrates adding a Scripter plugin to a track and loading
+  code.
+
+  - If no script_path is provided, a simple example MIDI chord script will be
+  used.
+
   - Scripter offers real-time MIDI data processing through JavaScript code.
+
   - The AppleScript uses UI automation to interact with Logic Pro's interface.
-  - Some operations may require Accessibility permissions to be granted to the script runner.
+
+  - Some operations may require Accessibility permissions to be granted to the
+  script runner.
 ---
 
 Automate the Scripter MIDI effect plugin in Logic Pro.

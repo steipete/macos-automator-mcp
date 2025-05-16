@@ -1,12 +1,20 @@
 ---
-title: "Mail: Export Email Contacts"
-category: "07_productivity_apps"
+title: 'Mail: Export Email Contacts'
+category: 09_productivity/mail_app
 id: mail_export_contacts
-description: "Extracts email addresses from selected messages and exports them to a file"
-keywords: ["Mail", "email", "contacts", "extract", "export", "addresses"]
+description: Extracts email addresses from selected messages and exports them to a file
+keywords:
+  - Mail
+  - email
+  - contacts
+  - extract
+  - export
+  - addresses
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide export file path as 'exportPath' in inputData (optional, defaults to Desktop)"
+argumentsPrompt: >-
+  Provide export file path as 'exportPath' in inputData (optional, defaults to
+  Desktop)
 notes: |
   - Extracts email addresses from currently selected messages in Mail.app
   - Organizes addresses by domain for better analysis

@@ -1,12 +1,19 @@
 ---
-title: "Podcasts: Play Episode"
-category: "08_creative_and_document_apps"
+title: 'Podcasts: Play Episode'
+category: 10_creative/podcasts_app
 id: podcasts_play_episode
-description: "Plays a specific podcast episode in the Podcasts app."
-keywords: ["Podcasts", "play episode", "podcast playback", "listen to podcast", "play podcast"]
+description: Plays a specific podcast episode in the Podcasts app.
+keywords:
+  - Podcasts
+  - play episode
+  - podcast playback
+  - listen to podcast
+  - play podcast
 language: applescript
-argumentsPrompt: "Enter the podcast and episode name"
-notes: "Searches for and plays a specific podcast episode. Requires the Podcasts app to be set up with subscriptions."
+argumentsPrompt: Enter the podcast and episode name
+notes: >-
+  Searches for and plays a specific podcast episode. Requires the Podcasts app
+  to be set up with subscriptions.
 ---
 
 ```applescript

@@ -1,12 +1,19 @@
 ---
-title: "Mail: Create Smart Mailbox"
-category: "07_productivity_apps"
+title: 'Mail: Create Smart Mailbox'
+category: 09_productivity/mail_app
 id: mail_create_smart_mailbox
-description: "Creates a new Smart Mailbox in Mail app based on specified criteria."
-keywords: ["Mail", "smart mailbox", "email filter", "message filter", "mail organization"]
+description: Creates a new Smart Mailbox in Mail app based on specified criteria.
+keywords:
+  - Mail
+  - smart mailbox
+  - email filter
+  - message filter
+  - mail organization
 language: applescript
-argumentsPrompt: "Enter smart mailbox name and search criteria"
-notes: "Creates a Smart Mailbox that automatically collects messages matching specified criteria."
+argumentsPrompt: Enter smart mailbox name and search criteria
+notes: >-
+  Creates a Smart Mailbox that automatically collects messages matching
+  specified criteria.
 ---
 
 ```applescript

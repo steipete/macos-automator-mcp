@@ -1,12 +1,23 @@
 ---
-title: "iOS Simulator: Toggle Dark/Light Mode"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Toggle Dark/Light Mode'
+category: 13_developer/xcode_app
 id: ios_simulator_toggle_appearance
-description: "Toggles between Dark and Light appearance modes in iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "dark mode", "light mode", "appearance", "theme", "developer", "iOS", "iPadOS"]
+description: Toggles between Dark and Light appearance modes in iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - dark mode
+  - light mode
+  - appearance
+  - theme
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: false
-argumentsPrompt: "Appearance mode as 'appearanceMode' ('dark', 'light', or 'toggle'), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Appearance mode as 'appearanceMode' ('dark', 'light', or 'toggle'), and
+  optional device identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Switches between dark and light appearance modes
   - Changes take effect immediately without simulator restart

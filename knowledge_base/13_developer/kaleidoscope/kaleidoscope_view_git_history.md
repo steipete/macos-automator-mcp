@@ -4,10 +4,16 @@ title: View Git File History in Kaleidoscope
 description: Use AppleScript to open Git file history in Kaleidoscope
 author: steipete
 language: applescript
-tags: kaleidoscope, git, history, version control
-keywords: ["file history", "revision tracking", "timeline view", "git file evolution", "version comparison"]
+tags: 'kaleidoscope, git, history, version control'
+keywords:
+  - file history
+  - revision tracking
+  - timeline view
+  - git file evolution
+  - version comparison
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/kaleidoscope
 ---
 
 # View Git File History in Kaleidoscope

@@ -1,16 +1,28 @@
 ---
-title: "Script Editor: Set Document Text"
-category: "developer"
+title: 'Script Editor: Set Document Text'
+category: 13_developer/script_editor_app
 id: script_editor_set_text
-description: "Sets the text content of a Script Editor document, allowing programmatic creation or modification of AppleScripts."
-keywords: ["Script Editor", "set text", "modify script", "edit", "document", "code generation"]
+description: >-
+  Sets the text content of a Script Editor document, allowing programmatic
+  creation or modification of AppleScripts.
+keywords:
+  - Script Editor
+  - set text
+  - modify script
+  - edit
+  - document
+  - code generation
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide the new text content as 'scriptContent' in inputData."
-notes: |
+argumentsPrompt: Provide the new text content as 'scriptContent' in inputData.
+notes: >
   - Script Editor must be running for this to work
+
   - Setting text in a document marks it as modified and uncompiled
-  - You may need to compile the document after setting text if you intend to run it
+
+  - You may need to compile the document after setting text if you intend to run
+  it
+
   - This allows for dynamic script generation or template-based script creation
 ---
 

@@ -1,11 +1,17 @@
 ---
-title: "Calendar: List Events for Today"
-category: "07_productivity_apps"
+title: 'Calendar: List Events for Today'
+category: 09_productivity/calendar_app
 id: calendar_list_today_events
-description: "Retrieves and lists all events scheduled for the current day from all calendars."
-keywords: ["Calendar", "list events", "today's schedule", "appointments"]
+description: >-
+  Retrieves and lists all events scheduled for the current day from all
+  calendars.
+keywords:
+  - Calendar
+  - list events
+  - today's schedule
+  - appointments
 language: applescript
-notes: "Formats output as a string. Returns events from all calendars."
+notes: Formats output as a string. Returns events from all calendars.
 ---
 
 ```applescript

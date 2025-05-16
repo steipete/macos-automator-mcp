@@ -1,35 +1,74 @@
 ---
 id: test_port_finder_variants
 title: Port Finder Script Variations
-description: Three versions of an AppleScript for finding and killing processes using specific TCP ports, from basic to optimized implementations.
+description: >-
+  Three versions of an AppleScript for finding and killing processes using
+  specific TCP ports, from basic to optimized implementations.
 language: applescript
-compatibility: macOS Sonoma, Ventura, Monterey, Big Sur, Catalina
+compatibility: 'macOS Sonoma, Ventura, Monterey, Big Sur, Catalina'
 author: Claude
-tags: [network, ports, process management, tcp, kill process]
-keywords: [network, ports, tcp, process management, lsof, kill process, port finder, port conflict]
-guide: |
-  This file contains three progressive versions of an AppleScript function to identify and 
-  optionally terminate processes using specific TCP ports. It's useful for troubleshooting 
+tags:
+  - network
+  - ports
+  - process management
+  - tcp
+  - kill process
+keywords:
+  - network
+  - ports
+  - tcp
+  - process management
+  - lsof
+  - kill process
+  - port finder
+  - port conflict
+guide: >
+  This file contains three progressive versions of an AppleScript function to
+  identify and 
+
+  optionally terminate processes using specific TCP ports. It's useful for
+  troubleshooting 
+
   port conflicts when developing web applications or network services.
-  
+
+
   The three versions demonstrate different implementation approaches:
+
   1. Initial version: Uses separate commands to extract PID and process name
-  2. Improved version: Extracts PID and process name in a single command with space delimiter
-  3. Final optimized version: Uses a pipe character delimiter for more reliable extraction
-  
+
+  2. Improved version: Extracts PID and process name in a single command with
+  space delimiter
+
+  3. Final optimized version: Uses a pipe character delimiter for more reliable
+  extraction
+
+
   Each version includes the same core functionality:
-  - Takes a port number and a boolean flag indicating whether to kill the process
+
+  - Takes a port number and a boolean flag indicating whether to kill the
+  process
+
   - Uses the `lsof` command to find processes listening on the specified port
+
   - Extracts the process ID (PID) and name from the command output
+
   - Optionally terminates the process if requested
+
   - Returns information about the process or appropriate error messages
-  
+
+
   To use any of these scripts:
+
   - Call `findProcessByPort(portNumber, shouldKill)` with the port to check
-  - Set shouldKill to true to terminate the process, false to just get information
-  
+
+  - Set shouldKill to true to terminate the process, false to just get
+  information
+
+
   Requirements:
+
   - macOS (uses lsof and kill commands)
+
   - Administrator privileges might be required to terminate certain processes
 sample_snippets:
   - title: Initial version
@@ -148,7 +187,7 @@ sample_snippets:
       end findProcessByPort
 arguments:
   - name: portNumber
-    description: The TCP port number to check (e.g., 8080)
+    description: 'The TCP port number to check (e.g., 8080)'
     type: number
     required: true
   - name: shouldKill
@@ -156,6 +195,7 @@ arguments:
     type: boolean
     required: false
     default: false
+category: 12_network/port_management
 ---
 
 ```applescript

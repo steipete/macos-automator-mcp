@@ -1,9 +1,18 @@
 ---
-title: "Firefox: Open Developer Tools"
-category: "05_web_browsers"
+title: 'Firefox: Open Developer Tools'
+category: 07_browsers/firefox
 id: firefox_open_developer_tools
-description: "Opens Firefox Developer Tools, optionally focusing on a specific panel (Elements, Console, Network, etc.)."
-keywords: ["Firefox", "developer tools", "DevTools", "web development", "debugging", "inspect element", "console"]
+description: >-
+  Opens Firefox Developer Tools, optionally focusing on a specific panel
+  (Elements, Console, Network, etc.).
+keywords:
+  - Firefox
+  - developer tools
+  - DevTools
+  - web development
+  - debugging
+  - inspect element
+  - console
 language: applescript
 notes: |
   - Firefox must be running.

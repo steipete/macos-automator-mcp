@@ -1,10 +1,22 @@
 ---
 title: JXA JSON & API Processing
-category: 10_jxa_basics
+category: 03_jxa_core
 id: jxa_json_api_processing
-description: A utility script for fetching, processing, and working with JSON data and REST APIs using JavaScript for Automation (JXA).
+description: >-
+  A utility script for fetching, processing, and working with JSON data and REST
+  APIs using JavaScript for Automation (JXA).
 language: javascript
-keywords: [jxa, javascript, json, api, rest, http, fetch, process, transform, data]
+keywords:
+  - jxa
+  - javascript
+  - json
+  - api
+  - rest
+  - http
+  - fetch
+  - process
+  - transform
+  - data
 ---
 
 # JXA JSON & API Processing

@@ -1,14 +1,28 @@
 ---
-title: "Date, Time, and Timezone Settings"
-category: "02_system_interaction"
+title: 'Date, Time, and Timezone Settings'
+category: 04_system/system_preferences_settings
 id: system_date_time_timezone
-description: "Control date, time, and timezone settings on macOS using AppleScript with shell commands or UI scripting."
-keywords: ["date", "time", "timezone", "clock", "NTP", "systemsetup", "System Settings", "Date & Time"]
+description: >-
+  Control date, time, and timezone settings on macOS using AppleScript with
+  shell commands or UI scripting.
+keywords:
+  - date
+  - time
+  - timezone
+  - clock
+  - NTP
+  - systemsetup
+  - System Settings
+  - Date & Time
 language: applescript
-notes: |
-  - Shell commands require administrator privileges for most date/time operations
+notes: >
+  - Shell commands require administrator privileges for most date/time
+  operations
+
   - Both shell-based and UI scripting approaches are provided
+
   - The UI scripting approach will need adjustment based on macOS version
+
   - Time zone setting via shell is more reliable than UI scripting
 ---
 

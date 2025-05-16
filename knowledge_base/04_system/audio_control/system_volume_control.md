@@ -1,20 +1,38 @@
 ---
-title: "System: Volume Control"
-category: "02_system_interaction"
+title: 'System: Volume Control'
+category: 04_system/audio_control
 id: system_volume_control
-description: "Control system volume, mute status, and audio output devices on macOS."
-keywords: ["volume", "audio", "sound", "mute", "unmute", "output device", "system sound", "macOS audio"]
+description: 'Control system volume, mute status, and audio output devices on macOS.'
+keywords:
+  - volume
+  - audio
+  - sound
+  - mute
+  - unmute
+  - output device
+  - system sound
+  - macOS audio
 language: applescript
-parameters: |
-  - action (required): Action to perform - "set_volume", "mute", "unmute", "toggle_mute", "get_status"
+parameters: >
+  - action (required): Action to perform - "set_volume", "mute", "unmute",
+  "toggle_mute", "get_status"
+
   - volume_level (optional): Volume level to set (0-100) for set_volume action
-notes: |
+notes: >
   - This script controls the main system volume and mute status.
+
   - The "set_volume" action requires a volume_level parameter (0-100).
-  - The "mute", "unmute", and "toggle_mute" actions control the system mute status.
+
+  - The "mute", "unmute", and "toggle_mute" actions control the system mute
+  status.
+
   - The "get_status" action returns the current volume level and mute status.
-  - MacOS volume range internally is 0-7, but this script converts to/from 0-100 for better usability.
-  - Some actions may require accessibility permissions to be granted to the script runner.
+
+  - MacOS volume range internally is 0-7, but this script converts to/from 0-100
+  for better usability.
+
+  - Some actions may require accessibility permissions to be granted to the
+  script runner.
 ---
 
 Control macOS system volume and mute status.

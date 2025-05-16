@@ -1,11 +1,18 @@
 ---
-title: "Screen Time: Get App Usage"
-category: "02_system_interaction"
+title: 'Screen Time: Get App Usage'
+category: 04_system/screen_time
 id: screen_time_get_usage
-description: "Retrieves app usage statistics from Screen Time."
-keywords: ["Screen Time", "app usage", "usage statistics", "screen usage", "time tracking"]
+description: Retrieves app usage statistics from Screen Time.
+keywords:
+  - Screen Time
+  - app usage
+  - usage statistics
+  - screen usage
+  - time tracking
 language: applescript
-notes: "Gets app usage information from Screen Time. This requires Screen Time to be enabled on your Mac. May require Full Disk Access permissions."
+notes: >-
+  Gets app usage information from Screen Time. This requires Screen Time to be
+  enabled on your Mac. May require Full Disk Access permissions.
 ---
 
 ```applescript

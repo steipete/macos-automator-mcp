@@ -1,17 +1,34 @@
 ---
-title: "StandardAdditions: choose URL Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: choose URL Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_choose_url
-description: "Displays a dialog for the user to enter or select a URL. Returns the entered URL as text."
-keywords: ["StandardAdditions", "choose URL", "URL input", "dialog", "web address", "osax"]
+description: >-
+  Displays a dialog for the user to enter or select a URL. Returns the entered
+  URL as text.
+keywords:
+  - StandardAdditions
+  - choose URL
+  - URL input
+  - dialog
+  - web address
+  - osax
 language: applescript
-notes: |
-  - Parameters: `with title "text"`, `showing (URL | FTP | File | All)`, `with prompt "text"`.
+notes: >
+  - Parameters: `with title "text"`, `showing (URL | FTP | File | All)`, `with
+  prompt "text"`.
+
   - `showing URL` (default): Shows a field for HTTP/HTTPS URLs.
+
   - `showing FTP`: Shows fields for FTP URLs.
-  - `showing File`: Shows a file browser to select a local file URL (`file:///...`).
+
+  - `showing File`: Shows a file browser to select a local file URL
+  (`file:///...`).
+
   - `showing All`: Provides a popup to switch between URL, FTP, and File.
-  - Returns the URL as a string (e.g., "http://www.apple.com" or "ftp://ftp.example.com" or "file:///Users/user/Desktop/file.txt").
+
+  - Returns the URL as a string (e.g., "http://www.apple.com" or
+  "ftp://ftp.example.com" or "file:///Users/user/Desktop/file.txt").
+
   - If the user cancels, an error (number -128) is raised.
 ---
 

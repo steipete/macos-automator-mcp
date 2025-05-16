@@ -1,12 +1,19 @@
 ---
-title: "Contacts: Create New Contact"
-category: "07_productivity_apps"
+title: 'Contacts: Create New Contact'
+category: 09_productivity/contacts_app
 id: contacts_create_new_contact
-description: "Creates a new contact in the Contacts app with specified information."
-keywords: ["Contacts", "add contact", "new person", "create contact", "address book"]
+description: Creates a new contact in the Contacts app with specified information.
+keywords:
+  - Contacts
+  - add contact
+  - new person
+  - create contact
+  - address book
 language: applescript
-argumentsPrompt: "Enter name, email, and phone number for the new contact"
-notes: "Creates a new contact with basic information. You can customize the script to include additional fields."
+argumentsPrompt: 'Enter name, email, and phone number for the new contact'
+notes: >-
+  Creates a new contact with basic information. You can customize the script to
+  include additional fields.
 ---
 
 ```applescript

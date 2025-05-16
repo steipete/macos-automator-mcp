@@ -1,11 +1,23 @@
 ---
-title: "Pomodoro Timer"
-category: "11_advanced_techniques"
+title: Pomodoro Timer
+category: 11_advanced/workflow_automation
 id: pomodoro_timer
-description: "Implements a Pomodoro technique timer with customizable work/break intervals, notifications, and activity tracking"
-keywords: ["pomodoro", "timer", "productivity", "focus", "notification", "time management", "work session", "break"]
+description: >-
+  Implements a Pomodoro technique timer with customizable work/break intervals,
+  notifications, and activity tracking
+keywords:
+  - pomodoro
+  - timer
+  - productivity
+  - focus
+  - notification
+  - time management
+  - work session
+  - break
 language: applescript
-notes: "Uses notification center for alerts. Can be customized with different time intervals and notification sounds."
+notes: >-
+  Uses notification center for alerts. Can be customized with different time
+  intervals and notification sounds.
 ---
 
 ```applescript

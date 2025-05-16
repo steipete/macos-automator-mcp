@@ -1,11 +1,23 @@
 ---
-title: "JXA: Browser Automation"
-category: "10_jxa_basics"
+title: 'JXA: Browser Automation'
+category: 03_jxa_core
 id: jxa_browser_automation
-description: "Examples of automating Safari, Chrome, and other browsers using JXA to control tabs, perform web actions, and extract content."
-keywords: ["jxa", "javascript", "safari", "chrome", "browser automation", "web scripting", "tabs", "url"]
+description: >-
+  Examples of automating Safari, Chrome, and other browsers using JXA to control
+  tabs, perform web actions, and extract content.
+keywords:
+  - jxa
+  - javascript
+  - safari
+  - chrome
+  - browser automation
+  - web scripting
+  - tabs
+  - url
 language: javascript
-notes: "Browser scripting capabilities may change with browser updates. Safari offers the most reliable automation experience on macOS."
+notes: >-
+  Browser scripting capabilities may change with browser updates. Safari offers
+  the most reliable automation experience on macOS.
 ---
 
 ```javascript

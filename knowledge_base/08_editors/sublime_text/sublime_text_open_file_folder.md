@@ -11,12 +11,13 @@ keywords:
   - project loading
   - file management
 usage_examples:
-  - "Open the current Finder selection in Sublime Text"
-  - "Open a specific project folder in Sublime Text"
+  - Open the current Finder selection in Sublime Text
+  - Open a specific project folder in Sublime Text
 parameters:
   - name: itemPath
     description: The path to the file or folder to open (POSIX path)
     required: true
+category: 08_editors/sublime_text
 ---
 
 # Open file or folder in Sublime Text

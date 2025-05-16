@@ -1,11 +1,18 @@
 ---
-title: "QuickTime Player: Record Screen"
-category: "08_creative_and_document_apps"
+title: 'QuickTime Player: Record Screen'
+category: 10_creative/quicktime_player_app
 id: quicktime_record_screen
-description: "Starts a screen recording using QuickTime Player."
-keywords: ["QuickTime Player", "screen recording", "capture screen", "screencast", "video capture"]
+description: Starts a screen recording using QuickTime Player.
+keywords:
+  - QuickTime Player
+  - screen recording
+  - capture screen
+  - screencast
+  - video capture
 language: applescript
-notes: "Initiates a new screen recording. You'll need to manually select the recording area and stop the recording when finished."
+notes: >-
+  Initiates a new screen recording. You'll need to manually select the recording
+  area and stop the recording when finished.
 ---
 
 ```applescript

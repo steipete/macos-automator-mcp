@@ -1,14 +1,27 @@
 ---
-title: "Spotify: Playlist Operations"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Playlist Operations'
+category: 10_creative/spotify
 id: spotify_playlist_operations
-description: "Interact with Spotify playlists including listing available playlists, displaying contents, and playing a specific playlist."
-keywords: ["Spotify", "playlist", "playlists", "music", "collection", "playback"]
+description: >-
+  Interact with Spotify playlists including listing available playlists,
+  displaying contents, and playing a specific playlist.
+keywords:
+  - Spotify
+  - playlist
+  - playlists
+  - music
+  - collection
+  - playback
 language: applescript
-notes: |
+notes: >
   - Spotify must be running.
-  - This script demonstrates how to list playlists, play a specific playlist, and get playlist details.
-  - Many playlist operations might require additional permissions or authentication for full API access.
+
+  - This script demonstrates how to list playlists, play a specific playlist,
+  and get playlist details.
+
+  - Many playlist operations might require additional permissions or
+  authentication for full API access.
+
   - The script focuses on basic operations available through AppleScript.
 ---
 

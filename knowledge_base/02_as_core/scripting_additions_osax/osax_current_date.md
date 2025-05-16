@@ -1,11 +1,20 @@
 ---
-title: "StandardAdditions: current date Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: current date Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_current_date
-description: "Returns the current system date and time as a date object."
-keywords: ["StandardAdditions", "current date", "date", "time", "now", "timestamp", "osax"]
+description: Returns the current system date and time as a date object.
+keywords:
+  - StandardAdditions
+  - current date
+  - date
+  - time
+  - now
+  - timestamp
+  - osax
 language: applescript
-notes: "The returned value is a standard AppleScript date object, from which you can extract components like year, month, day, time string, etc."
+notes: >-
+  The returned value is a standard AppleScript date object, from which you can
+  extract components like year, month, day, time string, etc.
 ---
 
 `current date` retrieves the system's current date and time.

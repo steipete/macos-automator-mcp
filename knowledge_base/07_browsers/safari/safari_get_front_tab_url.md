@@ -1,9 +1,16 @@
 ---
-title: "Safari: Get URL of Front Tab"
-category: "05_web_browsers"
+title: 'Safari: Get URL of Front Tab'
+category: 07_browsers/safari
 id: safari_get_front_tab_url
-description: "Retrieves the web address (URL) of the currently active tab in the frontmost Safari window."
-keywords: ["Safari", "URL", "current tab", "web address", "browser"]
+description: >-
+  Retrieves the web address (URL) of the currently active tab in the frontmost
+  Safari window.
+keywords:
+  - Safari
+  - URL
+  - current tab
+  - web address
+  - browser
 language: applescript
 notes: |
   - Safari must be running.

@@ -1,12 +1,19 @@
 ---
-title: "Messages: Set Status Message"
-category: "07_productivity_apps"
+title: 'Messages: Set Status Message'
+category: 09_productivity/messages_app
 id: messages_set_status
-description: "Sets your status message in the Messages app."
-keywords: ["Messages", "status message", "away message", "iMessage status", "presence"]
+description: Sets your status message in the Messages app.
+keywords:
+  - Messages
+  - status message
+  - away message
+  - iMessage status
+  - presence
 language: applescript
-argumentsPrompt: "Enter the status message to set"
-notes: "Sets your status in the Messages app. The status will be visible to your contacts."
+argumentsPrompt: Enter the status message to set
+notes: >-
+  Sets your status in the Messages app. The status will be visible to your
+  contacts.
 ---
 
 ```applescript

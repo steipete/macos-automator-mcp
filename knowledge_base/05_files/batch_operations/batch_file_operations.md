@@ -1,11 +1,23 @@
 ---
-title: "Batch File Operations"
-category: "03_file_system_and_finder"
+title: Batch File Operations
+category: 05_files/batch_operations
 id: batch_file_operations
-description: "Performs batch operations on multiple files including renaming, moving, copying, and applying metadata"
-keywords: ["batch", "file", "rename", "metadata", "move", "copy", "Finder", "System Events"]
+description: >-
+  Performs batch operations on multiple files including renaming, moving,
+  copying, and applying metadata
+keywords:
+  - batch
+  - file
+  - rename
+  - metadata
+  - move
+  - copy
+  - Finder
+  - System Events
 language: applescript
-notes: "Requires Finder access permissions. Can be adapted for specific batch processing needs."
+notes: >-
+  Requires Finder access permissions. Can be adapted for specific batch
+  processing needs.
 ---
 
 ```applescript

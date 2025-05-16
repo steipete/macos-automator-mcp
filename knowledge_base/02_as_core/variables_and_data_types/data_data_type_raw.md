@@ -1,15 +1,31 @@
 ---
-title: "AppleScript Raw Data Type"
-category: "01_applescript_core"
+title: AppleScript Raw Data Type
+category: 02_as_core/variables_and_data_types
 id: core_datatype_data_raw
-description: "Understanding and working with the 'data' data type in AppleScript for handling binary data and type information."
-keywords: ["data", "raw data", "binary data", "type codes", "hexadecimal", "data conversion", "«data»"]
+description: >-
+  Understanding and working with the 'data' data type in AppleScript for
+  handling binary data and type information.
+keywords:
+  - data
+  - raw data
+  - binary data
+  - type codes
+  - hexadecimal
+  - data conversion
+  - «data»
 language: applescript
-notes: |
-  - The 'data' type is AppleScript's way of representing binary data with an associated type code
-  - It appears in the format «data TYPExxxx» where TYPE is a four-character type code and xxxx is hexadecimal data
-  - Often encountered when dealing with advanced scripting, low-level operations, and certain application APIs
-  - Powerful for interacting with system-level functionality, but requires careful handling
+notes: >
+  - The 'data' type is AppleScript's way of representing binary data with an
+  associated type code
+
+  - It appears in the format «data TYPExxxx» where TYPE is a four-character type
+  code and xxxx is hexadecimal data
+
+  - Often encountered when dealing with advanced scripting, low-level
+  operations, and certain application APIs
+
+  - Powerful for interacting with system-level functionality, but requires
+  careful handling
 ---
 
 The `data` data type is AppleScript's mechanism for handling raw binary data, typically represented with a four-character type code. This is crucial for working with certain low-level operations, system APIs, and application-specific data formats.

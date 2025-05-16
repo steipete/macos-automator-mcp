@@ -1,6 +1,6 @@
 ---
-title: "Create New Folder on Desktop"
-description: "Creates a new folder on the desktop with a specified name"
+title: Create New Folder on Desktop
+description: Creates a new folder on the desktop with a specified name
 keywords:
   - Finder
   - folder
@@ -10,8 +10,8 @@ keywords:
   - make directory
 language: applescript
 id: finder_create_new_folder_desktop
-argumentsPrompt: "Provide a name for the new folder"
-category: "03_file_system_and_finder"
+argumentsPrompt: Provide a name for the new folder
+category: 05_files/folder_operations_finder
 ---
 
 This script creates a new folder on the desktop with a specified name.

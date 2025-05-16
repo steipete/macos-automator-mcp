@@ -1,14 +1,24 @@
 ---
-title: "Core: Coercion Operator ('as')"
-category: "01_applescript_core"
+title: 'Core: Coercion Operator (''as'')'
+category: 02_as_core/operators
 id: core_operator_coercion_as
-description: "Explains the 'as' operator for explicit data type coercion (conversion)."
-keywords: ["operator", "coercion", "as", "type conversion", "data type", "cast"]
+description: Explains the 'as' operator for explicit data type coercion (conversion).
+keywords:
+  - operator
+  - coercion
+  - as
+  - type conversion
+  - data type
+  - cast
 language: applescript
-notes: |
+notes: >
   - Coercion attempts to convert a value from one data type to another.
-  - Not all coercions are possible and may result in an error if the conversion is invalid.
-  - Common uses: string to number, number to string, date to string, alias to string.
+
+  - Not all coercions are possible and may result in an error if the conversion
+  is invalid.
+
+  - Common uses: string to number, number to string, date to string, alias to
+  string.
 ---
 
 The `as` operator is used to explicitly change the data type of a value.

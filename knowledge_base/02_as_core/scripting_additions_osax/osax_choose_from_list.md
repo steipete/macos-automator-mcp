@@ -1,16 +1,31 @@
 ---
-title: "StandardAdditions: choose from list Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: choose from list Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_choose_from_list
-description: "Displays a dialog prompting the user to choose one or more items from a list."
-keywords: ["StandardAdditions", "choose from list", "list selection", "dialog", "multiple selection", "osax"]
+description: Displays a dialog prompting the user to choose one or more items from a list.
+keywords:
+  - StandardAdditions
+  - choose from list
+  - list selection
+  - dialog
+  - multiple selection
+  - osax
 language: applescript
-notes: |
+notes: >
   - Takes a list of strings (or items coercible to strings) as input.
-  - Parameters: `with title "text"`, `with prompt "text"`, `default items {item1, item2}` (pre-selects items), `multiple selections allowed` (boolean, default false), `empty selection allowed` (boolean, default false), `OK button name "text"`, `cancel button name "text"`.
+
+  - Parameters: `with title "text"`, `with prompt "text"`, `default items
+  {item1, item2}` (pre-selects items), `multiple selections allowed` (boolean,
+  default false), `empty selection allowed` (boolean, default false), `OK button
+  name "text"`, `cancel button name "text"`.
+
   - Returns a list of the selected items, or `false` if the user cancels.
-  - If `multiple selections allowed` is false and user selects an item, returns a list with one item.
-  - If `empty selection allowed` is true and user clicks OK without selecting, returns an empty list `{}`.
+
+  - If `multiple selections allowed` is false and user selects an item, returns
+  a list with one item.
+
+  - If `empty selection allowed` is true and user clicks OK without selecting,
+  returns an empty list `{}`.
 ---
 
 Allows the user to select one or more items from a presented list.

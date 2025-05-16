@@ -1,12 +1,27 @@
 ---
-title: "iOS Simulator: Trigger iCloud Sync"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Trigger iCloud Sync'
+category: 13_developer/xcode_app
 id: ios_simulator_icloud_sync
-description: "Manually triggers iCloud sync in iOS Simulator for testing cloud synchronization."
-keywords: ["iOS Simulator", "Xcode", "iCloud", "sync", "synchronization", "cloud", "developer", "iOS", "iPadOS"]
+description: >-
+  Manually triggers iCloud sync in iOS Simulator for testing cloud
+  synchronization.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - iCloud
+  - sync
+  - synchronization
+  - cloud
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional device identifier as 'deviceIdentifier' (defaults to 'booted'), optional app bundle ID as 'bundleID' (to focus sync on a specific app), optional sync type as 'syncType' ('full', 'lightweight', defaults to 'lightweight')."
+argumentsPrompt: >-
+  Optional device identifier as 'deviceIdentifier' (defaults to 'booted'),
+  optional app bundle ID as 'bundleID' (to focus sync on a specific app),
+  optional sync type as 'syncType' ('full', 'lightweight', defaults to
+  'lightweight').
 notes: |
   - Manually triggers iCloud synchronization in simulator
   - Useful for testing cloud-based features and data sync

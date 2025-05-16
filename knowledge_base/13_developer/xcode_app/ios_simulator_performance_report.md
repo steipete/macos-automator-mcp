@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Generate Performance Report"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Generate Performance Report'
+category: 13_developer/xcode_app
 id: ios_simulator_performance_report
-description: "Generates a system performance report for an app running in iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "performance", "profiling", "memory", "CPU", "developer", "iOS", "iPadOS"]
+description: Generates a system performance report for an app running in iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - performance
+  - profiling
+  - memory
+  - CPU
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App bundle ID as 'bundleID' (required), duration in seconds as 'durationSeconds' (default 10), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  App bundle ID as 'bundleID' (required), duration in seconds as
+  'durationSeconds' (default 10), and optional device identifier as
+  'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Captures app performance data in simulator
   - Monitors CPU usage, memory consumption, and more

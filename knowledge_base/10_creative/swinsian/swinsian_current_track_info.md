@@ -1,16 +1,35 @@
 ---
-title: "Swinsian: Get Current Track Information"
-category: "08_creative_and_document_apps"
+title: 'Swinsian: Get Current Track Information'
+category: 10_creative/swinsian
 id: swinsian_current_track_info
-description: "Retrieves detailed information about the currently playing track in Swinsian music player."
-keywords: ["Swinsian", "current track", "track info", "song details", "artist", "album", "duration", "rating", "FLAC", "high-quality audio"]
+description: >-
+  Retrieves detailed information about the currently playing track in Swinsian
+  music player.
+keywords:
+  - Swinsian
+  - current track
+  - track info
+  - song details
+  - artist
+  - album
+  - duration
+  - rating
+  - FLAC
+  - high-quality audio
 language: applescript
-notes: |
+notes: >
   - Swinsian must be running for this script to work.
+
   - This script retrieves comprehensive metadata about the current track.
-  - Swinsian supports a wide range of audio formats and maintains detailed track metadata.
-  - The script will report if no track is currently playing or if Swinsian is not running.
-  - Information includes basic metadata plus file format, bitrate, and other technical details.
+
+  - Swinsian supports a wide range of audio formats and maintains detailed track
+  metadata.
+
+  - The script will report if no track is currently playing or if Swinsian is
+  not running.
+
+  - Information includes basic metadata plus file format, bitrate, and other
+  technical details.
 ---
 
 Get detailed information about the currently playing track in Swinsian.

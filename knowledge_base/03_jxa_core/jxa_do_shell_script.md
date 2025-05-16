@@ -1,11 +1,19 @@
 ---
-title: "JXA: Running Shell Scripts"
-category: "10_jxa_basics"
+title: 'JXA: Running Shell Scripts'
+category: 03_jxa_core
 id: jxa_do_shell_script
-description: "Shows how to execute shell commands from JXA using `app.doShellScript()`."
-keywords: ["jxa", "javascript", "shell script", "terminal command", "execute"]
+description: Shows how to execute shell commands from JXA using `app.doShellScript()`.
+keywords:
+  - jxa
+  - javascript
+  - shell script
+  - terminal command
+  - execute
 language: javascript
-notes: "`app.includeStandardAdditions = true;` is required. Paths in shell commands should be POSIX. Use `Path().toString()` or `quoted form of` for paths with spaces."
+notes: >-
+  `app.includeStandardAdditions = true;` is required. Paths in shell commands
+  should be POSIX. Use `Path().toString()` or `quoted form of` for paths with
+  spaces.
 ---
 
 ```javascript

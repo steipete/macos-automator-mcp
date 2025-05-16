@@ -1,14 +1,28 @@
 ---
-title: "Network Configuration with networksetup"
-category: "12_network_services"
+title: Network Configuration with networksetup
+category: 12_network
 id: network_networksetup_cli
-description: "Manage network services, interfaces, Wi-Fi connections, and DNS settings using the networksetup command-line tool."
-keywords: ["network", "networksetup", "Wi-Fi", "DNS", "proxy", "ethernet", "network services", "TCP/IP"]
+description: >-
+  Manage network services, interfaces, Wi-Fi connections, and DNS settings using
+  the networksetup command-line tool.
+keywords:
+  - network
+  - networksetup
+  - Wi-Fi
+  - DNS
+  - proxy
+  - ethernet
+  - network services
+  - TCP/IP
 language: applescript
-notes: |
+notes: >
   - The networksetup tool requires administrator privileges for most operations
-  - This provides more control than what's available through System Preferences/Settings UI
+
+  - This provides more control than what's available through System
+  Preferences/Settings UI
+
   - Great for automation and scripting of network configurations
+
   - Can manipulate network locations, services, and interfaces programmatically
 ---
 

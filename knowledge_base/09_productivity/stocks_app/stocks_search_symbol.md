@@ -1,12 +1,19 @@
 ---
-title: "Stocks: Search for Stock Symbol"
-category: "07_productivity_apps"
+title: 'Stocks: Search for Stock Symbol'
+category: 09_productivity/stocks_app
 id: stocks_search_symbol
-description: "Searches for a stock symbol or company name in the Stocks app."
-keywords: ["Stocks", "search stock", "stock symbol", "company search", "ticker search"]
+description: Searches for a stock symbol or company name in the Stocks app.
+keywords:
+  - Stocks
+  - search stock
+  - stock symbol
+  - company search
+  - ticker search
 language: applescript
-argumentsPrompt: "Enter the stock symbol or company name to search for"
-notes: "Searches for a stock by symbol or company name. Results depend on what's available through the Stocks app."
+argumentsPrompt: Enter the stock symbol or company name to search for
+notes: >-
+  Searches for a stock by symbol or company name. Results depend on what's
+  available through the Stocks app.
 ---
 
 ```applescript

@@ -4,10 +4,16 @@ title: Integrate Kaleidoscope with Developer Tools
 description: Advanced script to integrate Kaleidoscope with various developer tools
 author: steipete
 language: applescript
-tags: kaleidoscope, diff, development, git, svn, xcode, debugging
-keywords: ["kaleidoscope", "git integration", "xcode integration", "database comparison", "branch comparison"]
+tags: 'kaleidoscope, diff, development, git, svn, xcode, debugging'
+keywords:
+  - kaleidoscope
+  - git integration
+  - xcode integration
+  - database comparison
+  - branch comparison
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/kaleidoscope
 ---
 
 # Integrate Kaleidoscope with Developer Tools

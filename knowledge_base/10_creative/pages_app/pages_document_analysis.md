@@ -1,12 +1,26 @@
 ---
-title: "Pages: Document Analysis and Statistics"
-category: "08_creative_and_document_apps"
+title: 'Pages: Document Analysis and Statistics'
+category: 10_creative/pages_app
 id: pages_document_analysis
-description: "Analyzes a Pages document to extract statistics, structure, and readability information."
-keywords: ["Pages", "document", "statistics", "word count", "character count", "analysis", "readability", "document structure"]
+description: >-
+  Analyzes a Pages document to extract statistics, structure, and readability
+  information.
+keywords:
+  - Pages
+  - document
+  - statistics
+  - word count
+  - character count
+  - analysis
+  - readability
+  - document structure
 language: applescript
-argumentsPrompt: "Enter the path to the Pages document to analyze (optional)"
-notes: "Extracts comprehensive document statistics including word count, character count, page count, sections, headings, and readability metrics. Returns data in a structured JSON format. If no path is provided, analyzes the currently open document."
+argumentsPrompt: Enter the path to the Pages document to analyze (optional)
+notes: >-
+  Extracts comprehensive document statistics including word count, character
+  count, page count, sections, headings, and readability metrics. Returns data
+  in a structured JSON format. If no path is provided, analyzes the currently
+  open document.
 ---
 
 ```applescript

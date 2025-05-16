@@ -1,13 +1,28 @@
 ---
-title: "Music: Basic Playback Controls"
-category: "08_creative_and_document_apps"
+title: 'Music: Basic Playback Controls'
+category: 10_creative/music_app
 id: music_playback_controls
-description: "Control basic playback in Music.app (or iTunes) such as play, pause, stop, next, previous, and volume."
-keywords: ["Music", "iTunes", "playback", "play", "pause", "stop", "next track", "previous track", "volume", "Apple Music"]
+description: >-
+  Control basic playback in Music.app (or iTunes) such as play, pause, stop,
+  next, previous, and volume.
+keywords:
+  - Music
+  - iTunes
+  - playback
+  - play
+  - pause
+  - stop
+  - next track
+  - previous track
+  - volume
+  - Apple Music
 language: applescript
-notes: |
-  - These commands target the Music application (or iTunes on older macOS versions).
+notes: >
+  - These commands target the Music application (or iTunes on older macOS
+  versions).
+
   - Ensure Music.app is running.
+
   - Volume is an integer from 0 (mute) to 100 (full).
 ---
 

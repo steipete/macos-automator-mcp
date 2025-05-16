@@ -1,12 +1,19 @@
 ---
-title: "Contacts: Export Contact as vCard"
-category: "07_productivity_apps"
+title: 'Contacts: Export Contact as vCard'
+category: 09_productivity/contacts_app
 id: contacts_export_vcard
-description: "Exports a contact as a vCard file (.vcf) to a specified location."
-keywords: ["Contacts", "export contact", "vCard", "vcf", "save contact"]
+description: Exports a contact as a vCard file (.vcf) to a specified location.
+keywords:
+  - Contacts
+  - export contact
+  - vCard
+  - vcf
+  - save contact
 language: applescript
-argumentsPrompt: "Enter the contact name to export and the destination file path"
-notes: "Searches for a contact by name and exports it as a vCard file. The destination path should be a full POSIX path ending with .vcf"
+argumentsPrompt: Enter the contact name to export and the destination file path
+notes: >-
+  Searches for a contact by name and exports it as a vCard file. The destination
+  path should be a full POSIX path ending with .vcf
 ---
 
 ```applescript

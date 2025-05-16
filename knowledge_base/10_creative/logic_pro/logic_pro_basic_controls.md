@@ -1,16 +1,34 @@
 ---
-title: "Logic Pro: Basic Controls"
-category: "08_creative_and_document_apps"
+title: 'Logic Pro: Basic Controls'
+category: 10_creative/logic_pro
 id: logic_pro_basic_controls
-description: "Control basic playback and transport functions in Logic Pro including play, stop, record, and navigation."
-keywords: ["Logic Pro", "DAW", "playback", "transport", "record", "music production", "play", "stop"]
+description: >-
+  Control basic playback and transport functions in Logic Pro including play,
+  stop, record, and navigation.
+keywords:
+  - Logic Pro
+  - DAW
+  - playback
+  - transport
+  - record
+  - music production
+  - play
+  - stop
 language: applescript
-notes: |
+notes: >
   - Logic Pro must be running for these commands to work.
-  - Logic Pro has limited AppleScript support compared to some other Apple applications.
-  - This script uses a combination of direct AppleScript commands and UI automation through System Events.
-  - Some commands may require Accessibility permissions to be granted for the script runner.
-  - The script covers the most common transport controls: play, stop, record, and navigation.
+
+  - Logic Pro has limited AppleScript support compared to some other Apple
+  applications.
+
+  - This script uses a combination of direct AppleScript commands and UI
+  automation through System Events.
+
+  - Some commands may require Accessibility permissions to be granted for the
+  script runner.
+
+  - The script covers the most common transport controls: play, stop, record,
+  and navigation.
 ---
 
 Control basic transport and playback functions in Logic Pro.

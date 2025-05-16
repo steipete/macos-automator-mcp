@@ -1,15 +1,25 @@
 ---
-title: "Firefox: List All Tabs"
-category: "05_web_browsers"
+title: 'Firefox: List All Tabs'
+category: 07_browsers/firefox
 id: firefox_list_all_tabs
-description: "Lists all open tabs in the frontmost Firefox window using UI scripting."
-keywords: ["Firefox", "tabs", "list tabs", "window", "browser", "UI scripting"]
+description: Lists all open tabs in the frontmost Firefox window using UI scripting.
+keywords:
+  - Firefox
+  - tabs
+  - list tabs
+  - window
+  - browser
+  - UI scripting
 language: applescript
-notes: |
+notes: >
   - Firefox must be running.
+
   - This script uses UI scripting via System Events.
+
   - Requires accessibility permissions.
-  - Not as reliable as Safari's native AppleScript support, as it depends on UI elements.
+
+  - Not as reliable as Safari's native AppleScript support, as it depends on UI
+  elements.
 ---
 
 This script retrieves a list of all open tabs in the frontmost Firefox window. Since Firefox has limited AppleScript support, this script uses UI scripting to interact with Firefox's Tab Manager.

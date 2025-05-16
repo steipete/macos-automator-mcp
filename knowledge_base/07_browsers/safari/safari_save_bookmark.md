@@ -1,12 +1,19 @@
 ---
-title: "Safari: Save Bookmark"
-category: "05_web_browsers"
+title: 'Safari: Save Bookmark'
+category: 07_browsers/safari
 id: safari_save_bookmark
-description: "Saves the current webpage as a bookmark in Safari."
-keywords: ["Safari", "bookmark", "save bookmark", "web favorites", "bookmark page"]
+description: Saves the current webpage as a bookmark in Safari.
+keywords:
+  - Safari
+  - bookmark
+  - save bookmark
+  - web favorites
+  - bookmark page
 language: applescript
-argumentsPrompt: "Enter bookmark name and the folder to save in (optional)"
-notes: "Saves the current page in Safari as a bookmark with the specified name and optionally in a specific folder."
+argumentsPrompt: Enter bookmark name and the folder to save in (optional)
+notes: >-
+  Saves the current page in Safari as a bookmark with the specified name and
+  optionally in a specific folder.
 ---
 
 ```applescript

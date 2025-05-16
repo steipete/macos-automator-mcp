@@ -1,14 +1,25 @@
 ---
-title: "Core: Droplet Handler 'on open'"
-category: "01_applescript_core"
+title: 'Core: Droplet Handler ''on open'''
+category: 02_as_core/handlers_and_subroutines
 id: core_handler_on_open_droplet
-description: "Defines a handler that executes when files or folders are dropped onto the saved script (applet). The input is a list of aliases to the dropped items."
-keywords: ["handler", "droplet", "on open", "drag and drop", "file processing", "alias list"]
+description: >-
+  Defines a handler that executes when files or folders are dropped onto the
+  saved script (applet). The input is a list of aliases to the dropped items.
+keywords:
+  - handler
+  - droplet
+  - on open
+  - drag and drop
+  - file processing
+  - alias list
 language: applescript
-notes: |
+notes: >
   - Save the script as an Application to create a droplet.
+
   - `listOfDroppedItems` will be a list, even if only one item is dropped.
-  - Each item in the list is an `alias`. Coerce to `POSIX path` for shell commands.
+
+  - Each item in the list is an `alias`. Coerce to `POSIX path` for shell
+  commands.
 ---
 
 ```applescript

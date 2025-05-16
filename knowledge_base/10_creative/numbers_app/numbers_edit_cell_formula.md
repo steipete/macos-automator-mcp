@@ -1,12 +1,19 @@
 ---
-title: "Numbers: Edit Cell Formula"
-category: "08_creative_and_document_apps"
+title: 'Numbers: Edit Cell Formula'
+category: 10_creative/numbers_app
 id: numbers_edit_cell_formula
-description: "Edits a cell formula in a Numbers spreadsheet."
-keywords: ["Numbers", "cell formula", "spreadsheet formula", "edit cell", "formula editing"]
+description: Edits a cell formula in a Numbers spreadsheet.
+keywords:
+  - Numbers
+  - cell formula
+  - spreadsheet formula
+  - edit cell
+  - formula editing
 language: applescript
-argumentsPrompt: "Enter the file path, sheet name, cell reference, and formula to set"
-notes: "Edits a formula in a specific cell of a Numbers spreadsheet. Cell reference format is column letter followed by row number (e.g., 'A1')."
+argumentsPrompt: 'Enter the file path, sheet name, cell reference, and formula to set'
+notes: >-
+  Edits a formula in a specific cell of a Numbers spreadsheet. Cell reference
+  format is column letter followed by row number (e.g., 'A1').
 ---
 
 ```applescript

@@ -1,15 +1,33 @@
 ---
-title: "Safari: Form Manipulation"
-category: "05_web_browsers"
+title: 'Safari: Form Manipulation'
+category: 07_browsers/safari
 id: safari_form_manipulation
-description: "Fills, manipulates, and submits web forms in Safari, supporting various input types, validation, and form submission."
-keywords: ["Safari", "forms", "input", "web development", "testing", "automation", "fill form", "submit", "checkbox", "radio button"]
+description: >-
+  Fills, manipulates, and submits web forms in Safari, supporting various input
+  types, validation, and form submission.
+keywords:
+  - Safari
+  - forms
+  - input
+  - web development
+  - testing
+  - automation
+  - fill form
+  - submit
+  - checkbox
+  - radio button
 language: applescript
 isComplex: true
-argumentsPrompt: "Form field values as JSON object in 'formData', selector for form as 'formSelector', and optional boolean flag 'submit' to automatically submit the form in inputData."
-notes: |
+argumentsPrompt: >-
+  Form field values as JSON object in 'formData', selector for form as
+  'formSelector', and optional boolean flag 'submit' to automatically submit the
+  form in inputData.
+notes: >
   - Safari must be running with at least one open tab.
-  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop menu.
+
+  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop
+  menu.
+
   - The script supports most HTML form elements including:
     - Text inputs, textareas, email, password, number, etc.
     - Checkboxes and radio buttons
@@ -18,10 +36,17 @@ notes: |
     - Date and time inputs
     - Range sliders
     - Color pickers
-  - Form data should be provided as a JSON object with field names as keys and values as values.
-  - You can target form elements by name, id, or CSS selector in the formData object.
+  - Form data should be provided as a JSON object with field names as keys and
+  values as values.
+
+  - You can target form elements by name, id, or CSS selector in the formData
+  object.
+
   - The script can optionally submit the form and wait for the page to load.
-  - For file upload fields, provide a data URL or a local file path accessible to Safari.
+
+  - For file upload fields, provide a data URL or a local file path accessible
+  to Safari.
+
   - The script handles field validation and returns detailed error information.
 ---
 

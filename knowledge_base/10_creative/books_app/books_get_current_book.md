@@ -1,11 +1,16 @@
 ---
-title: "Books: Get Current Book Info"
-category: "08_creative_and_document_apps"
+title: 'Books: Get Current Book Info'
+category: 10_creative/books_app
 id: books_get_current_book
-description: "Retrieves information about the currently open book in the Books app."
-keywords: ["Books", "Apple Books", "ebook", "current book", "reading progress"]
+description: Retrieves information about the currently open book in the Books app.
+keywords:
+  - Books
+  - Apple Books
+  - ebook
+  - current book
+  - reading progress
 language: applescript
-notes: "Requires the Books app to be open with a book already loaded."
+notes: Requires the Books app to be open with a book already loaded.
 ---
 
 ```applescript

@@ -1,13 +1,22 @@
 ---
-title: "Script Editor: Get Document Text"
-category: "developer"
+title: 'Script Editor: Get Document Text'
+category: 13_developer/script_editor_app
 id: script_editor_get_text
-description: "Retrieves the text content of a Script Editor document."
-keywords: ["Script Editor", "text", "content", "document", "get text", "script content"]
+description: Retrieves the text content of a Script Editor document.
+keywords:
+  - Script Editor
+  - text
+  - content
+  - document
+  - get text
+  - script content
 language: applescript
-notes: |
+notes: >
   - Script Editor must be running with at least one document open
-  - The returned text is the raw script content, not including compilation results or log output
+
+  - The returned text is the raw script content, not including compilation
+  results or log output
+
   - This can be useful for automating script management and modifications
 ---
 

@@ -1,11 +1,18 @@
 ---
-title: "FaceTime: Create FaceTime Link"
-category: "07_productivity_apps"
+title: 'FaceTime: Create FaceTime Link'
+category: 09_productivity/facetime_app
 id: facetime_create_link
-description: "Creates a FaceTime link that can be shared with others."
-keywords: ["FaceTime", "create link", "FaceTime link", "share FaceTime", "video call link"]
+description: Creates a FaceTime link that can be shared with others.
+keywords:
+  - FaceTime
+  - create link
+  - FaceTime link
+  - share FaceTime
+  - video call link
 language: applescript
-notes: "Creates a shareable FaceTime link and copies it to the clipboard. This feature is available in macOS Monterey (12) and later."
+notes: >-
+  Creates a shareable FaceTime link and copies it to the clipboard. This feature
+  is available in macOS Monterey (12) and later.
 ---
 
 ```applescript

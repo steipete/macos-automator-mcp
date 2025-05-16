@@ -1,13 +1,22 @@
 ---
 id: find_my_list_devices
 title: List All Devices in Find My App
-description: Lists all devices associated with the user's Apple ID in the Find My app, including their online status if available
+description: >-
+  Lists all devices associated with the user's Apple ID in the Find My app,
+  including their online status if available
 language: applescript
-contributors: ["Claude AI"]
-created: 2024-05-16
-category: 07_productivity_apps
-platforms: ["macOS"]
-keywords: ["Find My", "Apple devices", "location tracking", "device list", "iCloud"]
+contributors:
+  - Claude AI
+created: 2024-05-16T00:00:00.000Z
+category: 09_productivity/find_my_app
+platforms:
+  - macOS
+keywords:
+  - Find My
+  - Apple devices
+  - location tracking
+  - device list
+  - iCloud
 requirements:
   - System Events accessibility permissions
   - Find My app

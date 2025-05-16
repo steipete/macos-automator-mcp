@@ -3,7 +3,13 @@ id: jxa_clipboard_operations
 title: Clipboard Operations with JXA
 description: Manage clipboard contents using JavaScript for Automation
 language: javascript
-keywords: ["clipboard", "copy", "paste", "text manipulation", "file transfer"]
+keywords:
+  - clipboard
+  - copy
+  - paste
+  - text manipulation
+  - file transfer
+category: 03_jxa_core
 ---
 
 # Clipboard Operations with JXA

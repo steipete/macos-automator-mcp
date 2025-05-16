@@ -1,12 +1,16 @@
 ---
-title: "Photos: Create New Album"
-category: "08_creative_and_document_apps"
+title: 'Photos: Create New Album'
+category: 10_creative/photos_app
 id: photos_create_album
-description: "Creates a new album in the Photos app with a specified name."
-keywords: ["Photos", "create album", "photo album", "photo organization"]
+description: Creates a new album in the Photos app with a specified name.
+keywords:
+  - Photos
+  - create album
+  - photo album
+  - photo organization
 language: applescript
-argumentsPrompt: "Enter a name for the new album"
-notes: "Creates an empty album that you can later add photos to."
+argumentsPrompt: Enter a name for the new album
+notes: Creates an empty album that you can later add photos to.
 ---
 
 ```applescript

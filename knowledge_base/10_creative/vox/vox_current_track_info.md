@@ -1,15 +1,31 @@
 ---
-title: "VOX: Get Current Track Information"
-category: "08_creative_and_document_apps"
+title: 'VOX: Get Current Track Information'
+category: 10_creative/vox
 id: vox_current_track_info
-description: "Retrieves detailed information about the currently playing track in VOX Music Player."
-keywords: ["VOX", "current track", "track info", "song details", "artist", "album", "duration", "FLAC", "music"]
+description: >-
+  Retrieves detailed information about the currently playing track in VOX Music
+  Player.
+keywords:
+  - VOX
+  - current track
+  - track info
+  - song details
+  - artist
+  - album
+  - duration
+  - FLAC
+  - music
 language: applescript
-notes: |
+notes: >
   - VOX Music Player must be running.
+
   - If no track is playing or paused, the script will report this.
-  - VOX can provide information like track title, artist, album, current position, and more.
-  - VOX is often used for playing high-quality audio formats that iTunes/Music may not support natively.
+
+  - VOX can provide information like track title, artist, album, current
+  position, and more.
+
+  - VOX is often used for playing high-quality audio formats that iTunes/Music
+  may not support natively.
 ---
 
 Get details of the current track in VOX Music Player.

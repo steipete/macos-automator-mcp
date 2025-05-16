@@ -1,14 +1,26 @@
 ---
-title: "StandardAdditions: ASCII Character/Number"
-category: "01_applescript_core"
+title: 'StandardAdditions: ASCII Character/Number'
+category: 02_as_core/scripting_additions_osax
 id: osax_ascii_char_num
-description: "Converts between ASCII character codes (integers) and their corresponding characters."
-keywords: ["StandardAdditions", "ASCII character", "ASCII number", "character code", "ord", "chr", "osax"]
+description: >-
+  Converts between ASCII character codes (integers) and their corresponding
+  characters.
+keywords:
+  - StandardAdditions
+  - ASCII character
+  - ASCII number
+  - character code
+  - ord
+  - chr
+  - osax
 language: applescript
-notes: |
+notes: >
   - `ASCII number "A"` returns the ASCII code (e.g., 65 for "A").
+
   - `ASCII character 65` returns the character (e.g., "A" for 65).
-  - Only works for standard ASCII characters (0-127). For extended characters or Unicode, other methods are needed.
+
+  - Only works for standard ASCII characters (0-127). For extended characters or
+  Unicode, other methods are needed.
 ---
 
 These commands convert between characters and their ASCII integer codes.

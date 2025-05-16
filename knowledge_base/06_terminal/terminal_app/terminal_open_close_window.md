@@ -1,11 +1,23 @@
 ---
-title: "Terminal: Open and Close Windows"
+title: 'Terminal: Open and Close Windows'
 id: terminal_open_close_window
-category: "04_terminal_emulators"
-description: "Opens a new Terminal.app window, optionally runs a command, and provides functionality to close windows."
-keywords: ["Terminal.app", "window", "open", "close", "create", "quit", "command"]
+category: 06_terminal/terminal_app
+description: >-
+  Opens a new Terminal.app window, optionally runs a command, and provides
+  functionality to close windows.
+keywords:
+  - Terminal.app
+  - window
+  - open
+  - close
+  - create
+  - quit
+  - command
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"command\": \"optional command to run\", \"action\": \"open or close\", \"targetWindow\": \"all, front, or a number\" } (action defaults to 'open' if omitted)."
+argumentsPrompt: >-
+  Expects inputData with: { "command": "optional command to run", "action":
+  "open or close", "targetWindow": "all, front, or a number" } (action defaults
+  to 'open' if omitted).
 isComplex: false
 ---
 

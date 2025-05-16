@@ -1,12 +1,24 @@
 ---
-title: "Chrome: Open Developer Tools"
-category: "05_web_browsers"
+title: 'Chrome: Open Developer Tools'
+category: 07_browsers/chrome
 id: chrome_open_devtools
-description: "Opens Chrome DevTools for the active tab using keyboard shortcuts or menu navigation, with options to target specific DevTools panels."
-keywords: ["Chrome", "DevTools", "inspect", "developer tools", "debug", "web development"]
+description: >-
+  Opens Chrome DevTools for the active tab using keyboard shortcuts or menu
+  navigation, with options to target specific DevTools panels.
+keywords:
+  - Chrome
+  - DevTools
+  - inspect
+  - developer tools
+  - debug
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional panel name as 'panel' in inputData. For example: { \"panel\": \"elements\" } to open the Elements panel. Supported values: elements, console, sources, network, performance, memory, application, security, lighthouse. Leave empty for default (Elements)."
+argumentsPrompt: >-
+  Optional panel name as 'panel' in inputData. For example: { "panel":
+  "elements" } to open the Elements panel. Supported values: elements, console,
+  sources, network, performance, memory, application, security, lighthouse.
+  Leave empty for default (Elements).
 notes: |
   - Google Chrome must be running with at least one window and tab open.
   - Uses keyboard shortcuts to open DevTools and specific panels.

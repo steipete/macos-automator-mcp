@@ -1,19 +1,39 @@
 ---
-title: "Safari: Toggle Responsive Design Mode"
-category: "05_web_browsers"
+title: 'Safari: Toggle Responsive Design Mode'
+category: 07_browsers/safari
 id: safari_toggle_responsive_design_mode
-description: "Toggles responsive design mode in Safari for mobile device testing and responsive design development."
-keywords: ["Safari", "responsive design", "mobile", "development", "testing", "web development", "device simulation"]
+description: >-
+  Toggles responsive design mode in Safari for mobile device testing and
+  responsive design development.
+keywords:
+  - Safari
+  - responsive design
+  - mobile
+  - development
+  - testing
+  - web development
+  - device simulation
 language: applescript
 isComplex: false
-argumentsPrompt: "Optional device preset name as 'devicePreset' in inputData. If provided, will attempt to select that device preset."
-notes: |
+argumentsPrompt: >-
+  Optional device preset name as 'devicePreset' in inputData. If provided, will
+  attempt to select that device preset.
+notes: >
   - Safari must be running with at least one open tab.
+
   - The Develop menu must be enabled in Safari preferences.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
-  - If a device preset name is provided, the script will attempt to select that preset.
-  - Common device presets include: "iPhone", "iPad", "Apple Watch", "Responsive", etc.
-  - If no preset is specified, the script will simply toggle responsive design mode on/off.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
+  - If a device preset name is provided, the script will attempt to select that
+  preset.
+
+  - Common device presets include: "iPhone", "iPad", "Apple Watch",
+  "Responsive", etc.
+
+  - If no preset is specified, the script will simply toggle responsive design
+  mode on/off.
 ---
 
 This script toggles responsive design mode in Safari and optionally selects a specific device preset.

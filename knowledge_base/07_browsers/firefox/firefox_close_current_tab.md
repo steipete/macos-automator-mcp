@@ -1,15 +1,24 @@
 ---
-title: "Firefox: Close Current Tab"
-category: "05_web_browsers"
+title: 'Firefox: Close Current Tab'
+category: 07_browsers/firefox
 id: firefox_close_current_tab
-description: "Closes the currently active tab in Firefox."
-keywords: ["Firefox", "tab", "close tab", "browser", "UI scripting"]
+description: Closes the currently active tab in Firefox.
+keywords:
+  - Firefox
+  - tab
+  - close tab
+  - browser
+  - UI scripting
 language: applescript
-notes: |
+notes: >
   - Firefox must be running.
+
   - Uses keyboard shortcut to close the current tab.
+
   - Requires accessibility permissions for UI scripting.
-  - Will close Firefox if only one tab is open (unless configured to keep window open).
+
+  - Will close Firefox if only one tab is open (unless configured to keep window
+  open).
 ---
 
 This script closes the currently active tab in Firefox. Since Firefox has limited AppleScript support, this script uses System Events to send the standard keyboard shortcut for closing a tab.

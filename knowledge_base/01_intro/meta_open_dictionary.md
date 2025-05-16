@@ -1,10 +1,18 @@
 ---
-title: "Meta: Exploring Application Scriptability (Open Dictionary)"
-category: "00_readme_and_conventions"
+title: 'Meta: Exploring Application Scriptability (Open Dictionary)'
+category: 01_intro
 id: meta_open_dictionary
-description: "Explains how to use Script Editor's 'Open Dictionary...' feature to discover an application's scriptable commands, objects, and properties."
-keywords: ["script editor", "dictionary", "scriptable", "automation", "discover", "sdef"]
-language: applescript # Language is context for the tip, not the script block here
+description: >-
+  Explains how to use Script Editor's 'Open Dictionary...' feature to discover
+  an application's scriptable commands, objects, and properties.
+keywords:
+  - script editor
+  - dictionary
+  - scriptable
+  - automation
+  - discover
+  - sdef
+language: applescript
 ---
 
 The key to automating any macOS application with AppleScript is understanding its "scripting dictionary." This dictionary lists all the commands the application understands and all the objects it can work with.

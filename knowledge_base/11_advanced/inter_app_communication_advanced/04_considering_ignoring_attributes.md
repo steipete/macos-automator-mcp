@@ -1,12 +1,27 @@
 ---
-title: "Advanced: 'considering/ignoring attributes' Block"
-category: "11_advanced_techniques"
+title: 'Advanced: ''considering/ignoring attributes'' Block'
+category: 11_advanced/inter_app_communication_advanced
 id: advanced_considering_ignoring_attributes
-description: "Explains how the 'considering' and 'ignoring' blocks modify AppleScript's string comparison behavior for attributes like case, white space, punctuation, etc."
-keywords: ["Apple Events", "considering", "ignoring", "case sensitivity", "white space", "punctuation", "diacriticals", "hyphens", "expansion", "string comparison"]
+description: >-
+  Explains how the 'considering' and 'ignoring' blocks modify AppleScript's
+  string comparison behavior for attributes like case, white space, punctuation,
+  etc.
+keywords:
+  - Apple Events
+  - considering
+  - ignoring
+  - case sensitivity
+  - white space
+  - punctuation
+  - diacriticals
+  - hyphens
+  - expansion
+  - string comparison
 language: applescript
-notes: |
-  - `considering attribute1, attribute2, ... but ignoring attribute3, ... end considering` allows fine-grained control over string comparisons.
+notes: >
+  - `considering attribute1, attribute2, ... but ignoring attribute3, ... end
+  considering` allows fine-grained control over string comparisons.
+
   - Attributes:
     - `case`: Distinguishes between uppercase and lowercase letters.
     - `white space`: Considers spaces, tabs, and newlines as significant.
@@ -16,7 +31,9 @@ notes: |
     - `numeric strings` (or `numeric_strings`): Treats sequences of digits as numbers for comparison (e.g., "Item 2" < "Item 10").
     - `expansion`: Expands ligatures (e.g., 'æ' to 'ae') before comparing.
   - `ignoring` does the opposite for the specified attributes.
-  - The default behavior is often `ignoring case, white space, punctuation` but considering others.
+
+  - The default behavior is often `ignoring case, white space, punctuation` but
+  considering others.
 ---
 
 `considering` and `ignoring` blocks allow you to temporarily change how AppleScript compares strings and other values, focusing on or disregarding specific attributes like case, white space, or punctuation.

@@ -1,25 +1,49 @@
 ---
-title: "Safari: Modify DOM"
-category: "05_web_browsers"
+title: 'Safari: Modify DOM'
+category: 07_browsers/safari
 id: safari_modify_dom
-description: "Modifies the DOM of the current Safari webpage, allowing you to add, remove, or change elements, attributes, and styles."
-keywords: ["Safari", "DOM", "manipulation", "web development", "HTML", "CSS", "JavaScript", "modify", "edit", "elements"]
+description: >-
+  Modifies the DOM of the current Safari webpage, allowing you to add, remove,
+  or change elements, attributes, and styles.
+keywords:
+  - Safari
+  - DOM
+  - manipulation
+  - web development
+  - HTML
+  - CSS
+  - JavaScript
+  - modify
+  - edit
+  - elements
 language: applescript
 isComplex: true
-argumentsPrompt: "Operation type as 'operation' ('add', 'remove', 'modify', 'style', 'text'), CSS selector as 'selector', and operation-specific parameters as 'content', 'attribute', 'value', etc. in inputData."
-notes: |
+argumentsPrompt: >-
+  Operation type as 'operation' ('add', 'remove', 'modify', 'style', 'text'),
+  CSS selector as 'selector', and operation-specific parameters as 'content',
+  'attribute', 'value', etc. in inputData.
+notes: >
   - Safari must be running with at least one open tab.
-  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop menu.
+
+  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop
+  menu.
+
   - The script uses CSS selectors to target specific elements on the page.
+
   - Available operations:
     - 'add': Inserts new HTML content at a specified position relative to targeted elements
     - 'remove': Removes elements matching the selector
     - 'modify': Changes attributes of targeted elements
     - 'style': Modifies CSS styles of targeted elements
     - 'text': Changes the text content of targeted elements
-  - For the 'add' operation, specify 'position' as 'append', 'prepend', 'before', 'after', or 'replace'
-  - Changes are made directly to the live DOM and are not persisted when the page is reloaded.
+  - For the 'add' operation, specify 'position' as 'append', 'prepend',
+  'before', 'after', or 'replace'
+
+  - Changes are made directly to the live DOM and are not persisted when the
+  page is reloaded.
+
   - The script returns a summary of the changes made.
+
   - Be cautious when modifying the DOM as it can affect page functionality.
 ---
 

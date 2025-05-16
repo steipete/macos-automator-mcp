@@ -1,16 +1,36 @@
 ---
-title: "Advanced: Raw Apple Events"
-category: "11_advanced_techniques"
+title: 'Advanced: Raw Apple Events'
+category: 11_advanced/inter_app_communication_advanced
 id: advanced_raw_apple_events
-description: "Explains raw Apple Events using four-character codes (chevrons «») and their limited use cases."
-keywords: ["Apple Events", "raw events", "four-char codes", "chevrons", "low-level", "scripting bridge", "sdef"]
+description: >-
+  Explains raw Apple Events using four-character codes (chevrons «») and their
+  limited use cases.
+keywords:
+  - Apple Events
+  - raw events
+  - four-char codes
+  - chevrons
+  - low-level
+  - scripting bridge
+  - sdef
 language: applescript
-notes: |
-  - Raw Apple Events use four-character codes (e.g., `«event ToySRunT»`) instead of human-readable terms.
-  - Guillemets (`«` and `»`) are used to denote these codes. You can type them with Option-\ and Shift-Option-\
-  - This is a lower-level way to send commands to applications and is rarely needed by scripters, as application dictionaries usually provide human-readable terms.
-  - It can be useful if an application responds to an event that isn't documented in its dictionary, or when dealing with very old applications or custom inter-application communication.
-  - The `event ID` is a combination of an Event Class and an Event ID (both four-character codes).
+notes: >
+  - Raw Apple Events use four-character codes (e.g., `«event ToySRunT»`) instead
+  of human-readable terms.
+
+  - Guillemets (`«` and `»`) are used to denote these codes. You can type them
+  with Option-\ and Shift-Option-\
+
+  - This is a lower-level way to send commands to applications and is rarely
+  needed by scripters, as application dictionaries usually provide
+  human-readable terms.
+
+  - It can be useful if an application responds to an event that isn't
+  documented in its dictionary, or when dealing with very old applications or
+  custom inter-application communication.
+
+  - The `event ID` is a combination of an Event Class and an Event ID (both
+  four-character codes).
 ---
 
 Raw Apple Events provide a low-level mechanism to communicate with applications using their internal four-character codes.

@@ -1,15 +1,30 @@
 ---
-title: "StandardAdditions: list disks and list folder Commands"
-category: "01_applescript_core"
+title: 'StandardAdditions: list disks and list folder Commands'
+category: 02_as_core/scripting_additions_osax
 id: osax_list_disk_folder
-description: "Lists mounted disk volumes and the contents of a specified folder."
-keywords: ["StandardAdditions", "list disks", "list folder", "file system", "directory listing", "volumes", "files", "folders", "osax"]
+description: Lists mounted disk volumes and the contents of a specified folder.
+keywords:
+  - StandardAdditions
+  - list disks
+  - list folder
+  - file system
+  - directory listing
+  - volumes
+  - files
+  - folders
+  - osax
 language: applescript
-notes: |
-  - `list disks` returns a list of names of all mounted volumes (e.g., "Macintosh HD", "Time Machine", "NetworkShare").
-  - `list folder` takes a path (alias or string) to a folder and returns a list of names of items directly within that folder.
+notes: >
+  - `list disks` returns a list of names of all mounted volumes (e.g.,
+  "Macintosh HD", "Time Machine", "NetworkShare").
+
+  - `list folder` takes a path (alias or string) to a folder and returns a list
+  of names of items directly within that folder.
+
   - `list folder ... invisibles false` excludes invisible files/folders.
-  - `list folder ... without invisibles` is an alias for `list folder ... invisibles false`.
+
+  - `list folder ... without invisibles` is an alias for `list folder ...
+  invisibles false`.
 ---
 
 Provides information about mounted disks and folder contents.

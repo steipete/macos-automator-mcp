@@ -1,12 +1,29 @@
 ---
-title: "iOS Simulator: Monitor and Filter App Logs"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Monitor and Filter App Logs'
+category: 13_developer/xcode_app
 id: ios_simulator_monitor_logs
-description: "Monitors iOS Simulator logs and filters them by app or subsystem for real-time debugging."
-keywords: ["iOS Simulator", "Xcode", "logs", "debugging", "console", "filter", "monitoring", "developer", "iOS", "iPadOS"]
+description: >-
+  Monitors iOS Simulator logs and filters them by app or subsystem for real-time
+  debugging.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - logs
+  - debugging
+  - console
+  - filter
+  - monitoring
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App bundle ID as 'bundleID' to filter logs (optional), filter string as 'filterString' (optional additional filter), optional device identifier as 'deviceIdentifier' (defaults to 'booted'), and optional log level as 'logLevel' (default is 'default', options: 'debug', 'info', 'default', 'error', 'fault')."
+argumentsPrompt: >-
+  App bundle ID as 'bundleID' to filter logs (optional), filter string as
+  'filterString' (optional additional filter), optional device identifier as
+  'deviceIdentifier' (defaults to 'booted'), and optional log level as
+  'logLevel' (default is 'default', options: 'debug', 'info', 'default',
+  'error', 'fault').
 notes: |
   - Provides real-time streaming of simulator logs
   - Can filter logs by specific app bundle ID

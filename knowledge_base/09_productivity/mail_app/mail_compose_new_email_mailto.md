@@ -1,15 +1,27 @@
 ---
-title: "Mail: Compose New Email (via mailto URL)"
-category: "07_productivity_apps"
+title: 'Mail: Compose New Email (via mailto URL)'
+category: 09_productivity/mail_app
 id: mail_compose_new_email_mailto
-description: "Creates a new email in Mail.app with specified recipient, subject, and body using a 'mailto' URL. Mail.app will open with the draft."
-keywords: ["Mail", "email", "compose", "new message", "mailto"]
+description: >-
+  Creates a new email in Mail.app with specified recipient, subject, and body
+  using a 'mailto' URL. Mail.app will open with the draft.
+keywords:
+  - Mail
+  - email
+  - compose
+  - new message
+  - mailto
 language: applescript
 isComplex: true
-argumentsPrompt: "Recipient email as 'recipient', subject as 'subject', and body as 'body' in inputData."
-notes: |
-  - This method opens Mail.app with a pre-filled draft; it does not send the email automatically.
+argumentsPrompt: >-
+  Recipient email as 'recipient', subject as 'subject', and body as 'body' in
+  inputData.
+notes: >
+  - This method opens Mail.app with a pre-filled draft; it does not send the
+  email automatically.
+
   - Subject and body are URL-encoded by the script.
+
   - Requires Automation permission for Mail.app.
 ---
 

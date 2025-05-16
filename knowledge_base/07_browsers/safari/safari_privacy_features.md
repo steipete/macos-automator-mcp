@@ -1,16 +1,33 @@
 ---
-title: "Safari: Manage Privacy Features"
-category: "05_web_browsers"
+title: 'Safari: Manage Privacy Features'
+category: 07_browsers/safari
 id: safari_privacy_features
-description: "Controls Safari's privacy features like private browsing, tracking prevention, and intelligent tracking prevention."
-keywords: ["Safari", "privacy", "private browsing", "tracking", "cookies", "security", "preferences", "settings"]
+description: >-
+  Controls Safari's privacy features like private browsing, tracking prevention,
+  and intelligent tracking prevention.
+keywords:
+  - Safari
+  - privacy
+  - private browsing
+  - tracking
+  - cookies
+  - security
+  - preferences
+  - settings
 language: applescript
 isComplex: true
-argumentsPrompt: "Action to perform as 'action' in inputData. Values: 'private_browsing', 'track_prevent', 'cookie_block', 'clear_history', 'status'. For toggle actions, include 'state' ('on'/'off') in inputData."
-notes: |
+argumentsPrompt: >-
+  Action to perform as 'action' in inputData. Values: 'private_browsing',
+  'track_prevent', 'cookie_block', 'clear_history', 'status'. For toggle
+  actions, include 'state' ('on'/'off') in inputData.
+notes: >
   - Safari must be installed on the system.
-  - This script uses UI automation via System Events, so Accessibility permissions are required.
+
+  - This script uses UI automation via System Events, so Accessibility
+  permissions are required.
+
   - Some operations may require Safari to be restarted to take effect.
+
   - Available actions:
     - 'private_browsing': Opens a new private browsing window or toggles private browsing mode
     - 'track_prevent': Toggles intelligent tracking prevention
@@ -18,7 +35,9 @@ notes: |
     - 'clear_history': Clears browsing history
     - 'status': Returns the current status of privacy features
   - For toggle actions, specify 'state' as 'on' or 'off'
-  - Cookie blocking levels: 'all' (block all), 'third_party' (block from third party sites), 'none' (don't block)
+
+  - Cookie blocking levels: 'all' (block all), 'third_party' (block from third
+  party sites), 'none' (don't block)
 ---
 
 This script manages Safari's privacy features, allowing you to control private browsing, tracking prevention, cookie blocking, and more.

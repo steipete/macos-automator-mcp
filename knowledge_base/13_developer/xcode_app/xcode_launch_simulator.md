@@ -1,12 +1,22 @@
 ---
-title: "Xcode: Launch and Control iOS Simulator"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Launch and Control iOS Simulator'
+category: 13_developer/xcode_app
 id: xcode_launch_simulator
-description: "Launches the iOS Simulator and controls it through menu commands."
-keywords: ["Xcode", "iOS Simulator", "simulator", "device", "control", "developer", "iOS"]
+description: Launches the iOS Simulator and controls it through menu commands.
+keywords:
+  - Xcode
+  - iOS Simulator
+  - simulator
+  - device
+  - control
+  - developer
+  - iOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Device type to launch (e.g., 'iPhone 15', 'iPad Pro') as 'deviceType' in inputData. Optional 'menuCommand' (e.g., 'Home', 'Rotate Left', 'Shake') to execute a simulator command."
+argumentsPrompt: >-
+  Device type to launch (e.g., 'iPhone 15', 'iPad Pro') as 'deviceType' in
+  inputData. Optional 'menuCommand' (e.g., 'Home', 'Rotate Left', 'Shake') to
+  execute a simulator command.
 notes: |
   - Can launch Simulator directly (not through Xcode)
   - Uses UI scripting via System Events so requires Accessibility permissions

@@ -1,13 +1,25 @@
 ---
-title: "Common IDE UI: Open Command Palette & Run Command"
-category: "06_ides_and_editors"
+title: 'Common IDE UI: Open Command Palette & Run Command'
+category: 08_editors
 id: ide_ui_command_palette
-description: "Simulates opening the Command Palette (usually Shift+Command+P) in the frontmost IDE and typing/selecting a command."
-keywords: ["ide", "vscode", "cursor", "command palette", "ui scripting", "keystroke"]
+description: >-
+  Simulates opening the Command Palette (usually Shift+Command+P) in the
+  frontmost IDE and typing/selecting a command.
+keywords:
+  - ide
+  - vscode
+  - cursor
+  - command palette
+  - ui scripting
+  - keystroke
 language: applescript
 isComplex: true
-argumentsPrompt: "Name of the command to type into the palette as 'commandName' in inputData. Target IDE application name (e.g. 'Visual Studio Code') as 'targetAppName'."
-notes: "Relies on standard shortcut and predictable UI flow. The target IDE must be frontmost. Delays may need adjustment."
+argumentsPrompt: >-
+  Name of the command to type into the palette as 'commandName' in inputData.
+  Target IDE application name (e.g. 'Visual Studio Code') as 'targetAppName'.
+notes: >-
+  Relies on standard shortcut and predictable UI flow. The target IDE must be
+  frontmost. Delays may need adjustment.
 ---
 
 ```applescript

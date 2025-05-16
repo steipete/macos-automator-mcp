@@ -1,21 +1,40 @@
 ---
-title: "Audio Hijack: Session Control"
-category: "08_creative_and_document_apps"
+title: 'Audio Hijack: Session Control'
+category: 10_creative/audio_hijack
 id: audio_hijack_session_control
-description: "Control Audio Hijack sessions including starting, stopping, and checking the status of recording sessions."
-keywords: ["Audio Hijack", "recording", "session", "start", "stop", "audio capture", "status"]
+description: >-
+  Control Audio Hijack sessions including starting, stopping, and checking the
+  status of recording sessions.
+keywords:
+  - Audio Hijack
+  - recording
+  - session
+  - start
+  - stop
+  - audio capture
+  - status
 language: applescript
-parameters: |
+parameters: >
   - action (required): Action to perform - "start", "stop", "status", "list"
-  - session_name (optional): Name of the session to control (required for start/stop/status actions)
-notes: |
+
+  - session_name (optional): Name of the session to control (required for
+  start/stop/status actions)
+notes: >
   - Audio Hijack must be installed on the system.
-  - Sessions must be created in Audio Hijack before they can be controlled via AppleScript.
+
+  - Sessions must be created in Audio Hijack before they can be controlled via
+  AppleScript.
+
   - The "start" action starts recording for the specified session.
+
   - The "stop" action stops recording for the specified session.
+
   - The "status" action returns information about a specific session.
+
   - The "list" action lists all available sessions and their status.
-  - Audio Hijack is a powerful tool for capturing audio from any application or input device on macOS.
+
+  - Audio Hijack is a powerful tool for capturing audio from any application or
+  input device on macOS.
 ---
 
 Control Audio Hijack recording sessions.

@@ -1,16 +1,34 @@
 ---
-title: "Audirvana: Playback Controls"
-category: "08_creative_and_document_apps"
+title: 'Audirvana: Playback Controls'
+category: 10_creative/audirvana
 id: audirvana_playback_controls
-description: "Control basic playback in Audirvana including play, pause, next, previous, and volume adjustment."
-keywords: ["Audirvana", "playback", "play", "pause", "volume", "high-quality audio", "audiophile", "FLAC", "DSD"]
+description: >-
+  Control basic playback in Audirvana including play, pause, next, previous, and
+  volume adjustment.
+keywords:
+  - Audirvana
+  - playback
+  - play
+  - pause
+  - volume
+  - high-quality audio
+  - audiophile
+  - FLAC
+  - DSD
 language: applescript
-notes: |
+notes: >
   - Audirvana must be running for these commands to work.
-  - Audirvana is an audiophile music player that focuses on high-quality audio playback.
-  - Audirvana has limited but functional AppleScript support for basic playback control.
+
+  - Audirvana is an audiophile music player that focuses on high-quality audio
+  playback.
+
+  - Audirvana has limited but functional AppleScript support for basic playback
+  control.
+
   - The script works with both Audirvana Origin and Audirvana Studio versions.
-  - Control type can be set to "Master" (default) or "Slave" to determine how library playback is handled.
+
+  - Control type can be set to "Master" (default) or "Slave" to determine how
+  library playback is handled.
 ---
 
 Control basic playback features of Audirvana music player.

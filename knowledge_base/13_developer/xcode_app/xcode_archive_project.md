@@ -1,12 +1,22 @@
 ---
-title: "Xcode: Archive Project for Distribution"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Archive Project for Distribution'
+category: 13_developer/xcode_app
 id: xcode_archive_project
-description: "Archives an Xcode project for distribution using the Archive option."
-keywords: ["Xcode", "archive", "distribution", "App Store", "IPA", "developer", "iOS", "macOS"]
+description: Archives an Xcode project for distribution using the Archive option.
+keywords:
+  - Xcode
+  - archive
+  - distribution
+  - App Store
+  - IPA
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional wait time (in seconds) for archive process to complete as 'waitTime' in inputData (default is 300 seconds)"
+argumentsPrompt: >-
+  Optional wait time (in seconds) for archive process to complete as 'waitTime'
+  in inputData (default is 300 seconds)
 notes: |
   - Requires Xcode to be already open with a project loaded
   - Uses UI scripting via System Events so requires Accessibility permissions

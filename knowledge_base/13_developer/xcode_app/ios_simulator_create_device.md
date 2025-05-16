@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Create Custom Device"
-category: "developer"
+title: 'iOS Simulator: Create Custom Device'
+category: 13_developer/xcode_app
 id: ios_simulator_create_device
-description: "Creates a custom iOS Simulator device with specific device type and runtime."
-keywords: ["iOS Simulator", "Xcode", "create", "device", "custom", "runtime", "developer", "iOS", "iPadOS"]
+description: Creates a custom iOS Simulator device with specific device type and runtime.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - create
+  - device
+  - custom
+  - runtime
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Device name as 'deviceName', device type as 'deviceType' (e.g., 'iPhone 15', 'iPad Pro (12.9-inch)'), and runtime as 'runtime' (e.g., 'iOS 17.0', 'iOS 16.4'). Optional boot parameter 'bootAfterCreation' (default is false)."
+argumentsPrompt: >-
+  Device name as 'deviceName', device type as 'deviceType' (e.g., 'iPhone 15',
+  'iPad Pro (12.9-inch)'), and runtime as 'runtime' (e.g., 'iOS 17.0', 'iOS
+  16.4'). Optional boot parameter 'bootAfterCreation' (default is false).
 notes: |
   - Creates custom simulator devices with specific types and runtimes
   - Provides detailed information on available device types and runtimes

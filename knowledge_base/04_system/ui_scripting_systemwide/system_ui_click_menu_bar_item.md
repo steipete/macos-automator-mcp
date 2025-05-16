@@ -1,13 +1,22 @@
 ---
-title: "System UI: Click Menu Bar Item of Frontmost App"
-category: "02_system_interaction"
+title: 'System UI: Click Menu Bar Item of Frontmost App'
+category: 04_system/ui_scripting_systemwide
 id: system_ui_click_menu_bar_item
-description: "Clicks a top-level menu bar item (e.g., 'File', 'Edit') of the currently frontmost application."
-keywords: ["ui scripting", "menu bar", "click menu", "System Events", "frontmost app"]
+description: >-
+  Clicks a top-level menu bar item (e.g., 'File', 'Edit') of the currently
+  frontmost application.
+keywords:
+  - ui scripting
+  - menu bar
+  - click menu
+  - System Events
+  - frontmost app
 language: applescript
 isComplex: true
-argumentsPrompt: "Name of the menu to click (e.g., 'File', 'Window') as 'menuName' in inputData."
-notes: "Requires Accessibility permissions. The frontmost application must have the specified menu."
+argumentsPrompt: 'Name of the menu to click (e.g., ''File'', ''Window'') as ''menuName'' in inputData.'
+notes: >-
+  Requires Accessibility permissions. The frontmost application must have the
+  specified menu.
 ---
 
 ```applescript

@@ -1,34 +1,70 @@
 ---
 id: virtualbuddy_automation
 title: VirtualBuddy Automation Script
-description: Comprehensive script to manage VirtualBuddy macOS virtual machines with interactive UI - list, start, stop, and check status.
+description: >-
+  Comprehensive script to manage VirtualBuddy macOS virtual machines with
+  interactive UI - list, start, stop, and check status.
 language: applescript
-compatibility: macOS Sonoma, Ventura, Monterey
+compatibility: 'macOS Sonoma, Ventura, Monterey'
 author: Claude
-tags: [virtualbuddy, virtualization, macOS, virtual machines, vms]
-keywords: [virtualbuddy, macOS, VM, virtual machine, management, UI automation, system events, start VM, stop VM, status]
-guide: |
-  This script provides a complete interactive UI for managing VirtualBuddy virtual machines on macOS.
-  
+tags:
+  - virtualbuddy
+  - virtualization
+  - macOS
+  - virtual machines
+  - vms
+keywords:
+  - virtualbuddy
+  - macOS
+  - VM
+  - virtual machine
+  - management
+  - UI automation
+  - system events
+  - start VM
+  - stop VM
+  - status
+guide: >
+  This script provides a complete interactive UI for managing VirtualBuddy
+  virtual machines on macOS.
+
+
   It demonstrates:
+
   1. Using UI scripting to interact with the VirtualBuddy application
+
   2. Listing available virtual machines
+
   3. Starting a specific virtual machine
+
   4. Stopping a virtual machine
+
   5. Checking VM status
+
   6. Comprehensive error handling
-  
-  The script uses System Events for UI automation since VirtualBuddy doesn't expose 
+
+
+  The script uses System Events for UI automation since VirtualBuddy doesn't
+  expose 
+
   an AppleScript dictionary directly.
-  
+
+
   To use this script:
+
   1. Run it directly
+
   2. Select an operation from the menu
+
   3. Choose a VM from the list when prompted
-  
+
+
   Requirements:
+
   - VirtualBuddy app installed
-  - Appropriate macOS permissions for automation and accessibility (System Settings > Privacy & Security)
+
+  - Appropriate macOS permissions for automation and accessibility (System
+  Settings > Privacy & Security)
 sample_snippets:
   - title: List virtual machines
     snippet: |
@@ -170,6 +206,7 @@ sample_snippets:
               return false
           end try
       end isVirtualMachineRunning
+category: 13_developer/virtualbuddy
 ---
 
 ```applescript

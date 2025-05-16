@@ -1,12 +1,19 @@
 ---
-title: "Numbers: Create New Spreadsheet"
-category: "08_creative_and_document_apps"
+title: 'Numbers: Create New Spreadsheet'
+category: 10_creative/numbers_app
 id: numbers_create_spreadsheet
-description: "Creates a new spreadsheet in Numbers with specified content."
-keywords: ["Numbers", "spreadsheet", "new document", "create table", "spreadsheet creation"]
+description: Creates a new spreadsheet in Numbers with specified content.
+keywords:
+  - Numbers
+  - spreadsheet
+  - new document
+  - create table
+  - spreadsheet creation
 language: applescript
-argumentsPrompt: "Enter the title for the new spreadsheet and where to save it"
-notes: "Creates a new Numbers spreadsheet with a simple table. The file path should be a full POSIX path ending with .numbers"
+argumentsPrompt: Enter the title for the new spreadsheet and where to save it
+notes: >-
+  Creates a new Numbers spreadsheet with a simple table. The file path should be
+  a full POSIX path ending with .numbers
 ---
 
 ```applescript

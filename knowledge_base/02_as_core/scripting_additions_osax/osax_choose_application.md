@@ -1,13 +1,23 @@
 ---
-title: "StandardAdditions: choose application Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: choose application Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_choose_application
-description: "Displays a dialog allowing the user to select an application. Returns an alias to the chosen application."
-keywords: ["StandardAdditions", "choose application", "application selection", "dialog", "osax"]
+description: >-
+  Displays a dialog allowing the user to select an application. Returns an alias
+  to the chosen application.
+keywords:
+  - StandardAdditions
+  - choose application
+  - application selection
+  - dialog
+  - osax
 language: applescript
-notes: |
-  - Parameters: `with title "text"`, `with prompt "text"`, `as application bundle` (boolean, default true).
+notes: >
+  - Parameters: `with title "text"`, `with prompt "text"`, `as application
+  bundle` (boolean, default true).
+
   - Returns an alias to the selected application bundle.
+
   - If the user cancels, an error (number -128) is raised.
 ---
 

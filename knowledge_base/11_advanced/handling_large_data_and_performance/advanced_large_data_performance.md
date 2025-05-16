@@ -1,14 +1,27 @@
 ---
-title: "Advanced: Handling Large Data & Performance Tips"
-category: "11_advanced_techniques"
+title: 'Advanced: Handling Large Data & Performance Tips'
+category: 11_advanced/handling_large_data_and_performance
 id: advanced_large_data_performance
-description: "Strategies for dealing with large lists, text, or many iterations to improve AppleScript performance."
-keywords: ["performance", "large data", "optimization", "lists", "text", "loops", "System Events"]
+description: >-
+  Strategies for dealing with large lists, text, or many iterations to improve
+  AppleScript performance.
+keywords:
+  - performance
+  - large data
+  - optimization
+  - lists
+  - text
+  - loops
+  - System Events
 language: applescript
-notes: |
+notes: >
   - AppleScript can be slow with very large data sets or deeply nested loops.
-  - Offloading to shell scripts or JXA (with JavaScript's native speed) can help.
-  - Minimize interactions within `tell application` blocks if an app is slow to respond.
+
+  - Offloading to shell scripts or JXA (with JavaScript's native speed) can
+  help.
+
+  - Minimize interactions within `tell application` blocks if an app is slow to
+  respond.
 ---
 
 Strategies for improving AppleScript performance with large data:

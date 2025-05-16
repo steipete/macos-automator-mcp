@@ -1,18 +1,37 @@
 ---
-title: "System: Switch Audio Output Device"
-category: "02_system_interaction"
+title: 'System: Switch Audio Output Device'
+category: 04_system/audio_control
 id: switch_audio_output
-description: "Switch between different audio output devices on macOS, such as speakers, headphones, and external audio interfaces."
-keywords: ["audio", "output", "device", "switch", "speaker", "headphone", "audio interface", "sound output"]
+description: >-
+  Switch between different audio output devices on macOS, such as speakers,
+  headphones, and external audio interfaces.
+keywords:
+  - audio
+  - output
+  - device
+  - switch
+  - speaker
+  - headphone
+  - audio interface
+  - sound output
 language: applescript
-parameters: |
-  - device_name (optional): Name of audio device to switch to (if empty, will list available devices)
-notes: |
+parameters: >
+  - device_name (optional): Name of audio device to switch to (if empty, will
+  list available devices)
+notes: >
   - This script works with macOS system audio devices.
-  - If no device_name is specified, the script will list all available output devices.
-  - The device name must match exactly as shown in System Preferences/Settings > Sound > Output.
+
+  - If no device_name is specified, the script will list all available output
+  devices.
+
+  - The device name must match exactly as shown in System Preferences/Settings >
+  Sound > Output.
+
   - This script requires SwitchAudioSource command line tool to be installed.
-  - You can install SwitchAudioSource using Homebrew: brew install switchaudio-osx
+
+  - You can install SwitchAudioSource using Homebrew: brew install
+  switchaudio-osx
+
   - For full functionality, the Terminal app may need Accessibility permissions.
 ---
 

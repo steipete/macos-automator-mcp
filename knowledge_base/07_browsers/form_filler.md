@@ -1,10 +1,22 @@
 ---
 title: Web Form Filler
-category: 05_web_browsers
+category: 07_browsers
 id: form_filler
-description: Automates filling out web forms in Safari and Chrome browsers by providing form data that can be injected into web pages.
+description: >-
+  Automates filling out web forms in Safari and Chrome browsers by providing
+  form data that can be injected into web pages.
 language: javascript
-keywords: [form, automation, safari, chrome, fill, browser, input, submit, login, registration]
+keywords:
+  - form
+  - automation
+  - safari
+  - chrome
+  - fill
+  - browser
+  - input
+  - submit
+  - login
+  - registration
 ---
 
 # Web Form Filler

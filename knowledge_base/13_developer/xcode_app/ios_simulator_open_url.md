@@ -1,12 +1,23 @@
 ---
-title: "iOS Simulator: Open URL"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Open URL'
+category: 13_developer/xcode_app
 id: ios_simulator_open_url
-description: "Opens a URL in iOS Simulator's Safari or in an app with a custom URL scheme."
-keywords: ["iOS Simulator", "Xcode", "URL", "Safari", "browser", "deep link", "developer", "iOS", "iPadOS"]
+description: Opens a URL in iOS Simulator's Safari or in an app with a custom URL scheme.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - URL
+  - Safari
+  - browser
+  - deep link
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: false
-argumentsPrompt: "URL to open as 'url' (web URL or custom URL scheme), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  URL to open as 'url' (web URL or custom URL scheme), and optional device
+  identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Opens web URLs in simulator's Safari browser
   - Can open apps using custom URL schemes (e.g., maps://)

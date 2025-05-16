@@ -4,10 +4,16 @@ title: Advanced Project Management with Things
 description: Script for managing complex projects in Things with milestones and tracking
 author: steipete
 language: applescript
-tags: things, productivity, task management, project management, milestones
-keywords: [milestones, templates, tracking, progress, reports]
+tags: 'things, productivity, task management, project management, milestones'
+keywords:
+  - milestones
+  - templates
+  - tracking
+  - progress
+  - reports
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Advanced Project Management with Things

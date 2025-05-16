@@ -1,11 +1,20 @@
 ---
-title: "Terminal: Manage Window and Tab Titles"
+title: 'Terminal: Manage Window and Tab Titles'
 id: terminal_manage_titles
-category: "04_terminal_emulators"
-description: "Sets, gets, or resets custom titles for Terminal.app windows and tabs."
-keywords: ["Terminal.app", "window", "tab", "title", "rename", "custom title", "reset"]
+category: 06_terminal/terminal_app
+description: 'Sets, gets, or resets custom titles for Terminal.app windows and tabs.'
+keywords:
+  - Terminal.app
+  - window
+  - tab
+  - title
+  - rename
+  - custom title
+  - reset
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"action\": \"set\", \"getOrReset\", \"title\": \"New title text\", \"target\": \"window\" or \"tab\" } (target defaults to \"window\" if omitted)."
+argumentsPrompt: >-
+  Expects inputData with: { "action": "set", "getOrReset", "title": "New title
+  text", "target": "window" or "tab" } (target defaults to "window" if omitted).
 isComplex: false
 ---
 

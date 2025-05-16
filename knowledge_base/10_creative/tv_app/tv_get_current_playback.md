@@ -1,11 +1,18 @@
 ---
-title: "TV: Get Current Playback Info"
-category: "08_creative_and_document_apps"
+title: 'TV: Get Current Playback Info'
+category: 10_creative/tv_app
 id: tv_get_current_playback
-description: "Retrieves information about the currently playing content in the TV app."
-keywords: ["TV app", "current playback", "movie info", "show details", "playback status"]
+description: Retrieves information about the currently playing content in the TV app.
+keywords:
+  - TV app
+  - current playback
+  - movie info
+  - show details
+  - playback status
 language: applescript
-notes: "Gets information about what's currently playing in the TV app, including title and playback controls."
+notes: >-
+  Gets information about what's currently playing in the TV app, including title
+  and playback controls.
 ---
 
 ```applescript

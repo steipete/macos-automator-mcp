@@ -1,12 +1,29 @@
 ---
-title: "iOS Simulator: Advanced Status Bar Control"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Advanced Status Bar Control'
+category: 13_developer/xcode_app
 id: ios_simulator_status_bar_advanced
-description: "Provides advanced control of iOS Simulator status bar appearance including clock, network, battery, and more."
-keywords: ["iOS Simulator", "Xcode", "status bar", "override", "battery", "network", "clock", "developer", "iOS", "iPadOS"]
+description: >-
+  Provides advanced control of iOS Simulator status bar appearance including
+  clock, network, battery, and more.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - status bar
+  - override
+  - battery
+  - network
+  - clock
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional device identifier as 'deviceIdentifier' (defaults to 'booted'), optional action as 'action' ('override', 'clear', or 'list'), optional time as 'time' (e.g., '9:41'), optional network as 'network' ('5G', 'LTE', 'wifi'), optional carrier name as 'carrier', and optional battery level as 'batteryLevel' (0-100)."
+argumentsPrompt: >-
+  Optional device identifier as 'deviceIdentifier' (defaults to 'booted'),
+  optional action as 'action' ('override', 'clear', or 'list'), optional time as
+  'time' (e.g., '9:41'), optional network as 'network' ('5G', 'LTE', 'wifi'),
+  optional carrier name as 'carrier', and optional battery level as
+  'batteryLevel' (0-100).
 notes: |
   - Provides precise control over simulator status bar appearance
   - Can set the specific time, network type, signal strength

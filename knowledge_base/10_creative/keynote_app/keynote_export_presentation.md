@@ -1,17 +1,33 @@
 ---
-title: "Keynote: Export Presentation (PDF, PowerPoint)"
-category: "08_creative_and_document_apps"
+title: 'Keynote: Export Presentation (PDF, PowerPoint)'
+category: 10_creative/keynote_app
 id: keynote_export_presentation
-description: "Exports the frontmost Keynote presentation to PDF or PowerPoint format."
-keywords: ["Keynote", "export", "save as", "PDF", "PowerPoint", "pptx", "presentation"]
+description: Exports the frontmost Keynote presentation to PDF or PowerPoint format.
+keywords:
+  - Keynote
+  - export
+  - save as
+  - PDF
+  - PowerPoint
+  - pptx
+  - presentation
 language: applescript
 isComplex: true
-argumentsPrompt: "Desired format as 'exportFormat' (either 'PDF' or 'PowerPoint') and the full POSIX path for the exported file (including extension, e.g., /Users/me/Desktop/MyPreso.pdf) as 'exportPath' in inputData."
-notes: |
+argumentsPrompt: >-
+  Desired format as 'exportFormat' (either 'PDF' or 'PowerPoint') and the full
+  POSIX path for the exported file (including extension, e.g.,
+  /Users/me/Desktop/MyPreso.pdf) as 'exportPath' in inputData.
+notes: >
   - A Keynote presentation must be open.
-  - The `exportPath` must be a full POSIX path including the desired filename and extension.
-  - For PDF, you can specify `export scope (every slide | slide range)` and other PDF export settings if needed (see Keynote dictionary).
+
+  - The `exportPath` must be a full POSIX path including the desired filename
+  and extension.
+
+  - For PDF, you can specify `export scope (every slide | slide range)` and
+  other PDF export settings if needed (see Keynote dictionary).
+
   - For PowerPoint, it exports as .pptx.
+
   - Requires Automation permission for Keynote.app.
 ---
 

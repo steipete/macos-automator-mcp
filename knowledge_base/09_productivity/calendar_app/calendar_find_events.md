@@ -1,12 +1,19 @@
 ---
-title: "Calendar: Find Events by Keyword"
-category: "07_productivity_apps"
+title: 'Calendar: Find Events by Keyword'
+category: 09_productivity/calendar_app
 id: calendar_find_events
-description: "Searches for calendar events containing a specific keyword."
-keywords: ["Calendar", "search events", "find appointments", "event search", "meeting search"]
+description: Searches for calendar events containing a specific keyword.
+keywords:
+  - Calendar
+  - search events
+  - find appointments
+  - event search
+  - meeting search
 language: applescript
-argumentsPrompt: "Enter the keyword to search for in event titles"
-notes: "Searches for events in all calendars that contain the specified keyword in their title."
+argumentsPrompt: Enter the keyword to search for in event titles
+notes: >-
+  Searches for events in all calendars that contain the specified keyword in
+  their title.
 ---
 
 ```applescript

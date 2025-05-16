@@ -1,7 +1,9 @@
 ---
 id: iterm_window_arrangement
 title: iTerm2 Window and Tab Arrangement
-description: Arranges iTerm2 windows and tabs according to predefined layouts or custom specifications
+description: >-
+  Arranges iTerm2 windows and tabs according to predefined layouts or custom
+  specifications
 language: applescript
 author: Claude
 keywords:
@@ -11,12 +13,12 @@ keywords:
   - multi-monitor
   - workspace-organization
 usage_examples:
-  - "Arrange iTerm2 windows in a grid pattern"
-  - "Create side-by-side windows for different projects"
-  - "Position windows in custom configurations across multiple monitors"
+  - Arrange iTerm2 windows in a grid pattern
+  - Create side-by-side windows for different projects
+  - Position windows in custom configurations across multiple monitors
 parameters:
   - name: layout
-    description: Layout pattern to use - grid, cascade, horizontal, vertical, or custom
+    description: 'Layout pattern to use - grid, cascade, horizontal, vertical, or custom'
     required: true
   - name: gridRows
     description: Number of rows for grid layout (default 2)
@@ -25,8 +27,9 @@ parameters:
     description: Number of columns for grid layout (default 2)
     required: false
   - name: positions
-    description: Array of position objects for custom layout {x, y, width, height}
+    description: 'Array of position objects for custom layout {x, y, width, height}'
     required: false
+category: 06_terminal/iterm
 ---
 
 # iTerm2 Window and Tab Arrangement

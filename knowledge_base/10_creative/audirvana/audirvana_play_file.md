@@ -1,17 +1,33 @@
 ---
-title: "Audirvana: Play Audio File"
-category: "08_creative_and_document_apps"
+title: 'Audirvana: Play Audio File'
+category: 10_creative/audirvana
 id: audirvana_play_file
-description: "Play high-resolution audio files in Audirvana, supporting formats like FLAC, DSD, and other audiophile formats."
-keywords: ["Audirvana", "high-resolution audio", "play file", "FLAC", "DSD", "audiophile", "bit-perfect", "playback"]
+description: >-
+  Play high-resolution audio files in Audirvana, supporting formats like FLAC,
+  DSD, and other audiophile formats.
+keywords:
+  - Audirvana
+  - high-resolution audio
+  - play file
+  - FLAC
+  - DSD
+  - audiophile
+  - bit-perfect
+  - playback
 language: applescript
-parameters: |
+parameters: >
   - file_path (required): Path to the audio file to play
-  - control_mode (optional): Control mode to use - "Master" or "Slave" (default: "Master")
-notes: |
+
+  - control_mode (optional): Control mode to use - "Master" or "Slave" (default:
+  "Master")
+notes: >
   - Audirvana must be running for this script to work.
-  - Audirvana specializes in high-resolution audio playback of formats like FLAC, DSD, and other audiophile formats.
+
+  - Audirvana specializes in high-resolution audio playback of formats like
+  FLAC, DSD, and other audiophile formats.
+
   - The file_path parameter should be a full path to a supported audio file.
+
   - The control_mode parameter determines how Audirvana handles playback:
     - "Master" (default): Audirvana manages playback itself
     - "Slave": For integration with other applications

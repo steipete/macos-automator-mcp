@@ -1,11 +1,18 @@
 ---
-title: "Font Book: List Available Fonts"
-category: "developer"
+title: 'Font Book: List Available Fonts'
+category: 13_developer/font_book_app
 id: font_book_list_fonts
-description: "Lists available fonts from Font Book application."
-keywords: ["Font Book", "list fonts", "typefaces", "font management", "available fonts"]
+description: Lists available fonts from Font Book application.
+keywords:
+  - Font Book
+  - list fonts
+  - typefaces
+  - font management
+  - available fonts
 language: applescript
-notes: "Retrieves a list of all enabled fonts in the system. This may be a large list on systems with many fonts installed."
+notes: >-
+  Retrieves a list of all enabled fonts in the system. This may be a large list
+  on systems with many fonts installed.
 ---
 
 ```applescript

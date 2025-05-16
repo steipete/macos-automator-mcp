@@ -1,12 +1,21 @@
 ---
-title: "Legacy File Types and Creator Codes in macOS"
-description: "Understanding and working with legacy file types and creator codes in modern macOS using AppleScript"
-author: "Claude"
-category: "03_file_system_and_finder"
-subcategory: "metadata_and_attributes_finder"
-keywords: ["file type", "creator code", "legacy", "metadata", "finder", "uti", "resource fork"]
-language: "applescript"
-version: "1.0"
+title: Legacy File Types and Creator Codes in macOS
+description: >-
+  Understanding and working with legacy file types and creator codes in modern
+  macOS using AppleScript
+author: Claude
+category: 05_files/metadata_and_attributes_finder
+subcategory: metadata_and_attributes_finder
+keywords:
+  - file type
+  - creator code
+  - legacy
+  - metadata
+  - finder
+  - uti
+  - resource fork
+language: applescript
+version: '1.0'
 validated: true
 ---
 

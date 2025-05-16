@@ -1,11 +1,16 @@
 ---
-title: "System Settings: Toggle Dark Mode"
-category: "02_system_interaction"
+title: 'System Settings: Toggle Dark Mode'
+category: 04_system/system_preferences_settings
 id: system_settings_toggle_dark_mode
-description: "Toggles between light and dark mode in macOS."
-keywords: ["dark mode", "light mode", "appearance", "theme", "System Settings"]
+description: Toggles between light and dark mode in macOS.
+keywords:
+  - dark mode
+  - light mode
+  - appearance
+  - theme
+  - System Settings
 language: applescript
-notes: "Works on macOS Mojave (10.14) and later. Requires Accessibility permissions."
+notes: Works on macOS Mojave (10.14) and later. Requires Accessibility permissions.
 ---
 
 ```applescript

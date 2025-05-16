@@ -1,12 +1,21 @@
 ---
-title: "Image Events: Get Image Dimensions"
-category: "08_creative_and_document_apps"
+title: 'Image Events: Get Image Dimensions'
+category: 10_creative/image_events_app
 id: image_events_get_dimensions
-description: "Uses Image Events to open an image and retrieve its width and height in pixels."
-keywords: ["Image Events", "image", "dimensions", "size", "width", "height", "metadata"]
+description: >-
+  Uses Image Events to open an image and retrieve its width and height in
+  pixels.
+keywords:
+  - Image Events
+  - image
+  - dimensions
+  - size
+  - width
+  - height
+  - metadata
 language: applescript
 isComplex: true
-argumentsPrompt: "Absolute POSIX path to the image file as 'imagePath' in inputData."
+argumentsPrompt: Absolute POSIX path to the image file as 'imagePath' in inputData.
 ---
 
 ```applescript

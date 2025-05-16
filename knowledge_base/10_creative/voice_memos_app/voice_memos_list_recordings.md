@@ -1,11 +1,18 @@
 ---
-title: "Voice Memos: List Recordings"
-category: "08_creative_and_document_apps"
+title: 'Voice Memos: List Recordings'
+category: 10_creative/voice_memos_app
 id: voice_memos_list_recordings
-description: "Lists all voice recordings in the Voice Memos app."
-keywords: ["Voice Memos", "list recordings", "audio files", "voice notes", "recorded memos"]
+description: Lists all voice recordings in the Voice Memos app.
+keywords:
+  - Voice Memos
+  - list recordings
+  - audio files
+  - voice notes
+  - recorded memos
 language: applescript
-notes: "Retrieves a list of all voice recordings with their names and dates. The information available may be limited due to the app's UI accessibility."
+notes: >-
+  Retrieves a list of all voice recordings with their names and dates. The
+  information available may be limited due to the app's UI accessibility.
 ---
 
 ```applescript

@@ -1,11 +1,17 @@
 ---
-title: "Messages: Get Recent Chats"
-category: "07_productivity_apps"
+title: 'Messages: Get Recent Chats'
+category: 09_productivity/messages_app
 id: messages_get_recent_chats
-description: "Retrieves a list of recent chat conversations from the Messages app."
-keywords: ["Messages", "conversations", "chats", "recent messages"]
+description: Retrieves a list of recent chat conversations from the Messages app.
+keywords:
+  - Messages
+  - conversations
+  - chats
+  - recent messages
 language: applescript
-notes: "Lists recent chats with the recipient name and most recent message. Limited to the visible chats in the Messages app."
+notes: >-
+  Lists recent chats with the recipient name and most recent message. Limited to
+  the visible chats in the Messages app.
 ---
 
 ```applescript

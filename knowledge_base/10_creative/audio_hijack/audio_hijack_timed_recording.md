@@ -1,21 +1,42 @@
 ---
-title: "Audio Hijack: Timed Recording"
-category: "08_creative_and_document_apps"
+title: 'Audio Hijack: Timed Recording'
+category: 10_creative/audio_hijack
 id: audio_hijack_timed_recording
-description: "Start a timed recording in Audio Hijack that will automatically stop after a specified duration."
-keywords: ["Audio Hijack", "recording", "timed", "duration", "automatic", "audio capture", "scheduled"]
+description: >-
+  Start a timed recording in Audio Hijack that will automatically stop after a
+  specified duration.
+keywords:
+  - Audio Hijack
+  - recording
+  - timed
+  - duration
+  - automatic
+  - audio capture
+  - scheduled
 language: applescript
-parameters: |
-  - session_name (required): Name of the Audio Hijack session to use for recording
+parameters: >
+  - session_name (required): Name of the Audio Hijack session to use for
+  recording
+
   - duration (required): Duration in minutes for the recording
-  - output_name (optional): Name to use for the output file (default: timestamp-based)
-notes: |
+
+  - output_name (optional): Name to use for the output file (default:
+  timestamp-based)
+notes: >
   - Audio Hijack must be installed on the system.
+
   - The specified session must exist in Audio Hijack.
-  - This script starts a recording and then waits for the specified duration before stopping it.
+
+  - This script starts a recording and then waits for the specified duration
+  before stopping it.
+
   - The script will continue running until the recording completes.
-  - For long recordings, consider using Audio Hijack's built-in scheduling feature instead.
-  - Audio Hijack has extensive automation capabilities, especially for post-processing recordings.
+
+  - For long recordings, consider using Audio Hijack's built-in scheduling
+  feature instead.
+
+  - Audio Hijack has extensive automation capabilities, especially for
+  post-processing recordings.
 ---
 
 Create a timed recording in Audio Hijack.

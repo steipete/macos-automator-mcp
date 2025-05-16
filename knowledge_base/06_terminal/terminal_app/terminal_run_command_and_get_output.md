@@ -1,11 +1,23 @@
 ---
-title: "Terminal: Run Command and Get Output"
+title: 'Terminal: Run Command and Get Output'
 id: terminal_run_command_and_get_output
-category: "04_terminal_emulators"
-description: "Opens Terminal.app (or uses an existing window), runs a specified shell command in a chosen working directory, and captures its standard output."
-keywords: ["Terminal.app", "command", "execute", "shell", "output", "capture", "stdout"]
+category: 06_terminal/terminal_app
+description: >-
+  Opens Terminal.app (or uses an existing window), runs a specified shell
+  command in a chosen working directory, and captures its standard output.
+keywords:
+  - Terminal.app
+  - command
+  - execute
+  - shell
+  - output
+  - capture
+  - stdout
 language: applescript
-argumentsPrompt: "Expects inputData with: { \"commandToRun\": \"your command here\", \"workingDirectory\": \"/optional/path/to/run/in\" } (workingDirectory defaults to '~' if omitted or empty)."
+argumentsPrompt: >-
+  Expects inputData with: { "commandToRun": "your command here",
+  "workingDirectory": "/optional/path/to/run/in" } (workingDirectory defaults to
+  '~' if omitted or empty).
 isComplex: true
 ---
 

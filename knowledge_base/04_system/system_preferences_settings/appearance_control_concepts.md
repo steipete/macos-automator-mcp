@@ -1,12 +1,20 @@
 ---
-title: "Control macOS Appearance Settings with AppleScript"
-description: "Change and manage macOS appearance settings including dark mode, accent colors, and highlight colors using AppleScript and UI scripting"
-author: "Claude"
-category: "02_system_interaction"
-subcategory: "system_preferences_settings"
-keywords: ["appearance", "dark mode", "accent color", "highlight color", "system settings", "ui scripting"]
-language: "applescript"
-version: "1.0"
+title: Control macOS Appearance Settings with AppleScript
+description: >-
+  Change and manage macOS appearance settings including dark mode, accent
+  colors, and highlight colors using AppleScript and UI scripting
+author: Claude
+category: 04_system/system_preferences_settings
+subcategory: system_preferences_settings
+keywords:
+  - appearance
+  - dark mode
+  - accent color
+  - highlight color
+  - system settings
+  - ui scripting
+language: applescript
+version: '1.0'
 validated: true
 ---
 

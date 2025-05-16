@@ -1,16 +1,34 @@
 ---
-title: "GarageBand: Basic Controls"
-category: "08_creative_and_document_apps"
+title: 'GarageBand: Basic Controls'
+category: 10_creative/garageband
 id: garageband_basic_controls
-description: "Control basic playback and transport functions in GarageBand including play, stop, record, and navigation."
-keywords: ["GarageBand", "DAW", "playback", "transport", "record", "music production", "play", "stop"]
+description: >-
+  Control basic playback and transport functions in GarageBand including play,
+  stop, record, and navigation.
+keywords:
+  - GarageBand
+  - DAW
+  - playback
+  - transport
+  - record
+  - music production
+  - play
+  - stop
 language: applescript
-notes: |
+notes: >
   - GarageBand must be running for these commands to work.
-  - GarageBand has limited AppleScript support, so this script uses UI automation via System Events.
-  - This script requires Accessibility permissions to be granted for the script runner.
-  - The script covers the most common transport controls: play, stop, record, and navigation.
-  - Keyboard shortcuts are used for most operations as they are more reliable than UI element detection.
+
+  - GarageBand has limited AppleScript support, so this script uses UI
+  automation via System Events.
+
+  - This script requires Accessibility permissions to be granted for the script
+  runner.
+
+  - The script covers the most common transport controls: play, stop, record,
+  and navigation.
+
+  - Keyboard shortcuts are used for most operations as they are more reliable
+  than UI element detection.
 ---
 
 Control basic transport and playback functions in GarageBand.

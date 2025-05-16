@@ -1,11 +1,20 @@
 ---
-title: "FaceTime: Enable Live Captions"
-category: "07_productivity_apps"
+title: 'FaceTime: Enable Live Captions'
+category: 09_productivity/facetime_app
 id: facetime_live_captions
-description: "Enables Live Captions for a FaceTime call to show real-time text transcription."
-keywords: ["FaceTime", "live captions", "transcription", "accessibility", "subtitles"]
+description: >-
+  Enables Live Captions for a FaceTime call to show real-time text
+  transcription.
+keywords:
+  - FaceTime
+  - live captions
+  - transcription
+  - accessibility
+  - subtitles
 language: applescript
-notes: "Enables the Live Captions feature for FaceTime calls. Available in macOS Ventura (13) and later."
+notes: >-
+  Enables the Live Captions feature for FaceTime calls. Available in macOS
+  Ventura (13) and later.
 ---
 
 ```applescript

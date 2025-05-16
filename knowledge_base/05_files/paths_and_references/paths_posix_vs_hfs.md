@@ -1,9 +1,18 @@
 ---
-title: "Paths: Understanding POSIX and HFS+ Paths"
-category: "03_file_system_and_finder"
+title: 'Paths: Understanding POSIX and HFS+ Paths'
+category: 05_files/paths_and_references
 id: paths_posix_vs_hfs
-description: "Explains the difference between POSIX (slash-separated) and HFS+ (colon-separated) paths in AppleScript and how to convert between them."
-keywords: ["path", "POSIX", "HFS", "colon", "slash", "file system", "conversion"]
+description: >-
+  Explains the difference between POSIX (slash-separated) and HFS+
+  (colon-separated) paths in AppleScript and how to convert between them.
+keywords:
+  - path
+  - POSIX
+  - HFS
+  - colon
+  - slash
+  - file system
+  - conversion
 language: applescript
 ---
 

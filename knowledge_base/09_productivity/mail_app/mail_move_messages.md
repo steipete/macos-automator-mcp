@@ -1,12 +1,20 @@
 ---
-title: "Mail: Move Messages to Folder"
-category: "07_productivity_apps"
+title: 'Mail: Move Messages to Folder'
+category: 09_productivity/mail_app
 id: mail_move_messages
-description: "Moves selected or filtered messages to a specified target mailbox"
-keywords: ["Mail", "email", "move", "file", "organize", "folder"]
+description: Moves selected or filtered messages to a specified target mailbox
+keywords:
+  - Mail
+  - email
+  - move
+  - file
+  - organize
+  - folder
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide target mailbox name as 'targetMailbox' and account name as 'accountName' in inputData"
+argumentsPrompt: >-
+  Provide target mailbox name as 'targetMailbox' and account name as
+  'accountName' in inputData
 notes: |
   - Moves currently selected messages in Mail.app to the specified mailbox
   - Can specify both target mailbox name and account name

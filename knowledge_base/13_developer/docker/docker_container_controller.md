@@ -1,9 +1,19 @@
 ---
 title: Docker Container Controller
-description: Script to interact with Docker on macOS - list, start, stop, and inspect containers
-keywords: [docker, container, management, list, start, stop, inspect]
+description: >-
+  Script to interact with Docker on macOS - list, start, stop, and inspect
+  containers
+keywords:
+  - docker
+  - container
+  - management
+  - list
+  - start
+  - stop
+  - inspect
 language: applescript
 isComplex: false
+category: 13_developer/docker
 ---
 
 # Docker Container Controller

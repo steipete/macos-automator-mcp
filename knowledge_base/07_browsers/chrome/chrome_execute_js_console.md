@@ -1,19 +1,39 @@
 ---
-title: "Chrome: Execute JavaScript in Console"
-category: "05_web_browsers"
+title: 'Chrome: Execute JavaScript in Console'
+category: 07_browsers/chrome
 id: chrome_execute_js_console
-description: "Executes JavaScript code in Chrome's Console with full DevTools API access and returns the result, supporting advanced debugging and automation functions."
-keywords: ["Chrome", "JavaScript", "console", "execute", "DevTools API", "debug", "automation", "web development"]
+description: >-
+  Executes JavaScript code in Chrome's Console with full DevTools API access and
+  returns the result, supporting advanced debugging and automation functions.
+keywords:
+  - Chrome
+  - JavaScript
+  - console
+  - execute
+  - DevTools API
+  - debug
+  - automation
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Required JavaScript code as 'jsCode' in inputData. For example: { \"jsCode\": \"console.log(performance.timing); return document.title;\" }. You can also specify { \"awaitPromises\": true } to automatically wait for promises to resolve."
+argumentsPrompt: >-
+  Required JavaScript code as 'jsCode' in inputData. For example: { "jsCode":
+  "console.log(performance.timing); return document.title;" }. You can also
+  specify { "awaitPromises": true } to automatically wait for promises to
+  resolve.
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and switches to the Console panel.
+
   - Executes JavaScript with full access to DevTools console API.
+
   - Can access and manipulate DevTools programmatically.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
 ---
 

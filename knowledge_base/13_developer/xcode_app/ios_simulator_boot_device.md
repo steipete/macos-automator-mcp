@@ -1,19 +1,37 @@
 ---
-title: "iOS Simulator: Boot and Launch Device"
-category: "developer"
+title: 'iOS Simulator: Boot and Launch Device'
+category: 13_developer/xcode_app
 id: ios_simulator_boot_device
-description: "Boots a specific iOS simulator device and launches the Simulator app."
-keywords: ["iOS Simulator", "Xcode", "boot", "launch", "device", "UDID", "developer", "iOS", "iPadOS"]
+description: Boots a specific iOS simulator device and launches the Simulator app.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - boot
+  - launch
+  - device
+  - UDID
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Device identifier as 'deviceIdentifier' in inputData (can be a name like 'iPhone 15' or a device UDID). Optional wait time in seconds as 'waitTime' (default 10)."
-notes: |
+argumentsPrompt: >-
+  Device identifier as 'deviceIdentifier' in inputData (can be a name like
+  'iPhone 15' or a device UDID). Optional wait time in seconds as 'waitTime'
+  (default 10).
+notes: >
   - Boots a specific simulator device using xcrun simctl
+
   - Opens the Simulator app to display the booted device
+
   - Works with both device names and UDIDs for identification
+
   - Waits for simulator to boot up with configurable timeout
+
   - Helps for testing when you need a specific simulator configuration
-  - Use ios_simulator_list_devices script first to find available device identifiers
+
+  - Use ios_simulator_list_devices script first to find available device
+  identifiers
 ---
 
 ```applescript

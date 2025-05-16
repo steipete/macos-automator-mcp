@@ -1,12 +1,17 @@
 ---
-title: "Notes: Create New Folder"
-category: "07_productivity_apps"
+title: 'Notes: Create New Folder'
+category: 09_productivity/notes_app
 id: notes_create_folder
-description: "Creates a new folder in the Notes app."
-keywords: ["Notes", "create folder", "note folder", "organize notes", "note management"]
+description: Creates a new folder in the Notes app.
+keywords:
+  - Notes
+  - create folder
+  - note folder
+  - organize notes
+  - note management
 language: applescript
-argumentsPrompt: "Enter the name for the new folder"
-notes: "Creates a new folder in the Notes app with the specified name."
+argumentsPrompt: Enter the name for the new folder
+notes: Creates a new folder in the Notes app with the specified name.
 ---
 
 ```applescript

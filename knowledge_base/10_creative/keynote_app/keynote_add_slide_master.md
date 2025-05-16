@@ -1,12 +1,21 @@
 ---
-title: "Keynote: Add New Slide with Master"
-category: "08_creative_and_document_apps"
+title: 'Keynote: Add New Slide with Master'
+category: 10_creative/keynote_app
 id: keynote_add_slide_master
-description: "Adds a new slide to the current Keynote presentation using a specified master slide name."
-keywords: ["Keynote", "slide", "new slide", "master slide", "presentation"]
+description: >-
+  Adds a new slide to the current Keynote presentation using a specified master
+  slide name.
+keywords:
+  - Keynote
+  - slide
+  - new slide
+  - master slide
+  - presentation
 language: applescript
 isComplex: true
-argumentsPrompt: "Name of the master slide (e.g., 'Title & Bullets', 'Photo') as 'masterSlideName' in inputData. Assumes a presentation is open."
+argumentsPrompt: >-
+  Name of the master slide (e.g., 'Title & Bullets', 'Photo') as
+  'masterSlideName' in inputData. Assumes a presentation is open.
 notes: |
   - A Keynote presentation must be open and frontmost.
   - Master slide names are theme-dependent and case-sensitive.

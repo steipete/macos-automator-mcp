@@ -1,16 +1,32 @@
 ---
-title: "Keychain Access: Retrieve Password"
-category: "developer"
+title: 'Keychain Access: Retrieve Password'
+category: 13_developer/security
 id: keychain_get_password
-description: "Retrieves a stored password from the macOS Keychain using the security command-line tool."
-keywords: ["keychain", "security", "macOS", "passwords", "credentials", "find-generic-password", "find-internet-password"]
+description: >-
+  Retrieves a stored password from the macOS Keychain using the security
+  command-line tool.
+keywords:
+  - keychain
+  - security
+  - macOS
+  - passwords
+  - credentials
+  - find-generic-password
+  - find-internet-password
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide account name as 'accountName' and, optionally, the service name as 'serviceName' (for generic passwords) or server name as 'serverName' (for internet passwords) in inputData."
-notes: |
+argumentsPrompt: >-
+  Provide account name as 'accountName' and, optionally, the service name as
+  'serviceName' (for generic passwords) or server name as 'serverName' (for
+  internet passwords) in inputData.
+notes: >
   - This script may trigger a keychain access prompt for the user
+
   - Handling passwords requires careful security considerations
-  - For internet passwords, use find-internet-password instead of find-generic-password
+
+  - For internet passwords, use find-internet-password instead of
+  find-generic-password
+
   - Never store or log retrieved passwords in clear text
 ---
 

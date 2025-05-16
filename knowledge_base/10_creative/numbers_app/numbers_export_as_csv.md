@@ -1,12 +1,19 @@
 ---
-title: "Numbers: Export as CSV"
-category: "08_creative_and_document_apps"
+title: 'Numbers: Export as CSV'
+category: 10_creative/numbers_app
 id: numbers_export_as_csv
-description: "Exports a Numbers spreadsheet as a CSV file."
-keywords: ["Numbers", "export", "CSV", "convert spreadsheet", "export table"]
+description: Exports a Numbers spreadsheet as a CSV file.
+keywords:
+  - Numbers
+  - export
+  - CSV
+  - convert spreadsheet
+  - export table
 language: applescript
-argumentsPrompt: "Enter the path to the Numbers file and the CSV export path"
-notes: "Exports a Numbers spreadsheet to CSV format. Both paths should be full POSIX paths."
+argumentsPrompt: Enter the path to the Numbers file and the CSV export path
+notes: >-
+  Exports a Numbers spreadsheet to CSV format. Both paths should be full POSIX
+  paths.
 ---
 
 ```applescript

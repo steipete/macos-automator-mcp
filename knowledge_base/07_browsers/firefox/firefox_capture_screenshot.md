@@ -1,9 +1,16 @@
 ---
-title: "Firefox: Capture Screenshot"
-category: "05_web_browsers"
+title: 'Firefox: Capture Screenshot'
+category: 07_browsers/firefox
 id: firefox_capture_screenshot
-description: "Captures a screenshot of a webpage using Firefox's built-in screenshot tool."
-keywords: ["Firefox", "screenshot", "capture", "web development", "testing", "documentation", "full page"]
+description: Captures a screenshot of a webpage using Firefox's built-in screenshot tool.
+keywords:
+  - Firefox
+  - screenshot
+  - capture
+  - web development
+  - testing
+  - documentation
+  - full page
 language: applescript
 notes: |
   - Firefox must be running.

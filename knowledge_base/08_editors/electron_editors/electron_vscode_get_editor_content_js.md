@@ -1,15 +1,29 @@
 ---
-title: "Electron Editors (VS Code): Get Active Editor Content via DevTools JS"
-category: "06_ides_and_editors"
+title: 'Electron Editors (VS Code): Get Active Editor Content via DevTools JS'
+category: 08_editors/electron_editors
 id: electron_vscode_get_editor_content_js
-description: "Retrieves text from VS Code's active editor using JavaScript injection into DevTools, copying result to clipboard."
-keywords: ["vscode", "electron", "devtools", "javascript", "get text", "editor content", "clipboard"]
+description: >-
+  Retrieves text from VS Code's active editor using JavaScript injection into
+  DevTools, copying result to clipboard.
+keywords:
+  - vscode
+  - electron
+  - devtools
+  - javascript
+  - get text
+  - editor content
+  - clipboard
 language: applescript
 isComplex: true
-notes: |
+notes: >
   - VS Code must be frontmost. Relies on DevTools shortcut (Option+Command+I).
-  - Uses VS Code specific JS API: `vscode.window.activeTextEditor.document.getText()` and `vscode.env.clipboard.writeText()`.
-  - Temporarily overwrites clipboard. This script attempts to return the content directly.
+
+  - Uses VS Code specific JS API:
+  `vscode.window.activeTextEditor.document.getText()` and
+  `vscode.env.clipboard.writeText()`.
+
+  - Temporarily overwrites clipboard. This script attempts to return the content
+  directly.
 ---
 
 This is a more refined version to get editor content directly.

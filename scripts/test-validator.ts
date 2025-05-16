@@ -29,10 +29,11 @@ async function validateScript(
       await execPromise(`osascript -l JavaScript -e '${escapedScript}' > /dev/null 2>&1`);
     }
     return { isValid: true };
-  } catch (error: any) {
+  } catch (error) {
+    const errorObj = error as { stderr?: string; stdout?: string; message?: string };
     return { 
       isValid: false, 
-      error: error.stderr || error.stdout || error.message || 'Unknown error during syntax validation'
+      error: errorObj.stderr || errorObj.stdout || errorObj.message || 'Unknown error during syntax validation'
     };
   }
 }
@@ -79,8 +80,9 @@ async function validateTipFile(filePath: string): Promise<boolean> {
     }
 
     return true;
-  } catch (error: any) {
-    console.error(`  Error: ${error.message}`);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`  Error: ${errorMessage}`);
     return false;
   }
 }

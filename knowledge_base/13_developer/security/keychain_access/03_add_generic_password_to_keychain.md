@@ -1,12 +1,23 @@
 ---
-title: "Keychain Access: Add Generic Password"
-category: "developer"
+title: 'Keychain Access: Add Generic Password'
+category: 13_developer/security
 id: keychain_add_generic_password
-description: "Adds a new generic password item to the macOS Keychain using the security command-line tool."
-keywords: ["keychain", "security", "macOS", "passwords", "credentials", "add-generic-password", "password storage"]
+description: >-
+  Adds a new generic password item to the macOS Keychain using the security
+  command-line tool.
+keywords:
+  - keychain
+  - security
+  - macOS
+  - passwords
+  - credentials
+  - add-generic-password
+  - password storage
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide service name as 'serviceName', account name as 'accountName', password as 'passwordValue', and optionally a comment as 'commentText' in inputData."
+argumentsPrompt: >-
+  Provide service name as 'serviceName', account name as 'accountName', password
+  as 'passwordValue', and optionally a comment as 'commentText' in inputData.
 notes: |
   - This script stores credentials securely in the macOS Keychain
   - Use this for storing app passwords, API keys, and other sensitive data

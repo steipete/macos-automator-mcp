@@ -1,14 +1,29 @@
 ---
-title: "Core: Stay-Open Applet Handler 'on quit'"
-category: "01_applescript_core"
+title: 'Core: Stay-Open Applet Handler ''on quit'''
+category: 02_as_core/handlers_and_subroutines
 id: core_handler_on_quit
-description: "Defines a handler that executes when a stay-open applet is commanded to quit, allowing for cleanup operations."
-keywords: ["handler", "on quit", "quit", "stay open", "applet", "cleanup", "exit handler"]
+description: >-
+  Defines a handler that executes when a stay-open applet is commanded to quit,
+  allowing for cleanup operations.
+keywords:
+  - handler
+  - on quit
+  - quit
+  - stay open
+  - applet
+  - cleanup
+  - exit handler
 language: applescript
-notes: |
-  - This handler is only called in scripts saved as an Application with the "Stay open after run handler" option checked.
-  - It's an opportunity to save data, release resources, or perform other cleanup tasks before the applet terminates.
-  - Crucially, you must include `continue quit` within this handler if you want the applet to actually quit after your code runs. Omitting it will prevent the applet from quitting via the standard Quit command.
+notes: >
+  - This handler is only called in scripts saved as an Application with the
+  "Stay open after run handler" option checked.
+
+  - It's an opportunity to save data, release resources, or perform other
+  cleanup tasks before the applet terminates.
+
+  - Crucially, you must include `continue quit` within this handler if you want
+  the applet to actually quit after your code runs. Omitting it will prevent the
+  applet from quitting via the standard Quit command.
 ---
 
 This handler allows a stay-open applet to perform tasks before it terminates.

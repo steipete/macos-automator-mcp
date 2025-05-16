@@ -1,19 +1,34 @@
 ---
-title: "Spotify: Repeat and Shuffle Control"
-category: "08_creative_and_document_apps"
+title: 'Spotify: Repeat and Shuffle Control'
+category: 10_creative/spotify
 id: spotify_repeat_shuffle_control
-description: "Control Spotify's repeat and shuffle settings via AppleScript."
-keywords: ["Spotify", "repeat", "shuffle", "repeating", "shuffling", "playback", "settings"]
+description: Control Spotify's repeat and shuffle settings via AppleScript.
+keywords:
+  - Spotify
+  - repeat
+  - shuffle
+  - repeating
+  - shuffling
+  - playback
+  - settings
 language: applescript
-parameters: |
-  - action (required): Action to perform - "toggle_repeat", "toggle_shuffle", "set_repeat", "set_shuffle", "get_status"
-  - value (optional): For set_repeat/set_shuffle actions - "on" or "off" (required when using these actions)
-notes: |
+parameters: >
+  - action (required): Action to perform - "toggle_repeat", "toggle_shuffle",
+  "set_repeat", "set_shuffle", "get_status"
+
+  - value (optional): For set_repeat/set_shuffle actions - "on" or "off"
+  (required when using these actions)
+notes: >
   - Spotify must be running.
+
   - Toggle actions will switch between on and off states.
+
   - Set actions explicitly set the state to on or off.
+
   - Get_status returns the current repeat and shuffle states.
-  - In some Spotify versions, these commands might not perform as expected due to API limitations.
+
+  - In some Spotify versions, these commands might not perform as expected due
+  to API limitations.
 ---
 
 Control Spotify's repeat and shuffle playback settings.

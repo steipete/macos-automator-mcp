@@ -1,12 +1,23 @@
 ---
-title: "Xcode: Clean Derived Data and Module Cache"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Clean Derived Data and Module Cache'
+category: 13_developer/xcode_app
 id: xcode_clean_derived_data
-description: "Cleans Xcode's derived data and module cache to fix common build issues."
-keywords: ["Xcode", "derived data", "module cache", "clean", "troubleshooting", "performance", "developer", "iOS", "macOS"]
+description: Cleans Xcode's derived data and module cache to fix common build issues.
+keywords:
+  - Xcode
+  - derived data
+  - module cache
+  - clean
+  - troubleshooting
+  - performance
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional boolean 'keepDocumentation' to preserve documentation or clean that too (default is true - keep documentation)"
+argumentsPrompt: >-
+  Optional boolean 'keepDocumentation' to preserve documentation or clean that
+  too (default is true - keep documentation)
 notes: |
   - Forces Xcode to quit before cleaning caches
   - Removes derived data which contains build artifacts and project indexes

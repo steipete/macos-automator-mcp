@@ -1,17 +1,36 @@
 ---
-title: "Chrome: Inspect Element by Selector"
-category: "05_web_browsers"
+title: 'Chrome: Inspect Element by Selector'
+category: 07_browsers/chrome
 id: chrome_inspect_element
-description: "Inspects a specific DOM element in Chrome DevTools using CSS selector or XPath, highlighting and selecting it in the Elements panel."
-keywords: ["Chrome", "DevTools", "inspect", "elements", "DOM", "selector", "XPath", "web development"]
+description: >-
+  Inspects a specific DOM element in Chrome DevTools using CSS selector or
+  XPath, highlighting and selecting it in the Elements panel.
+keywords:
+  - Chrome
+  - DevTools
+  - inspect
+  - elements
+  - DOM
+  - selector
+  - XPath
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Required selector in inputData. For example: { \"selector\": \"#main-content\" } for CSS selector or { \"selector\": \"//div[@id='main-content']\" } for XPath (detected automatically). Can also provide { \"selectorType\": \"css\" } or { \"selectorType\": \"xpath\" } to force a specific selector type."
-notes: |
+argumentsPrompt: >-
+  Required selector in inputData. For example: { "selector": "#main-content" }
+  for CSS selector or { "selector": "//div[@id='main-content']" } for XPath
+  (detected automatically). Can also provide { "selectorType": "css" } or {
+  "selectorType": "xpath" } to force a specific selector type.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and switches to the Elements panel.
+
   - Use either CSS selectors or XPath expressions to target elements.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
 ---
 

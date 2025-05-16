@@ -1,15 +1,26 @@
 ---
-title: "Script Editor: Open Script File"
-category: "developer"
+title: 'Script Editor: Open Script File'
+category: 13_developer/script_editor_app
 id: script_editor_open_file
-description: "Opens an AppleScript file in Script Editor."
-keywords: ["Script Editor", "open file", "script file", "AppleScript", "load script", "editor"]
+description: Opens an AppleScript file in Script Editor.
+keywords:
+  - Script Editor
+  - open file
+  - script file
+  - AppleScript
+  - load script
+  - editor
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide the absolute path (POSIX or HFS) to the script file to open in inputData."
-notes: |
-  - Supports .scpt, .applescript, .scptd (bundle) and text files containing AppleScript
+argumentsPrompt: >-
+  Provide the absolute path (POSIX or HFS) to the script file to open in
+  inputData.
+notes: >
+  - Supports .scpt, .applescript, .scptd (bundle) and text files containing
+  AppleScript
+
   - Script Editor will be launched if not already running
+
   - Can be used to programmatically open scripts for editing or execution
 ---
 

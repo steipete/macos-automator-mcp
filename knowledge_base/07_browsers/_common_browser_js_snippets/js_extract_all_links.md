@@ -1,11 +1,19 @@
 ---
-title: "JS Snippet: Extract All Links from Page"
-category: "05_web_browsers"
+title: 'JS Snippet: Extract All Links from Page'
+category: 07_browsers
 id: js_extract_all_links
-description: "JavaScript to find all <a> tags on a page and return their href attributes."
-keywords: ["javascript", "dom", "extract links", "scrape", "href", "anchor tags"]
+description: JavaScript to find all <a> tags on a page and return their href attributes.
+keywords:
+  - javascript
+  - dom
+  - extract links
+  - scrape
+  - href
+  - anchor tags
 language: javascript
-notes: "Returns an array of URL strings. AppleScript will receive this as a single string, often newline-separated if the JS uses `join('\\n')`."
+notes: >-
+  Returns an array of URL strings. AppleScript will receive this as a single
+  string, often newline-separated if the JS uses `join('\n')`.
 ---
 
 ```javascript

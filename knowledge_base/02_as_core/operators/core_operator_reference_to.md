@@ -1,13 +1,24 @@
 ---
-title: "Core: Reference Operator ('a reference to')"
-category: "01_applescript_core"
+title: 'Core: Reference Operator (''a reference to'')'
+category: 02_as_core/operators
 id: core_operator_reference_to
-description: "Explains the 'a reference to' operator, which creates a pointer to an object or its parts."
-keywords: ["operator", "reference", "a reference to", "pointer", "indirect reference"]
+description: >-
+  Explains the 'a reference to' operator, which creates a pointer to an object
+  or its parts.
+keywords:
+  - operator
+  - reference
+  - a reference to
+  - pointer
+  - indirect reference
 language: applescript
-notes: |
-  - A reference allows indirect manipulation of data. Changes to the reference's target affect the original data.
-  - Useful for working with items in lists, characters in strings, or properties of records when you want to modify them in place or pass them around.
+notes: >
+  - A reference allows indirect manipulation of data. Changes to the reference's
+  target affect the original data.
+
+  - Useful for working with items in lists, characters in strings, or properties
+  of records when you want to modify them in place or pass them around.
+
   - `contents of` is used to get or set the value that a reference points to.
 ---
 

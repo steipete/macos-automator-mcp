@@ -1,12 +1,19 @@
 ---
-title: "File Ops (No Finder): Read Text File Content"
-category: "03_file_system_and_finder"
+title: 'File Ops (No Finder): Read Text File Content'
+category: 05_files/file_operations_no_finder
 id: fileops_read_text_file
-description: "Reads the entire content of a specified text file using StandardAdditions. Returns content as a string."
-keywords: ["read file", "file content", "text", "StandardAdditions", "UTF-8"]
+description: >-
+  Reads the entire content of a specified text file using StandardAdditions.
+  Returns content as a string.
+keywords:
+  - read file
+  - file content
+  - text
+  - StandardAdditions
+  - UTF-8
 language: applescript
 isComplex: true
-argumentsPrompt: "Absolute POSIX path of the file to read as 'filePath' in inputData."
+argumentsPrompt: Absolute POSIX path of the file to read as 'filePath' in inputData.
 ---
 
 ```applescript

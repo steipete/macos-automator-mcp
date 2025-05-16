@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Record Screen Video"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Record Screen Video'
+category: 13_developer/xcode_app
 id: ios_simulator_record_video
-description: "Records a video of an iOS simulator screen for a specified duration."
-keywords: ["iOS Simulator", "Xcode", "record", "video", "screen capture", "developer", "iOS", "iPadOS", "mp4"]
+description: Records a video of an iOS simulator screen for a specified duration.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - record
+  - video
+  - screen capture
+  - developer
+  - iOS
+  - iPadOS
+  - mp4
 language: applescript
 isComplex: true
-argumentsPrompt: "Output path as 'outputPath' (where to save the MP4 video), record duration in seconds as 'recordDuration' (default 10 seconds), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Output path as 'outputPath' (where to save the MP4 video), record duration in
+  seconds as 'recordDuration' (default 10 seconds), and optional device
+  identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Records simulator screen activity to an MP4 video file
   - Can specify recording duration in seconds

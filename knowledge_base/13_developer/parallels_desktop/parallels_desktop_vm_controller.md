@@ -1,35 +1,69 @@
 ---
 id: parallels_desktop_vm_controller
 title: Parallels Desktop VM Controller
-description: Comprehensive script to manage Parallels Desktop virtual machines - list, start, stop, suspend, and check status of VMs.
+description: >-
+  Comprehensive script to manage Parallels Desktop virtual machines - list,
+  start, stop, suspend, and check status of VMs.
 language: applescript
-compatibility: macOS Sonoma, Ventura, Monterey
+compatibility: 'macOS Sonoma, Ventura, Monterey'
 author: Claude
-tags: [parallels, virtualization, parallels desktop, virtual machines]
-keywords: [parallels desktop, virtual machines, vm management, start vm, stop vm, suspend vm, vm status, vm operations]
-guide: |
-  This script provides a complete interface for controlling Parallels Desktop virtual machines on macOS.
-  
+tags:
+  - parallels
+  - virtualization
+  - parallels desktop
+  - virtual machines
+keywords:
+  - parallels desktop
+  - virtual machines
+  - vm management
+  - start vm
+  - stop vm
+  - suspend vm
+  - vm status
+  - vm operations
+guide: >
+  This script provides a complete interface for controlling Parallels Desktop
+  virtual machines on macOS.
+
+
   It demonstrates:
+
   1. Connecting to Parallels Desktop application
+
   2. Listing available virtual machines
+
   3. Starting a specific virtual machine
+
   4. Stopping/shutting down a virtual machine
+
   5. Suspending a virtual machine
+
   6. Checking VM status
+
   7. Error handling for all operations
-  
-  The script uses the Parallels Desktop AppleScript dictionary for VM management,
+
+
+  The script uses the Parallels Desktop AppleScript dictionary for VM
+  management,
+
   with fallback methods for operations like graceful shutdowns.
-  
+
+
   To use this script:
+
   1. Run it directly
+
   2. Select operations from the menu interface
+
   3. Choose a VM from the list to manage
-  
+
+
   Requirements:
+
   - Parallels Desktop installed
-  - Appropriate macOS permissions for automation (System Settings > Privacy & Security)
+
+  - Appropriate macOS permissions for automation (System Settings > Privacy &
+  Security)
 sample_snippets:
   - title: List virtual machines
     snippet: |
@@ -126,6 +160,7 @@ sample_snippets:
               display dialog "Failed to suspend '" & vmName & "': " & errMsg buttons {"OK"} default button "OK" with icon stop
           end try
       end suspendVM
+category: 13_developer/parallels_desktop
 ---
 
 ```applescript

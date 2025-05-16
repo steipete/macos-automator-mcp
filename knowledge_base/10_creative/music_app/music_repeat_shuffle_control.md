@@ -1,13 +1,25 @@
 ---
-title: "Music: Repeat and Shuffle Control"
-category: "08_creative_and_document_apps"
+title: 'Music: Repeat and Shuffle Control'
+category: 10_creative/music_app
 id: music_repeat_shuffle_control
-description: "Control Apple Music's repeat and shuffle settings via AppleScript."
-keywords: ["Apple Music", "Music", "iTunes", "repeat", "shuffle", "repeating", "shuffling", "playback", "settings"]
+description: Control Apple Music's repeat and shuffle settings via AppleScript.
+keywords:
+  - Apple Music
+  - Music
+  - iTunes
+  - repeat
+  - shuffle
+  - repeating
+  - shuffling
+  - playback
+  - settings
 language: applescript
-parameters: |
-  - action (required): Action to perform - "toggle_repeat", "toggle_shuffle", "set_repeat", "set_shuffle", "get_status"
-  - value (optional): For set_repeat/set_shuffle actions - "off", "one", or "all" for repeat; "on" or "off" for shuffle
+parameters: >
+  - action (required): Action to perform - "toggle_repeat", "toggle_shuffle",
+  "set_repeat", "set_shuffle", "get_status"
+
+  - value (optional): For set_repeat/set_shuffle actions - "off", "one", or
+  "all" for repeat; "on" or "off" for shuffle
 notes: |
   - Music.app must be running.
   - Toggle actions will cycle through the available states.

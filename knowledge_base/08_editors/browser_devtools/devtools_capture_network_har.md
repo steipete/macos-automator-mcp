@@ -1,7 +1,9 @@
 ---
 id: devtools_capture_network_har
 title: Capture Network Activity to HAR File
-description: Captures network activity from browser developer tools and saves it as a HAR file
+description: >-
+  Captures network activity from browser developer tools and saves it as a HAR
+  file
 language: applescript
 author: Claude
 keywords:
@@ -11,9 +13,9 @@ keywords:
   - har
   - devtools
 usage_examples:
-  - "Record network traffic from a web application for debugging"
-  - "Save API requests and responses for analysis"
-  - "Monitor network performance of a website"
+  - Record network traffic from a web application for debugging
+  - Save API requests and responses for analysis
+  - Monitor network performance of a website
 parameters:
   - name: savePath
     description: Path where to save the HAR file (POSIX path)
@@ -22,8 +24,9 @@ parameters:
     description: Duration in seconds to record network activity (default 30)
     required: false
   - name: browser
-    description: Browser to use (chrome or safari, default chrome)
+    description: 'Browser to use (chrome or safari, default chrome)'
     required: false
+category: 08_editors/browser_devtools
 ---
 
 # Capture Network Activity to HAR File

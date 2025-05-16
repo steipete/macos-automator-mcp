@@ -1,21 +1,43 @@
 ---
-title: "Logic Pro: Project Management"
-category: "08_creative_and_document_apps"
+title: 'Logic Pro: Project Management'
+category: 10_creative/logic_pro
 id: logic_pro_project_management
-description: "Manage Logic Pro projects including creating, opening, saving, and backing up projects."
-keywords: ["Logic Pro", "DAW", "project", "management", "save", "open", "backup", "music production"]
+description: >-
+  Manage Logic Pro projects including creating, opening, saving, and backing up
+  projects.
+keywords:
+  - Logic Pro
+  - DAW
+  - project
+  - management
+  - save
+  - open
+  - backup
+  - music production
 language: applescript
-parameters: |
-  - action (required): Action to perform - "new", "open", "save", "save_as", "backup", "close"
-  - file_path (optional): Path to project file (required for open and save_as actions)
+parameters: >
+  - action (required): Action to perform - "new", "open", "save", "save_as",
+  "backup", "close"
+
+  - file_path (optional): Path to project file (required for open and save_as
+  actions)
+
   - template (optional): Template to use for new project (for new action)
-notes: |
+notes: >
   - Logic Pro must be running for these commands to work.
-  - Logic Pro has limited AppleScript support, so this script uses UI automation through System Events.
+
+  - Logic Pro has limited AppleScript support, so this script uses UI automation
+  through System Events.
+
   - For the "open" action, provide a full path to a .logicx project file.
-  - For the "save_as" action, provide a directory path where the project should be saved.
+
+  - For the "save_as" action, provide a directory path where the project should
+  be saved.
+
   - The "backup" action creates a timestamped copy of the current project.
-  - Some actions may require Accessibility permissions to be granted to the script runner.
+
+  - Some actions may require Accessibility permissions to be granted to the
+  script runner.
 ---
 
 Manage Logic Pro projects with automation.

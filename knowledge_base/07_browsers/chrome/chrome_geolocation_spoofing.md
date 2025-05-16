@@ -1,20 +1,42 @@
 ---
-title: "Chrome: Geolocation Spoofing"
-category: "05_web_browsers"
+title: 'Chrome: Geolocation Spoofing'
+category: 07_browsers/chrome
 id: chrome_geolocation_spoofing
-description: "Spoofs geolocation data in Chrome to simulate specific geographic locations for testing location-based web features and applications."
-keywords: ["Chrome", "geolocation", "spoofing", "location", "GPS", "testing", "web development", "DevTools"]
+description: >-
+  Spoofs geolocation data in Chrome to simulate specific geographic locations
+  for testing location-based web features and applications.
+keywords:
+  - Chrome
+  - geolocation
+  - spoofing
+  - location
+  - GPS
+  - testing
+  - web development
+  - DevTools
 language: applescript
 isComplex: true
-argumentsPrompt: "Location data in inputData. For example: { \"latitude\": 37.7749, \"longitude\": -122.4194, \"accuracy\": 10 } for San Francisco coordinates. Can also use predefined locations with { \"preset\": \"san_francisco\" }. Set { \"useRealLocation\": true } to stop spoofing."
-notes: |
+argumentsPrompt: >-
+  Location data in inputData. For example: { "latitude": 37.7749, "longitude":
+  -122.4194, "accuracy": 10 } for San Francisco coordinates. Can also use
+  predefined locations with { "preset": "san_francisco" }. Set {
+  "useRealLocation": true } to stop spoofing.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and configures geolocation spoofing.
+
   - Allows using predefined locations or custom coordinates.
+
   - Website must request location permissions for spoofing to work.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
-  - Useful for testing location-based features without changing physical location.
+
+  - Useful for testing location-based features without changing physical
+  location.
 ---
 
 This script configures Chrome to spoof geolocation data, allowing testing of location-based web features.

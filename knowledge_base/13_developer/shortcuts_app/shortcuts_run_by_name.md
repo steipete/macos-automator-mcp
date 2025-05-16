@@ -1,16 +1,28 @@
 ---
-title: "Shortcuts: Run Shortcut by Name"
-category: "developer"
+title: 'Shortcuts: Run Shortcut by Name'
+category: 13_developer/shortcuts_app
 id: shortcuts_run_by_name
-description: "Executes a specified macOS Shortcut by its name. Optionally provide input to the Shortcut."
-keywords: ["Shortcuts", "automation", "run shortcut", "Shortcuts Events"]
+description: >-
+  Executes a specified macOS Shortcut by its name. Optionally provide input to
+  the Shortcut.
+keywords:
+  - Shortcuts
+  - automation
+  - run shortcut
+  - Shortcuts Events
 language: applescript
 isComplex: true
-argumentsPrompt: "Name of the Shortcut as 'shortcutName'. Optionally, text input for the shortcut as 'shortcutInput' in inputData."
-notes: |
-  - Uses "Shortcuts Events" to run the shortcut, which usually happens in the background without opening the Shortcuts app UI.
+argumentsPrompt: >-
+  Name of the Shortcut as 'shortcutName'. Optionally, text input for the
+  shortcut as 'shortcutInput' in inputData.
+notes: >
+  - Uses "Shortcuts Events" to run the shortcut, which usually happens in the
+  background without opening the Shortcuts app UI.
+
   - The Shortcut must exist and be correctly named.
-  - Input is passed as text. The Shortcut needs to be designed to accept text input if 'shortcutInput' is used.
+
+  - Input is passed as text. The Shortcut needs to be designed to accept text
+  input if 'shortcutInput' is used.
 ---
 
 ```applescript

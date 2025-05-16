@@ -1,7 +1,7 @@
 ---
 id: iterm_split_pane
 title: iTerm2 Split Pane Management
-description: Creates, navigates between, and manages split panes in iTerm2
+description: 'Creates, navigates between, and manages split panes in iTerm2'
 language: applescript
 author: Claude
 keywords:
@@ -11,19 +11,22 @@ keywords:
   - workspace
   - multitasking
 usage_examples:
-  - "Create a vertical or horizontal split pane in iTerm2"
-  - "Navigate between panes in a complex layout"
-  - "Close specific panes or organize multi-pane layouts"
+  - Create a vertical or horizontal split pane in iTerm2
+  - Navigate between panes in a complex layout
+  - Close specific panes or organize multi-pane layouts
 parameters:
   - name: action
-    description: Action to perform - create, close, navigate, resize, or maximize
+    description: 'Action to perform - create, close, navigate, resize, or maximize'
     required: true
   - name: direction
-    description: Direction for split or navigation - horizontal, vertical, left, right, up, down
+    description: >-
+      Direction for split or navigation - horizontal, vertical, left, right, up,
+      down
     required: false
   - name: resizeAmount
-    description: Amount to resize by (1-10, where 10 is maximum) when using resize action
+    description: 'Amount to resize by (1-10, where 10 is maximum) when using resize action'
     required: false
+category: 06_terminal/iterm
 ---
 
 # iTerm2 Split Pane Management

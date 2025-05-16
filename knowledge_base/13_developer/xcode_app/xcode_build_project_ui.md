@@ -1,12 +1,20 @@
 ---
-title: "Xcode: Build Project via UI Scripting"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Build Project via UI Scripting'
+category: 13_developer/xcode_app
 id: xcode_build_project_ui
-description: "Builds an Xcode project by simulating menu selections in the Xcode UI."
-keywords: ["Xcode", "build", "compile", "UI scripting", "menu", "developer"]
+description: Builds an Xcode project by simulating menu selections in the Xcode UI.
+keywords:
+  - Xcode
+  - build
+  - compile
+  - UI scripting
+  - menu
+  - developer
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional wait time (in seconds) after build starts as 'waitTime' in inputData (default is 120 seconds)"
+argumentsPrompt: >-
+  Optional wait time (in seconds) after build starts as 'waitTime' in inputData
+  (default is 120 seconds)
 notes: |
   - Requires Xcode to be already open with a project loaded
   - Uses UI scripting via System Events so requires Accessibility permissions

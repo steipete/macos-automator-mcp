@@ -1,24 +1,30 @@
 ---
 id: iterm_manage_titles
 title: Manage iTerm2 Window and Tab Titles
-description: Sets, gets, or resets custom titles for iTerm2 windows, tabs, and sessions
+description: 'Sets, gets, or resets custom titles for iTerm2 windows, tabs, and sessions'
 language: applescript
 author: Claude
-keywords: ["titles", "labeling", "organization", "windows", "tabs"]
+keywords:
+  - titles
+  - labeling
+  - organization
+  - windows
+  - tabs
 usage_examples:
-  - "Set descriptive titles for iTerm2 windows"
-  - "Label tabs based on their purpose"
-  - "Create a consistent naming scheme across multiple terminal sessions"
+  - Set descriptive titles for iTerm2 windows
+  - Label tabs based on their purpose
+  - Create a consistent naming scheme across multiple terminal sessions
 parameters:
   - name: action
-    description: Action to perform - set, get, or reset
+    description: 'Action to perform - set, get, or reset'
     required: true
   - name: title
     description: New title text (for 'set' action only)
     required: false
   - name: target
-    description: Where to apply the title - window, tab, or session
+    description: 'Where to apply the title - window, tab, or session'
     required: false
+category: 06_terminal/iterm
 ---
 
 # Manage iTerm2 Window and Tab Titles

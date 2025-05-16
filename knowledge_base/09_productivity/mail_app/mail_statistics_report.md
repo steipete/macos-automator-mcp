@@ -1,12 +1,23 @@
 ---
-title: "Mail: Generate Email Statistics Report"
-category: "07_productivity_apps"
+title: 'Mail: Generate Email Statistics Report'
+category: 09_productivity/mail_app
 id: mail_statistics_report
-description: "Creates a detailed statistical report about your email usage and communication patterns"
-keywords: ["Mail", "email", "statistics", "analytics", "report", "patterns"]
+description: >-
+  Creates a detailed statistical report about your email usage and communication
+  patterns
+keywords:
+  - Mail
+  - email
+  - statistics
+  - analytics
+  - report
+  - patterns
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide days to analyze as 'daysToAnalyze' in inputData (optional, defaults to 30), and output format as 'outputFormat' (text, markdown, or html, defaults to text)"
+argumentsPrompt: >-
+  Provide days to analyze as 'daysToAnalyze' in inputData (optional, defaults to
+  30), and output format as 'outputFormat' (text, markdown, or html, defaults to
+  text)
 notes: |
   - Analyzes email communication patterns across specified time period
   - Generates statistics on volume, peak times, top contacts, and response times

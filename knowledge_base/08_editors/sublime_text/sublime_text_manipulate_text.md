@@ -1,7 +1,7 @@
 ---
 id: sublime_text_manipulate_text
 title: Manipulate text in Sublime Text
-description: Insert, replace, or modify text in Sublime Text
+description: 'Insert, replace, or modify text in Sublime Text'
 language: applescript
 author: Claude
 keywords:
@@ -11,19 +11,22 @@ keywords:
   - formatting
   - code manipulation
 usage_examples:
-  - "Insert text at cursor position"
-  - "Replace selected text"
-  - "Transform text with common operations"
+  - Insert text at cursor position
+  - Replace selected text
+  - Transform text with common operations
 parameters:
   - name: action
-    description: The action to perform ('insert', 'replace', 'transform')
+    description: 'The action to perform (''insert'', ''replace'', ''transform'')'
     required: true
   - name: text
     description: The text to insert or replace with
     required: false
   - name: transformType
-    description: The type of transformation ('uppercase', 'lowercase', 'titlecase', 'indent', 'outdent', 'trim', 'sort')
+    description: >-
+      The type of transformation ('uppercase', 'lowercase', 'titlecase',
+      'indent', 'outdent', 'trim', 'sort')
     required: false
+category: 08_editors/sublime_text
 ---
 
 # Manipulate text in Sublime Text

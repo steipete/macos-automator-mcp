@@ -1,12 +1,21 @@
 ---
-title: "Finder: Get POSIX Path of Selected Items"
-category: "03_file_system_and_finder"
+title: 'Finder: Get POSIX Path of Selected Items'
+category: 05_files/file_operations_finder
 id: finder_get_selected_items_paths
-description: "Retrieves the POSIX paths of all currently selected files and folders in the frontmost Finder window."
-keywords: ["Finder", "selection", "selected files", "path", "POSIX"]
+description: >-
+  Retrieves the POSIX paths of all currently selected files and folders in the
+  frontmost Finder window.
+keywords:
+  - Finder
+  - selection
+  - selected files
+  - path
+  - POSIX
 language: applescript
-notes: |
-  - Finder must be the frontmost application with a window open and items selected.
+notes: >
+  - Finder must be the frontmost application with a window open and items
+  selected.
+
   - Returns a list of POSIX paths, one per line.
 ---
 

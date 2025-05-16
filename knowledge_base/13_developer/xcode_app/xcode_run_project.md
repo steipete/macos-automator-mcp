@@ -1,12 +1,22 @@
 ---
-title: "Xcode: Run Project"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Run Project'
+category: 13_developer/xcode_app
 id: xcode_run_project
-description: "Runs an open Xcode project, launching the app in the simulator or on a device."
-keywords: ["Xcode", "run", "launch", "simulator", "device", "developer", "iOS", "macOS"]
+description: 'Runs an open Xcode project, launching the app in the simulator or on a device.'
+keywords:
+  - Xcode
+  - run
+  - launch
+  - simulator
+  - device
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional wait time (in seconds) after run starts as 'waitTime' in inputData (default is 20 seconds)"
+argumentsPrompt: >-
+  Optional wait time (in seconds) after run starts as 'waitTime' in inputData
+  (default is 20 seconds)
 notes: |
   - Requires Xcode to be already open with a project loaded
   - Uses UI scripting via System Events so requires Accessibility permissions

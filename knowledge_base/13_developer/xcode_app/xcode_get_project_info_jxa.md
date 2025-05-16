@@ -1,9 +1,20 @@
 ---
-title: "Xcode: Get Project Info (JXA)"
-category: "developer"
+title: 'Xcode: Get Project Info (JXA)'
+category: 13_developer/xcode_app
 id: xcode_get_project_info_jxa
-description: "Retrieves information about an open Xcode project using JavaScript for Automation (JXA)."
-keywords: ["Xcode", "project", "info", "JavaScript", "JXA", "scheme", "developer", "iOS", "macOS"]
+description: >-
+  Retrieves information about an open Xcode project using JavaScript for
+  Automation (JXA).
+keywords:
+  - Xcode
+  - project
+  - info
+  - JavaScript
+  - JXA
+  - scheme
+  - developer
+  - iOS
+  - macOS
 language: javascript
 isComplex: true
 notes: |

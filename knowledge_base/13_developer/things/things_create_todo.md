@@ -4,10 +4,16 @@ title: Create To-Do in Things
 description: Use AppleScript to create a new to-do in Things app
 author: steipete
 language: applescript
-tags: things, productivity, task management, to-do
-keywords: [tasks, action items, inbox, scheduling, reminders]
+tags: 'things, productivity, task management, to-do'
+keywords:
+  - tasks
+  - action items
+  - inbox
+  - scheduling
+  - reminders
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Create To-Do in Things

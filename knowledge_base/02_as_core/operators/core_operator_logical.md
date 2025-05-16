@@ -1,11 +1,20 @@
 ---
-title: "Core: Logical Operators (and, or, not)"
-category: "01_applescript_core"
+title: 'Core: Logical Operators (and, or, not)'
+category: 02_as_core/operators
 id: core_operator_logical
-description: "Explains the logical operators 'and', 'or', and 'not' for combining boolean expressions."
-keywords: ["operator", "logical", "and", "or", "not", "boolean logic", "condition"]
+description: >-
+  Explains the logical operators 'and', 'or', and 'not' for combining boolean
+  expressions.
+keywords:
+  - operator
+  - logical
+  - and
+  - or
+  - not
+  - boolean logic
+  - condition
 language: applescript
-notes: "Logical operators are fundamental for building complex conditional statements."
+notes: Logical operators are fundamental for building complex conditional statements.
 ---
 
 Logical operators combine boolean values to produce a single boolean result.

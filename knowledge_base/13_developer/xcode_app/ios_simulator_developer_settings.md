@@ -1,12 +1,24 @@
 ---
-title: "iOS Simulator: Enable Developer Settings"
-category: "developer"
+title: 'iOS Simulator: Enable Developer Settings'
+category: 13_developer/xcode_app
 id: ios_simulator_developer_settings
-description: "Enables and configures advanced developer settings in iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "developer", "settings", "debug", "configuration", "iOS", "iPadOS"]
+description: Enables and configures advanced developer settings in iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - developer
+  - settings
+  - debug
+  - configuration
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Setting to configure as 'setting' ('debug-menu', 'network-link-conditioner', 'show-fps', 'view-hierarchy', 'layout-debug', 'slow-animations', 'ui-debug', 'all'), action as 'action' ('enable', 'disable'), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Setting to configure as 'setting' ('debug-menu', 'network-link-conditioner',
+  'show-fps', 'view-hierarchy', 'layout-debug', 'slow-animations', 'ui-debug',
+  'all'), action as 'action' ('enable', 'disable'), and optional device
+  identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Enables advanced developer debugging options
   - Includes debug menu, network conditioning, FPS display

@@ -1,13 +1,19 @@
 ---
-title: "Script Editor: Compile and Run Active Script"
-category: "developer"
+title: 'Script Editor: Compile and Run Active Script'
+category: 13_developer/script_editor_app
 id: script_editor_compile_run
-description: "Tells Script Editor to compile and then run its frontmost document."
-keywords: ["Script Editor", "compile", "run script", "applescript development"]
+description: Tells Script Editor to compile and then run its frontmost document.
+keywords:
+  - Script Editor
+  - compile
+  - run script
+  - applescript development
 language: applescript
-notes: |
+notes: >
   - Script Editor must have a document open and be the frontmost application.
-  - Useful for programmatic testing or chaining script executions during development.
+
+  - Useful for programmatic testing or chaining script executions during
+  development.
 ---
 
 ```applescript

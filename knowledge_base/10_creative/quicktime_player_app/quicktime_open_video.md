@@ -1,12 +1,19 @@
 ---
-title: "QuickTime Player: Open Video File"
-category: "08_creative_and_document_apps"
+title: 'QuickTime Player: Open Video File'
+category: 10_creative/quicktime_player_app
 id: quicktime_open_video
-description: "Opens a video file in QuickTime Player."
-keywords: ["QuickTime Player", "open video", "play video", "media player", "movie file"]
+description: Opens a video file in QuickTime Player.
+keywords:
+  - QuickTime Player
+  - open video
+  - play video
+  - media player
+  - movie file
 language: applescript
-argumentsPrompt: "Enter the path to the video file to open"
-notes: "Opens a video file for playback. Supports common video formats like MP4, MOV, M4V, etc."
+argumentsPrompt: Enter the path to the video file to open
+notes: >-
+  Opens a video file for playback. Supports common video formats like MP4, MOV,
+  M4V, etc.
 ---
 
 ```applescript

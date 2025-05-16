@@ -1,12 +1,19 @@
 ---
-title: "Shortcuts: Create New Folder"
-category: "developer"
+title: 'Shortcuts: Create New Folder'
+category: 13_developer/shortcuts_app
 id: shortcuts_create_folder
-description: "Creates a new folder in the Shortcuts app to organize shortcuts."
-keywords: ["Shortcuts", "create folder", "shortcut organization", "folder", "organize shortcuts"]
+description: Creates a new folder in the Shortcuts app to organize shortcuts.
+keywords:
+  - Shortcuts
+  - create folder
+  - shortcut organization
+  - folder
+  - organize shortcuts
 language: applescript
-argumentsPrompt: "Enter the name for the new folder"
-notes: "Creates a new folder in the Shortcuts app for organizing your shortcuts. Useful for keeping different types of shortcuts organized."
+argumentsPrompt: Enter the name for the new folder
+notes: >-
+  Creates a new folder in the Shortcuts app for organizing your shortcuts.
+  Useful for keeping different types of shortcuts organized.
 ---
 
 ```applescript

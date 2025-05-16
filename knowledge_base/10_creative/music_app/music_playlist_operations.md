@@ -1,22 +1,44 @@
 ---
-title: "Music: Playlist Operations"
-category: "08_creative_and_document_apps"
+title: 'Music: Playlist Operations'
+category: 10_creative/music_app
 id: music_playlist_operations
-description: "Manage Apple Music playlists including creating, listing, modifying, and playing playlists."
-keywords: ["Apple Music", "Music", "iTunes", "playlist", "playlists", "create playlist", "add tracks", "library"]
+description: >-
+  Manage Apple Music playlists including creating, listing, modifying, and
+  playing playlists.
+keywords:
+  - Apple Music
+  - Music
+  - iTunes
+  - playlist
+  - playlists
+  - create playlist
+  - add tracks
+  - library
 language: applescript
-parameters: |
-  - action (required): Action to perform - "list", "create", "add_current", "play", "search"
+parameters: >
+  - action (required): Action to perform - "list", "create", "add_current",
+  "play", "search"
+
   - playlist_name (optional): Name of the playlist to create, modify, or play
+
   - search_term (optional): Term to search for when using the search action
-notes: |
+notes: >
   - Music.app must be running.
+
   - The "list" action shows all available playlists.
+
   - The "create" action creates a new playlist (playlist_name required).
-  - The "add_current" action adds the currently playing track to the specified playlist.
+
+  - The "add_current" action adds the currently playing track to the specified
+  playlist.
+
   - The "play" action plays the specified playlist.
-  - The "search" action searches for tracks and can optionally add them to a playlist.
-  - Apple Music may have limitations on what operations can be performed on certain types of playlists.
+
+  - The "search" action searches for tracks and can optionally add them to a
+  playlist.
+
+  - Apple Music may have limitations on what operations can be performed on
+  certain types of playlists.
 ---
 
 Manage Apple Music playlists.

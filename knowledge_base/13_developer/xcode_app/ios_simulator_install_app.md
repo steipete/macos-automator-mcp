@@ -1,18 +1,37 @@
 ---
-title: "iOS Simulator: Install App"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Install App'
+category: 13_developer/xcode_app
 id: ios_simulator_install_app
-description: "Installs an app on an iOS simulator device and optionally launches it."
-keywords: ["iOS Simulator", "Xcode", "install", "app", "launch", "bundle", "developer", "iOS", "iPadOS"]
+description: Installs an app on an iOS simulator device and optionally launches it.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - install
+  - app
+  - launch
+  - bundle
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "App path as 'appPath' (path to .app bundle), device identifier as 'deviceIdentifier' (device name or UDID, or 'booted' for currently booted device), and optional launch boolean as 'launchAfterInstall' (default is true)."
-notes: |
+argumentsPrompt: >-
+  App path as 'appPath' (path to .app bundle), device identifier as
+  'deviceIdentifier' (device name or UDID, or 'booted' for currently booted
+  device), and optional launch boolean as 'launchAfterInstall' (default is
+  true).
+notes: >
   - Installs an app bundle to a simulator device
-  - Can target a specific device by name or UDID, or use 'booted' for active device
+
+  - Can target a specific device by name or UDID, or use 'booted' for active
+  device
+
   - Optionally launches the app after installation
+
   - Returns the bundle identifier of the installed app
+
   - Useful for testing app installations without going through Xcode
+
   - The app path must be to a simulator-compatible .app bundle
 ---
 

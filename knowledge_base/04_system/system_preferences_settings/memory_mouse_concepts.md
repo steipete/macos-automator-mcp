@@ -1,12 +1,20 @@
 ---
-title: "Control Mouse, Trackpad, and Memory Settings with AppleScript"
-description: "Scripts for controlling mouse/trackpad tracking speed, scrolling behavior, and checking system memory status in macOS"
-author: "Claude"
-category: "02_system_interaction"
-subcategory: "system_preferences_settings"
-keywords: ["mouse", "trackpad", "memory", "system settings", "ui scripting", "system information"]
-language: "applescript"
-version: "1.0"
+title: 'Control Mouse, Trackpad, and Memory Settings with AppleScript'
+description: >-
+  Scripts for controlling mouse/trackpad tracking speed, scrolling behavior, and
+  checking system memory status in macOS
+author: Claude
+category: 04_system/system_preferences_settings
+subcategory: system_preferences_settings
+keywords:
+  - mouse
+  - trackpad
+  - memory
+  - system settings
+  - ui scripting
+  - system information
+language: applescript
+version: '1.0'
 validated: true
 ---
 

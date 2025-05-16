@@ -1,20 +1,36 @@
 ---
-title: "Safari: Get Bookmarks"
-category: "05_web_browsers"
+title: 'Safari: Get Bookmarks'
+category: 07_browsers/safari
 id: safari_get_bookmarks
-description: "Retrieves bookmarks from Safari and returns them in a structured format."
-keywords: ["Safari", "bookmarks", "favorites", "reading list", "browser", "web"]
+description: Retrieves bookmarks from Safari and returns them in a structured format.
+keywords:
+  - Safari
+  - bookmarks
+  - favorites
+  - reading list
+  - browser
+  - web
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional bookmark folder name as 'folderName' in inputData. If not provided, retrieves all bookmarks."
-notes: |
+argumentsPrompt: >-
+  Optional bookmark folder name as 'folderName' in inputData. If not provided,
+  retrieves all bookmarks.
+notes: >
   - Safari must be installed (but doesn't need to be running).
+
   - This script uses SQLite to access Safari's bookmarks database.
+
   - The script returns bookmark data in JSON format.
+
   - Bookmarks are organized by folder, maintaining Safari's folder structure.
-  - If a folder name is provided, only bookmarks from that folder will be returned.
+
+  - If a folder name is provided, only bookmarks from that folder will be
+  returned.
+
   - The Reading List is treated as a special bookmark folder.
-  - Accessing bookmark data may require permissions based on your macOS privacy settings.
+
+  - Accessing bookmark data may require permissions based on your macOS privacy
+  settings.
 ---
 
 This script retrieves bookmarks from Safari and returns them in a structured JSON format.

@@ -1,11 +1,22 @@
 ---
-title: "Clipboard History Manager"
-category: "02_system_interaction"
+title: Clipboard History Manager
+category: 04_system/clipboard_system
 id: clipboard_history_manager
-description: "Manages a history of clipboard contents, allowing storage and retrieval of multiple clipboard items"
-keywords: ["clipboard", "history", "copy", "paste", "clipboard manager", "System Events", "temporary storage"]
+description: >-
+  Manages a history of clipboard contents, allowing storage and retrieval of
+  multiple clipboard items
+keywords:
+  - clipboard
+  - history
+  - copy
+  - paste
+  - clipboard manager
+  - System Events
+  - temporary storage
 language: applescript
-notes: "Preserves clipboard history between script runs by saving to a file. Supports text, images, and file paths with configurable history size."
+notes: >-
+  Preserves clipboard history between script runs by saving to a file. Supports
+  text, images, and file paths with configurable history size.
 ---
 
 ```applescript

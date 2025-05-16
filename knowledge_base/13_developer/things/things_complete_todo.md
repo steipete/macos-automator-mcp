@@ -4,10 +4,16 @@ title: Complete To-Dos in Things
 description: Use AppleScript to mark to-dos as completed in Things app
 author: steipete
 language: applescript
-tags: things, productivity, task management, complete, done
-keywords: [completion, task status, mark done, logbook, task tracking]
+tags: 'things, productivity, task management, complete, done'
+keywords:
+  - completion
+  - task status
+  - mark done
+  - logbook
+  - task tracking
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Complete To-Dos in Things

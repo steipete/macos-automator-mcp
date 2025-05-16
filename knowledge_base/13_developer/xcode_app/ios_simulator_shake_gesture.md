@@ -1,12 +1,23 @@
 ---
-title: "iOS Simulator: Simulate Shake Gesture"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Simulate Shake Gesture'
+category: 13_developer/xcode_app
 id: ios_simulator_shake_gesture
-description: "Simulates device shake gesture in iOS Simulator."
-keywords: ["iOS Simulator", "Xcode", "shake", "gesture", "motion", "acceleration", "developer", "iOS", "iPadOS"]
+description: Simulates device shake gesture in iOS Simulator.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - shake
+  - gesture
+  - motion
+  - acceleration
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: false
-argumentsPrompt: "Optional device identifier as 'deviceIdentifier' (defaults to 'booted'), optional intensity as 'intensity' (1-5, defaults to 3)."
+argumentsPrompt: >-
+  Optional device identifier as 'deviceIdentifier' (defaults to 'booted'),
+  optional intensity as 'intensity' (1-5, defaults to 3).
 notes: |
   - Simulates device shake gesture for testing motion responses
   - Tests shake-to-undo and other shake-based interactions

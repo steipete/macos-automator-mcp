@@ -1,16 +1,35 @@
 ---
-title: "Keychain Access: Lock and Unlock Keychains"
-category: "developer"
+title: 'Keychain Access: Lock and Unlock Keychains'
+category: 13_developer/security
 id: keychain_lock_unlock
-description: "Lock and unlock macOS keychains programmatically using the security command-line tool."
-keywords: ["keychain", "security", "macOS", "lock", "unlock", "password", "credentials", "keychain access"]
+description: >-
+  Lock and unlock macOS keychains programmatically using the security
+  command-line tool.
+keywords:
+  - keychain
+  - security
+  - macOS
+  - lock
+  - unlock
+  - password
+  - credentials
+  - keychain access
 language: applescript
 isComplex: true
-argumentsPrompt: "To lock a keychain, provide its path as 'keychainPath'. To unlock a keychain, provide its path as 'keychainPath' and its password as 'keychainPassword' in inputData."
-notes: |
-  - The login keychain is automatically unlocked at login with your login password
-  - Locking keychains is useful for security when leaving your computer unattended
-  - Unlocking requires the keychain password, which may be different from your login password
+argumentsPrompt: >-
+  To lock a keychain, provide its path as 'keychainPath'. To unlock a keychain,
+  provide its path as 'keychainPath' and its password as 'keychainPassword' in
+  inputData.
+notes: >
+  - The login keychain is automatically unlocked at login with your login
+  password
+
+  - Locking keychains is useful for security when leaving your computer
+  unattended
+
+  - Unlocking requires the keychain password, which may be different from your
+  login password
+
   - Be careful with keychain passwords - they should be handled securely
 ---
 

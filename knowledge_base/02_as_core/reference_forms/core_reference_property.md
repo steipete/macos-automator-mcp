@@ -1,14 +1,24 @@
 ---
-title: "Core: Property Reference Form"
-category: "01_applescript_core"
+title: 'Core: Property Reference Form'
+category: 02_as_core/reference_forms
 id: core_reference_property
-description: "Accessing the properties of objects (e.g., name of file, URL of document)."
-keywords: ["reference form", "property", "attribute", "object property", "name of", "class of"]
+description: 'Accessing the properties of objects (e.g., name of file, URL of document).'
+keywords:
+  - reference form
+  - property
+  - attribute
+  - object property
+  - name of
+  - class of
 language: applescript
-notes: |
+notes: >
   - Properties are characteristics or attributes of an object.
-  - The syntax is `property_name of object_reference` or `object_reference's property_name`.
-  - Available properties depend on the object's class and the application defining it (check its dictionary).
+
+  - The syntax is `property_name of object_reference` or `object_reference's
+  property_name`.
+
+  - Available properties depend on the object's class and the application
+  defining it (check its dictionary).
 ---
 
 The Property reference form allows you to get or set the attributes of an object.

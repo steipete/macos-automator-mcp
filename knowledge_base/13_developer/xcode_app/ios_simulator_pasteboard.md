@@ -1,12 +1,25 @@
 ---
-title: "iOS Simulator: Manage Pasteboard"
-category: "09_developer_and_utility_apps"
+title: 'iOS Simulator: Manage Pasteboard'
+category: 13_developer/xcode_app
 id: ios_simulator_pasteboard
-description: "Manages clipboard content between Mac and iOS Simulator device."
-keywords: ["iOS Simulator", "Xcode", "pasteboard", "clipboard", "copy", "paste", "text", "developer", "iOS", "iPadOS"]
+description: Manages clipboard content between Mac and iOS Simulator device.
+keywords:
+  - iOS Simulator
+  - Xcode
+  - pasteboard
+  - clipboard
+  - copy
+  - paste
+  - text
+  - developer
+  - iOS
+  - iPadOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Action as 'action' ('copy-to-simulator', 'copy-from-simulator', 'get', or 'set'), optional content as 'content' (for 'set' action), and optional device identifier as 'deviceIdentifier' (defaults to 'booted')."
+argumentsPrompt: >-
+  Action as 'action' ('copy-to-simulator', 'copy-from-simulator', 'get', or
+  'set'), optional content as 'content' (for 'set' action), and optional device
+  identifier as 'deviceIdentifier' (defaults to 'booted').
 notes: |
   - Transfers text between Mac and simulator clipboard
   - Copies content in both directions

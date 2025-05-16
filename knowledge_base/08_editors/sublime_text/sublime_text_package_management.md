@@ -1,7 +1,7 @@
 ---
 id: sublime_text_package_management
 title: Manage Sublime Text packages
-description: Install, list, or remove Sublime Text packages using Package Control
+description: 'Install, list, or remove Sublime Text packages using Package Control'
 language: applescript
 author: Claude
 keywords:
@@ -11,16 +11,17 @@ keywords:
   - package installation
   - package removal
 usage_examples:
-  - "Install a new package in Sublime Text"
-  - "List installed packages"
-  - "Remove a package from Sublime Text"
+  - Install a new package in Sublime Text
+  - List installed packages
+  - Remove a package from Sublime Text
 parameters:
   - name: action
-    description: The action to perform ('install', 'list', 'remove')
+    description: 'The action to perform (''install'', ''list'', ''remove'')'
     required: true
   - name: packageName
     description: The name of the package to install or remove
     required: false
+category: 08_editors/sublime_text
 ---
 
 # Manage Sublime Text packages

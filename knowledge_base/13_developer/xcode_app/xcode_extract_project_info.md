@@ -1,12 +1,23 @@
 ---
-title: "Xcode: Extract Project Info from Info.plist"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Extract Project Info from Info.plist'
+category: 13_developer/xcode_app
 id: xcode_extract_project_info
-description: "Extracts app metadata from Info.plist in an Xcode project."
-keywords: ["Xcode", "Info.plist", "bundle", "identifier", "version", "metadata", "developer", "iOS", "macOS"]
+description: Extracts app metadata from Info.plist in an Xcode project.
+keywords:
+  - Xcode
+  - Info.plist
+  - bundle
+  - identifier
+  - version
+  - metadata
+  - developer
+  - iOS
+  - macOS
 language: applescript
 isComplex: true
-argumentsPrompt: "Absolute POSIX path to the project's Info.plist file as 'plistPath' in inputData"
+argumentsPrompt: >-
+  Absolute POSIX path to the project's Info.plist file as 'plistPath' in
+  inputData
 notes: |
   - Does not require Xcode to be open
   - Extracts common metadata like bundle ID, version, build number, etc.

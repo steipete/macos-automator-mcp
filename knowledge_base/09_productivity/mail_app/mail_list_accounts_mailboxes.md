@@ -1,9 +1,15 @@
 ---
-title: "Mail: List Accounts and Mailboxes"
-category: "07_productivity_apps"
+title: 'Mail: List Accounts and Mailboxes'
+category: 09_productivity/mail_app
 id: mail_list_accounts_mailboxes
-description: "Lists all Mail.app accounts and their mailboxes with message counts"
-keywords: ["Mail", "email", "accounts", "mailboxes", "folders", "list"]
+description: Lists all Mail.app accounts and their mailboxes with message counts
+keywords:
+  - Mail
+  - email
+  - accounts
+  - mailboxes
+  - folders
+  - list
 language: applescript
 isComplex: false
 notes: |

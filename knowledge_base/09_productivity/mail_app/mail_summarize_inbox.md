@@ -1,12 +1,22 @@
 ---
-title: "Mail: Generate Inbox Summary"
-category: "07_productivity_apps"
+title: 'Mail: Generate Inbox Summary'
+category: 09_productivity/mail_app
 id: mail_summarize_inbox
-description: "Creates a summary report of your inbox including message counts, top senders, and recent conversations"
-keywords: ["Mail", "email", "inbox", "analytics", "statistics", "summary"]
+description: >-
+  Creates a summary report of your inbox including message counts, top senders,
+  and recent conversations
+keywords:
+  - Mail
+  - email
+  - inbox
+  - analytics
+  - statistics
+  - summary
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide account name as 'accountName' in inputData (optional, searches across all accounts if not specified)"
+argumentsPrompt: >-
+  Provide account name as 'accountName' in inputData (optional, searches across
+  all accounts if not specified)
 notes: |
   - Analyzes your Mail.app inbox and generates statistical insights
   - Shows message counts, unread messages, top senders, and recent activity

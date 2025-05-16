@@ -1,25 +1,49 @@
 ---
-title: "Safari: Performance Analysis"
-category: "05_web_browsers"
+title: 'Safari: Performance Analysis'
+category: 07_browsers/safari
 id: safari_performance_analysis
-description: "Analyzes and reports on the performance of webpages in Safari, including load times, rendering metrics, JavaScript execution, and resource usage."
-keywords: ["Safari", "performance", "web development", "profiling", "metrics", "speed", "optimization", "load time", "rendering", "memory"]
+description: >-
+  Analyzes and reports on the performance of webpages in Safari, including load
+  times, rendering metrics, JavaScript execution, and resource usage.
+keywords:
+  - Safari
+  - performance
+  - web development
+  - profiling
+  - metrics
+  - speed
+  - optimization
+  - load time
+  - rendering
+  - memory
 language: applescript
 isComplex: true
-argumentsPrompt: "Analysis type as 'analysisType' ('page', 'javascript', 'memory', 'resources', 'all') and optional test URL as 'url' in inputData."
-notes: |
-  - Safari must be running with at least one open tab, or a URL must be provided.
-  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop menu.
+argumentsPrompt: >-
+  Analysis type as 'analysisType' ('page', 'javascript', 'memory', 'resources',
+  'all') and optional test URL as 'url' in inputData.
+notes: >
+  - Safari must be running with at least one open tab, or a URL must be
+  provided.
+
+  - "Allow JavaScript from Apple Events" must be enabled in Safari's Develop
+  menu.
+
   - Available analysis types:
     - 'page': Basic page load metrics (DOMContentLoaded, load event)
     - 'javascript': JavaScript execution time and CPU usage
     - 'memory': Memory usage and potential memory leaks
     - 'resources': Resource loading analysis (images, scripts, CSS)
     - 'all': Comprehensive analysis of all aspects
-  - The script uses Navigation Timing API, Performance API, and Resource Timing API when available.
+  - The script uses Navigation Timing API, Performance API, and Resource Timing
+  API when available.
+
   - Results are returned in JSON format for easy parsing and analysis.
-  - For most accurate results, use the script on a freshly loaded page with minimal browser extensions.
-  - Some metrics (like memory usage) require multiple samples for accurate trending.
+
+  - For most accurate results, use the script on a freshly loaded page with
+  minimal browser extensions.
+
+  - Some metrics (like memory usage) require multiple samples for accurate
+  trending.
 ---
 
 This script analyzes the performance of webpages in Safari, providing detailed metrics for optimization.

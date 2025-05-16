@@ -4,10 +4,16 @@ title: Create Project in Things
 description: Use AppleScript to create a new project in Things app
 author: steipete
 language: applescript
-tags: things, productivity, task management, project
-keywords: [projects, planning, due dates, deadlines, task grouping]
+tags: 'things, productivity, task management, project'
+keywords:
+  - projects
+  - planning
+  - due dates
+  - deadlines
+  - task grouping
 version: 1.0.0
-updated: 2024-05-16
+updated: 2024-05-16T00:00:00.000Z
+category: 13_developer/things
 ---
 
 # Create Project in Things

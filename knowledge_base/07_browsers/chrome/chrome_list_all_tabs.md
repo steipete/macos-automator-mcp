@@ -1,15 +1,27 @@
 ---
-title: "Chrome: List All Tabs"
-category: "05_web_browsers"
+title: 'Chrome: List All Tabs'
+category: 07_browsers/chrome
 id: chrome_list_all_tabs
-description: "Lists all tabs from all windows in Google Chrome with their URLs and titles, formatted as JSON."
-keywords: ["Chrome", "tabs", "windows", "list tabs", "browser", "tab management"]
+description: >-
+  Lists all tabs from all windows in Google Chrome with their URLs and titles,
+  formatted as JSON.
+keywords:
+  - Chrome
+  - tabs
+  - windows
+  - list tabs
+  - browser
+  - tab management
 language: applescript
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running.
-  - Returns a JSON array of tab objects with window index, tab index, URL, and title.
-  - Each tab is uniquely identifiable by the window and tab indices for targeting in other scripts.
+
+  - Returns a JSON array of tab objects with window index, tab index, URL, and
+  title.
+
+  - Each tab is uniquely identifiable by the window and tab indices for
+  targeting in other scripts.
 ---
 
 This script lists all tabs from all Chrome windows with their URLs and titles.

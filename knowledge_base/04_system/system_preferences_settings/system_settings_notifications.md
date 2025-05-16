@@ -1,12 +1,19 @@
 ---
-title: "System Settings: Configure Notifications"
-category: "02_system_interaction"
+title: 'System Settings: Configure Notifications'
+category: 04_system/system_preferences_settings
 id: system_settings_notifications
-description: "Toggles Do Not Disturb or Focus modes for notifications in macOS."
-keywords: ["System Settings", "Do Not Disturb", "Focus", "notifications", "DND"]
+description: Toggles Do Not Disturb or Focus modes for notifications in macOS.
+keywords:
+  - System Settings
+  - Do Not Disturb
+  - Focus
+  - notifications
+  - DND
 language: applescript
-argumentsPrompt: "Enter 'on' or 'off' to toggle Do Not Disturb mode"
-notes: "Controls notification settings by toggling Do Not Disturb or Focus modes. Works with both modern and older macOS versions."
+argumentsPrompt: Enter 'on' or 'off' to toggle Do Not Disturb mode
+notes: >-
+  Controls notification settings by toggling Do Not Disturb or Focus modes.
+  Works with both modern and older macOS versions.
 ---
 
 ```applescript

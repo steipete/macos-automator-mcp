@@ -1,19 +1,40 @@
 ---
-title: "Chrome: Capture Screenshot"
-category: "05_web_browsers"
+title: 'Chrome: Capture Screenshot'
+category: 07_browsers/chrome
 id: chrome_capture_screenshot
-description: "Captures screenshots of webpages in Google Chrome with options for full page, visible area, or specific element, and saves to a specified location."
-keywords: ["Chrome", "screenshot", "capture", "full page", "element", "save image", "web development"]
+description: >-
+  Captures screenshots of webpages in Google Chrome with options for full page,
+  visible area, or specific element, and saves to a specified location.
+keywords:
+  - Chrome
+  - screenshot
+  - capture
+  - full page
+  - element
+  - save image
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Screenshot options in inputData. For example: { \"outputPath\": \"/Users/username/Downloads/screenshot.png\", \"captureMode\": \"fullPage\" }. The captureMode can be 'fullPage', 'viewport', or 'element'. If 'element' is chosen, provide a CSS selector with { \"selector\": \"#main-container\" }."
-notes: |
+argumentsPrompt: >-
+  Screenshot options in inputData. For example: { "outputPath":
+  "/Users/username/Downloads/screenshot.png", "captureMode": "fullPage" }. The
+  captureMode can be 'fullPage', 'viewport', or 'element'. If 'element' is
+  chosen, provide a CSS selector with { "selector": "#main-container" }.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Captures screenshots in PNG format.
-  - Three capture modes: full page (entire scrollable content), viewport (visible area), or specific element.
+
+  - Three capture modes: full page (entire scrollable content), viewport
+  (visible area), or specific element.
+
   - When capturing specific elements, uses CSS selectors to identify them.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
-  - Requires Full Disk Access permission to save files outside of user's Downloads folder.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
+  - Requires Full Disk Access permission to save files outside of user's
+  Downloads folder.
 ---
 
 This script captures screenshots from Chrome with options for the entire page, visible viewport, or specific elements.

@@ -1,17 +1,28 @@
 ---
-title: "Safari: Open URL in New Tab"
-category: "05_web_browsers"
+title: 'Safari: Open URL in New Tab'
+category: 07_browsers/safari
 id: safari_open_url_new_tab
-description: "Opens a specified URL in a new tab in Safari."
-keywords: ["Safari", "URL", "new tab", "browser", "web", "navigate"]
+description: Opens a specified URL in a new tab in Safari.
+keywords:
+  - Safari
+  - URL
+  - new tab
+  - browser
+  - web
+  - navigate
 language: applescript
 isComplex: false
-argumentsPrompt: "URL to open as 'url' in inputData."
-notes: |
+argumentsPrompt: URL to open as 'url' in inputData.
+notes: >
   - The script will launch Safari if it's not already running.
-  - The URL will open in a new tab if Safari already has at least one open window.
+
+  - The URL will open in a new tab if Safari already has at least one open
+  window.
+
   - If Safari has no open windows, a new window will be created instead.
-  - The URL should be properly formatted (including the http:// or https:// prefix).
+
+  - The URL should be properly formatted (including the http:// or https://
+  prefix).
 ---
 
 This script opens a specified URL in a new tab in Safari.

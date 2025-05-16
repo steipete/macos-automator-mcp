@@ -1,16 +1,35 @@
 ---
-title: "Audirvana: Current Track Information"
-category: "08_creative_and_document_apps"
+title: 'Audirvana: Current Track Information'
+category: 10_creative/audirvana
 id: audirvana_current_track_info
-description: "Retrieve detailed information about the currently playing track in Audirvana, including high-resolution audio details."
-keywords: ["Audirvana", "current track", "track info", "high-resolution audio", "audiophile", "bit depth", "sample rate", "FLAC", "DSD"]
+description: >-
+  Retrieve detailed information about the currently playing track in Audirvana,
+  including high-resolution audio details.
+keywords:
+  - Audirvana
+  - current track
+  - track info
+  - high-resolution audio
+  - audiophile
+  - bit depth
+  - sample rate
+  - FLAC
+  - DSD
 language: applescript
-notes: |
+notes: >
   - Audirvana must be running for this script to work.
-  - Audirvana specializes in high-resolution audio playback and provides detailed technical information.
-  - This script retrieves comprehensive metadata about the current track, including audio format details.
-  - Information includes basic metadata plus bit depth, sample rate, and other technical characteristics.
-  - The information available may vary between Audirvana versions and track types.
+
+  - Audirvana specializes in high-resolution audio playback and provides
+  detailed technical information.
+
+  - This script retrieves comprehensive metadata about the current track,
+  including audio format details.
+
+  - Information includes basic metadata plus bit depth, sample rate, and other
+  technical characteristics.
+
+  - The information available may vary between Audirvana versions and track
+  types.
 ---
 
 Get detailed information about the currently playing track in Audirvana.

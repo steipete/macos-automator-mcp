@@ -1,14 +1,29 @@
 ---
-title: "Core: Textual Comparison Operators"
-category: "01_applescript_core"
+title: 'Core: Textual Comparison Operators'
+category: 02_as_core/operators
 id: core_operator_comparison_textual
-description: "Covers textual comparison operators in AppleScript like 'comes before', 'comes after', and their negations."
-keywords: ["operator", "comparison", "comes before", "comes after", "is not less than", "is not greater than", "string comparison", "lexicographical"]
+description: >-
+  Covers textual comparison operators in AppleScript like 'comes before', 'comes
+  after', and their negations.
+keywords:
+  - operator
+  - comparison
+  - comes before
+  - comes after
+  - is not less than
+  - is not greater than
+  - string comparison
+  - lexicographical
 language: applescript
-notes: |
-  - These operators primarily compare strings lexicographically (alphabetically).
-  - Can also be used with numbers, where they behave like their symbolic counterparts (`<`, `>`, `>=`, `<=`).
-  - `is less than`, `is greater than`, `is less than or equal to`, `is greater than or equal to` are synonyms for symbolic operators but can also be used.
+notes: >
+  - These operators primarily compare strings lexicographically
+  (alphabetically).
+
+  - Can also be used with numbers, where they behave like their symbolic
+  counterparts (`<`, `>`, `>=`, `<=`).
+
+  - `is less than`, `is greater than`, `is less than or equal to`, `is greater
+  than or equal to` are synonyms for symbolic operators but can also be used.
 ---
 
 AppleScript offers English-like comparison operators, especially useful for strings.

@@ -1,21 +1,47 @@
 ---
-title: "Chrome: Intercept Network Requests"
-category: "05_web_browsers"
+title: 'Chrome: Intercept Network Requests'
+category: 07_browsers/chrome
 id: chrome_intercept_network_requests
-description: "Intercepts and modifies Chrome network requests and responses for testing, debugging, and mocking API responses without changing server code."
-keywords: ["Chrome", "intercept", "network", "requests", "responses", "mock", "API", "debugging", "testing", "DevTools"]
+description: >-
+  Intercepts and modifies Chrome network requests and responses for testing,
+  debugging, and mocking API responses without changing server code.
+keywords:
+  - Chrome
+  - intercept
+  - network
+  - requests
+  - responses
+  - mock
+  - API
+  - debugging
+  - testing
+  - DevTools
 language: applescript
 isComplex: true
-argumentsPrompt: "Interception rules in inputData. For example: { \"interceptRules\": [{ \"urlPattern\": \"api.example.com/users\", \"responseBody\": { \"users\": [{ \"id\": 1, \"name\": \"Test User\" }] }, \"responseCode\": 200, \"contentType\": \"application/json\" }] }. Can also use { \"recordMode\": true } to monitor requests without modifying them."
+argumentsPrompt: >-
+  Interception rules in inputData. For example: { "interceptRules": [{
+  "urlPattern": "api.example.com/users", "responseBody": { "users": [{ "id": 1,
+  "name": "Test User" }] }, "responseCode": 200, "contentType":
+  "application/json" }] }. Can also use { "recordMode": true } to monitor
+  requests without modifying them.
 returnValueType: json
-notes: |
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and configures request interception.
-  - Can mock API responses by URL pattern with custom status codes, headers, and response bodies.
+
+  - Can mock API responses by URL pattern with custom status codes, headers, and
+  response bodies.
+
   - Supports monitoring mode to record network requests without modification.
+
   - Works with both REST and GraphQL APIs.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
+
   - Interception only works while DevTools remains open.
 ---
 

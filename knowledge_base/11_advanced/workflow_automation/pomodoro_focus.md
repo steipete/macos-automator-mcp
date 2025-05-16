@@ -4,17 +4,25 @@ title: Pomodoro Focus Timer with Distractions Management
 description: Implements a Pomodoro timer that automatically manages distractions
 language: applescript
 author: Claude
-keywords: ['productivity', 'focus', 'time management', 'pomodoro', 'distraction-free']
+keywords:
+  - productivity
+  - focus
+  - time management
+  - pomodoro
+  - distraction-free
 usage_examples:
-  - "Start a Pomodoro session with automatic distraction management"
-  - "Focus on work by temporarily closing distracting apps"
+  - Start a Pomodoro session with automatic distraction management
+  - Focus on work by temporarily closing distracting apps
 parameters:
   - name: durationMinutes
     description: Duration of the Pomodoro session in minutes (default 25)
     required: false
   - name: distractingApps
-    description: Comma-separated list of distracting apps to quit (e.g., 'Slack,Mail,Messages')
+    description: >-
+      Comma-separated list of distracting apps to quit (e.g.,
+      'Slack,Mail,Messages')
     required: false
+category: 11_advanced/workflow_automation
 ---
 
 # Pomodoro Focus Timer with Distractions Management

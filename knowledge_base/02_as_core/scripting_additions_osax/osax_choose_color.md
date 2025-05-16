@@ -1,14 +1,26 @@
 ---
-title: "StandardAdditions: choose color Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: choose color Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_choose_color
-description: "Displays the standard macOS color picker dialog and returns the selected color as an RGB list."
-keywords: ["StandardAdditions", "choose color", "color picker", "RGB color", "dialog", "osax"]
+description: >-
+  Displays the standard macOS color picker dialog and returns the selected color
+  as an RGB list.
+keywords:
+  - StandardAdditions
+  - choose color
+  - color picker
+  - RGB color
+  - dialog
+  - osax
 language: applescript
-notes: |
+notes: >
   - The `choose color` command presents the standard macOS color picker.
-  - Returns a list of three integers representing the Red, Green, and Blue components of the selected color, each from 0 to 65535.
+
+  - Returns a list of three integers representing the Red, Green, and Blue
+  components of the selected color, each from 0 to 65535.
+
   - If the user cancels, an error (number -128) is raised.
+
   - Can optionally take a `default color` parameter with an RGB list.
 ---
 

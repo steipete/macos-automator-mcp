@@ -1,18 +1,38 @@
 ---
-title: "Electron Editors: Open DevTools & Inject JavaScript"
-category: "06_ides_and_editors"
+title: 'Electron Editors: Open DevTools & Inject JavaScript'
+category: 08_editors/electron_editors
 id: electron_editors_devtools_js_inject
-description: "Opens Developer Tools in a frontmost Electron-based editor (VS Code, Cursor, etc.) and types/executes JavaScript in its console."
-keywords: ["vscode", "cursor", "windsurf", "electron", "devtools", "javascript", "inject", "console", "ui scripting"]
+description: >-
+  Opens Developer Tools in a frontmost Electron-based editor (VS Code, Cursor,
+  etc.) and types/executes JavaScript in its console.
+keywords:
+  - vscode
+  - cursor
+  - windsurf
+  - electron
+  - devtools
+  - javascript
+  - inject
+  - console
+  - ui scripting
 language: applescript
 isComplex: true
-argumentsPrompt: "Target application name (e.g., 'Visual Studio Code' or 'Cursor') as 'targetAppName' and JavaScript code (single line recommended for direct keystroke) as 'jsCodeToRun' in inputData."
-notes: |
+argumentsPrompt: >-
+  Target application name (e.g., 'Visual Studio Code' or 'Cursor') as
+  'targetAppName' and JavaScript code (single line recommended for direct
+  keystroke) as 'jsCodeToRun' in inputData.
+notes: >
   - Target application must be frontmost or activated by the script.
+
   - Relies on the standard DevTools shortcut (Option+Command+I).
+
   - UI scripting is fragile; delays might need adjustment.
-  - Best for short, single-line JS. For multiline, use clipboard paste method (see separate tip).
-  - The script types the JS; it doesn't directly get a return value back to AppleScript.
+
+  - Best for short, single-line JS. For multiline, use clipboard paste method
+  (see separate tip).
+
+  - The script types the JS; it doesn't directly get a return value back to
+  AppleScript.
 ---
 
 ```applescript

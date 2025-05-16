@@ -1,10 +1,23 @@
 ---
 title: Email Workflow Automator
-category: 07_productivity_apps
+category: 09_productivity/mail_app
 id: mail_workflow_automator
-description: Advanced script to automate common email workflows including template responses, message categorization, rule-based processing, and batch operations.
+description: >-
+  Advanced script to automate common email workflows including template
+  responses, message categorization, rule-based processing, and batch
+  operations.
 language: applescript
-keywords: [email, mail, rules, workflow, automate, templates, respond, filter, batch, archive]
+keywords:
+  - email
+  - mail
+  - rules
+  - workflow
+  - automate
+  - templates
+  - respond
+  - filter
+  - batch
+  - archive
 ---
 
 # Email Workflow Automator

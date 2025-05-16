@@ -1,16 +1,34 @@
 ---
-title: "StandardAdditions: run script Command"
-category: "01_applescript_core"
+title: 'StandardAdditions: run script Command'
+category: 02_as_core/scripting_additions_osax
 id: osax_run_script
-description: "Executes a script object, script file, or script applet from within another script. Can pass parameters and receive a return value."
-keywords: ["StandardAdditions", "run script", "execute script", "call script", "modular scripting", "osax"]
+description: >-
+  Executes a script object, script file, or script applet from within another
+  script. Can pass parameters and receive a return value.
+keywords:
+  - StandardAdditions
+  - run script
+  - execute script
+  - call script
+  - modular scripting
+  - osax
 language: applescript
-notes: |
-  - `run script` takes a file reference (alias or HFS path string) to a compiled .scpt or .app file, or a script object.
-  - Can also execute a string containing AppleScript code if the `in` parameter specifies `AppleScript` language (though `load script` is generally preferred for strings of code).
-  - `with parameters {param1, param2, ...}` passes arguments to the `on run {arg1, arg2, ...}` handler of the target script.
-  - `with in` parameter can specify the scripting language if running a string (`AppleScript` or `JavaScript`).
-  - The target script's `run` handler is executed, and its return value is returned by `run script`.
+notes: >
+  - `run script` takes a file reference (alias or HFS path string) to a compiled
+  .scpt or .app file, or a script object.
+
+  - Can also execute a string containing AppleScript code if the `in` parameter
+  specifies `AppleScript` language (though `load script` is generally preferred
+  for strings of code).
+
+  - `with parameters {param1, param2, ...}` passes arguments to the `on run
+  {arg1, arg2, ...}` handler of the target script.
+
+  - `with in` parameter can specify the scripting language if running a string
+  (`AppleScript` or `JavaScript`).
+
+  - The target script's `run` handler is executed, and its return value is
+  returned by `run script`.
 ---
 
 Executes another AppleScript file or script object, optionally passing parameters.

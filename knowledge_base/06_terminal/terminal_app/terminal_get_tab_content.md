@@ -1,9 +1,19 @@
 ---
-title: "Terminal: Get Current Tab Content"
+title: 'Terminal: Get Current Tab Content'
 id: terminal_get_tab_content
-category: "04_terminal_emulators"
-description: "Retrieves the full text content (scrollback history) of the currently active tab in the frontmost Terminal.app window."
-keywords: ["Terminal.app", "content", "text", "buffer", "history", "scrollback", "read", "get"]
+category: 06_terminal/terminal_app
+description: >-
+  Retrieves the full text content (scrollback history) of the currently active
+  tab in the frontmost Terminal.app window.
+keywords:
+  - Terminal.app
+  - content
+  - text
+  - buffer
+  - history
+  - scrollback
+  - read
+  - get
 language: applescript
 isComplex: false
 ---

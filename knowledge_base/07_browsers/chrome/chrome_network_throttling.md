@@ -1,19 +1,40 @@
 ---
-title: "Chrome: Network Throttling"
-category: "05_web_browsers"
+title: 'Chrome: Network Throttling'
+category: 07_browsers/chrome
 id: chrome_network_throttling
-description: "Configures Chrome DevTools network throttling to simulate various connection speeds for testing website performance under different network conditions."
-keywords: ["Chrome", "DevTools", "network", "throttling", "bandwidth", "latency", "testing", "performance", "web development"]
+description: >-
+  Configures Chrome DevTools network throttling to simulate various connection
+  speeds for testing website performance under different network conditions.
+keywords:
+  - Chrome
+  - DevTools
+  - network
+  - throttling
+  - bandwidth
+  - latency
+  - testing
+  - performance
+  - web development
 language: applescript
 isComplex: true
-argumentsPrompt: "Network profile in inputData. For example: { \"profile\": \"Slow 3G\" } for a predefined profile, or custom settings: { \"downloadKbps\": 500, \"uploadKbps\": 256, \"latencyMs\": 300 }. Set { \"profile\": \"Online\" } to disable throttling."
-notes: |
+argumentsPrompt: >-
+  Network profile in inputData. For example: { "profile": "Slow 3G" } for a
+  predefined profile, or custom settings: { "downloadKbps": 500, "uploadKbps":
+  256, "latencyMs": 300 }. Set { "profile": "Online" } to disable throttling.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and switches to the Network panel.
+
   - Supports both predefined profiles and custom throttling configurations.
+
   - Predefined profiles include: "Offline", "Slow 3G", "Fast 3G", "Online".
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
+
   - Changes will persist until disabled or browser is closed.
 ---
 

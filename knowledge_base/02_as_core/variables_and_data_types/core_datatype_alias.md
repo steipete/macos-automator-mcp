@@ -1,14 +1,28 @@
 ---
-title: "Core: Alias Data Type"
-category: "01_applescript_core"
+title: 'Core: Alias Data Type'
+category: 02_as_core/variables_and_data_types
 id: core_datatype_alias
-description: "Working with aliases in AppleScript, which are dynamic references to file system objects."
-keywords: ["alias", "file", "folder", "reference", "path", "HFS path", "data type"]
+description: >-
+  Working with aliases in AppleScript, which are dynamic references to file
+  system objects.
+keywords:
+  - alias
+  - file
+  - folder
+  - reference
+  - path
+  - HFS path
+  - data type
 language: applescript
-notes: |
-  - An alias tracks a file or folder even if it's moved or renamed (within the same volume).
-  - Typically represented as an HFS path string (e.g., "Macintosh HD:Users:username:Desktop:File.txt").
+notes: >
+  - An alias tracks a file or folder even if it's moved or renamed (within the
+  same volume).
+
+  - Typically represented as an HFS path string (e.g., "Macintosh
+  HD:Users:username:Desktop:File.txt").
+
   - Use `POSIX path of` to convert to a more portable POSIX path string.
+
   - Creating an alias to a non-existent item will result in an error.
 ---
 

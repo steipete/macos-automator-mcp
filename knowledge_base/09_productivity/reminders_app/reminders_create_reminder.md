@@ -1,12 +1,19 @@
 ---
-title: "Reminders: Create New Reminder"
-category: "07_productivity_apps"
+title: 'Reminders: Create New Reminder'
+category: 09_productivity/reminders_app
 id: reminders_create_simple_reminder
-description: "Creates a new reminder in the Reminders app with specified details."
-keywords: ["Reminders", "create reminder", "task", "to-do", "reminder item"]
+description: Creates a new reminder in the Reminders app with specified details.
+keywords:
+  - Reminders
+  - create reminder
+  - task
+  - to-do
+  - reminder item
 language: applescript
-argumentsPrompt: "Enter the reminder title, due date (optional), and list name (optional)"
-notes: "Creates a new reminder with the specified title, optional due date, and in the specified list (or default list if none provided)."
+argumentsPrompt: 'Enter the reminder title, due date (optional), and list name (optional)'
+notes: >-
+  Creates a new reminder with the specified title, optional due date, and in the
+  specified list (or default list if none provided).
 ---
 
 ```applescript

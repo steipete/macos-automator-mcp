@@ -1,12 +1,24 @@
 ---
-title: "Xcode: Reset All Simulators"
-category: "09_developer_and_utility_apps"
+title: 'Xcode: Reset All Simulators'
+category: 13_developer/xcode_app
 id: xcode_reset_all_simulators
-description: "Resets all iOS, iPadOS, watchOS, and tvOS simulators to clean state."
-keywords: ["Xcode", "simulator", "reset", "erase", "clean", "iOS", "iPadOS", "watchOS", "tvOS", "developer"]
+description: 'Resets all iOS, iPadOS, watchOS, and tvOS simulators to clean state.'
+keywords:
+  - Xcode
+  - simulator
+  - reset
+  - erase
+  - clean
+  - iOS
+  - iPadOS
+  - watchOS
+  - tvOS
+  - developer
 language: applescript
 isComplex: true
-argumentsPrompt: "Optional boolean 'shutdownAfterReset' to shut down simulator service after reset (default is true)"
+argumentsPrompt: >-
+  Optional boolean 'shutdownAfterReset' to shut down simulator service after
+  reset (default is true)
 notes: |
   - Forces Simulator app to quit before resetting
   - Uses xcrun simctl to reset all simulators at once

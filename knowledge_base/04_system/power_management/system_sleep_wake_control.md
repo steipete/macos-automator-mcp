@@ -1,11 +1,23 @@
 ---
-title: "System Sleep and Wake Control"
-category: "02_system_interaction"
+title: System Sleep and Wake Control
+category: 04_system/power_management
 id: system_sleep_wake_control
-description: "Controls system sleep, wake, shutdown, and restart events with various options and scheduling"
-keywords: ["sleep", "wake", "shutdown", "restart", "power", "schedule", "energy saver", "pmset"]
+description: >-
+  Controls system sleep, wake, shutdown, and restart events with various options
+  and scheduling
+keywords:
+  - sleep
+  - wake
+  - shutdown
+  - restart
+  - power
+  - schedule
+  - energy saver
+  - pmset
 language: applescript
-notes: "Some commands require admin privileges. Automatic shutdown/restart should be used with caution."
+notes: >-
+  Some commands require admin privileges. Automatic shutdown/restart should be
+  used with caution.
 ---
 
 ```applescript

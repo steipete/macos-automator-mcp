@@ -1,21 +1,46 @@
 ---
-title: "Chrome: Record Performance Trace"
-category: "05_web_browsers"
+title: 'Chrome: Record Performance Trace'
+category: 07_browsers/chrome
 id: chrome_record_performance_trace
-description: "Records a detailed performance trace in Chrome to analyze rendering, JavaScript execution, memory usage, and other performance metrics."
-keywords: ["Chrome", "performance", "trace", "profiling", "DevTools", "optimization", "web development", "debugging"]
+description: >-
+  Records a detailed performance trace in Chrome to analyze rendering,
+  JavaScript execution, memory usage, and other performance metrics.
+keywords:
+  - Chrome
+  - performance
+  - trace
+  - profiling
+  - DevTools
+  - optimization
+  - web development
+  - debugging
 language: applescript
 isComplex: true
-argumentsPrompt: "Options in inputData. For example: { \"duration\": 5, \"categories\": [\"loading\", \"scripting\", \"rendering\"], \"outputPath\": \"/Users/username/Downloads/trace.json\" }. Set { \"screencast\": true } to include screenshots in the trace. Duration is in seconds."
-notes: |
+argumentsPrompt: >-
+  Options in inputData. For example: { "duration": 5, "categories": ["loading",
+  "scripting", "rendering"], "outputPath":
+  "/Users/username/Downloads/trace.json" }. Set { "screencast": true } to
+  include screenshots in the trace. Duration is in seconds.
+notes: >
   - Google Chrome must be running with at least one window and tab open.
+
   - Opens DevTools (if not already open) and configures performance recording.
-  - Records a performance trace for the specified duration, capturing various metrics.
+
+  - Records a performance trace for the specified duration, capturing various
+  metrics.
+
   - Can save the trace data to a file for later analysis or sharing.
-  - Supports setting specific tracing categories to focus on particular aspects of performance.
-  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View > Developer menu.
+
+  - Supports setting specific tracing categories to focus on particular aspects
+  of performance.
+
+  - Requires "Allow JavaScript from Apple Events" to be enabled in Chrome's View
+  > Developer menu.
+
   - Requires Accessibility permissions for UI scripting via System Events.
-  - Requires Full Disk Access permission to save trace files outside of user's Downloads folder.
+
+  - Requires Full Disk Access permission to save trace files outside of user's
+  Downloads folder.
 ---
 
 This script records and saves Chrome performance traces to analyze and optimize web application performance.

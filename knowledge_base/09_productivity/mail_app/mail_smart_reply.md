@@ -1,12 +1,22 @@
 ---
-title: "Mail: Smart Reply with Templates"
-category: "07_productivity_apps"
+title: 'Mail: Smart Reply with Templates'
+category: 09_productivity/mail_app
 id: mail_smart_reply
-description: "Creates a reply to the selected email using customizable templates based on message content"
-keywords: ["Mail", "email", "reply", "template", "auto-respond", "smart"]
+description: >-
+  Creates a reply to the selected email using customizable templates based on
+  message content
+keywords:
+  - Mail
+  - email
+  - reply
+  - template
+  - auto-respond
+  - smart
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide a template folder path as 'templatePath' in inputData (optional, defaults to Templates folder in Documents)"
+argumentsPrompt: >-
+  Provide a template folder path as 'templatePath' in inputData (optional,
+  defaults to Templates folder in Documents)
 notes: |
   - Creates a reply to the selected email with intelligent template selection
   - Can detect keywords in the subject and body to choose appropriate template

@@ -1,12 +1,19 @@
 ---
-title: "Finder: Create New Folder"
-category: "03_file_system_and_finder"
+title: 'Finder: Create New Folder'
+category: 05_files/file_operations_finder
 id: finder_create_new_folder
-description: "Creates a new folder in a specified location using Finder."
-keywords: ["Finder", "new folder", "create folder", "directory", "file management"]
+description: Creates a new folder in a specified location using Finder.
+keywords:
+  - Finder
+  - new folder
+  - create folder
+  - directory
+  - file management
 language: applescript
-argumentsPrompt: "Enter the folder path and name for the new folder"
-notes: "Creates a new folder at the specified location. The parent directory must already exist."
+argumentsPrompt: Enter the folder path and name for the new folder
+notes: >-
+  Creates a new folder at the specified location. The parent directory must
+  already exist.
 ---
 
 ```applescript

@@ -3,7 +3,13 @@ id: jxa_system_appearance
 title: Toggle System Appearance with JXA
 description: Use JavaScript for Automation to switch between Light and Dark mode
 language: javascript
-keywords: ["dark mode", "light mode", "appearance", "theme", "system preferences"]
+keywords:
+  - dark mode
+  - light mode
+  - appearance
+  - theme
+  - system preferences
+category: 03_jxa_core
 ---
 
 # Toggle System Appearance with JXA

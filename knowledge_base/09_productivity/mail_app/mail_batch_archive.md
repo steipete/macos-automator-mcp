@@ -1,12 +1,24 @@
 ---
-title: "Mail: Batch Archive Old Messages"
-category: "07_productivity_apps"
+title: 'Mail: Batch Archive Old Messages'
+category: 09_productivity/mail_app
 id: mail_batch_archive
-description: "Automatically archives messages older than a specified number of days from your inbox"
-keywords: ["Mail", "email", "archive", "cleanup", "batch", "organize"]
+description: >-
+  Automatically archives messages older than a specified number of days from
+  your inbox
+keywords:
+  - Mail
+  - email
+  - archive
+  - cleanup
+  - batch
+  - organize
 language: applescript
 isComplex: true
-argumentsPrompt: "Provide days threshold as 'daysThreshold' in inputData (optional, defaults to 30), account name as 'accountName' (optional, handles all accounts if not specified), and archive mailbox name as 'archiveMailbox' (optional, defaults to 'Archive')"
+argumentsPrompt: >-
+  Provide days threshold as 'daysThreshold' in inputData (optional, defaults to
+  30), account name as 'accountName' (optional, handles all accounts if not
+  specified), and archive mailbox name as 'archiveMailbox' (optional, defaults
+  to 'Archive')
 notes: |
   - Moves messages older than specified days from inbox to archive folder
   - Can focus on a specific account or process all accounts

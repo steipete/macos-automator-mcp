@@ -1,12 +1,19 @@
 ---
-title: "Numbers: Create Chart from Data"
-category: "08_creative_and_document_apps"
+title: 'Numbers: Create Chart from Data'
+category: 10_creative/numbers_app
 id: numbers_create_chart
-description: "Creates a chart from data in a Numbers spreadsheet."
-keywords: ["Numbers", "create chart", "data visualization", "chart", "graph"]
+description: Creates a chart from data in a Numbers spreadsheet.
+keywords:
+  - Numbers
+  - create chart
+  - data visualization
+  - chart
+  - graph
 language: applescript
-argumentsPrompt: "Enter the file path, sheet name, data range, and chart type"
-notes: "Creates a chart in a Numbers spreadsheet based on the specified data range. Chart types include 'column', 'bar', 'line', 'area', 'pie', and 'scatter'."
+argumentsPrompt: 'Enter the file path, sheet name, data range, and chart type'
+notes: >-
+  Creates a chart in a Numbers spreadsheet based on the specified data range.
+  Chart types include 'column', 'bar', 'line', 'area', 'pie', and 'scatter'.
 ---
 
 ```applescript
