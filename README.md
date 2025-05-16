@@ -41,10 +41,7 @@ Add the following configuration to your MCP client's `mcp.json` (or equivalent c
       "args": [
         "-y",
         "@steipete/macos-automator-mcp@latest"
-      ],
-      "env": {
-        "LOG_LEVEL": "INFO"
-      }
+      ]
     }
   }
 }
