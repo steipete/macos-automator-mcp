@@ -42,10 +42,6 @@ export function logWarningToReport(filePath: string, message: string, isLocalKbI
   currentReport.warnings.push(`WARN: ${prefix}[${filePath}] ${message}`);
 }
 
-// This function was unused in the original script, but kept for potential future use or to note its existence.
-// export function logFixToReport(filePath: string, message: string, currentReport: ValidationReport = report) {
-//   currentReport.fixesApplied.push(`FIXED: [${filePath}] ${message}`);
-// }
 
 export function printValidationReport(currentReport: ValidationReport = report) {
   console.log("\n--- Validation Report ---");
