@@ -22,4 +22,13 @@ export interface ScriptExecutionError extends Error {
   killed?: boolean; // Specifically for timeouts
   originalError?: unknown; // The raw error from child_process
   isTimeout?: boolean;
+}
+
+// MCP Tool Response Types
+export interface ExecuteScriptResponse {
+  content: Array<{
+    type: 'text';
+    text: string;
+  }>;
+  isError?: boolean;
 } 
