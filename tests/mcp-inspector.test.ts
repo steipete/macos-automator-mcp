@@ -5,7 +5,7 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs/promises';
 
-const WORKSPACE_PATH = path.resolve(os.homedir(), 'Projects', 'macos-automator-mcp');
+const WORKSPACE_PATH = path.resolve(__dirname, '..');
 const INSPECTOR_URL = 'http://127.0.0.1:6274';
 const INSPECTOR_UI_PORT = INSPECTOR_URL.split(':').pop()!;
 const INSPECTOR_PROXY_PORT = 6277;
