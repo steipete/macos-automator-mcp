@@ -9,9 +9,8 @@ const WORKSPACE_PATH = path.resolve(os.homedir(), 'Projects', 'macos-automator-m
 const INSPECTOR_URL = 'http://127.0.0.1:6274';
 const INSPECTOR_UI_PORT = INSPECTOR_URL.split(':').pop()!;
 const INSPECTOR_PROXY_PORT = 6277;
-const MCP_COMMAND = '/bin/zsh';
-const START_SH_PATH = path.join(WORKSPACE_PATH, 'start.sh');
-const MCP_ARGS = START_SH_PATH;
+const MCP_COMMAND = 'node';
+const MCP_ARGS = path.join(WORKSPACE_PATH, 'dist', 'server.js');
 
 const testFileContent = "Content written by execute_script test via MCP Inspector";
 let tempFilePath = ''; // Will be determined during the execute_script part
@@ -84,7 +83,7 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     for (const port of portsToClear) {
       try {
         execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' });
-      } catch (_error) { /* Ignore */ }
+      } catch { /* Ignore */ }
     }
     await new Promise(resolve => setTimeout(resolve, 1500)); // For port release
 
@@ -134,7 +133,7 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
                 await page.click(disconnectButtonSelector, {timeout: 5000});
                 await page.waitForTimeout(1000);
             }
-        } catch (_e) { console.warn("[Global Teardown] Error clicking disconnect button: ", (_e as Error).message);}
+        } catch { console.warn("[Global Teardown] Error clicking disconnect button");}
     }
     await context?.close();
     await browser?.close();
@@ -149,12 +148,12 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
       }
     }
     if (tempFilePath) {
-      try { await fs.unlink(tempFilePath); } catch (_e) { /* ignore */ }
+      try { await fs.unlink(tempFilePath); } catch { /* ignore */ }
     }
      // Final port clearance
     const portsToClearAfter = [INSPECTOR_UI_PORT, INSPECTOR_PROXY_PORT.toString()];
     for (const port of portsToClearAfter) {
-      try { execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' }); } catch (_error) { /* Ignore */ }
+      try { execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' }); } catch { /* Ignore */ }
     }
     console.log('[Global Teardown] afterAll finished.');
   }, AFTER_ALL_TIMEOUT);
@@ -186,9 +185,7 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     await panel.waitFor({ state: 'visible', timeout: WAIT_FOR_ELEMENT_TIMEOUT });
     
     tempFilePath = path.join(os.tmpdir(), `mcp_e2e_test_${Date.now()}.txt`);
-    // eslint-disable-next-line no-useless-escape
     const escapedTempFilePath = tempFilePath.replace(/'/g, "'\\''");
-    // eslint-disable-next-line no-useless-escape
     const escapedTestFileContent = testFileContent.replace(/'/g, "'\\''");
     const appleScript = `do shell script "echo '${escapedTestFileContent}' > '${escapedTempFilePath}'"\nreturn "${escapedTempFilePath}"`;
     
