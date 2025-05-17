@@ -70,14 +70,6 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
   let inspectorProcess: ChildProcess;
 
   beforeAll(async () => {
-    console.log('[Global Setup] Starting beforeAll...');
-    // Ensure project is built -- REMOVING THIS BLOCK
-    // const distServerPath = path.join(WORKSPACE_PATH, 'dist', 'server.js');
-    // if (!fsSync.existsSync(distServerPath)) {
-    //   console.log('[Global Setup] dist/server.js not found. Running npm run build...');
-    //   execSync('npm run build', { cwd: WORKSPACE_PATH, stdio: 'inherit' });
-    // }
-
     // Kill any existing processes on the ports
     const portsToClear = [INSPECTOR_UI_PORT, INSPECTOR_PROXY_PORT.toString()];
     for (const port of portsToClear) {
@@ -96,7 +88,6 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
       const readinessTimeout = setTimeout(() => reject(new Error('MCP Inspector readiness timeout')), 25000);
       inspectorProcess.stdout?.on('data', (data) => {
         if (data.toString().includes('MCP Inspector is up and running')) {
-          console.log("[Global Setup] MCP Inspector confirmed ready.");
           inspectorReady = true;
           clearTimeout(readinessTimeout);
           resolve();
@@ -121,11 +112,9 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
 
     // Initial Connect and List Tools
     await connectAndListTools(page); 
-    console.log('[Global Setup] Initial connect and list tools completed. beforeAll finished.');
   }, BEFORE_ALL_TIMEOUT);
 
   afterAll(async () => {
-    console.log('[Global Teardown] Starting afterAll...');
     if (page && !page.isClosed()) {
         try {
             const isDisconnectBtnVisible = await page.isVisible(disconnectButtonSelector, {timeout: 2000});
@@ -155,7 +144,6 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     for (const port of portsToClearAfter) {
       try { execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' }); } catch { /* Ignore */ }
     }
-    console.log('[Global Teardown] afterAll finished.');
   }, AFTER_ALL_TIMEOUT);
 
   it('should connect, list tools, run get_scripting_tips, then run execute_script and verify file', async () => {
