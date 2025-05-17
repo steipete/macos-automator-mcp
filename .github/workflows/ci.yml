@@ -34,6 +34,8 @@ jobs: # Single top-level jobs key
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      - name: Build project
+        run: npm run build
       - name: Install Playwright Browsers with OS dependencies
         run: npx playwright install --with-deps
       - name: Run MCP Inspector tests

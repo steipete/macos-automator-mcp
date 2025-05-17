@@ -73,12 +73,12 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
 
   beforeAll(async () => {
     console.log('[Global Setup] Starting beforeAll...');
-    // Ensure project is built
-    const distServerPath = path.join(WORKSPACE_PATH, 'dist', 'server.js');
-    if (!fsSync.existsSync(distServerPath)) {
-      console.log('[Global Setup] dist/server.js not found. Running npm run build...');
-      execSync('npm run build', { cwd: WORKSPACE_PATH, stdio: 'inherit' });
-    }
+    // Ensure project is built -- REMOVING THIS BLOCK
+    // const distServerPath = path.join(WORKSPACE_PATH, 'dist', 'server.js');
+    // if (!fsSync.existsSync(distServerPath)) {
+    //   console.log('[Global Setup] dist/server.js not found. Running npm run build...');
+    //   execSync('npm run build', { cwd: WORKSPACE_PATH, stdio: 'inherit' });
+    // }
 
     // Kill any existing processes on the ports
     const portsToClear = [INSPECTOR_UI_PORT, INSPECTOR_PROXY_PORT.toString()];
