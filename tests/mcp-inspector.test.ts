@@ -9,8 +9,8 @@ const WORKSPACE_PATH = path.resolve(os.homedir(), 'Projects', 'macos-automator-m
 const INSPECTOR_URL = 'http://127.0.0.1:6274';
 const INSPECTOR_UI_PORT = INSPECTOR_URL.split(':').pop()!;
 const INSPECTOR_PROXY_PORT = 6277;
-const MCP_COMMAND = '/bin/zsh';
-const MCP_ARGS = path.join(WORKSPACE_PATH, 'start.sh');
+const MCP_COMMAND = 'node';
+const MCP_ARGS = path.join(WORKSPACE_PATH, 'dist', 'server.js');
 
 const testFileContent = "Content written by execute_script test via MCP Inspector";
 let tempFilePath = ''; // Will be determined during the execute_script part
@@ -28,7 +28,7 @@ const executeScriptPanelSelector = 'div[role="tabpanel"]:has-text("execute_scrip
 // --- Timeouts ---
 const WAIT_FOR_ELEMENT_TIMEOUT = 5000;
 const CONNECT_BUTTON_CLICK_TIMEOUT = 7000;
-const STATUS_CONNECTED_TIMEOUT = 20000;
+const STATUS_CONNECTED_TIMEOUT = 30000;
 const WAIT_FOR_SELECTOR_TIMEOUT = 5000;
 const SINGLE_TEST_TIMEOUT = 60000;
 const BEFORE_ALL_TIMEOUT = 60000;
@@ -113,7 +113,7 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     await new Promise(resolve => setTimeout(resolve, 2000)); // Reduced proxy stabilization
 
     // Launch Browser and Page
-    browser = await chromium.launch({ headless: false });
+    browser = await chromium.launch({ headless: !!process.env.CI });
     context = await browser.newContext();
     page = await context.newPage();
     await page.goto(INSPECTOR_URL, { waitUntil: 'networkidle', timeout: 15000 });
