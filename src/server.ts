@@ -68,6 +68,12 @@ const GetScriptingTipsInputShape = {
 } as const;
 
 async function main() {
+  console.log("[Server Startup] Current working directory:", process.cwd());
+  // console.log("[Server Startup] Environment:", JSON.stringify(process.env, null, 2)); // Potentially too verbose, log specific vars if needed
+  console.log("[Server Startup] PATH:", process.env.PATH);
+  console.log("[Server Startup] HOME:", process.env.HOME);
+  console.log("[Server Startup] USER:", process.env.USER);
+
   logger.info('Starting macos_automator MCP Server...');
   logger.warn("CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.");
 
