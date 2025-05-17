@@ -9,8 +9,8 @@ const WORKSPACE_PATH = path.resolve(os.homedir(), 'Projects', 'macos-automator-m
 const INSPECTOR_URL = 'http://127.0.0.1:6274';
 const INSPECTOR_UI_PORT = INSPECTOR_URL.split(':').pop()!;
 const INSPECTOR_PROXY_PORT = 6277;
-const MCP_COMMAND = 'node';
-const MCP_ARGS = path.join(WORKSPACE_PATH, 'dist', 'server.js');
+const MCP_COMMAND = path.join(WORKSPACE_PATH, 'scripts', 'run-server-in-ci.sh');
+const MCP_ARGS = '';
 
 const testFileContent = "Content written by execute_script test via MCP Inspector";
 let tempFilePath = ''; // Will be determined during the execute_script part
