@@ -38,11 +38,11 @@ jobs: # Single top-level jobs key
         run: npm run build
       - name: Install Playwright Browsers with OS dependencies
         run: npx playwright install --with-deps
-      - name: DEBUG - Run server.js directly for 5 seconds
+      - name: DEBUG - Run server.js directly
         run: |
-          echo "Attempting to run node dist/server.js..."
-          timeout 5s node dist/server.js || echo "server.js exited (possibly due to timeout or error)"
-          echo "Finished running node dist/server.js attempt."
+          echo "DEBUG: Attempting to run node dist/server.js directly..."
+          node dist/server.js || echo "DEBUG: server.js exited or failed."
+          echo "DEBUG: Finished direct run attempt of node dist/server.js."
       - name: Run MCP Inspector tests
         run: npm test -- run --no-file-parallelism tests/mcp-inspector.test.ts
 
