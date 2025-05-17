@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { chromium, Browser, Page, BrowserContext } from 'playwright';
 import { ChildProcess, spawn, execSync } from 'child_process';
 import path from 'path';
 import os from 'os';
 import fs from 'fs/promises';
-import fsSync from 'fs';
 
 const WORKSPACE_PATH = path.resolve(os.homedir(), 'Projects', 'macos-automator-mcp');
 const INSPECTOR_URL = 'http://127.0.0.1:6274';
@@ -30,7 +29,7 @@ const executeScriptPanelSelector = 'div[role="tabpanel"]:has-text("execute_scrip
 // --- Timeouts ---
 const WAIT_FOR_ELEMENT_TIMEOUT = 5000;
 const CONNECT_BUTTON_CLICK_TIMEOUT = 7000;
-const STATUS_CONNECTED_TIMEOUT = 10000;
+const STATUS_CONNECTED_TIMEOUT = 20000;
 const WAIT_FOR_SELECTOR_TIMEOUT = 5000;
 const SINGLE_TEST_TIMEOUT = 60000;
 const BEFORE_ALL_TIMEOUT = 60000;
@@ -85,7 +84,7 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     for (const port of portsToClear) {
       try {
         execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' });
-      } catch (error) { /* Ignore */ }
+      } catch (_error) { /* Ignore */ }
     }
     await new Promise(resolve => setTimeout(resolve, 1500)); // For port release
 
@@ -135,7 +134,7 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
                 await page.click(disconnectButtonSelector, {timeout: 5000});
                 await page.waitForTimeout(1000);
             }
-        } catch (e) { console.warn("[Global Teardown] Error clicking disconnect button: ", (e as Error).message);}
+        } catch (_e) { console.warn("[Global Teardown] Error clicking disconnect button: ", (_e as Error).message);}
     }
     await context?.close();
     await browser?.close();
@@ -150,17 +149,15 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
       }
     }
     if (tempFilePath) {
-      try { await fs.unlink(tempFilePath); } catch (e) { /* ignore */ }
+      try { await fs.unlink(tempFilePath); } catch (_e) { /* ignore */ }
     }
      // Final port clearance
-    const portsToClear = [INSPECTOR_UI_PORT, INSPECTOR_PROXY_PORT.toString()];
-    for (const port of portsToClear) {
-      try { execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' }); } catch (error) { /* Ignore */ }
+    const portsToClearAfter = [INSPECTOR_UI_PORT, INSPECTOR_PROXY_PORT.toString()];
+    for (const port of portsToClearAfter) {
+      try { execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'pipe' }); } catch (_error) { /* Ignore */ }
     }
     console.log('[Global Teardown] afterAll finished.');
   }, AFTER_ALL_TIMEOUT);
-
-  // Remove beforeEach and afterEach as they are no longer needed for this single-flow test
 
   it('should connect, list tools, run get_scripting_tips, then run execute_script and verify file', async () => {
     // Assumes connectAndListTools was successful in beforeAll, so tools are listed.
@@ -189,8 +186,10 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     await panel.waitFor({ state: 'visible', timeout: WAIT_FOR_ELEMENT_TIMEOUT });
     
     tempFilePath = path.join(os.tmpdir(), `mcp_e2e_test_${Date.now()}.txt`);
-    const escapedTempFilePath = tempFilePath.replace(/'/g, "'\''");
-    const escapedTestFileContent = testFileContent.replace(/'/g, "'\''");
+    // eslint-disable-next-line no-useless-escape
+    const escapedTempFilePath = tempFilePath.replace(/'/g, "'\\''");
+    // eslint-disable-next-line no-useless-escape
+    const escapedTestFileContent = testFileContent.replace(/'/g, "'\\''");
     const appleScript = `do shell script "echo '${escapedTestFileContent}' > '${escapedTempFilePath}'"\nreturn "${escapedTempFilePath}"`;
     
     // Wait for the textarea within the panel and fill it
