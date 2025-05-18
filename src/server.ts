@@ -277,7 +277,50 @@ async function main() {
   // ADD THE NEW TOOL get_scripting_tips HERE
   server.tool(
     'get_scripting_tips',
-    'Discover how to automate any app on your Mac with this comprehensive knowledge base of AppleScript/JXA tips and runnable scripts. This tool is essential for discovery and should be the FIRST CHOICE when aiming to automate macOS tasks, especially those involving common applications or system functions, before attempting to write scripts from scratch. It helps identify pre-built, tested solutions, effectively teaching you how to control virtually any aspect of your macOS experience.\\n\\n**Primary Use Cases & Parameters:**\\n\\n*   **Discovering Solutions (Use `searchTerm`):**\\n    *   Parameter: `searchTerm` (string, optional).\\n    *   Functionality: Performs a fuzzy search across all tip titles, descriptions, keywords, script content, and IDs. Ideal for natural language queries like "how to..." (e.g., `searchTerm: "how do I get the current Safari URL and title?"`) or keyword-based searches (e.g., `searchTerm: "Finder copy file to new location"`). This is the most common way to find relevant tips.\\n    *   Output: Returns a list of matching tips in Markdown format.\\n\\n*   **Limiting Search Results (Use `limit`):**\\n    *   Parameter: `limit` (integer, optional, default: 10).\\n    *   Functionality: Specifies the maximum number of script tips to return when using `searchTerm` or browsing a specific `category` (without `listCategories: true`). Does not apply if `listCategories` is true. If more tips are found than the limit, a notice will indicate this.\\n    *   Output: The list of tips will be truncated to this number if applicable.\\n\\n*   **Listing All Categories (Use `listCategories`):**\\n    *   Parameter: `listCategories` (boolean, optional, default: false).\\n    *   Functionality: If `true`, this will return a list of all available script categories (e.g., "safari", "finder_operations", "system_interaction") along with their descriptions and the number of tips in each. This overrides other parameters, including `limit`.\\n    *   Output: A Markdown list of categories.\\n\\n*   **Browsing a Specific Category (Use `category`):**\\n    *   Parameter: `category` (string, optional).\\n    *   Functionality: Retrieves all tips belonging to the specified category ID. Useful if you know the general area of automation you\'re interested in. Results can be limited by the `limit` parameter.\\n    *   Output: All tips within that category, formatted in Markdown (potentially limited).\\n\\n*   **Forcing a Knowledge Base Reload (Use `refreshDatabase`):**\\n    *   Parameter: `refreshDatabase` (boolean, optional, default: false).\\n    *   Functionality: If `true`, forces the server to reload the entire knowledge base from disk before processing the request. Primarily useful during development if knowledge base files are being actively modified and you need to ensure the latest versions are reflected without a server restart.\\n\\n**Output Details:**\\nThe tool returns a single Markdown formatted string. Each tip in the output typically includes:\\n- Title: A human-readable title for the tip.\\n- Description: A brief explanation of what the script does.\\n- Language: `applescript` or `javascript`.\\n- Script: The actual code snippet.\\n- Runnable ID: A unique identifier (e.g., `safari_get_front_tab_url`). **This ID is critical as it can be directly used as the `kbScriptId` parameter in the `execute_script` tool for immediate execution.**\\n- Arguments Prompt: If the script is designed to take inputs when run by ID, this field describes what `arguments` or `inputData` are expected by `execute_script`.\\n- Keywords: Relevant search terms.\\n- Notes: Additional context or important considerations.\\n\\n**Workflow Example:**\\n1. User asks: "How do I create a new note in the Notes app with a specific title?"\\n2. Agent calls `get_scripting_tips` with `searchTerm: "create new note in Notes app with title"`.\\n3. Agent reviews the output. If a tip like `notes_create_new_note_with_title` with a `Runnable ID` and an `argumentsPrompt` for `noteTitle` and `noteBody` is found:\\n4. Agent then calls `execute_script` with `kbScriptId: "notes_create_new_note_with_title"` and appropriate `inputData`.',
+    `Discover how to automate any app on your Mac with this comprehensive knowledge base of AppleScript/JXA tips and runnable scripts. This tool is essential for discovery and should be the FIRST CHOICE when aiming to automate macOS tasks, especially those involving common applications or system functions, before attempting to write scripts from scratch. It helps identify pre-built, tested solutions, effectively teaching you how to control virtually any aspect of your macOS experience.
+
+**Primary Use Cases & Parameters:**
+
+*   **Discovering Solutions (Use \`searchTerm\`):**
+    *   Parameter: \`searchTerm\` (string, optional).
+    *   Functionality: Performs a fuzzy search across all tip titles, descriptions, keywords, script content, and IDs. Ideal for natural language queries like "how to..." (e.g., \`searchTerm: "how do I get the current Safari URL and title?"\`). This is the most common way to find relevant tips.
+    *   Output: Returns a list of matching tips in Markdown format.
+
+*   **Limiting Search Results (Use \`limit\`):**
+    *   Parameter: \`limit\` (integer, optional, default: 10).
+    *   Functionality: Specifies the maximum number of script tips to return when using \`searchTerm\` or browsing a specific \`category\` (without \`listCategories: true\`). Does not apply if \`listCategories\` is true. If more tips are found than the limit, a notice will indicate this.
+    *   Output: The list of tips will be truncated to this number if applicable.
+
+*   **Listing All Categories (Use \`listCategories\`):**
+    *   Parameter: \`listCategories\` (boolean, optional, default: false).
+    *   Functionality: If \`true\`, this will return a list of all available script categories (e.g., "safari", "finder_operations", "system_interaction") along with their descriptions and the number of tips in each. This overrides other parameters, including \`limit\`.
+    *   Output: A Markdown list of categories.
+
+*   **Browsing a Specific Category (Use \`category\`):**
+    *   Parameter: \`category\` (string, optional).
+    *   Functionality: Retrieves all tips belonging to the specified category ID. Useful if you know the general area of automation you\'re interested in. Results can be limited by the \`limit\` parameter.
+    *   Output: All tips within that category, formatted in Markdown (potentially limited).
+
+*   **Forcing a Knowledge Base Reload (Use \`refreshDatabase\`):**
+    *   Parameter: \`refreshDatabase\` (boolean, optional, default: false).
+    *   Functionality: If \`true\`, forces the server to reload the entire knowledge base from disk before processing the request. Primarily useful during development if knowledge base files are being actively modified and you need to ensure the latest versions are reflected without a server restart.
+
+**Output Details:**
+The tool returns a single Markdown formatted string. Each tip in the output typically includes:
+- Title: A human-readable title for the tip.
+- Description: A brief explanation of what the script does.
+- Language: \`applescript\` or \`javascript\`.
+- Script: The actual code snippet.
+- Runnable ID: A unique identifier (e.g., \`safari_get_front_tab_url\`). **This ID is critical as it can be directly used as the \`kbScriptId\` parameter in the \`execute_script\` tool for immediate execution.**
+- Arguments Prompt: If the script is designed to take inputs when run by ID, this field describes what \`arguments\` or \`inputData\` are expected by \`execute_script\`.
+- Keywords: Relevant search terms.
+- Notes: Additional context or important considerations.
+
+**Workflow Example:**
+1. User asks: "How do I create a new note in the Notes app with a specific title?"
+2. Agent calls \`get_scripting_tips\` with \`searchTerm: "create new note in Notes app with title"\`.
+3. Agent reviews the output. If a tip like \`notes_create_new_note_with_title\` with a \`Runnable ID\` and an \`argumentsPrompt\` for \`noteTitle\` and \`noteBody\` is found:
+4. Agent then calls \`execute_script\` with \`kbScriptId: "notes_create_new_note_with_title"\` and appropriate \`inputData\`.`,
     GetScriptingTipsInputShape,
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);
