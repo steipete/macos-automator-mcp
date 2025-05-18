@@ -33,4 +33,4 @@
 
 ## 0.1.4 - 2025-05-15
 
-- Initial release. 
+- Initial release.
