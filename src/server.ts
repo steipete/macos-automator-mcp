@@ -98,6 +98,8 @@ async function main() {
     'Unlock the full potential of your Mac by automating virtually any application or task with AppleScript or JavaScript for Automation (JXA). This is your primary tool to command macOS, from simple actions to complex cross-application workflows.\\n\\nWhether it\'s controlling **Terminal, Google Chrome, Safari, Firefox, Finder, System Settings,** or any other scriptable application on your Mac, this tool gives you the power. If an app is on your Mac, chances are you can automate it.\\n\\n**1. Script Source (Exactly one of these MUST be provided):**\\n\\n*   `kbScriptId` (string):\\n    *   **Highly Preferred Method.** Executes a pre-defined, tested script from the server\'s knowledge base using its unique ID.\\n    *   **Discovery:** Use the `get_scripting_tips` tool to find available scripts, their `Runnable ID`s (which become this `kbScriptId`), and any required inputs (see `argumentsPrompt` from `get_scripting_tips`).\\n    *   Example: `kbScriptId: "safari_get_front_tab_url"`.\\n    *   Placeholder Substitution: Scripts from the knowledge base can contain placeholders like `--MCP_INPUT:keyName` or `--MCP_ARG_N` which will be substituted using the `inputData` or `arguments` parameters respectively.\\n\\n*   `scriptContent` (string):\\n    *   Executes raw AppleScript or JXA code provided directly as a string.\\n    *   Useful for simple, one-off commands or dynamically generated scripts.\\n    *   Example: `scriptContent: "tell application \\"Finder\\" to empty trash"`.\\n    *   Example: Use Terminal to open a web browser in the background: `scriptContent: "do shell script \\"open -g -a Safari https://www.google.com\\""`. (Note: `-g` opens it in the background, replace Safari with your desired browser if needed).\\n\\n*   `scriptPath` (string):\\n    *   Executes a script from a local file on the server machine.\\n    *   The path MUST be an absolute POSIX path to the script file (e.g., `/Users/user/myscripts/myscript.applescript`).\\n    *   Useful for complex or proprietary scripts not in the knowledge base.\\n\\n**2. Providing Inputs to Scripts:**\\n\\n*   `inputData` (JSON object, optional):\\n    *   **Primarily for `kbScriptId` scripts.**\\n    *   Used to provide named inputs that replace `--MCP_INPUT:keyName` placeholders within the knowledge base script.\\n    *   The keys in the object should match the `keyName` in the placeholders. Values (strings, numbers, booleans, simple arrays/objects) are automatically converted to their AppleScript/JXA literal equivalents.\\n    *   Example: `inputData: { "folderName": "New Docs", "targetPath": "~/Desktop" }` for a script with `--MCP_INPUT:folderName` and `--MCP_INPUT:targetPath`.\\n\\n*   `arguments` (array of strings, optional):\\n    *   For `scriptPath`: Passed as an array of string arguments to the script\'s main handler (e.g., `on run argv` in AppleScript, `run(argv)` in JXA).\\n    *   For `kbScriptId`: Used if a script is specifically designed for positional string arguments (replaces `--MCP_ARG_1`, `--MCP_ARG_2`, etc.). Check the script\'s `argumentsPrompt` from `get_scripting_tips`. Less common for KB scripts than `inputData`.\\n\\n**3. Execution Options:**\\n\\n*   `language` (enum: \'applescript\' | \'javascript\', optional):\\n    *   Specifies the scripting language.\\n    *   **Crucial for `scriptContent` and `scriptPath`** if not `applescript`. Defaults to \'applescript\' if omitted for these sources.\\n    *   Automatically inferred from the metadata if using `kbScriptId`.\\n\\n*   `timeoutSeconds` (integer, optional, default: 30):\\n    *   Sets the maximum time (in seconds) the script is allowed to run before being terminated. Increase for potentially long-running operations.\\n\\n*   `useScriptFriendlyOutput` (boolean, optional, default: false):\\n    *   If `true`, uses `osascript -ss` flag. This can provide more structured output (e.g., proper lists/records) from AppleScript, which might be easier for a program to parse than the default human-readable format.\\n\\n*   `includeExecutedScriptInOutput` (boolean, optional, default: false):\\n    *   If `true`, the full script content (after placeholder substitutions for knowledge base scripts) or the `scriptPath` will be appended to the successful output. Useful for verification and debugging.\\n\\n*   `includeSubstitutionLogs` (boolean, optional, default: false):\\n    *   **Only applies to `kbScriptId` scripts.**\\n    *   If `true`, detailed logs of each placeholder substitution step performed on the knowledge base script are included in the output (prepended on success, appended on error). Extremely useful for debugging issues with `inputData`/`arguments` processing and how they are inserted into the script.\\n\\n**Security Note:** Exercise caution, as this tool executes arbitrary code on the macOS machine. Ensure any user-provided script content or files are from trusted sources. macOS permissions (Automation, Accessibility) must be correctly configured for the server process.',
     ExecuteScriptInputShape,
     async (args: unknown) => {
+      let execution_time_seconds: number | undefined;
+
       const input = ExecuteScriptInputSchema.parse(args);
       let scriptContentToExecute: string | undefined = input.scriptContent;
       let scriptPathToExecute: string | undefined = input.scriptPath;
@@ -163,6 +165,7 @@ async function main() {
             arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [], 
           }
         );
+        execution_time_seconds = result.execution_time_seconds; // Capture script execution duration
         
         if (result.stderr) {
            logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
@@ -194,10 +197,16 @@ async function main() {
           }
           outputContent.push({ type: 'text', text: scriptIdentifier });
         }
-        return { content: outputContent, isError };
+        return {
+          content: outputContent,
+          isError,
+          timings: { execution_time_seconds }
+        };
 
       } catch (error: unknown) {
         const execError = error as ScriptExecutionError;
+        execution_time_seconds = execError.execution_time_seconds; // Capture script duration if available from the error
+
         let baseErrorMessage = 'Script execution failed. ';
         
         if (execError.name === "UnsupportedPlatformError") {
@@ -234,6 +243,15 @@ async function main() {
         if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
             finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join('\n')}`;
         }
+
+        // It's important to throw McpError as the tool framework expects it.
+        // We can add timing information to the McpError's details or message if desired,
+        // but the primary return path for timings is via the successful response structure.
+        // For now, just ensure execution_time_seconds is calculated.
+        // The sdkTypes.McpError constructor doesn't directly support a structured `details` field for timings.
+        // We could augment the error message, but it might make it verbose.
+        // Let's log it and rely on the structured timing for successful calls.
+        logger.error('execute_script handler error', { execution_time_seconds });
 
         throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, finalErrorMessage);
       }
