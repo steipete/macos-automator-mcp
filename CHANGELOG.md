@@ -8,7 +8,7 @@
 
 ## 0.2.3 - 2025-05-16
 
-- Improve script execution error handling
+- Improve script execution error handling.
 - Restructure JXA examples.
 
 ## 0.2.2 - 2025-05-16
