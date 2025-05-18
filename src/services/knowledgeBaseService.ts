@@ -196,7 +196,7 @@ export async function getScriptingTipsService(
   input: GetScriptingTipsInput,
   serverInfo?: { startTime: string; mode: string; version?: string }
 ): Promise<string> {
-  if (input.refreshDatabase) {
+  if (input.refresh_database) {
     await forceReloadKnowledgeBase();
   }
   const kb: KnowledgeBaseIndex = await getKnowledgeBase();
@@ -208,30 +208,30 @@ export async function getScriptingTipsService(
   }
 
   // Handle listCategories separately as it overrides other filters and limit
-  if (input.listCategories || (!input.category && !input.searchTerm && !input.limit)) {
-    if (input.listCategories || (!input.category && !input.searchTerm)) {
+  if (input.list_categories || (!input.category && !input.search_term && !input.limit)) {
+    if (input.list_categories || (!input.category && !input.search_term)) {
         const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
         return listCategoriesMessage + serverDetailsString;
     }
-    if(input.limit && !input.category && !input.searchTerm){
+    if(input.limit && !input.category && !input.search_term){
         const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
         return `${listCategoriesMessage}\n\nNote: \`limit\` parameter is applied to search results or category browsing, not general listing.${serverDetailsString}`;
     }
   }
 
-  const searchResult = performSearch(kb, input.category, input.searchTerm);
+  const searchResult = performSearch(kb, input.category, input.search_term);
   let noticeAboutLimit = "";
   const actualLimit = input.limit || DEFAULT_TIP_LIMIT; 
 
-  if (!input.listCategories && (input.searchTerm || input.category) && searchResult.tips.length > 0) {
+  if (!input.list_categories && (input.search_term || input.category) && searchResult.tips.length > 0) {
     if (searchResult.tips.length > actualLimit) {
       noticeAboutLimit = `Showing the first ${actualLimit} of ${searchResult.tips.length} matching tips. Use the \`limit\` parameter to adjust this. (Default is 10).\n\n`;
       searchResult.tips = searchResult.tips.slice(0, actualLimit);
     }
   }
 
-  if (searchResult.tips.length === 0 && !input.listCategories) { 
-    const noResultsMessage = generateNoResultsMessage(input.category, input.searchTerm);
+  if (searchResult.tips.length === 0 && !input.list_categories) { 
+    const noResultsMessage = generateNoResultsMessage(input.category, input.search_term);
     return noResultsMessage + serverDetailsString;
   }
 
@@ -242,25 +242,25 @@ export async function getScriptingTipsService(
 
   let outputMessage: string;
   if (formattedTips.trim() === "") { 
-      if (input.listCategories || (!input.category && !input.searchTerm)) { // Avoid double no-results message if categories were shown
+      if (input.list_categories || (!input.category && !input.search_term)) { // Avoid double no-results message if categories were shown
         outputMessage = ""; // Categories were already listed, or will be if no other criteria met
       } else {
         logger.warn('Formatted tips were empty despite having search results (after potential limit).',{input, searchResultTipsCount: searchResult.tips.length});
-        outputMessage = generateNoResultsMessage(input.category, input.searchTerm) + serverDetailsString;
+        outputMessage = generateNoResultsMessage(input.category, input.search_term) + serverDetailsString;
       }
   } else {
       outputMessage = searchResult.notice + noticeAboutLimit + lineLimitNotice + formattedTips;
   }
   
   // If we reached here and outputMessage is empty (e.g. only limit was specified), default to listCategories
-  if (outputMessage.trim() === "" && !input.listCategories && !(input.searchTerm || input.category) ) {
+  if (outputMessage.trim() === "" && !input.list_categories && !(input.search_term || input.category) ) {
     const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
     return `${listCategoriesMessage}\n\nNote: \`limit\` parameter applies to search results or category browsing.${serverDetailsString}`;
   }
 
-  if (input.refreshDatabase) {
+  if (input.refresh_database) {
     outputMessage = `Knowledge base reloaded successfully.${serverDetailsString}\n\n${outputMessage}`;
-  } else if (!outputMessage.includes(serverDetailsString) && outputMessage.trim() !== "" && !input.listCategories) {
+  } else if (!outputMessage.includes(serverDetailsString) && outputMessage.trim() !== "" && !input.list_categories) {
     // If not refresh, details not already in message, message not empty, and not listCategories (which handles its own details)
     // This is to catch normal search results that didn't go through refresh/listCategories/noResults paths for serverDetailsString
     outputMessage += serverDetailsString;

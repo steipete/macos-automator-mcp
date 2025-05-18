@@ -5,6 +5,7 @@
 - Included script execution time in the output of the `execute_script` tool. The `timings` object in the response now contains `execution_time_seconds` (duration of the script execution itself in seconds, with up to two decimal places).
 - Increased the default script execution timeout (`timeoutSeconds`) from 30 seconds to 60 seconds.
 - Optimized and shortened the description for the `execute_script` tool.
+- Changed tool input parameter naming convention from camelCase to snake_case for all tools (e.g., `kbScriptId` is now `kb_script_id`). Placeholder keys within script content (e.g., `--MCP_INPUT:keyName`) remain camelCase, with internal mapping handled by the server.
 
 ## 0.2.3 - 2025-05-16
 

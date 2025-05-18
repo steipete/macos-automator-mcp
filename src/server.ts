@@ -50,23 +50,23 @@ const scriptExecutor = new ScriptExecutor();
 
 // Define raw shapes for tool registration (required by newer SDK versions)
 const ExecuteScriptInputShape = {
-  scriptContent: z.string().optional(),
-  scriptPath: z.string().optional(),
-  kbScriptId: z.string().optional(),
+  script_content: z.string().optional(),
+  script_path: z.string().optional(),
+  kb_script_id: z.string().optional(),
   language: z.enum(['applescript', 'javascript']).optional(),
   arguments: z.array(z.string()).optional(),
-  inputData: z.record(z.any()).optional(),
-  timeoutSeconds: z.number().optional(),
-  useScriptFriendlyOutput: z.boolean().optional(),
-  includeExecutedScriptInOutput: z.boolean().optional(),
-  includeSubstitutionLogs: z.boolean().optional(),
+  input_data: z.record(z.any()).optional(),
+  timeout_seconds: z.number().optional(),
+  use_script_friendly_output: z.boolean().optional(),
+  include_executed_script_in_output: z.boolean().optional(),
+  include_substitution_logs: z.boolean().optional(),
 } as const;
 
 const GetScriptingTipsInputShape = {
   category: z.string().optional(),
-  searchTerm: z.string().optional(),
-  listCategories: z.boolean().optional(),
-  refreshDatabase: z.boolean().optional(),
+  search_term: z.string().optional(),
+  list_categories: z.boolean().optional(),
+  refresh_database: z.boolean().optional(),
   limit: z.number().int().positive().optional(),
 } as const;
 
@@ -101,26 +101,26 @@ async function main() {
     `Automate macOS tasks using AppleScript or JXA (JavaScript for Automation) to control applications like Terminal, Chrome, Safari, Finder, etc.
 
 **1. Script Source (Choose one):**
-*   \`kbScriptId\` (string): **Preferred.** Executes a pre-defined script from the knowledge base by its ID. Use \`get_scripting_tips\` to find IDs and inputs. Supports placeholder substitution via \`inputData\` or \`arguments\`. Ex: \`kbScriptId: "safari_get_front_tab_url"\`.
-*   \`scriptContent\` (string): Executes raw AppleScript/JXA code. Good for simple or dynamic scripts. Ex: \`scriptContent: "tell application \\"Finder\\" to empty trash"\`.
-*   \`scriptPath\` (string): Executes a script from an absolute POSIX path on the server. Ex: \`/Users/user/myscripts/myscript.applescript\`.
+*   \`kb_script_id\` (string): **Preferred.** Executes a pre-defined script from the knowledge base by its ID. Use \`get_scripting_tips\` to find IDs and inputs. Supports placeholder substitution via \`input_data\` or \`arguments\`. Ex: \`kb_script_id: "safari_get_front_tab_url"\`.
+*   \`script_content\` (string): Executes raw AppleScript/JXA code. Good for simple or dynamic scripts. Ex: \`script_content: "tell application \\"Finder\\" to empty trash"\`.
+*   \`script_path\` (string): Executes a script from an absolute POSIX path on the server. Ex: \`/Users/user/myscripts/myscript.applescript\`.
 
 **2. Script Inputs (Optional):**
-*   \`inputData\` (JSON object): For \`kbScriptId\`, provides named inputs (e.g., \`--MCP_INPUT:keyName\`). Values (string, number, boolean, simple array/object) are auto-converted. Ex: \`inputData: { "folderName": "New Docs" }\`.
-*   \`arguments\` (array of strings): For \`scriptPath\` (passes to \`on run argv\` / \`run(argv)\`). For \`kbScriptId\`, used for positional args (e.g., \`--MCP_ARG_1\`).
+*   \`input_data\` (JSON object): For \`kb_script_id\`, provides named inputs (e.g., \`--MCP_INPUT:keyName\`). Values (string, number, boolean, simple array/object) are auto-converted. Ex: \`input_data: { "folder_name": "New Docs" }\`.
+*   \`arguments\` (array of strings): For \`script_path\` (passes to \`on run argv\` / \`run(argv)\`). For \`kb_script_id\`, used for positional args (e.g., \`--MCP_ARG_1\`).
 
 **3. Execution Options (Optional):**
-*   \`language\` ('applescript' | 'javascript'): Specify for \`scriptContent\`/\`scriptPath\` (default: 'applescript'). Inferred for \`kbScriptId\`.
-*   \`timeoutSeconds\` (integer, default: 60): Max script runtime.
-*   \`useScriptFriendlyOutput\` (boolean, default: false): Use \`osascript -ss\` for structured output.
-*   \`includeExecutedScriptInOutput\` (boolean, default: false): Appends executed script/path to output.
-*   \`includeSubstitutionLogs\` (boolean, default: false): For \`kbScriptId\`, includes detailed placeholder substitution logs.`,
+*   \`language\` ('applescript' | 'javascript'): Specify for \`script_content\`/\`script_path\` (default: 'applescript'). Inferred for \`kb_script_id\`.
+*   \`timeout_seconds\` (integer, default: 60): Max script runtime.
+*   \`use_script_friendly_output\` (boolean, default: false): Use \`osascript -ss\` for structured output.
+*   \`include_executed_script_in_output\` (boolean, default: false): Appends executed script/path to output.
+*   \`include_substitution_logs\` (boolean, default: false): For \`kb_script_id\`, includes detailed placeholder substitution logs.`,
     ExecuteScriptInputShape,
     async (args: unknown) => {
       const input = ExecuteScriptInputSchema.parse(args);
       let execution_time_seconds: number | undefined;
-      let scriptContentToExecute: string | undefined = input.scriptContent;
-      let scriptPathToExecute: string | undefined = input.scriptPath;
+      let scriptContentToExecute: string | undefined = input.script_content;
+      let scriptPathToExecute: string | undefined = input.script_path;
       let languageToUse: 'applescript' | 'javascript';
       let finalArgumentsForScriptFile = input.arguments || [];
       let substitutionLogs: string[] = [];
@@ -128,17 +128,17 @@ async function main() {
       logger.debug('execute_script called with input:', input);
 
       // Construct the main part of the response first
-      let mainOutputContent: { type: 'text'; text: string }[] = [];
+      const mainOutputContent: { type: 'text'; text: string }[] = [];
 
-      if (input.kbScriptId) {
+      if (input.kb_script_id) {
         const kb = await getKnowledgeBase();
-        const tip = kb.tips.find((t: { id: string }) => t.id === input.kbScriptId);
+        const tip = kb.tips.find((t: { id: string }) => t.id === input.kb_script_id);
 
         if (!tip) {
-          throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, `Knowledge base script with ID '${input.kbScriptId}' not found.`);
+          throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, `Knowledge base script with ID '${input.kb_script_id}' not found.`);
         }
         if (!tip.script) {
-            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Knowledge base script ID '${input.kbScriptId}' has no script content.`);
+            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Knowledge base script ID '${input.kb_script_id}' has no script content.`);
         }
 
         languageToUse = tip.language;
@@ -148,21 +148,21 @@ async function main() {
         if (tip.script) { // Check if tip.script exists before substitution
             const substitutionResult: SubstitutionResult = substitutePlaceholders({
                 scriptContent: tip.script, // Use tip.script directly
-                inputData: input.inputData,
+                inputData: input.input_data,
                 args: input.arguments, // Pass input.arguments which might be undefined
-                includeSubstitutionLogs: input.includeSubstitutionLogs || false,
+                includeSubstitutionLogs: input.include_substitution_logs || false,
             });
 
             scriptContentToExecute = substitutionResult.substitutedScript;
             substitutionLogs = substitutionResult.logs;
         }
         logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
-      } else if (input.scriptPath || input.scriptContent) {
+      } else if (input.script_path || input.script_content) {
         languageToUse = input.language || 'applescript';
-        if (input.scriptPath) {
-            logger.debug('Executing script from path', { scriptPath: input.scriptPath, language: languageToUse });
-        } else if (input.scriptContent) {
-            logger.debug('Executing script from content', { language: languageToUse, initialLength: input.scriptContent.length });
+        if (input.script_path) {
+            logger.debug('Executing script from path', { scriptPath: input.script_path, language: languageToUse });
+        } else if (input.script_content) {
+            logger.debug('Executing script from content', { language: languageToUse, initialLength: input.script_content.length });
         }
       } else {
         throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID).");
@@ -181,8 +181,8 @@ async function main() {
           { content: scriptContentToExecute, path: scriptPathToExecute },
           {
             language: languageToUse,
-            timeoutMs: (input.timeoutSeconds || 60) * 1000,
-            useScriptFriendlyOutput: input.useScriptFriendlyOutput || false,
+            timeoutMs: (input.timeout_seconds || 60) * 1000,
+            useScriptFriendlyOutput: input.use_script_friendly_output || false,
             arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [], 
           }
         );
@@ -198,7 +198,7 @@ async function main() {
           isError = true;
         }
 
-        if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
+        if (input.include_substitution_logs && substitutionLogs.length > 0) {
           const logsHeader = "\n--- Substitution Logs ---\n";
           const logsString = substitutionLogs.join('\n');
           // Prepend to main result, not just stdout string if other parts exist
@@ -207,7 +207,7 @@ async function main() {
 
         mainOutputContent.push({ type: 'text', text: result.stdout });
 
-        if (input.includeExecutedScriptInOutput) {
+        if (input.include_executed_script_in_output) {
           let scriptIdentifier = "Script source not determined (should not happen).";
           if (scriptContentToExecute) {
             scriptIdentifier = `\n--- Executed Script Content ---\n${scriptContentToExecute}`;
@@ -245,7 +245,7 @@ async function main() {
             throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, execError.message);
         }
         if (execError.isTimeout) {
-             throw new sdkTypes.McpError(sdkTypes.ErrorCode.RequestTimeout, `Script execution timed out after ${input.timeoutSeconds || 60} seconds.`);
+             throw new sdkTypes.McpError(sdkTypes.ErrorCode.RequestTimeout, `Script execution timed out after ${input.timeout_seconds || 60} seconds.`);
         }
 
         baseErrorMessage += execError.stderr?.trim() ? `Details: ${execError.stderr.trim()}` : (execError.message || 'No specific error message from script.');
@@ -269,7 +269,7 @@ async function main() {
         }
         finalErrorMessage += scriptIdentifierForError;
 
-        if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
+        if (input.include_substitution_logs && substitutionLogs.length > 0) {
             finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join('\n')}`;
         }
 
@@ -287,18 +287,18 @@ async function main() {
 
 **Primary Use Cases & Parameters:**
 
-*   **Discovering Solutions (Use \`searchTerm\`):**
-    *   Parameter: \`searchTerm\` (string, optional).
-    *   Functionality: Performs a fuzzy search across all tip titles, descriptions, keywords, script content, and IDs. Ideal for natural language queries like "how to..." (e.g., \`searchTerm: "how do I get the current Safari URL and title?"\`). This is the most common way to find relevant tips.
+*   **Discovering Solutions (Use \`search_term\`):**
+    *   Parameter: \`search_term\` (string, optional).
+    *   Functionality: Performs a fuzzy search across all tip titles, descriptions, keywords, script content, and IDs. Ideal for natural language queries like "how to..." (e.g., \`search_term: "how do I get the current Safari URL and title?"\`). This is the most common way to find relevant tips.
     *   Output: Returns a list of matching tips in Markdown format.
 
 *   **Limiting Search Results (Use \`limit\`):**
     *   Parameter: \`limit\` (integer, optional, default: 10).
-    *   Functionality: Specifies the maximum number of script tips to return when using \`searchTerm\` or browsing a specific \`category\` (without \`listCategories: true\`). Does not apply if \`listCategories\` is true. If more tips are found than the limit, a notice will indicate this.
+    *   Functionality: Specifies the maximum number of script tips to return when using \`search_term\` or browsing a specific \`category\` (without \`list_categories: true\`). Does not apply if \`list_categories\` is true. If more tips are found than the limit, a notice will indicate this.
     *   Output: The list of tips will be truncated to this number if applicable.
 
-*   **Listing All Categories (Use \`listCategories\`):**
-    *   Parameter: \`listCategories\` (boolean, optional, default: false).
+*   **Listing All Categories (Use \`list_categories\`):**
+    *   Parameter: \`list_categories\` (boolean, optional, default: false).
     *   Functionality: If \`true\`, this will return a list of all available script categories (e.g., "safari", "finder_operations", "system_interaction") along with their descriptions and the number of tips in each. This overrides other parameters, including \`limit\`.
     *   Output: A Markdown list of categories.
 
@@ -307,8 +307,8 @@ async function main() {
     *   Functionality: Retrieves all tips belonging to the specified category ID. Useful if you know the general area of automation you're interested in. Results can be limited by the \`limit\` parameter.
     *   Output: All tips within that category, formatted in Markdown (potentially limited).
 
-*   **Forcing a Knowledge Base Reload (Use \`refreshDatabase\`):**
-    *   Parameter: \`refreshDatabase\` (boolean, optional, default: false).
+*   **Forcing a Knowledge Base Reload (Use \`refresh_database\`):**
+    *   Parameter: \`refresh_database\` (boolean, optional, default: false).
     *   Functionality: If \`true\`, forces the server to reload the entire knowledge base from disk before processing the request. Primarily useful during development if knowledge base files are being actively modified and you need to ensure the latest versions are reflected without a server restart.
 
 **Output Details:**
@@ -324,9 +324,9 @@ The tool returns a single Markdown formatted string. Each tip in the output typi
 
 **Workflow Example:**
 1. User asks: "How do I create a new note in the Notes app with a specific title?"
-2. Agent calls \`get_scripting_tips\` with \`searchTerm: "create new note in Notes app with title"\`.
+2. Agent calls \`get_scripting_tips\` with \`search_term: "create new note in Notes app with title"\`.
 3. Agent reviews the output. If a tip like \`notes_create_new_note_with_title\` with a \`Runnable ID\` and an \`argumentsPrompt\` for \`noteTitle\` and \`noteBody\` is found:
-4. Agent then calls \`execute_script\` with \`kbScriptId: "notes_create_new_note_with_title"\` and appropriate \`inputData\`.`,
+4. Agent then calls \`execute_script\` with \`kb_script_id: "notes_create_new_note_with_title"\` and appropriate \`input_data\`.`,
     GetScriptingTipsInputShape,
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);

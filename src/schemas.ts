@@ -10,44 +10,44 @@ const DynamicScriptingKnowledgeCategoryEnum = z.string()
     .describe("Category of AppleScript/JXA tips. Should match a discovered category ID from the knowledge base.");
 
 export const ExecuteScriptInputSchema = z.object({
-  scriptContent: z.string().optional()
-    .describe("Raw AppleScript/JXA code. Mutually exclusive with scriptPath & kbScriptId."),
-  scriptPath: z.string().optional()
-    .describe("Absolute POSIX path to a script file. Mutually exclusive with scriptContent & kbScriptId."),
-  kbScriptId: z.string().optional()
-    .describe("Unique ID of a pre-defined script from the knowledge base. Mutually exclusive with scriptContent & scriptPath. Use 'get_scripting_tips' to find IDs."),
+  script_content: z.string().optional()
+    .describe("Raw AppleScript/JXA code. Mutually exclusive with `script_path` & `kb_script_id`."),
+  script_path: z.string().optional()
+    .describe("Absolute POSIX path to a script file. Mutually exclusive with `script_content` & `kb_script_id`."),
+  kb_script_id: z.string().optional()
+    .describe("Unique ID of a pre-defined script from the knowledge base. Mutually exclusive with `script_content` & `script_path`. Use 'get_scripting_tips' to find IDs."),
   language: z.enum(['applescript', 'javascript']).optional()
-    .describe("Scripting language. Inferred if using kbScriptId. Defaults to 'applescript' if using scriptContent/scriptPath and not specified."),
+    .describe("Scripting language. Inferred if using `kb_script_id`. Defaults to 'applescript' if using `script_content`/`script_path` and not specified."),
   arguments: z.array(z.string()).optional().default([])
-    .describe("String arguments for scriptPath scripts ('on run argv'). For kbScriptId, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
-  inputData: z.record(z.string(), z.any()).optional() 
-    .describe("JSON object providing named input data for kbScriptId scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
-  timeoutSeconds: z.number().int().positive().optional().default(60)
+    .describe("String arguments for `script_path` scripts ('on run argv'). For `kb_script_id`, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
+  input_data: z.record(z.string(), z.any()).optional() 
+    .describe("JSON object providing named input data for `kb_script_id` scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
+  timeout_seconds: z.number().int().positive().optional().default(60)
     .describe("Script execution timeout in seconds."),
-  useScriptFriendlyOutput: z.boolean().optional().default(false)
+  use_script_friendly_output: z.boolean().optional().default(false)
     .describe("Use 'osascript -ss' for script-friendly output."),
-  includeExecutedScriptInOutput: z.boolean().optional().default(false)
+  include_executed_script_in_output: z.boolean().optional().default(false)
     .describe("If true, the executed script content (after substitutions) or path will be included in the output."),
-  includeSubstitutionLogs: z.boolean().optional().default(false)
+  include_substitution_logs: z.boolean().optional().default(false)
     .describe("If true, detailed logs of placeholder substitutions will be included in the output.")
 }).refine(data => {
-    const sources = [data.scriptContent, data.scriptPath, data.kbScriptId].filter(s => s !== undefined && s !== null && s !== '');
+    const sources = [data.script_content, data.script_path, data.kb_script_id].filter(s => s !== undefined && s !== null && s !== '');
     return sources.length === 1;
 }, {
-    message: "Exactly one of 'scriptContent', 'scriptPath', or 'kbScriptId' must be provided and be non-empty.",
-    path: ["scriptContent", "scriptPath", "kbScriptId"],
+    message: "Exactly one of 'script_content', 'script_path', or 'kb_script_id' must be provided and be non-empty.",
+    path: ["script_content", "script_path", "kb_script_id"],
 });
 
 export type ExecuteScriptInput = z.infer<typeof ExecuteScriptInputSchema>;
 
 export const GetScriptingTipsInputSchema = z.object({
   category: DynamicScriptingKnowledgeCategoryEnum.optional()
-    .describe("Specific category of tips. If omitted with no searchTerm, lists all categories."),
-  searchTerm: z.string().optional()
+    .describe("Specific category of tips. If omitted with no `search_term`, lists all categories."),
+  search_term: z.string().optional()
     .describe("Keyword to search within tip titles, content, keywords, or IDs."),
-  listCategories: z.boolean().optional().default(false)
+  list_categories: z.boolean().optional().default(false)
     .describe("If true, returns only the list of available categories and their descriptions. Overrides other parameters."),
-  refreshDatabase: z.boolean().optional().describe("If true, forces a reload of the knowledge base before processing the request."),
+  refresh_database: z.boolean().optional().describe("If true, forces a reload of the knowledge base before processing the request."),
   limit: z.number().int().positive().optional().default(10)
     .describe("Maximum number of results to return. Default is 10."),
 });

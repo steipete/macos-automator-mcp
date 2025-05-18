@@ -8,6 +8,11 @@ export function escapeForAppleScriptStringLiteral(value: string): string {
     return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
 
+// Helper function to convert camelCase to snake_case
+function camelToSnake(str: string): string {
+  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+
 export function valueToAppleScriptLiteral(value: unknown): string {
     if (typeof value === 'string') {
         return escapeForAppleScriptStringLiteral(value);
@@ -55,10 +60,11 @@ export function substitutePlaceholders(
     const jsInputDataRegex = /\\$\\{inputData\\.(\\w+)\\}/g;
     logSub('Before jsInputDataRegex', { scriptContentLength: currentScriptContent.length });
     currentScriptContent = currentScriptContent.replace(jsInputDataRegex, (match, keyName) => {
-        const replacementValue = inputData && keyName in inputData
-            ? valueToAppleScriptLiteral(inputData[keyName])
+        const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
+        const replacementValue = inputData && snakeKeyName in inputData
+            ? valueToAppleScriptLiteral(inputData[snakeKeyName])
             : "missing value"; // Bare keyword
-        logSub('jsInputDataRegex replacing', { match, keyName, replacementValue });
+        logSub('jsInputDataRegex replacing', { match, keyName, snakeKeyName, replacementValue });
         return replacementValue;
     });
     logSub('After jsInputDataRegex', { scriptContentLength: currentScriptContent.length });
@@ -80,10 +86,11 @@ export function substitutePlaceholders(
     const quotedMcpInputRegex = /(["'])--MCP_INPUT:(\w+)\1/g; 
     logSub('Before quotedMcpInputRegex (match surrounding quotes)', { scriptContentLength: currentScriptContent.length });
     currentScriptContent = currentScriptContent.replace(quotedMcpInputRegex, (match, _openingQuote, keyName) => {
-         const replacementValue = inputData && keyName in inputData
-            ? valueToAppleScriptLiteral(inputData[keyName])
+         const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
+         const replacementValue = inputData && snakeKeyName in inputData
+            ? valueToAppleScriptLiteral(inputData[snakeKeyName])
             : "missing value"; 
-         logSub('quotedMcpInputRegex (match surrounding quotes) replacing', { match, keyName, replacementValue });
+         logSub('quotedMcpInputRegex (match surrounding quotes) replacing', { match, keyName, snakeKeyName, replacementValue });
          return replacementValue; 
     });
     logSub('After quotedMcpInputRegex (match surrounding quotes)', { scriptContentLength: currentScriptContent.length });
@@ -105,10 +112,11 @@ export function substitutePlaceholders(
     const expressionMcpInputRegex = /([(,=]\s*)--MCP_INPUT:(\w+)\b/g;
     logSub('Before expressionMcpInputRegex', { scriptContentLength: currentScriptContent.length });
     currentScriptContent = currentScriptContent.replace(expressionMcpInputRegex, (match, prefix, keyName) => {
-        const replacementValue = inputData && keyName in inputData
-                ? valueToAppleScriptLiteral(inputData[keyName])
+        const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
+        const replacementValue = inputData && snakeKeyName in inputData
+                ? valueToAppleScriptLiteral(inputData[snakeKeyName])
                 : "missing value";
-        logSub('expressionMcpInputRegex replacing', { match, prefix, keyName, replacementValue });
+        logSub('expressionMcpInputRegex replacing', { match, prefix, keyName, snakeKeyName, replacementValue });
         return prefix + replacementValue;
     });
     logSub('After expressionMcpInputRegex', { scriptContentLength: currentScriptContent.length });
