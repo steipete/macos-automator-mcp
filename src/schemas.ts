@@ -22,7 +22,7 @@ export const ExecuteScriptInputSchema = z.object({
     .describe("String arguments for scriptPath scripts ('on run argv'). For kbScriptId, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
   inputData: z.record(z.string(), z.any()).optional() 
     .describe("JSON object providing named input data for kbScriptId scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
-  timeoutSeconds: z.number().int().positive().optional().default(30)
+  timeoutSeconds: z.number().int().positive().optional().default(60)
     .describe("Script execution timeout in seconds."),
   useScriptFriendlyOutput: z.boolean().optional().default(false)
     .describe("Use 'osascript -ss' for script-friendly output."),
