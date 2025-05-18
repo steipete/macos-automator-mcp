@@ -39,8 +39,11 @@ try {
 
 const SERVER_START_TIME_ISO = new Date().toISOString();
 const SCRIPT_PATH_EXECUTED = process.argv[1] || 'unknown_path';
-const IS_RUNNING_FROM_SRC = SCRIPT_PATH_EXECUTED.includes('/src/server.ts') || SCRIPT_PATH_EXECUTED.endsWith('src/server.ts');
+const IS_RUNNING_FROM_SRC = SCRIPT_PATH_EXECUTED.includes('/src/server.ts') || SCRIPT_PATH_EXECUTED.endsWith('/src/server.ts');
 const EXECUTION_MODE_INFO = IS_RUNNING_FROM_SRC ? 'TypeScript source (e.g., via tsx)' : 'Compiled JavaScript (e.g., dist/server.js)';
+
+let hasEmittedFirstCallInfo = false; // Flag for first tool call
+const serverInfoMessage = `MacOS Automator MCP v${pkg.version}, started at ${SERVER_START_TIME_ISO}`;
 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
@@ -114,16 +117,18 @@ async function main() {
 *   \`includeSubstitutionLogs\` (boolean, default: false): For \`kbScriptId\`, includes detailed placeholder substitution logs.`,
     ExecuteScriptInputShape,
     async (args: unknown) => {
-      let execution_time_seconds: number | undefined;
-
       const input = ExecuteScriptInputSchema.parse(args);
+      let execution_time_seconds: number | undefined;
       let scriptContentToExecute: string | undefined = input.scriptContent;
       let scriptPathToExecute: string | undefined = input.scriptPath;
       let languageToUse: 'applescript' | 'javascript';
       let finalArgumentsForScriptFile = input.arguments || [];
-      let substitutionLogs: string[] = []; // Changed from const to let
+      let substitutionLogs: string[] = [];
 
       logger.debug('execute_script called with input:', input);
+
+      // Construct the main part of the response first
+      let mainOutputContent: { type: 'text'; text: string }[] = [];
 
       if (input.kbScriptId) {
         const kb = await getKnowledgeBase();
@@ -181,28 +186,26 @@ async function main() {
             arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [], 
           }
         );
-        execution_time_seconds = result.execution_time_seconds; // Capture script execution duration
+        execution_time_seconds = result.execution_time_seconds;
         
         if (result.stderr) {
            logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
         }
         
-        // Check for error pattern in stdout and set isError accordingly
         let isError = false;
         const errorPattern = /^\s*error[:\s-]/i;
         if (errorPattern.test(result.stdout)) {
           isError = true;
         }
-        
-        const outputContent: { type: 'text'; text: string }[] = [];
 
         if (input.includeSubstitutionLogs && substitutionLogs.length > 0) {
           const logsHeader = "\n--- Substitution Logs ---\n";
           const logsString = substitutionLogs.join('\n');
-          result.stdout = `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}`;
+          // Prepend to main result, not just stdout string if other parts exist
+          mainOutputContent.push({ type: 'text', text: `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}` });
         }
 
-        outputContent.push({ type: 'text', text: result.stdout });
+        mainOutputContent.push({ type: 'text', text: result.stdout });
 
         if (input.includeExecutedScriptInOutput) {
           let scriptIdentifier = "Script source not determined (should not happen).";
@@ -211,17 +214,27 @@ async function main() {
           } else if (scriptPathToExecute) {
             scriptIdentifier = `\n--- Executed Script Path ---\n${scriptPathToExecute}`;
           }
-          outputContent.push({ type: 'text', text: scriptIdentifier });
+          mainOutputContent.push({ type: 'text', text: scriptIdentifier });
         }
+
+        // Now, construct the final response with potential first-call info
+        const finalResponseContent: { type: 'text'; text: string }[] = [];
+        if (!hasEmittedFirstCallInfo) {
+          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
+          finalResponseContent.push({ type: 'text', text: '---' }); // Separator
+          hasEmittedFirstCallInfo = true;
+        }
+        finalResponseContent.push(...mainOutputContent); // Add the actual script output
+
         return {
-          content: outputContent,
+          content: finalResponseContent,
           isError,
           timings: { execution_time_seconds }
         };
 
       } catch (error: unknown) {
         const execError = error as ScriptExecutionError;
-        execution_time_seconds = execError.execution_time_seconds; // Capture script duration if available from the error
+        execution_time_seconds = execError.execution_time_seconds;
 
         let baseErrorMessage = 'Script execution failed. ';
         
@@ -260,13 +273,6 @@ async function main() {
             finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join('\n')}`;
         }
 
-        // It's important to throw McpError as the tool framework expects it.
-        // We can add timing information to the McpError's details or message if desired,
-        // but the primary return path for timings is via the successful response structure.
-        // For now, just ensure execution_time_seconds is calculated.
-        // The sdkTypes.McpError constructor doesn't directly support a structured `details` field for timings.
-        // We could augment the error message, but it might make it verbose.
-        // Let's log it and rely on the structured timing for successful calls.
         logger.error('execute_script handler error', { execution_time_seconds });
 
         throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, finalErrorMessage);
@@ -298,7 +304,7 @@ async function main() {
 
 *   **Browsing a Specific Category (Use \`category\`):**
     *   Parameter: \`category\` (string, optional).
-    *   Functionality: Retrieves all tips belonging to the specified category ID. Useful if you know the general area of automation you\'re interested in. Results can be limited by the \`limit\` parameter.
+    *   Functionality: Retrieves all tips belonging to the specified category ID. Useful if you know the general area of automation you're interested in. Results can be limited by the \`limit\` parameter.
     *   Output: All tips within that category, formatted in Markdown (potentially limited).
 
 *   **Forcing a Knowledge Base Reload (Use \`refreshDatabase\`):**
@@ -326,9 +332,18 @@ The tool returns a single Markdown formatted string. Each tip in the output typi
       const input = GetScriptingTipsInputSchema.parse(args);
       logger.info('get_scripting_tips tool called', input);
       try {
-        const serverInfo = { startTime: SERVER_START_TIME_ISO, mode: EXECUTION_MODE_INFO, version: pkg.version };
-        const tipsMarkdown = await getScriptingTipsService(input, serverInfo);
-        return { content: [{ type: 'text', text: tipsMarkdown }] } as const;
+        const serverInfoForService = { startTime: SERVER_START_TIME_ISO, mode: EXECUTION_MODE_INFO, version: pkg.version };
+        const tipsMarkdown = await getScriptingTipsService(input, serverInfoForService);
+
+        const finalResponseContent: { type: 'text'; text: string }[] = [];
+        if (!hasEmittedFirstCallInfo) {
+          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
+          finalResponseContent.push({ type: 'text', text: '---' }); // Separator
+          hasEmittedFirstCallInfo = true;
+        }
+        finalResponseContent.push({ type: 'text', text: tipsMarkdown });
+
+        return { content: finalResponseContent } as const;
       } catch (e: unknown) {
         const error = e as Error;
         logger.error('Error in get_scripting_tips tool handler', { message: error.message });
