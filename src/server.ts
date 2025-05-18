@@ -33,7 +33,10 @@ try {
 } catch (error) {
   // Fallback or error handling if package.json cannot be read
   // This is critical for npx environments if pathing is an issue
-  console.error("Failed to load package.json:", error);
+  // Don't log in E2E tests to avoid interfering with MCP protocol
+  if (process.env.MCP_E2E_TESTING !== 'true' && process.env.VITEST !== 'true') {
+    console.error("Failed to load package.json:", error);
+  }
   pkg = { version: "0.0.0-error" }; // Provide a fallback
 }
 
@@ -42,6 +45,7 @@ const SCRIPT_PATH_EXECUTED = process.argv[1] || 'unknown_path';
 const IS_RUNNING_FROM_SRC = SCRIPT_PATH_EXECUTED.includes('/src/server.ts') || SCRIPT_PATH_EXECUTED.endsWith('/src/server.ts');
 const EXECUTION_MODE_INFO = IS_RUNNING_FROM_SRC ? 'TypeScript source (e.g., via tsx)' : 'Compiled JavaScript (e.g., dist/server.js)';
 
+const IS_E2E_TESTING = process.env.MCP_E2E_TESTING === 'true' || process.env.VITEST === 'true';
 let hasEmittedFirstCallInfo = false; // Flag for first tool call
 const serverInfoMessage = `MacOS Automator MCP v${pkg.version}, started at ${SERVER_START_TIME_ISO}`;
 
@@ -71,21 +75,23 @@ const GetScriptingTipsInputShape = {
 } as const;
 
 async function main() {
-  console.log("[Server Startup] Current working directory:", process.cwd());
-  // console.log("[Server Startup] Environment:", JSON.stringify(process.env, null, 2)); // Potentially too verbose, log specific vars if needed
-  // console.log("[Server Startup] PATH:", process.env.PATH);
-  // console.log("[Server Startup] HOME:", process.env.HOME);
-  // console.log("[Server Startup] USER:", process.env.USER);
+  if (!IS_E2E_TESTING) {
+    logger.info("[Server Startup] Current working directory", { cwd: process.cwd() });
+    // console.log("[Server Startup] Environment:", JSON.stringify(process.env, null, 2)); // Potentially too verbose, log specific vars if needed
+    // console.log("[Server Startup] PATH:", process.env.PATH);
+    // console.log("[Server Startup] HOME:", process.env.HOME);
+    // console.log("[Server Startup] USER:", process.env.USER);
 
-  logger.info('Starting macos_automator MCP Server...');
-  logger.warn("CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.");
+    logger.info('Starting macos_automator MCP Server...');
+    logger.warn("CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.");
 
-  // Eagerly initialize Knowledge Base if KB_PARSING is set to eager
-  const eagerParseEnv = process.env.KB_PARSING?.toLowerCase();
-  if (eagerParseEnv === 'eager') {
-    await conditionallyInitializeKnowledgeBase(true);
-  } else {
-    conditionallyInitializeKnowledgeBase(false); // Log that it's lazy
+    // Eagerly initialize Knowledge Base if KB_PARSING is set to eager
+    const eagerParseEnv = process.env.KB_PARSING?.toLowerCase();
+    if (eagerParseEnv === 'eager') {
+      await conditionallyInitializeKnowledgeBase(true);
+    } else {
+      conditionallyInitializeKnowledgeBase(false); // Log that it's lazy
+    }
   }
 
   const server = new McpServer({
@@ -219,12 +225,13 @@ async function main() {
 
         // Now, construct the final response with potential first-call info
         const finalResponseContent: { type: 'text'; text: string }[] = [];
-        if (!hasEmittedFirstCallInfo) {
-          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
+        finalResponseContent.push(...mainOutputContent); // Add the actual script output
+
+        if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
           finalResponseContent.push({ type: 'text', text: '---' }); // Separator
+          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
           hasEmittedFirstCallInfo = true;
         }
-        finalResponseContent.push(...mainOutputContent); // Add the actual script output
 
         return {
           content: finalResponseContent,
@@ -336,12 +343,13 @@ The tool returns a single Markdown formatted string. Each tip in the output typi
         const tipsMarkdown = await getScriptingTipsService(input, serverInfoForService);
 
         const finalResponseContent: { type: 'text'; text: string }[] = [];
-        if (!hasEmittedFirstCallInfo) {
-          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
+        finalResponseContent.push({ type: 'text', text: tipsMarkdown });
+
+        if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
           finalResponseContent.push({ type: 'text', text: '---' }); // Separator
+          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
           hasEmittedFirstCallInfo = true;
         }
-        finalResponseContent.push({ type: 'text', text: tipsMarkdown });
 
         return { content: finalResponseContent } as const;
       } catch (e: unknown) {
@@ -355,7 +363,10 @@ The tool returns a single Markdown formatted string. Each tip in the output typi
   const transport = new StdioServerTransport();
   try {
     await server.connect(transport);
-    logger.info(`macos_automator MCP Server v${pkg.version} connected via STDIO and ready.`);
+    // Only log ready message if not in E2E testing, to keep stdout clean for inspector
+    if (!IS_E2E_TESTING) {
+      logger.info(`macos_automator MCP Server v${pkg.version} connected via STDIO and ready.`);
+    }
   } catch (error: unknown) { // Changed from any to unknown
     const connectError = error as Error;
     logger.error('Failed to connect server to transport', { message: connectError.message, stack: connectError.stack });
