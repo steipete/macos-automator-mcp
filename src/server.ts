@@ -95,62 +95,23 @@ async function main() {
 
   server.tool(
     'execute_script',
-    `Unlock the full potential of your Mac by automating virtually any application or task with AppleScript or JavaScript for Automation (JXA). This is your primary tool to command macOS, from simple actions to complex cross-application workflows.
+    `Automate macOS tasks using AppleScript or JXA (JavaScript for Automation) to control applications like Terminal, Chrome, Safari, Finder, etc.
 
-Whether it's controlling **Terminal, Google Chrome, Safari, Firefox, Finder, System Settings,** or any other scriptable application on your Mac, this tool gives you the power. If an app is on your Mac, chances are you can automate it.
+**1. Script Source (Choose one):**
+*   \`kbScriptId\` (string): **Preferred.** Executes a pre-defined script from the knowledge base by its ID. Use \`get_scripting_tips\` to find IDs and inputs. Supports placeholder substitution via \`inputData\` or \`arguments\`. Ex: \`kbScriptId: "safari_get_front_tab_url"\`.
+*   \`scriptContent\` (string): Executes raw AppleScript/JXA code. Good for simple or dynamic scripts. Ex: \`scriptContent: "tell application \\"Finder\\" to empty trash"\`.
+*   \`scriptPath\` (string): Executes a script from an absolute POSIX path on the server. Ex: \`/Users/user/myscripts/myscript.applescript\`.
 
-**1. Script Source (Exactly one of these MUST be provided):**
+**2. Script Inputs (Optional):**
+*   \`inputData\` (JSON object): For \`kbScriptId\`, provides named inputs (e.g., \`--MCP_INPUT:keyName\`). Values (string, number, boolean, simple array/object) are auto-converted. Ex: \`inputData: { "folderName": "New Docs" }\`.
+*   \`arguments\` (array of strings): For \`scriptPath\` (passes to \`on run argv\` / \`run(argv)\`). For \`kbScriptId\`, used for positional args (e.g., \`--MCP_ARG_1\`).
 
-*   \`kbScriptId\` (string):
-    *   **Highly Preferred Method.** Executes a pre-defined, tested script from the server's knowledge base using its unique ID.
-    *   **Discovery:** Use the \`get_scripting_tips\` tool to find available scripts, their \`Runnable ID\`s (which become this \`kbScriptId\`), and any required inputs (see \`argumentsPrompt\` from \`get_scripting_tips\`).
-    *   Example: \`kbScriptId: "safari_get_front_tab_url"\`.
-    *   Placeholder Substitution: Scripts from the knowledge base can contain placeholders like \`--MCP_INPUT:keyName\` or \`--MCP_ARG_N\` which will be substituted using the \`inputData\` or \`arguments\` parameters respectively.
-
-*   \`scriptContent\` (string):
-    *   Executes raw AppleScript or JXA code provided directly as a string.
-    *   Useful for simple, one-off commands or dynamically generated scripts.
-    *   Example: \`scriptContent: "tell application \\"Finder\\" to empty trash"\`.
-    *   Example: Use Terminal to open a web browser in the background: \`scriptContent: "do shell script \\"open -g -a Safari https://www.google.com\\""\`. (Note: \`-g\` opens it in the background, replace Safari with your desired browser if needed).
-
-*   \`scriptPath\` (string):
-    *   Executes a script from a local file on the server machine.
-    *   The path MUST be an absolute POSIX path to the script file (e.g., \`/Users/user/myscripts/myscript.applescript\`).
-    *   Useful for complex or proprietary scripts not in the knowledge base.
-
-**2. Providing Inputs to Scripts:**
-
-*   \`inputData\` (JSON object, optional):
-    *   **Primarily for \`kbScriptId\` scripts.**
-    *   Used to provide named inputs that replace \`--MCP_INPUT:keyName\` placeholders within the knowledge base script.
-    *   The keys in the object should match the \`keyName\` in the placeholders. Values (strings, numbers, booleans, simple arrays/objects) are automatically converted to their AppleScript/JXA literal equivalents.
-    *   Example: \`inputData: { "folderName": "New Docs", "targetPath": "~/Desktop" }\` for a script with \`--MCP_INPUT:folderName\` and \`--MCP_INPUT:targetPath\`.
-
-*   \`arguments\` (array of strings, optional):
-    *   For \`scriptPath\`: Passed as an array of string arguments to the script's main handler (e.g., \`on run argv\` in AppleScript, \`run(argv)\` in JXA).
-    *   For \`kbScriptId\`: Used if a script is specifically designed for positional string arguments (replaces \`--MCP_ARG_1\`, \`--MCP_ARG_2\`, etc.). Check the script's \`argumentsPrompt\` from \`get_scripting_tips\`. Less common for KB scripts than \`inputData\`.
-
-**3. Execution Options:**
-
-*   \`language\` (enum: 'applescript' | 'javascript', optional):
-    *   Specifies the scripting language.
-    *   **Crucial for \`scriptContent\` and \`scriptPath\`** if not \`applescript\`. Defaults to 'applescript' if omitted for these sources.
-    *   Automatically inferred from the metadata if using \`kbScriptId\`.
-
-*   \`timeoutSeconds\` (integer, optional, default: 60):
-    *   Sets the maximum time (in seconds) the script is allowed to run before being terminated. Increase for potentially long-running operations.
-
-*   \`useScriptFriendlyOutput\` (boolean, optional, default: false):
-    *   If \`true\`, uses \`osascript -ss\` flag. This can provide more structured output (e.g., proper lists/records) from AppleScript, which might be easier for a program to parse than the default human-readable format.
-
-*   \`includeExecutedScriptInOutput\` (boolean, optional, default: false):
-    *   If \`true\`, the full script content (after placeholder substitutions for knowledge base scripts) or the \`scriptPath\` will be appended to the successful output. Useful for verification and debugging.
-
-*   \`includeSubstitutionLogs\` (boolean, optional, default: false):
-    *   **Only applies to \`kbScriptId\` scripts.**
-    *   If \`true\`, detailed logs of each placeholder substitution step performed on the knowledge base script are included in the output (prepended on success, appended on error). Extremely useful for debugging issues with \`inputData\`/\`arguments\` processing and how they are inserted into the script.
-
-**Security Note:** Exercise caution, as this tool executes arbitrary code on the macOS machine. Ensure any user-provided script content or files are from trusted sources. macOS permissions (Automation, Accessibility) must be correctly configured for the server process.`,
+**3. Execution Options (Optional):**
+*   \`language\` ('applescript' | 'javascript'): Specify for \`scriptContent\`/\`scriptPath\` (default: 'applescript'). Inferred for \`kbScriptId\`.
+*   \`timeoutSeconds\` (integer, default: 60): Max script runtime.
+*   \`useScriptFriendlyOutput\` (boolean, default: false): Use \`osascript -ss\` for structured output.
+*   \`includeExecutedScriptInOutput\` (boolean, default: false): Appends executed script/path to output.
+*   \`includeSubstitutionLogs\` (boolean, default: false): For \`kbScriptId\`, includes detailed placeholder substitution logs.`,
     ExecuteScriptInputShape,
     async (args: unknown) => {
       let execution_time_seconds: number | undefined;

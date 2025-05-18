@@ -1,9 +1,10 @@
 # Changelog
 
-## [0.3.0] - 2025-05-18
+## [0.3.0] - YYYY-MM-DD
 
 - Included script execution time in the output of the `execute_script` tool. The `timings` object in the response now contains `execution_time_seconds` (duration of the script execution itself in seconds, with up to two decimal places).
 - Increased the default script execution timeout (`timeoutSeconds`) from 30 seconds to 60 seconds.
+- Optimized and shortened the description for the `execute_script` tool.
 
 ## 0.2.3 - 2025-05-16
 
