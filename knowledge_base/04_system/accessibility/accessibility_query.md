@@ -19,7 +19,7 @@ keywords:
   - UI testing
   - macOS
   - AXStaticText
-language: json
+language: javascript
 isComplex: true
 ---
 
