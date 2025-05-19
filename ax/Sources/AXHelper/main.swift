@@ -60,6 +60,15 @@ func checkAccessibilityPermissions() {
     }
 }
 
+// Helper function to get the name of the parent process
+func getParentProcessName() -> String? {
+    let parentPid = getppid() // Get parent process ID
+    if let parentApp = NSRunningApplication(processIdentifier: parentPid) {
+        return parentApp.localizedName ?? parentApp.bundleIdentifier
+    }
+    return nil
+}
+
 // MARK: - Codable command envelopes -------------------------------------------------
 
 struct CommandEnvelope: Codable {
