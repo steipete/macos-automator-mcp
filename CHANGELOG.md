@@ -1,7 +1,8 @@
 # Changelog
 
 ## [0.4.1] - 2025-05-20
-- Fixed missing "connected via STDIO and ready" log message after server startup
+- Fixed version reporting to only occur on tool calls, not MCP initialization handshake
+- Removed unnecessary server ready log message that was causing MCP client connection issues
 
 ## [0.4.0] - 2025-05-20
 - Replaced the `use_script_friendly_output` boolean parameter with a more versatile `output_format_mode` string enum parameter for the `execute_script` tool. This provides finer-grained control over `osascript` output formatting flags.
