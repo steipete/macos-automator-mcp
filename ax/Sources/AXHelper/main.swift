@@ -29,24 +29,35 @@ func debug(_ message: String) {
 // Check accessibility permissions
 func checkAccessibilityPermissions() {
     debug("Checking accessibility permissions...")
-    
-    // SKIP THE CHECK TEMPORARILY to debug SIGTRAP issues
-    debug("⚠️ ACCESSIBILITY CHECK DISABLED FOR DEBUGGING")
-    return
-    
-    // Original code below
-    /*
-    // Use the constant directly as a String to avoid concurrency issues
-    let checkOptPrompt = "AXTrustedCheckOptionPrompt" as CFString
-    let options = [checkOptPrompt: true] as CFDictionary
-    let accessEnabled = AXIsProcessTrustedWithOptions(options)
-    
+
+    // Check without prompting. The prompt can cause issues for command-line tools.
+    let accessEnabled = AXIsProcessTrusted() 
+
     if !accessEnabled {
-        print("Error: This application requires accessibility permissions.")
-        print("Please enable them in System Preferences > Privacy & Security > Accessibility")
+        // Output to stderr so it can be captured by the calling process
+        fputs("ERROR: Accessibility permissions are not granted for the application running this tool.\n", stderr)
+        fputs("Please ensure the application that executes 'ax' (e.g., Terminal, your IDE, or the Node.js process) has 'Accessibility' permissions enabled in:\n", stderr)
+        fputs("System Settings > Privacy & Security > Accessibility.\n", stderr)
+        fputs("After granting permissions, you may need to restart the application that runs this tool.\n", stderr)
+
+        // Also print a more specific hint if we can identify the parent process name
+        if let parentName = getParentProcessName() {
+            fputs("Hint: Grant accessibility permissions to '\(parentName)'.\n", stderr)
+        }
+
+        // Attempt a benign accessibility call to encourage the OS to show the permission prompt
+        // for the parent application. The ax tool will still exit with an error for this run.
+        fputs("Info: Attempting a minimal accessibility interaction to help trigger the system permission prompt if needed...\n", stderr)
+        let systemWideElement = AXUIElementCreateSystemWide()
+        var focusedElement: AnyObject?
+        _ = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute as CFString, &focusedElement)
+        // We don't use the result of the call above when permissions are missing;
+        // its purpose is to signal macOS to check/prompt for the parent app's permissions.
+
         exit(1)
+    } else {
+        debug("Accessibility permissions are granted.")
     }
-    */
 }
 
 // MARK: - Codable command envelopes -------------------------------------------------
