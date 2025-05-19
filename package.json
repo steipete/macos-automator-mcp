@@ -10,11 +10,13 @@
   "files": [
     "dist/**/*",
     "knowledge_base/**/*",
+    "ax/ax_runner.sh",
+    "ax/ax",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/ax && cp ax/ax dist/ax/ax && cp ax/ax_runner.sh dist/ax/ax_runner.sh && chmod +x dist/ax/ax_runner.sh dist/ax/ax",
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
