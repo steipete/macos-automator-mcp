@@ -4,21 +4,43 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { Logger } from './logger.js';
+import type { AXQueryInput } from './schemas.js'; // Import AXQueryInput type
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const logger = new Logger('AXQueryExecutor');
 
+export interface AXQueryExecutionResult {
+  result: Record<string, unknown>;
+  execution_time_seconds: number;
+}
+
 export class AXQueryExecutor {
   private axUtilityPath: string;
   private scriptPath: string;
 
   constructor() {
-    // Calculate the path to the AX utility relative to this file
-    this.axUtilityPath = path.resolve(__dirname, '..', 'ax');
-    // Path to the wrapper script
+    // Determine if running from source or dist to set the correct base path
+    // __dirname will be like /path/to/project/src or /path/to/project/dist/src
+    const isProdBuild = __dirname.includes(path.join(path.sep, 'dist', path.sep));
+
+    if (isProdBuild) {
+      // In production (dist), ax_runner.sh and ax binary are directly in dist/
+      // So, utility path is one level up from dist/src (i.e., dist/)
+      this.axUtilityPath = path.resolve(__dirname, '..'); 
+    } else {
+      // In development (src), ax_runner.sh and ax binary are in project_root/ax/
+      // So, utility path is one level up from src/ and then into ax/
+      this.axUtilityPath = path.resolve(__dirname, '..', 'ax');
+    }
+    
     this.scriptPath = path.join(this.axUtilityPath, 'ax_runner.sh');
+    logger.debug('AXQueryExecutor initialized', { 
+      isProdBuild, 
+      axUtilityPath: this.axUtilityPath, 
+      scriptPath: this.scriptPath 
+    });
   }
 
   /**
@@ -26,13 +48,31 @@ export class AXQueryExecutor {
    * @param queryData The query to execute
    * @returns The result of the query
    */
-  async execute(queryData: Record<string, unknown>): Promise<Record<string, unknown>> {
-    logger.debug('Executing AX query', queryData);
+  async execute(queryData: AXQueryInput): Promise<AXQueryExecutionResult> {
+    logger.debug('Executing AX query with input:', queryData);
+    const startTime = Date.now();
+
+    // Map to the keys expected by the Swift binary
+    const mappedQueryData = {
+      cmd: queryData.command,
+      multi: queryData.return_all_matches,
+      locator: {
+        app: queryData.locator.app,
+        role: queryData.locator.role,
+        match: queryData.locator.match,
+        pathHint: queryData.locator.navigation_path_hint,
+      },
+      attributes: queryData.attributes_to_query,
+      requireAction: queryData.required_action_name,
+      action: queryData.action_to_perform,
+      // report_execution_time is not sent to the Swift binary
+    };
+    logger.debug('Mapped AX query for Swift binary:', mappedQueryData);
 
     return new Promise((resolve, reject) => {
       try {
-        // Get the query string
-        const queryString = JSON.stringify(queryData) + '\n';
+        // Get the query string from the mapped data
+        const queryString = JSON.stringify(mappedQueryData) + '\n';
 
         logger.debug('Running AX utility through wrapper script', { path: this.scriptPath });
         logger.debug('Query to run: ', { query: queryString});
@@ -63,12 +103,18 @@ export class AXQueryExecutor {
         // Handle process errors
         process.on('error', (error) => {
           logger.error('Process error:', { error });
-          reject(new Error(`Process error: ${error.message}`));
+          const endTime = Date.now();
+          const execution_time_seconds = parseFloat(((endTime - startTime) / 1000).toFixed(3));
+          const errorToReject = new Error(`Process error: ${error.message}`) as Error & { execution_time_seconds?: number };
+          errorToReject.execution_time_seconds = execution_time_seconds;
+          reject(errorToReject);
         });
         
         // Handle process exit
         process.on('exit', (code, signal) => {
           logger.debug('Process exited:', { code, signal });
+          const endTime = Date.now();
+          const execution_time_seconds = parseFloat(((endTime - startTime) / 1000).toFixed(3));
           
           // Check for log file if we had issues
           if (code !== 0 || signal) {
@@ -86,20 +132,24 @@ export class AXQueryExecutor {
           if (stdoutData.trim()) {
             try {
               const result = JSON.parse(stdoutData) as Record<string, unknown>;
-              return resolve(result);
+              return resolve({ result, execution_time_seconds });
             } catch (error) {
               logger.error('Failed to parse JSON output', { error, stdout: stdoutData });
+              // Fall through to error handling below if JSON parsing fails
             }
           }
           
-          // If we didn't return a result above, handle as error
+          let errorMessage = '';
           if (signal) {
-            reject(new Error(`Process terminated by signal ${signal}: ${stderrData}`));
+            errorMessage = `Process terminated by signal ${signal}: ${stderrData}`;
           } else if (code !== 0) {
-            reject(new Error(`Process exited with code ${code}: ${stderrData}`));
+            errorMessage = `Process exited with code ${code}: ${stderrData}`;
           } else {
-            reject(new Error(`Process completed but no valid output: ${stderrData}`));
+            errorMessage = `Process completed but no valid output: ${stderrData}`;
           }
+          const errorToReject = new Error(errorMessage) as Error & { execution_time_seconds?: number };
+          errorToReject.execution_time_seconds = execution_time_seconds;
+          reject(errorToReject);
         });
         
         // Write the query to stdin and close
@@ -109,7 +159,11 @@ export class AXQueryExecutor {
         
       } catch (error) {
         logger.error('Failed to execute AX utility:', { error });
-        reject(new Error(`Failed to execute AX utility: ${error}`));
+        const endTime = Date.now();
+        const execution_time_seconds = parseFloat(((endTime - startTime) / 1000).toFixed(3));
+        const errorToReject = new Error(`Failed to execute AX utility: ${error instanceof Error ? error.message : String(error)}`) as Error & { execution_time_seconds?: number };
+        errorToReject.execution_time_seconds = execution_time_seconds;
+        reject(errorToReject);
       }
     });
   }

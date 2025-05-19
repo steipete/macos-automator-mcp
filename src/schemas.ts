@@ -67,25 +67,31 @@ export type GetScriptingTipsInput = z.infer<typeof GetScriptingTipsInputSchema>;
 
 // AX Query Input Schema
 export const AXQueryInputSchema = z.object({
-    cmd: z.enum(['query', 'perform']),
-    multi: z.boolean().optional(),
+    command: z.enum(['query', 'perform']).describe('The operation to perform. (Formerly cmd)'),
+    return_all_matches: z.boolean().optional().describe('When true, returns all matching elements rather than just the first match. Default is false. (Formerly multi)'),
     locator: z.object({
         app: z.string().describe('Bundle ID or display name of the application to query'),
         role: z.string().describe('Accessibility role to match, e.g., "AXButton", "AXStaticText"'),
         match: z.record(z.string()).describe('Attributes to match for the element'),
-        pathHint: z.array(z.string()).optional().describe('Optional path to navigate within the application hierarchy, e.g., ["window[1]", "toolbar[1]"]'),
+        navigation_path_hint: z.array(z.string()).optional().describe('Optional path to navigate within the application hierarchy, e.g., ["window[1]", "toolbar[1]"]. (Formerly pathHint)'),
     }),
-    attributes: z.array(z.string()).optional().describe('Attributes to query for matched elements. If not provided, common attributes will be included'),
-    requireAction: z.string().optional().describe('Filter elements to only those supporting this action, e.g., "AXPress"'),
-    action: z.string().optional().describe('Only used with cmd: "perform" - The action to perform on the matched element'),
+    attributes_to_query: z.array(z.string()).optional().describe('Attributes to query for matched elements. If not provided, common attributes will be included. (Formerly attributes)'),
+    required_action_name: z.string().optional().describe('Filter elements to only those supporting this action, e.g., "AXPress". (Formerly requireAction)'),
+    action_to_perform: z.string().optional().describe('Only used with command: "perform" - The action to perform on the matched element. (Formerly action)'),
+    report_execution_time: z.boolean().optional().default(false).describe(
+      'If true, the tool will return an additional message containing the formatted script execution time. Defaults to false.',
+    ),
+    limit: z.number().int().positive().optional().default(500).describe(
+      'Maximum number of lines to return in the output. Defaults to 500. Output will be truncated if it exceeds this limit.'
+    )
 }).refine(
     (data) => {
-        // If cmd is 'perform', action must be provided
-        return data.cmd !== 'perform' || (!!data.action);
+        // If command is 'perform', action_to_perform must be provided
+        return data.command !== 'perform' || (!!data.action_to_perform);
     },
     {
-        message: "When cmd is 'perform', an action must be provided",
-        path: ["action"],
+        message: "When command is 'perform', an action_to_perform must be provided",
+        path: ["action_to_perform"],
     }
 );
 
