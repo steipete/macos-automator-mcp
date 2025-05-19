@@ -11,6 +11,7 @@ export interface ScriptExecutionOptions {
 export interface ScriptExecutionResult {
   stdout: string;
   stderr: string; // To capture warnings even on success
+  execution_time_seconds: number;
 }
 
 // Error structure returned by ScriptExecutor on failure
@@ -22,6 +23,7 @@ export interface ScriptExecutionError extends Error {
   killed?: boolean; // Specifically for timeouts
   originalError?: unknown; // The raw error from child_process
   isTimeout?: boolean;
+  execution_time_seconds?: number; // Renamed and kept for error context
 }
 
 // MCP Tool Response Types
@@ -31,4 +33,7 @@ export interface ExecuteScriptResponse {
     text: string;
   }>;
   isError?: boolean;
+  timings?: {
+    execution_time_seconds?: number;
+  };
 } 

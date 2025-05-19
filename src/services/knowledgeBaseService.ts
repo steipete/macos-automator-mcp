@@ -17,6 +17,7 @@ const logger = new Logger('KnowledgeBaseService');
 const PRIMARY_SEARCH_THRESHOLD = 0.4;
 const BROAD_SEARCH_THRESHOLD = 0.7;
 const MAX_OUTPUT_LINES = 500; // New constant for max output lines
+const DEFAULT_TIP_LIMIT = 10; // Default limit for tips
 
 const FUSE_OPTIONS_KEYS = [
   { name: 'title', weight: 0.4 },
@@ -57,14 +58,14 @@ function generateNoResultsMessage(category?: string, searchTerm?: string): strin
 function formatSingleTipToMarkdownBlock(tip: ScriptingTip): string {
   return `
 ### ${tip.title}
-${tip.description ? `*${tip.description}*\\n` : ''}
+${tip.description ? `*${tip.description}*\n` : ''}
 \`\`\`${tip.language}
 ${tip.script.trim()}
 \`\`\`
-${tip.id ? `**Runnable ID:** \`${tip.id}\`\\n` : ''}
-${tip.argumentsPrompt ? `**Inputs Needed (if run by ID):** ${tip.argumentsPrompt}\\n` : ''}
-${tip.keywords && tip.keywords.length > 0 ? `**Keywords:** ${tip.keywords.join(', ')}\\n` : ''}
-${tip.notes ? `**Note:**\\n${tip.notes.split('\\n').map(n => `> ${n}`).join('\\n')}\\n` : ''}
+${tip.id ? `**Runnable ID:** \`${tip.id}\`\n` : ''}
+${tip.argumentsPrompt ? `**Inputs Needed (if run by ID):** ${tip.argumentsPrompt}\n` : ''}
+${tip.keywords && tip.keywords.length > 0 ? `**Keywords:** ${tip.keywords.join(', ')}\n` : ''}
+${tip.notes ? `**Note:**\n${tip.notes.split('\n').map(n => `> ${n}`).join('\n')}\n` : ''}
 `;
 }
 
@@ -86,12 +87,12 @@ function formatResultsToMarkdown(
     if (lineLimitNotice) break; // Stop if limit was already hit in a previous category
 
     const categoryTitle = formatCategoryTitle(catResult.category as string);
-    const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\\n`;
+    const categoryHeader = inputCategory ? '' : `## Tips: ${categoryTitle}\n`;
     const categoryHeaderLines = categoryHeader.split('\n').length -1; // -1 because split creates one extra for trailing newline
 
     // Check if category header itself can be added (only if not the first tip overall or if it fits)
     if (firstTipRendered && cumulativeLineCount + categoryHeaderLines > MAX_OUTPUT_LINES) {
-        lineLimitNotice = `\\n--- Output truncated due to exceeding ~${MAX_OUTPUT_LINES} line limit. ---`;
+        lineLimitNotice = `\n--- Output truncated due to exceeding ~${MAX_OUTPUT_LINES} line limit. ---`;
         break;
     }
     if (categoryHeader) {
@@ -103,7 +104,7 @@ function formatResultsToMarkdown(
       const tip = catResult.tips[i];
       const tipMarkdown = formatSingleTipToMarkdownBlock(tip);
       const tipLines = tipMarkdown.split('\n').length - 1;
-      const separator = (tipsRenderedCount > 0 || (tipsRenderedCount === 0 && categoryHeader)) ? '\\n---\\n' : ''; // Add separator if not the very first item
+      const separator = (tipsRenderedCount > 0 || (tipsRenderedCount === 0 && categoryHeader)) ? '\n---\n' : ''; // Add separator if not the very first item
       const separatorLines = separator.split('\n').length -1;
 
       if (!firstTipRendered) {
@@ -119,7 +120,7 @@ function formatResultsToMarkdown(
         cumulativeLineCount += separatorLines + tipLines;
         tipsRenderedCount++;
       } else {
-        lineLimitNotice = `\\n--- Output truncated due to exceeding ~${MAX_OUTPUT_LINES} line limit. Some tips may have been omitted. ---`;
+        lineLimitNotice = `\n--- Output truncated due to exceeding ~${MAX_OUTPUT_LINES} line limit. Some tips may have been omitted. ---`;
         break; // Stop adding more tips from this category
       }
     }
@@ -195,7 +196,7 @@ export async function getScriptingTipsService(
   input: GetScriptingTipsInput,
   serverInfo?: { startTime: string; mode: string; version?: string }
 ): Promise<string> {
-  if (input.refreshDatabase) {
+  if (input.refresh_database) {
     await forceReloadKnowledgeBase();
   }
   const kb: KnowledgeBaseIndex = await getKnowledgeBase();
@@ -203,42 +204,34 @@ export async function getScriptingTipsService(
   let serverDetailsString = "";
   if (serverInfo) {
     const versionInfo = serverInfo.version ? ` Version: ${serverInfo.version}` : "";
-    // Keep original serverInfoString for other parts, but handle version separately in handleListCategories
     serverDetailsString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}${versionInfo}`;
   }
 
   // Handle listCategories separately as it overrides other filters and limit
-  if (input.listCategories || (!input.category && !input.searchTerm && !input.limit)) { // Also check !input.limit for default case
-    // If only listCategories is true, or no search/category/limit is given, show categories.
-    if (input.listCategories || (!input.category && !input.searchTerm)) {
+  if (input.list_categories || (!input.category && !input.search_term && !input.limit)) {
+    if (input.list_categories || (!input.category && !input.search_term)) {
         const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
         return listCategoriesMessage + serverDetailsString;
     }
-    // If only a limit is provided without search/category, it implies a general listing which we don't support separately from search/category. Show categories.
-    // This edge case might be better handled by schema validation (e.g. limit requires searchTerm or category)
-    // For now, falling back to listCategories is a safe default.
-    if(input.limit && !input.category && !input.searchTerm){
+    if(input.limit && !input.category && !input.search_term){
         const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
-        return `${listCategoriesMessage}\\n\\nNote: \`limit\` parameter is applied to search results or category browsing, not general listing.${serverDetailsString}`;
+        return `${listCategoriesMessage}\n\nNote: \`limit\` parameter is applied to search results or category browsing, not general listing.${serverDetailsString}`;
     }
   }
 
-  const searchResult = performSearch(kb, input.category, input.searchTerm);
+  const searchResult = performSearch(kb, input.category, input.search_term);
   let noticeAboutLimit = "";
-  // Default limit is now set in the schema with default(10)
-  const actualLimit = input.limit; // Will always have a value due to schema default
+  const actualLimit = input.limit || DEFAULT_TIP_LIMIT; 
 
-  // Apply limit only if we are not listing categories (already handled) and there are tips
-  // And if a searchTerm or category was actually provided for the search.
-  if (!input.listCategories && (input.searchTerm || input.category) && searchResult.tips.length > 0) {
+  if (!input.list_categories && (input.search_term || input.category) && searchResult.tips.length > 0) {
     if (searchResult.tips.length > actualLimit) {
       noticeAboutLimit = `Showing the first ${actualLimit} of ${searchResult.tips.length} matching tips. Use the \`limit\` parameter to adjust this. (Default is 10).\n\n`;
       searchResult.tips = searchResult.tips.slice(0, actualLimit);
     }
   }
 
-  if (searchResult.tips.length === 0 && !input.listCategories) { // Don't show no results if listCategories was implicitly shown
-    const noResultsMessage = generateNoResultsMessage(input.category, input.searchTerm);
+  if (searchResult.tips.length === 0 && !input.list_categories) { 
+    const noResultsMessage = generateNoResultsMessage(input.category, input.search_term);
     return noResultsMessage + serverDetailsString;
   }
 
@@ -249,21 +242,29 @@ export async function getScriptingTipsService(
 
   let outputMessage: string;
   if (formattedTips.trim() === "") { 
-      if (input.listCategories || (!input.category && !input.searchTerm)) { // Avoid double no-results message if categories were shown
+      if (input.list_categories || (!input.category && !input.search_term)) { // Avoid double no-results message if categories were shown
         outputMessage = ""; // Categories were already listed, or will be if no other criteria met
       } else {
-        logger.warn('Formatted tips were empty despite having search results (after potential limit).', {input, searchResultTipsCount: searchResult.tips.length});
-        outputMessage = generateNoResultsMessage(input.category, input.searchTerm);
+        logger.warn('Formatted tips were empty despite having search results (after potential limit).',{input, searchResultTipsCount: searchResult.tips.length});
+        outputMessage = generateNoResultsMessage(input.category, input.search_term) + serverDetailsString;
       }
   } else {
       outputMessage = searchResult.notice + noticeAboutLimit + lineLimitNotice + formattedTips;
   }
   
   // If we reached here and outputMessage is empty (e.g. only limit was specified), default to listCategories
-  if (outputMessage.trim() === "" && !input.listCategories && !(input.searchTerm || input.category) ) {
+  if (outputMessage.trim() === "" && !input.list_categories && !(input.search_term || input.category) ) {
     const listCategoriesMessage = handleListCategories(kb, serverInfo?.version);
-    return `${listCategoriesMessage}\\n\\nNote: \`limit\` parameter applies to search results or category browsing.${serverDetailsString}`;
+    return `${listCategoriesMessage}\n\nNote: \`limit\` parameter applies to search results or category browsing.${serverDetailsString}`;
   }
 
-  return outputMessage + serverDetailsString;
+  if (input.refresh_database) {
+    outputMessage = `Knowledge base reloaded successfully.${serverDetailsString}\n\n${outputMessage}`;
+  } else if (!outputMessage.includes(serverDetailsString) && outputMessage.trim() !== "" && !input.list_categories) {
+    // If not refresh, details not already in message, message not empty, and not listCategories (which handles its own details)
+    // This is to catch normal search results that didn't go through refresh/listCategories/noResults paths for serverDetailsString
+    outputMessage += serverDetailsString;
+  }
+
+  return outputMessage;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@steipete/macos-automator-mcp",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "MCP Server to execute AppleScript and JXA on macOS.",
   "type": "module",
   "main": "dist/server.js",
@@ -20,7 +20,7 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\" \"*.md\"",
     "validate": "tsx scripts/validate-kb.ts",
-    "test": "vitest"
+    "test": "npx playwright install --with-deps && vitest run"
   },
   "repository": {
     "type": "git",

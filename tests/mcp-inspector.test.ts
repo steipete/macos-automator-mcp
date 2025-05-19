@@ -20,7 +20,6 @@ const commandInputSelector = 'input[placeholder="Command"]';
 const argsWrapperSelector = '[placeholder*="Arguments (space-separated)"]';
 const connectButtonSelector = 'button:has-text("Connect")';
 const listToolsButtonSelector = 'button:has-text("List Tools")';
-const scriptContentTextAreaSelector = 'textarea#scriptContent';
 const connectedStatusSelector = 'text="Connected"';
 const disconnectButtonSelector = 'button:has-text("Disconnect")';
 const executeScriptPanelSelector = 'div[role="tabpanel"]:has-text("execute_script")';
@@ -177,11 +176,12 @@ describe.sequential('MCP Inspector E2E Test for macos-automator-mcp', () => {
     const escapedTestFileContent = testFileContent.replace(/'/g, "'\\''");
     const appleScript = `do shell script "echo '${escapedTestFileContent}' > '${escapedTempFilePath}'"\nreturn "${escapedTempFilePath}"`;
     
-    // Wait for the textarea within the panel and fill it
-    const scriptTextarea = panel.locator(scriptContentTextAreaSelector);
-    await page.waitForTimeout(250); 
-
-    await scriptTextarea.waitFor({ state: 'visible', timeout: 5000 });
+    // Wait for the textarea to be available and fill it
+    await page.waitForTimeout(1000); // Give time for the panel to fully load
+    
+    // Use a more flexible selector approach - MCP inspector may have multiple textareas
+    const scriptTextarea = page.locator('textarea').first();
+    await scriptTextarea.waitFor({ state: 'visible', timeout: 10000 });
     await scriptTextarea.fill(appleScript);
     
     const runToolButtonExecScript = panel.locator('button:has-text("Run Tool")'); // Scoped to panel
