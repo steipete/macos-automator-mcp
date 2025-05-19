@@ -23,7 +23,7 @@ export class ScriptExecutor {
     const {
       language = 'applescript',
       timeoutMs = 30000, // Default 30 seconds
-      useScriptFriendlyOutput = false,
+      output_format_mode = 'auto', // Default to auto
       arguments: scriptArgs = [],
     } = options;
 
@@ -33,10 +33,30 @@ export class ScriptExecutor {
       osaArgs.push('-l', 'JavaScript');
     }
 
-    if (useScriptFriendlyOutput) {
-      osaArgs.push('-ss'); // Script-friendly output (structured)
-    } else {
-      osaArgs.push('-s', 'h'); // Human-readable output (default behavior if no -s flag)
+    // Determine resolved output mode based on 'auto' logic if necessary
+    let resolved_mode = output_format_mode;
+    if (resolved_mode === 'auto') {
+      if (language === 'javascript') {
+        resolved_mode = 'direct';
+      } else { // AppleScript
+        resolved_mode = 'human_readable';
+      }
+    }
+
+    // Add -s flags based on the resolved mode
+    switch (resolved_mode) {
+      case 'human_readable':
+        osaArgs.push('-s', 'h');
+        break;
+      case 'structured_error':
+        osaArgs.push('-s', 's');
+        break;
+      case 'structured_output_and_error':
+        osaArgs.push('-s', 's', '-s', 's'); // Equivalent to -ss
+        break;
+      case 'direct':
+        // No -s flags for direct mode
+        break;
     }
 
     let scriptToLog: string;

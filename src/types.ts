@@ -4,8 +4,8 @@ export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
 export interface ScriptExecutionOptions {
   language?: 'applescript' | 'javascript';
   timeoutMs?: number;
-  useScriptFriendlyOutput?: boolean;
-  arguments?: string[]; // For script files
+  output_format_mode?: 'auto' | 'human_readable' | 'structured_error' | 'structured_output_and_error' | 'direct';
+  arguments?: string[]; // For script files executed via path
 }
 
 export interface ScriptExecutionResult {
@@ -67,6 +67,16 @@ export interface ExecuteScriptInput {
    * @default false
    */
   report_execution_time?: boolean;
+  /**
+   * Controls the output formatting flags for osascript. 
+   * 'auto': (Default) Uses human-readable for AppleScript, direct for JXA.
+   * 'human_readable': Uses -s h.
+   * 'structured_error': Uses -s s.
+   * 'structured_output_and_error': Uses -s ss.
+   * 'direct': No -s flags.
+   * @default auto
+   */
+  output_format_mode?: 'auto' | 'human_readable' | 'structured_error' | 'structured_output_and_error' | 'direct';
 }
 
 /**

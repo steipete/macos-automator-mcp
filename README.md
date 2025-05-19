@@ -108,7 +108,12 @@ Scripts can be provided as inline content (`script_content`), an absolute file p
 
 **Other Options:**
 -   `timeout_seconds` (integer, optional, default: 60): Maximum execution time.
--   `use_script_friendly_output` (boolean, optional, default: false): Uses `osascript -ss` flag for potentially more structured output, especially for lists and records.
+-   `output_format_mode` (enum, optional, default: 'auto'): Controls `osascript` output formatting flags.
+    *   `'auto'`: (Default) Uses human-readable for AppleScript (`-s h`), and direct output (no `-s` flags) for JXA.
+    *   `'human_readable'`: Forces `-s h` (human-readable output, mainly for AppleScript).
+    *   `'structured_error'`: Forces `-s s` (structured error reporting, mainly for AppleScript).
+    *   `'structured_output_and_error'`: Forces `-s ss` (structured output for main result and errors, mainly for AppleScript).
+    *   `'direct'`: No `-s` flags are used (recommended for JXA, also the behavior for JXA in `auto` mode).
 -   `include_executed_script_in_output` (boolean, optional, default: false): If true, the output will include the full script content (after any placeholder substitutions for knowledge base scripts) or the script path that was executed. This is appended as an additional text part in the output content array.
 -   `include_substitution_logs` (boolean, optional, default: false): If true, detailed logs of placeholder substitutions performed on knowledge base scripts are included in the output. This is useful for debugging how `input_data` and `arguments` are processed and inserted into the script. The logs are prepended to the script output on success or appended to the error message on failure.
 -   `report_execution_time` (boolean, optional, default: false): If `true`, an additional message with the formatted script execution time will be included in the response content array.
@@ -222,7 +227,7 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 -   **Script Syntax Errors:** `osascript` errors will be returned in the `stderr` or error message. Test complex scripts locally using Script Editor (for AppleScript) or a JXA runner first.
 -   **Timeouts:** If a script takes longer than `timeout_seconds` (default 60s), it will be terminated. Increase the timeout for long-running scripts.
 -   **File Not Found:** Ensure `script_path` is an absolute POSIX path accessible by the user running the MCP server.
--   **Incorrect Output:** Experiment with `use_script_friendly_output: true` if the default human-readable output is not suitable for parsing (especially for lists or records).
+-   **Incorrect Output/JXA Issues:** For JXA scripts, especially those using Objective-C bridging, ensure `output_format_mode` is set to `'direct'` or `'auto'` (default). Using AppleScript-specific formatting flags like `human_readable` with JXA can cause errors. If AppleScript output is not parsing correctly, try `structured_output_and_error` or `structured_error`.
 
 ## Configuration via Environment Variables
 

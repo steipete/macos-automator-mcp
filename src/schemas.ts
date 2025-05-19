@@ -31,8 +31,8 @@ export const ExecuteScriptInputSchema = z.object({
   timeout_seconds: z.number().int().optional().default(60).describe(
     'The timeout for the script execution in seconds. Defaults to 60.',
   ),
-  use_script_friendly_output: z.boolean().optional().default(false).describe(
-    'If true, uses osascript -ss flag for AppleScript for more structured output. Defaults to false.',
+  output_format_mode: z.enum(['auto', 'human_readable', 'structured_error', 'structured_output_and_error', 'direct']).optional().default('auto').describe(
+    "Controls osascript output formatting. \n'auto': (Default) Smart selection based on language (AppleScript: human_readable, JXA: direct). \n'human_readable': AppleScript -s h. \n'structured_error': AppleScript -s s. \n'structured_output_and_error': AppleScript -s ss. \n'direct': No -s flags (recommended for JXA)."
   ),
   report_execution_time: z.boolean().optional().default(false).describe(
     'If true, the tool will return an additional message containing the formatted script execution time. Defaults to false.',

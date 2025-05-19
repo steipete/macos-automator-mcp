@@ -52,7 +52,7 @@ export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
 export interface ScriptExecutionOptions {
   language?: 'applescript' | 'javascript';
   timeoutMs?: number;
-  useScriptFriendlyOutput?: boolean;
+  output_format_mode?: 'auto' | 'human_readable' | 'structured_error' | 'structured_output_and_error' | 'direct';
   arguments?: string[]; // For script files executed via path
 }
 
@@ -228,7 +228,7 @@ Defines the expected structure for tool inputs using Zod. All input fields are `
     *   `arguments: z.array(z.string()).optional().default([])`
     *   `input_data: z.record(z.string(), z.any()).optional()`
     *   `timeout_seconds: z.number().int().positive().optional().default(60)` (Default is 60 seconds)
-    *   `use_script_friendly_output: z.boolean().optional().default(false)`
+    *   `output_format_mode: z.enum(['auto', 'human_readable', 'structured_error', 'structured_output_and_error', 'direct']).optional().default('auto')`
     *   `include_executed_script_in_output: z.boolean().optional().default(false)`
     *   `include_substitution_logs: z.boolean().optional().default(false)`
     *   `.refine()` ensures exactly one of `script_content`, `script_path`, or `kb_script_id` is provided.
@@ -273,7 +273,7 @@ Handles replacing placeholders in scripts fetched from the knowledge base.
             *   Sets `scriptContentToExecute = tip.script` and `languageToUse = tip.language`.
             *   Calls `substitutePlaceholders()` (from `placeholderSubstitutor.ts`) with `tip.script`, `input.input_data`, and `input.arguments` to perform substitutions. Updates `scriptContentToExecute`.
         3.  Else if `script_path` or `script_content` is used, sets those directly. `languageToUse` is from `input.language` or defaults to 'applescript'.
-        4.  Calls `scriptExecutor.execute()` with the determined script (content or path), language, timeout (converted from `input.timeout_seconds`), `use_script_friendly_output`, and `arguments` (only for `script_path` mode at executor level).
+        4.  Calls `scriptExecutor.execute()` with the determined script (content or path), language, timeout (converted from `input.timeout_seconds`), `output_format_mode`, and `arguments` (only for `script_path` mode at executor level).
         5.  **Response**:
             *   If first tool call (`!hasEmittedFirstCallInfo`), prepends `serverInfoMessage` and a separator to the output. Sets flag to true.
             *   Includes `result.stdout` (and potentially `result.stderr` if relevant, or substitution logs if requested) in the response content.
@@ -295,7 +295,12 @@ Handles replacing placeholders in scripts fetched from the knowledge base.
 
 *   `execute(scriptSource: { content?: string; path?: string }, options: ScriptExecutionOptions)`:
     *   Checks for macOS platform; throws `UnsupportedPlatformError` if not darwin.
-    *   Constructs `osascript` arguments based on `language` ('-l JavaScript' if JXA), `useScriptFriendlyOutput` ('-ss'), and script source (`-e content` or `path`).
+    *   Constructs `osascript` arguments based on `language` ('-l JavaScript' if JXA), and `options.output_format_mode`.
+        *   If `output_format_mode` is `'auto'`, it resolves to `'direct'` for JXA and `'human_readable'` for AppleScript.
+        *   `'human_readable'` maps to `-s h`.
+        *   `'structured_error'` maps to `-s s`.
+        *   `'structured_output_and_error'` maps to `-s ss`.
+        *   `'direct'` uses no `-s` flags.
     *   If `scriptSource.path` is used, checks for file readability; throws `ScriptFileAccessError` if not accessible.
     *   Appends `options.arguments` if `scriptSource.path` is used.
     *   Records `scriptStartTime` before execution.

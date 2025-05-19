@@ -57,10 +57,10 @@ const ExecuteScriptInputShape = {
   arguments: z.array(z.string()).optional(),
   input_data: z.record(z.any()).optional(),
   timeout_seconds: z.number().optional(),
-  use_script_friendly_output: z.boolean().optional(),
   include_executed_script_in_output: z.boolean().optional(),
   include_substitution_logs: z.boolean().optional(),
   report_execution_time: z.boolean().optional(),
+  output_format_mode: z.enum(['auto', 'human_readable', 'structured_error', 'structured_output_and_error', 'direct']).optional(),
 } as const;
 
 const GetScriptingTipsInputShape = {
@@ -115,7 +115,12 @@ async function main() {
 **3. Execution Options (Optional):**
 *   \`language\` ('applescript' | 'javascript'): Specify for \`script_content\`/\`script_path\` (default: 'applescript'). Inferred for \`kb_script_id\`.
 *   \`timeout_seconds\` (integer, optional, default: 60): Sets the maximum time (in seconds) the script is allowed to run. Increase for potentially long-running operations.
-*   \`use_script_friendly_output\` (boolean, optional, default: false): If \`true\`, uses \`osascript -ss\` flag. This can provide more structured output (e.g., proper lists/records) from AppleScript, which might be easier for a program to parse than the default human-readable format.
+*   \`output_format_mode\` (enum, optional, default: 'auto'): Controls \`osascript\` output formatting.
+    *   \`'auto'\`: Smart default - resolves to \`'human_readable'\` for AppleScript and \`'direct'\` for JXA.
+    *   \`'human_readable'\`: For AppleScript, uses \`-s h\` flag.
+    *   \`'structured_error'\`: For AppleScript, uses \`-s s\` flag (structured errors).
+    *   \`'structured_output_and_error'\`: For AppleScript, uses \`-s ss\` flag (structured output & errors).
+    *   \`'direct'\`: No special output flags (recommended for JXA).
 *   \`include_executed_script_in_output\` (boolean, optional, default: false): If \`true\`, the final script content (after any placeholder substitutions) or script path that was executed will be included in the response. This is useful for debugging and understanding exactly what was run. Defaults to false.
 *   \`include_substitution_logs\` (boolean, default: false): For \`kb_script_id\`, includes detailed placeholder substitution logs.
 *   \`report_execution_time\` (boolean, optional, default: false): If \`true\`, an additional message with the formatted script execution time will be included in the response. Defaults to false.
@@ -187,7 +192,7 @@ async function main() {
           {
             language: languageToUse,
             timeoutMs: (input.timeout_seconds || 60) * 1000,
-            useScriptFriendlyOutput: input.use_script_friendly_output || false,
+            output_format_mode: input.output_format_mode || 'auto',
             arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [], 
           }
         );
