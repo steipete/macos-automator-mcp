@@ -7,6 +7,12 @@
 - Optimized and shortened the description for the `execute_script` tool.
 - Changed tool input parameter naming convention from camelCase to snake_case for all tools (e.g., `kbScriptId` is now `kb_script_id`). Placeholder keys within script content (e.g., `--MCP_INPUT:keyName`) remain camelCase, with internal mapping handled by the server.
 
+## [0.3.1] - 2025-05-20
+
+### Changed
+- Fixed a bug causing script execution time to be incorrectly reported as "0 milliseconds" for some scripts; timing is now measured with millisecond precision.
+- Refined the display formatting for reported execution times, including how sub-millisecond durations and spacing are handled.
+
 ## 0.2.3 - 2025-05-16
 
 - Improve script execution error handling.

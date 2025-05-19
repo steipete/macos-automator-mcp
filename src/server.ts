@@ -10,7 +10,7 @@ import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
 import { Logger } from './logger.js';
 import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas.js';
 import { ScriptExecutor } from './ScriptExecutor.js';
-import type { ScriptExecutionError }  from './types.js';
+import type { ScriptExecutionError, ExecuteScriptResponse }  from './types.js';
 // import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
 import { substitutePlaceholders } from './placeholderSubstitutor.js'; // Value import
@@ -21,7 +21,6 @@ import { z } from 'zod';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { realpathSync } from 'node:fs';
 
 // Robustly load package.json
 const __filenameServer = fileURLToPath(import.meta.url);
@@ -41,9 +40,6 @@ try {
 }
 
 const SERVER_START_TIME_ISO = new Date().toISOString();
-const SCRIPT_PATH_EXECUTED = process.argv[1] || 'unknown_path';
-const IS_RUNNING_FROM_SRC = SCRIPT_PATH_EXECUTED.includes('/src/server.ts') || SCRIPT_PATH_EXECUTED.endsWith('/src/server.ts');
-const EXECUTION_MODE_INFO = IS_RUNNING_FROM_SRC ? 'TypeScript source (e.g., via tsx)' : 'Compiled JavaScript (e.g., dist/server.js)';
 
 const IS_E2E_TESTING = process.env.MCP_E2E_TESTING === 'true' || process.env.VITEST === 'true';
 let hasEmittedFirstCallInfo = false; // Flag for first tool call
@@ -64,6 +60,7 @@ const ExecuteScriptInputShape = {
   use_script_friendly_output: z.boolean().optional(),
   include_executed_script_in_output: z.boolean().optional(),
   include_substitution_logs: z.boolean().optional(),
+  report_execution_time: z.boolean().optional(),
 } as const;
 
 const GetScriptingTipsInputShape = {
@@ -117,10 +114,12 @@ async function main() {
 
 **3. Execution Options (Optional):**
 *   \`language\` ('applescript' | 'javascript'): Specify for \`script_content\`/\`script_path\` (default: 'applescript'). Inferred for \`kb_script_id\`.
-*   \`timeout_seconds\` (integer, default: 60): Max script runtime.
-*   \`use_script_friendly_output\` (boolean, default: false): Use \`osascript -ss\` for structured output.
-*   \`include_executed_script_in_output\` (boolean, default: false): Appends executed script/path to output.
-*   \`include_substitution_logs\` (boolean, default: false): For \`kb_script_id\`, includes detailed placeholder substitution logs.`,
+*   \`timeout_seconds\` (integer, optional, default: 60): Sets the maximum time (in seconds) the script is allowed to run. Increase for potentially long-running operations.
+*   \`use_script_friendly_output\` (boolean, optional, default: false): If \`true\`, uses \`osascript -ss\` flag. This can provide more structured output (e.g., proper lists/records) from AppleScript, which might be easier for a program to parse than the default human-readable format.
+*   \`include_executed_script_in_output\` (boolean, optional, default: false): If \`true\`, the final script content (after any placeholder substitutions) or script path that was executed will be included in the response. This is useful for debugging and understanding exactly what was run. Defaults to false.
+*   \`include_substitution_logs\` (boolean, default: false): For \`kb_script_id\`, includes detailed placeholder substitution logs.
+*   \`report_execution_time\` (boolean, optional, default: false): If \`true\`, an additional message with the formatted script execution time will be included in the response. Defaults to false.
+`,
     ExecuteScriptInputShape,
     async (args: unknown) => {
       const input = ExecuteScriptInputSchema.parse(args);
@@ -228,18 +227,37 @@ async function main() {
         finalResponseContent.push(...mainOutputContent); // Add the actual script output
 
         if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
-          finalResponseContent.push({ type: 'text', text: '---' }); // Separator
           finalResponseContent.push({ type: 'text', text: serverInfoMessage });
           hasEmittedFirstCallInfo = true;
         }
 
-        return {
+        const response: ExecuteScriptResponse = {
           content: finalResponseContent,
           isError,
-          timings: { execution_time_seconds }
         };
 
+        if (input.report_execution_time) {
+          const ms = result.execution_time_seconds * 1000;
+          let timeMessage = "Script executed in ";
+          if (ms < 1) { // Less than 1 millisecond
+            timeMessage += "<1 millisecond.";
+          } else if (ms < 1000) { // 1ms up to 999ms
+            timeMessage += `${ms.toFixed(0)} milliseconds.`;
+          } else if (ms < 60000) { // 1 second up to 59.999 seconds
+            timeMessage += `${(ms / 1000).toFixed(2)} seconds.`;
+          } else {
+            const totalSeconds = ms / 1000;
+            const minutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = Math.round(totalSeconds % 60);
+            timeMessage += `${minutes} minute(s) and ${remainingSeconds} seconds.`;
+          }
+          response.content.push({ type: 'text', text: `${timeMessage}` });
+        }
+
+        return response;
+
       } catch (error: unknown) {
+        const typedError = error as ScriptExecutionError;
         const execError = error as ScriptExecutionError;
         execution_time_seconds = execError.execution_time_seconds;
 
@@ -282,7 +300,37 @@ async function main() {
 
         logger.error('execute_script handler error', { execution_time_seconds });
 
-        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, finalErrorMessage);
+        // Construct a complete error response, with potential first-call info
+        const errorOutputParts: string[] = [finalErrorMessage];
+        if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
+          errorOutputParts.push(serverInfoMessage);
+          hasEmittedFirstCallInfo = true;
+        }
+        
+        const errorResponse: ExecuteScriptResponse = {
+          content: [{ type: 'text', text: errorOutputParts.join('\n\n') }],
+          isError: true,
+        };
+        
+        if (input.report_execution_time && typedError.execution_time_seconds !== undefined) {
+          const ms = typedError.execution_time_seconds * 1000;
+          let timeMessage = "Script execution failed after ";
+          if (ms < 1) { // Less than 1 millisecond
+            timeMessage += "<1 millisecond.";
+          } else if (ms < 1000) { // 1ms up to 999ms
+            timeMessage += `${ms.toFixed(0)} milliseconds.`;
+          } else if (ms < 60000) { // 1 second up to 59.999 seconds
+            timeMessage += `${(ms / 1000).toFixed(2)} seconds.`;
+          } else {
+            const totalSeconds = ms / 1000;
+            const minutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = Math.round(totalSeconds % 60);
+            timeMessage += `${minutes} minute(s) and ${remainingSeconds} seconds.`;
+          }
+          errorResponse.content.push({ type: 'text', text: `\n${timeMessage}` });
+        }
+        
+        return errorResponse;
       }
     }
   );
@@ -301,109 +349,60 @@ async function main() {
 
 *   **Limiting Search Results (Use \`limit\`):**
     *   Parameter: \`limit\` (integer, optional, default: 10).
-    *   Functionality: Specifies the maximum number of script tips to return when using \`search_term\` or browsing a specific \`category\` (without \`list_categories: true\`). Does not apply if \`list_categories\` is true. If more tips are found than the limit, a notice will indicate this.
-    *   Output: The list of tips will be truncated to this number if applicable.
+    *   Functionality: Specifies the maximum number of script tips to return when using \`search_term\` or browsing a specific \`category\` (without \`list_categories: true\`). Does not apply if \`list_categories\` is true.
 
-*   **Listing All Categories (Use \`list_categories\`):**
-    *   Parameter: \`list_categories\` (boolean, optional, default: false).
-    *   Functionality: If \`true\`, this will return a list of all available script categories (e.g., "safari", "finder_operations", "system_interaction") along with their descriptions and the number of tips in each. This overrides other parameters, including \`limit\`.
-    *   Output: A Markdown list of categories.
-
-*   **Browsing a Specific Category (Use \`category\`):**
+*   **Browsing by Category (Use \`category\`):**
     *   Parameter: \`category\` (string, optional).
-    *   Functionality: Retrieves all tips belonging to the specified category ID. Useful if you know the general area of automation you're interested in. Results can be limited by the \`limit\` parameter.
-    *   Output: All tips within that category, formatted in Markdown (potentially limited).
+    *   Functionality: Shows tips from a specific category. Combine with \`limit\` to control result count.
+    *   Example: \`category: "01_intro"\` or \`category: "07_browsers/chrome"\`.
 
-*   **Forcing a Knowledge Base Reload (Use \`refresh_database\`):**
-    *   Parameter: \`refresh_database\` (boolean, optional, default: false).
-    *   Functionality: If \`true\`, forces the server to reload the entire knowledge base from disk before processing the request. Primarily useful during development if knowledge base files are being actively modified and you need to ensure the latest versions are reflected without a server restart.
+*   **Listing All Categories (Use \`list_categories: true\`):**
+    *   Parameter: \`list_categories\` (boolean, optional).
+    *   Functionality: Returns a structured list of all available categories with their descriptions. This helps you understand what automation areas are covered.
+    *   Output: Category tree in Markdown format.
 
-**Output Details:**
-The tool returns a single Markdown formatted string. Each tip in the output typically includes:
-- Title: A human-readable title for the tip.
-- Description: A brief explanation of what the script does.
-- Language: \`applescript\` or \`javascript\`.
-- Script: The actual code snippet.
-- Runnable ID: A unique identifier (e.g., \`safari_get_front_tab_url\`). **This ID is critical as it can be directly used as the \`kbScriptId\` parameter in the \`execute_script\` tool for immediate execution.**
-- Arguments Prompt: If the script is designed to take inputs when run by ID, this field describes what \`arguments\` or \`inputData\` are expected by \`execute_script\`.
-- Keywords: Relevant search terms.
-- Notes: Additional context or important considerations.
+*   **Refreshing Database (Use \`refresh_database: true\`):**
+    *   Parameter: \`refresh_database\` (boolean, optional).
+    *   Functionality: Forces a reload of the knowledge base if new scripts have been added. Typically not needed as the database refreshes automatically.
 
-**Workflow Example:**
-1. User asks: "How do I create a new note in the Notes app with a specific title?"
-2. Agent calls \`get_scripting_tips\` with \`search_term: "create new note in Notes app with title"\`.
-3. Agent reviews the output. If a tip like \`notes_create_new_note_with_title\` with a \`Runnable ID\` and an \`argumentsPrompt\` for \`noteTitle\` and \`noteBody\` is found:
-4. Agent then calls \`execute_script\` with \`kb_script_id: "notes_create_new_note_with_title"\` and appropriate \`input_data\`.`,
+**Best Practices:**
+1. **Always start with search**: Use natural language queries to find solutions (e.g., "send email from Mail app").
+2. **Browse categories when exploring**: Use \`list_categories: true\` to see available automation areas.
+3. **Use specific IDs for execution**: Once you find a script, use its ID with \`execute_script\` tool for precise execution.`,
     GetScriptingTipsInputShape,
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);
-      logger.info('get_scripting_tips tool called', input);
-      try {
-        const serverInfoForService = { startTime: SERVER_START_TIME_ISO, mode: EXECUTION_MODE_INFO, version: pkg.version };
-        const tipsMarkdown = await getScriptingTipsService(input, serverInfoForService);
+      
+      // Call getScriptingTipsService directly with the input parameters
+      let content = await getScriptingTipsService(input);
 
-        const finalResponseContent: { type: 'text'; text: string }[] = [];
-        finalResponseContent.push({ type: 'text', text: tipsMarkdown });
-
-        if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
-          finalResponseContent.push({ type: 'text', text: '---' }); // Separator
-          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
-          hasEmittedFirstCallInfo = true;
-        }
-
-        return { content: finalResponseContent } as const;
-      } catch (e: unknown) {
-        const error = e as Error;
-        logger.error('Error in get_scripting_tips tool handler', { message: error.message });
-        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Failed to retrieve scripting tips: ${error.message}`);
+      // Append first-call info if applicable
+      if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
+        content += '\n\n' + serverInfoMessage;
+        hasEmittedFirstCallInfo = true;
       }
+
+      return {
+        content: [{
+          type: 'text',
+          text: content
+        }]
+      };
     }
   );
 
   const transport = new StdioServerTransport();
-  try {
-    await server.connect(transport);
-    // Only log ready message if not in E2E testing, to keep stdout clean for inspector
-    if (!IS_E2E_TESTING) {
-      logger.info(`macos_automator MCP Server v${pkg.version} connected via STDIO and ready.`);
-    }
-  } catch (error: unknown) { // Changed from any to unknown
-    const connectError = error as Error;
-    logger.error('Failed to connect server to transport', { message: connectError.message, stack: connectError.stack });
-    process.exit(1);
-  }
-}
+  await server.connect(transport);
 
-// Graceful shutdown
-const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
-for (const signal of signals) {
-  process.on(signal, () => {
-    logger.info(`Received ${signal}, shutting down server...`);
-    // Perform any cleanup if necessary
+  // Graceful shutdown
+  process.on('SIGINT', async () => {
+    logger.info('Shutting down macos_automator MCP Server...');
+    await server.close();
     process.exit(0);
   });
 }
 
-// Global error handlers
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', { message: error.message, stack: error.stack });
+main().catch((error) => {
+  logger.error('Fatal error in server', error);
   process.exit(1);
 });
-
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', { promise, reason: reason instanceof Error ? reason.message : reason });
-  process.exit(1);
-});
-
-// Execute main() if this module is the entry point, even when invoked via a symlinked CLI script
-try {
-  const executedPath = realpathSync(process.argv[1] || '');
-  const modulePath = realpathSync(fileURLToPath(import.meta.url));
-  if (executedPath === modulePath) {
-    await main();
-  }
-} catch (error) {
-  const mainError = error as Error;
-  logger.error("Fatal error during server startup:", { message: mainError.message, stack: mainError.stack });
-  process.exit(1);
-} 

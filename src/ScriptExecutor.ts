@@ -68,10 +68,10 @@ export class ScriptExecutor {
     logger.debug('Executing osascript', { command: 'osascript', args: osaArgs.map(arg => arg.length > 50 ? `${arg.substring(0,50)}...` : arg), scriptToLog });
 
     const scriptStartTime = Date.now();
-    let execution_time_seconds = 0;
 
     try {
       const { stdout, stderr } = await execFileAsync('osascript', osaArgs, { timeout: timeoutMs, windowsHide: true });
+      const current_execution_time_seconds = parseFloat(((Date.now() - scriptStartTime) / 1000).toFixed(3));
 
       const stdoutString = stdout.toString();
       const stderrString = stderr.toString();
@@ -79,8 +79,9 @@ export class ScriptExecutor {
       if (stderrString?.trim()) {
         logger.warn('osascript produced stderr output on successful execution', { stderr: stderrString.trim() });
       }
-      return { stdout: stdoutString.trim(), stderr: stderrString.trim(), execution_time_seconds };
+      return { stdout: stdoutString.trim(), stderr: stderrString.trim(), execution_time_seconds: current_execution_time_seconds };
     } catch (error: unknown) {
+      const current_execution_time_seconds = parseFloat(((Date.now() - scriptStartTime) / 1000).toFixed(3));
       const nodeError = error as ExecFileException; // Error from execFileAsync
       const executionError: ScriptExecutionError = new Error(nodeError.message) as ScriptExecutionError;
 
@@ -92,6 +93,7 @@ export class ScriptExecutor {
       executionError.killed = !!nodeError.killed;
       executionError.isTimeout = !!nodeError.killed; // 'killed' is true if process was terminated by timeout
       executionError.originalError = nodeError; // Preserve original node error
+      executionError.execution_time_seconds = current_execution_time_seconds; // Set the calculated time
 
       logger.error('osascript execution failed', {
         message: executionError.message,
@@ -101,13 +103,10 @@ export class ScriptExecutor {
         signal: executionError.signal,
         isTimeout: executionError.isTimeout,
         scriptToLog,
-        execution_time_seconds: execution_time_seconds,
+        execution_time_seconds: current_execution_time_seconds,
       });
-      executionError.execution_time_seconds = execution_time_seconds;
       
       throw executionError;
-    } finally {
-      execution_time_seconds = parseFloat(((Date.now() - scriptStartTime) / 1000).toFixed(2));
     }
   }
 } 
