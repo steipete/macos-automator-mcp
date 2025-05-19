@@ -8,7 +8,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
 // import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
 import { Logger } from './logger.js';
-import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema, AXQueryInputSchema } from './schemas.js';
+import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema, AXQueryInputSchema, type AXQueryInput } from './schemas.js';
 import { ScriptExecutor } from './ScriptExecutor.js';
 import { AXQueryExecutor } from './AXQueryExecutor.js';
 import type { ScriptExecutionError, ExecuteScriptResponse }  from './types.js';
@@ -74,17 +74,19 @@ const GetScriptingTipsInputShape = {
 } as const;
 
 const AXQueryInputShape = {
-  cmd: z.enum(['query', 'perform']),
-  multi: z.boolean().optional(),
+  command: z.enum(['query', 'perform']),
+  return_all_matches: z.boolean().optional(),
   locator: z.object({
       app: z.string(),
       role: z.string(),
       match: z.record(z.string()),
-      pathHint: z.array(z.string()).optional(),
+      navigation_path_hint: z.array(z.string()).optional(),
   }),
-  attributes: z.array(z.string()).optional(),
-  requireAction: z.string().optional(),
-  action: z.string().optional(),
+  attributes_to_query: z.array(z.string()).optional(),
+  required_action_name: z.string().optional(),
+  action_to_perform: z.string().optional(),
+  report_execution_time: z.boolean().optional().default(false),
+  limit: z.number().int().positive().optional().default(500),
 } as const;
 
 async function main() {
@@ -415,11 +417,82 @@ async function main() {
   // ADD THE NEW accessibility_query TOOL HERE
   server.tool(
     'accessibility_query',
-    'Query and interact with the macOS accessibility interface to inspect UI elements of applications. This tool provides a powerful way to explore and manipulate the user interface elements of any application using the native macOS accessibility framework.\\n\\nThis tool exposes the complete macOS accessibility API capabilities, allowing detailed inspection of UI elements and their properties. It\'s particularly useful for automating interactions with applications that don\'t have robust AppleScript support or when you need to inspect the UI structure in detail.\\n\\n**Input Parameters:**\\n\\n* `cmd` (enum: \'query\' | \'perform\', required): The operation to perform.\\n  * `query`: Retrieves information about UI elements.\\n  * `perform`: Executes an action on a UI element (like clicking a button).\\n\\n* `locator` (object, required): Specifications to find the target element(s).\\n  * `app` (string, required): The application to target, specified by either bundle ID or display name (e.g., "Safari", "com.apple.Safari").\\n  * `role` (string, required): The accessibility role of the target element (e.g., "AXButton", "AXStaticText").\\n  * `match` (object, required): Key-value pairs of attributes to match. Can be empty ({}) if not needed.\\n  * `pathHint` (array of strings, optional): Path to navigate within the application hierarchy (e.g., ["window[1]", "toolbar[1]"]).\\n\\n* `multi` (boolean, optional): When `true`, returns all matching elements rather than just the first match. Default is `false`.\\n\\n* `attributes` (array of strings, optional): Specific attributes to query for matched elements. If not provided, common attributes will be included. Examples: ["AXRole", "AXTitle", "AXValue"]\\n\\n* `requireAction` (string, optional): Filter elements to only those supporting a specific action (e.g., "AXPress" for clickable elements).\\n\\n* `action` (string, optional, required when cmd="perform"): The accessibility action to perform on the matched element (e.g., "AXPress" to click a button).\\n\\n**Example Queries:**\\n\\n1. Find all text elements in the front Safari window:\\n```json\\n{\\n  "cmd": "query",\\n  "multi": true,\\n  "locator": {\\n    "app": "Safari",\\n    "role": "AXStaticText",\\n    "match": {},\\n    "pathHint": ["window[1]"]\\n  }\\n}\\n```\\n\\n2. Find and click a button with a specific title:\\n```json\\n{\\n  "cmd": "perform",\\n  "locator": {\\n    "app": "System Settings",\\n    "role": "AXButton",\\n    "match": {"AXTitle": "General"}\\n  },\\n  "action": "AXPress"\\n}\\n```\\n\\n3. Get detailed information about the focused UI element:\\n```json\\n{\\n  "cmd": "query",\\n  "locator": {\\n    "app": "Mail",\\n    "role": "AXTextField",\\n    "match": {"AXFocused": "true"}\\n  },\\n  "attributes": ["AXRole", "AXTitle", "AXValue", "AXDescription", "AXHelp", "AXPosition", "AXSize"]\\n}\\n```\\n\\n**Note:** Using this tool requires that the application running this server has the necessary Accessibility permissions in macOS System Settings > Privacy & Security > Accessibility.',
+    `Query and interact with the macOS accessibility interface to inspect UI elements of applications. This tool provides a powerful way to explore and manipulate the user interface elements of any application using the native macOS accessibility framework.
+
+This tool exposes the complete macOS accessibility API capabilities, allowing detailed inspection of UI elements and their properties. It's particularly useful for automating interactions with applications that don't have robust AppleScript support or when you need to inspect the UI structure in detail.
+
+**Input Parameters:**
+
+*   \`command\` (enum: 'query' | 'perform', required): The operation to perform.
+    *   \`query\`: Retrieves information about UI elements.
+    *   \`perform\`: Executes an action on a UI element (like clicking a button).
+
+*   \`locator\` (object, required): Specifications to find the target element(s).
+    *   \`app\` (string, required): The application to target, specified by either bundle ID or display name (e.g., "Safari", "com.apple.Safari").
+    *   \`role\` (string, required): The accessibility role of the target element (e.g., "AXButton", "AXStaticText").
+    *   \`match\` (object, required): Key-value pairs of attributes to match. Can be empty (\`{}\`) if not needed.
+    *   \`navigation_path_hint\` (array of strings, optional): Path to navigate within the application hierarchy (e.g., \`["window[1]", "toolbar[1]"]\`).
+
+*   \`return_all_matches\` (boolean, optional): When \`true\`, returns all matching elements rather than just the first match. Default is \`false\`.
+
+*   \`attributes_to_query\` (array of strings, optional): Specific attributes to query for matched elements. If not provided, common attributes will be included. Examples: \`["AXRole", "AXTitle", "AXValue"]\`
+
+*   \`required_action_name\` (string, optional): Filter elements to only those supporting a specific action (e.g., "AXPress" for clickable elements).
+
+*   \`action_to_perform\` (string, optional, required when \`command="perform"\`): The accessibility action to perform on the matched element (e.g., "AXPress" to click a button).
+
+*   \`report_execution_time\` (boolean, optional): If true, the tool will return an additional message containing the formatted script execution time. Defaults to false.
+
+*   \`limit\` (integer, optional): Maximum number of lines to return in the output. Defaults to 500. Output will be truncated if it exceeds this limit.
+
+**Example Queries (Note: key names have changed to snake_case):**
+
+1.  **Find all text elements in the front Safari window:**
+    \`\`\`json
+    {
+      "command": "query",
+      "return_all_matches": true,
+      "locator": {
+        "app": "Safari",
+        "role": "AXStaticText",
+        "match": {},
+        "navigation_path_hint": ["window[1]"]
+      }
+    }
+    \`\`\`
+
+2.  **Find and click a button with a specific title:**
+    \`\`\`json
+    {
+      "command": "perform",
+      "locator": {
+        "app": "System Settings",
+        "role": "AXButton",
+        "match": {"AXTitle": "General"}
+      },
+      "action_to_perform": "AXPress"
+    }
+    \`\`\`
+
+3.  **Get detailed information about the focused UI element:**
+    \`\`\`json
+    {
+      "command": "query",
+      "locator": {
+        "app": "Mail",
+        "role": "AXTextField",
+        "match": {"AXFocused": "true"}
+      },
+      "attributes_to_query": ["AXRole", "AXTitle", "AXValue", "AXDescription", "AXHelp", "AXPosition", "AXSize"]
+    }
+    \`\`\`
+
+**Note:** Using this tool requires that the application running this server has the necessary Accessibility permissions in macOS System Settings > Privacy & Security > Accessibility.`,
     AXQueryInputShape,
     async (args: unknown) => {
+      let input: AXQueryInput; // Declare input here to make it accessible in catch
       try {
-        const input = AXQueryInputSchema.parse(args);
+        input = AXQueryInputSchema.parse(args);
         logger.info('accessibility_query called with input:', input);
         
         const result = await axQueryExecutor.execute(input);
@@ -427,7 +500,7 @@ async function main() {
         // For cleaner output, especially for multi-element queries, format the response
         let formattedOutput: string;
         
-        if (input.cmd === 'query' && input.multi === true) {
+        if (input.command === 'query' && input.return_all_matches === true) {
           // For multi-element queries, format the results more readably
           if ('elements' in result) {
             formattedOutput = JSON.stringify(result, null, 2);
@@ -439,7 +512,36 @@ async function main() {
           formattedOutput = JSON.stringify(result, null, 2);
         }
         
-        return { content: [{ type: 'text', text: formattedOutput }] };
+        // Apply line limit
+        let finalOutputText = formattedOutput;
+        const lines = finalOutputText.split('\n');
+        if (input.limit !== undefined && lines.length > input.limit) {
+          finalOutputText = lines.slice(0, input.limit).join('\n');
+          const truncationNotice = `\n\n--- Output truncated to ${input.limit} lines. Original length was ${lines.length} lines. ---`;
+          finalOutputText += truncationNotice;
+        }
+
+        const responseContent: Array<{ type: 'text'; text: string }> = [{ type: 'text', text: finalOutputText }];
+
+        if (input.report_execution_time) {
+          const ms = result.execution_time_seconds * 1000;
+          let timeMessage = "Script executed in ";
+          if (ms < 1) { // Less than 1 millisecond
+            timeMessage += "<1 millisecond.";
+          } else if (ms < 1000) { // 1ms up to 999ms
+            timeMessage += `${ms.toFixed(0)} milliseconds.`;
+          } else if (ms < 60000) { // 1 second up to 59.999 seconds
+            timeMessage += `${(ms / 1000).toFixed(2)} seconds.`;
+          } else {
+            const totalSeconds = ms / 1000;
+            const minutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = Math.round(totalSeconds % 60);
+            timeMessage += `${minutes} minute(s) and ${remainingSeconds} seconds.`;
+          }
+          responseContent.push({ type: 'text', text: `${timeMessage}` });
+        }
+
+        return { content: responseContent };
       } catch (error: unknown) {
         const err = error as Error;
         logger.error('Error in accessibility_query tool handler', { message: err.message });
