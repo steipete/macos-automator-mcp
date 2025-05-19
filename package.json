@@ -51,7 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^9.26.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.5",
     "playwright": "^1.52.0",
     "prettier": "^3.5.3",
     "tsx": "^4.19.4",
