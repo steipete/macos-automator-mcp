@@ -65,5 +65,31 @@ export const GetScriptingTipsInputSchema = z.object({
 
 export type GetScriptingTipsInput = z.infer<typeof GetScriptingTipsInputSchema>;
 
+// AX Query Input Schema
+export const AXQueryInputSchema = z.object({
+    cmd: z.enum(['query', 'perform']),
+    multi: z.boolean().optional(),
+    locator: z.object({
+        app: z.string().describe('Bundle ID or display name of the application to query'),
+        role: z.string().describe('Accessibility role to match, e.g., "AXButton", "AXStaticText"'),
+        match: z.record(z.string()).describe('Attributes to match for the element'),
+        pathHint: z.array(z.string()).optional().describe('Optional path to navigate within the application hierarchy, e.g., ["window[1]", "toolbar[1]"]'),
+    }),
+    attributes: z.array(z.string()).optional().describe('Attributes to query for matched elements. If not provided, common attributes will be included'),
+    requireAction: z.string().optional().describe('Filter elements to only those supporting this action, e.g., "AXPress"'),
+    action: z.string().optional().describe('Only used with cmd: "perform" - The action to perform on the matched element'),
+}).refine(
+    (data) => {
+        // If cmd is 'perform', action must be provided
+        return data.cmd !== 'perform' || (!!data.action);
+    },
+    {
+        message: "When cmd is 'perform', an action must be provided",
+        path: ["action"],
+    }
+);
+
+export type AXQueryInput = z.infer<typeof AXQueryInputSchema>;
+
 // Output is always { content: [{ type: "text", text: "string_output" }] }
 // No specific Zod schema needed for output beyond what MCP SDK handles. 
