@@ -1,12 +1,10 @@
 # Changelog
 
 ## [0.4.0] - 2025-05-20
-- **BREAKING CHANGE**: Replaced the `use_script_friendly_output` boolean parameter with a more versatile `output_format_mode` string enum parameter for the `execute_script` tool. This provides finer-grained control over `osascript` output formatting flags.
+- Replaced the `use_script_friendly_output` boolean parameter with a more versatile `output_format_mode` string enum parameter for the `execute_script` tool. This provides finer-grained control over `osascript` output formatting flags.
   - New parameter: `output_format_mode` (enum: `'auto'`, `'human_readable'`, `'structured_error'`, `'structured_output_and_error'`, `'direct'`, default: `'auto'`).
   - The `'auto'` mode intelligently selects output formatting: `human_readable` (`-s h`) for AppleScript, and `direct` (no `-s` flags) for JXA, which is recommended for JXA compatibility, especially with Obj-C bridging.
   - `use_script_friendly_output` has been removed.
-
-## [0.3.1] - 2025-05-20
 - Fixed a bug causing script execution time to be incorrectly reported as "0 milliseconds" for some scripts; timing is now measured with millisecond precision.
 - Refined the display formatting for reported execution times, including how sub-millisecond durations and spacing are handled.
 
