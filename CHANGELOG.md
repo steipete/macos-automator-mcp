@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.0] - 2025-05-20
+- Added new accessibility runner for improved accessibility API access
+- Improved accessibility query support through native Swift implementation
+
 ## [0.4.1] - 2025-05-20
 - Fixed version reporting to only occur on tool calls, not MCP initialization handshake
 - Removed unnecessary server ready log message that was causing MCP client connection issues
