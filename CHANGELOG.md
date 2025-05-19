@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.4.1] - 2025-05-20
+- Fixed missing "connected via STDIO and ready" log message after server startup
+
 ## [0.4.0] - 2025-05-20
 - Replaced the `use_script_friendly_output` boolean parameter with a more versatile `output_format_mode` string enum parameter for the `execute_script` tool. This provides finer-grained control over `osascript` output formatting flags.
   - New parameter: `output_format_mode` (enum: `'auto'`, `'human_readable'`, `'structured_error'`, `'structured_output_and_error'`, `'direct'`, default: `'auto'`).

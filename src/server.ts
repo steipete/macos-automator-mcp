@@ -398,6 +398,11 @@ async function main() {
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
+  
+  // Only log ready message if not in E2E testing, to keep stdout clean for inspector
+  if (!IS_E2E_TESTING) {
+    logger.info(`macos_automator MCP Server v${pkg.version} connected via STDIO and ready.`);
+  }
 
   // Graceful shutdown
   process.on('SIGINT', async () => {
