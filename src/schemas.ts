@@ -10,22 +10,33 @@ const DynamicScriptingKnowledgeCategoryEnum = z.string()
     .describe("Category of AppleScript/JXA tips. Should match a discovered category ID from the knowledge base.");
 
 export const ExecuteScriptInputSchema = z.object({
-  script_content: z.string().optional()
-    .describe("Raw AppleScript/JXA code. Mutually exclusive with `script_path` & `kb_script_id`."),
-  script_path: z.string().optional()
-    .describe("Absolute POSIX path to a script file. Mutually exclusive with `script_content` & `kb_script_id`."),
-  kb_script_id: z.string().optional()
-    .describe("Unique ID of a pre-defined script from the knowledge base. Mutually exclusive with `script_content` & `script_path`. Use 'get_scripting_tips' to find IDs."),
-  language: z.enum(['applescript', 'javascript']).optional()
-    .describe("Scripting language. Inferred if using `kb_script_id`. Defaults to 'applescript' if using `script_content`/`script_path` and not specified."),
-  arguments: z.array(z.string()).optional().default([])
-    .describe("String arguments for `script_path` scripts ('on run argv'). For `kb_script_id`, used if script is designed for positional string args (see tip's 'argumentsPrompt')."),
-  input_data: z.record(z.string(), z.any()).optional() 
-    .describe("JSON object providing named input data for `kb_script_id` scripts designed to accept structured input (see tip's 'argumentsPrompt'). Replaces placeholders like --MCP_INPUT:keyName."),
-  timeout_seconds: z.number().int().positive().optional().default(60)
-    .describe("Script execution timeout in seconds."),
-  use_script_friendly_output: z.boolean().optional().default(false)
-    .describe("Use 'osascript -ss' for script-friendly output."),
+  kb_script_id: z.string().optional().describe(
+    'The ID of a knowledge base script to execute. Replaces script_content and script_path if provided.',
+  ),
+  script_content: z.string().optional().describe(
+    'The content of the script to execute. Required if kb_script_id or script_path is not provided.',
+  ),
+  script_path: z.string().optional().describe(
+    'The path to the script file to execute. Required if kb_script_id or script_content is not provided.',
+  ),
+  arguments: z.array(z.string()).optional().describe(
+    'Optional arguments to pass to the script. For AppleScript, these are passed to the main `run` handler. For JXA, these are passed to the `run` function.',
+  ),
+  input_data: z.record(z.unknown()).optional().describe(
+    'Optional JSON object to provide named inputs for --MCP_INPUT placeholders in knowledge base scripts.',
+  ),
+  language: z.enum(['applescript', 'javascript']).optional().describe(
+    "Specifies the scripting language. Crucial for `script_content` and `script_path` if not 'applescript'. Defaults to 'applescript'. Inferred if using `kb_script_id`.",
+  ),
+  timeout_seconds: z.number().int().optional().default(60).describe(
+    'The timeout for the script execution in seconds. Defaults to 60.',
+  ),
+  output_format_mode: z.enum(['auto', 'human_readable', 'structured_error', 'structured_output_and_error', 'direct']).optional().default('auto').describe(
+    "Controls osascript output formatting. \n'auto': (Default) Smart selection based on language (AppleScript: human_readable, JXA: direct). \n'human_readable': AppleScript -s h. \n'structured_error': AppleScript -s s. \n'structured_output_and_error': AppleScript -s ss. \n'direct': No -s flags (recommended for JXA)."
+  ),
+  report_execution_time: z.boolean().optional().default(false).describe(
+    'If true, the tool will return an additional message containing the formatted script execution time. Defaults to false.',
+  ),
   include_executed_script_in_output: z.boolean().optional().default(false)
     .describe("If true, the executed script content (after substitutions) or path will be included in the output."),
   include_substitution_logs: z.boolean().optional().default(false)
