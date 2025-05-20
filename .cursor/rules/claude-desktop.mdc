@@ -96,18 +96,22 @@ The Claude desktop application appears to be Electron-based, meaning UI elements
 
 **a. Main Text Input Area:**
 *   **Role:** `AXTextArea`
-*   **Location:** Typically within the first window (`window[1]`). The full accessibility path can be quite deep (e.g., `window[1]/group[1]/group[1]/group[1]/group[1]/webArea[1]/group[1]/textArea[1]`).
+*   **Location:** Typically within the first window. The full accessibility path can be quite deep (e.g., `window[1]/group[1]/group[1]/group[1]/group[1]/webArea[1]/group[1]/textArea[1]`).
 *   **`ax` Locator (Query):**
     ```json
     {
-        "cmd": "query",
+        "command_id": "claude_desktop_query_textarea_001",
+        "command": "query",
+        "application": "com.anthropic.claudefordesktop",
         "locator": {
-            "app": "com.anthropic.claudefordesktop",
-            "pathHint": ["window[1]"], // Start search within the first window
-            "role": "AXTextArea"
+            "root_element_path_hint": ["window[1]"],
+            "criteria": {
+                "AXRole": "AXTextArea"
+            }
         },
-        "attributes": ["AXValue", "AXFocused", "AXPathHint"],
-        "debug_logging": true
+        "attributes": ["AXValue", "AXFocused", "AXPathHint", "ComputedName", "ComputedPath"],
+        "debug_logging": true,
+        "output_format": "verbose"
     }
     ```
     Querying this after text input can verify the content of `AXValue`.
@@ -119,26 +123,33 @@ The Claude desktop application appears to be Electron-based, meaning UI elements
 *   **`ax` Locator (Query to find):**
     ```json
     {
-        "cmd": "query",
+        "command_id": "claude_desktop_query_sendbutton_001",
+        "command": "query",
+        "application": "com.anthropic.claudefordesktop",
         "locator": {
-            "app": "com.anthropic.claudefordesktop",
-            "pathHint": ["window[1]"],
-            "role": "AXButton",
-            "title": "Send message" // Key for finding the correct button
+            "root_element_path_hint": ["window[1]"],
+            "criteria": {
+                "AXRole": "AXButton",
+                "AXTitle": "Send message"
+            }
         },
-        "attributes": ["AXTitle", "AXIdentifier", "AXRoleDescription", "AXPathHint", "AXEnabled", "AXActionNames"],
-        "debug_logging": true
+        "attributes": ["AXTitle", "AXIdentifier", "AXRoleDescription", "AXPathHint", "AXEnabled", "AXActionNames", "IsClickable", "ComputedName", "ComputedPath"],
+        "debug_logging": true,
+        "output_format": "verbose"
     }
     ```
 *   **`ax` Locator (Perform Action):**
     ```json
     {
-        "cmd": "perform",
+        "command_id": "claude_desktop_perform_sendbutton_001",
+        "command": "perform_action",
+        "application": "com.anthropic.claudefordesktop",
         "locator": {
-            "app": "com.anthropic.claudefordesktop",
-            "pathHint": ["window[1]"],
-            "role": "AXButton",
-            "title": "Send message"
+            "root_element_path_hint": ["window[1]"],
+            "criteria": {
+                "AXRole": "AXButton",
+                "AXTitle": "Send message"
+            }
         },
         "action": "AXPress",
         "debug_logging": true
@@ -147,17 +158,17 @@ The Claude desktop application appears to be Electron-based, meaning UI elements
 
 ### 4. Performing Actions with `ax`
 
-*   **`AXPress`:** The "Send message" button supports the `AXPress` action. This can be reliably triggered using the `perform` command with the locator described above.
-*   **`AXActionNames` Attribute:** While `AXPress` works, the `AXActionNames` attribute might appear as `null` or "Not available" in the JSON output from `getElementAttributes` in the `ax` tool for some buttons. However, the `ax` tool's `search` (with `requireAction`) and `perform` functions correctly determine if an action is supported and can execute it.
+*   **`AXPress`:** The "Send message" button supports the `AXPress` action. This can be reliably triggered using the `perform_action` command with the locator described above.
+*   **`AXActionNames` Attribute:** While `AXPress` works, the `AXActionNames` attribute might appear as `kAXNotAvailableString` or a more detailed "n/a (no specific actions found...)" message if no actions are discoverable via `kAXActionNamesAttribute`, `kAXActionsAttribute`, or if `AXPress` is the only one found through direct check. However, the `ax` tool's element location (with `locator.require_action`) and `perform_action` command correctly determine if an action is supported and can execute it.
 
 ### 5. General Observations & Debugging Tips
 
 *   **Electron App:** The UI structure suggests an Electron application. This means standard AppKit/Cocoa control identification via simple AppleScript can be challenging, and accessibility often relies on traversing web areas.
 *   **`ax` Tool Debugging:**
     *   Enable `debug_logging: true` in your `ax` commands.
-    *   The `stderr` output from `ax` provides detailed traversal and matching information.
-    *   The version 1.1.5+ of `ax` has improved debug logging conciseness, printing a version header once per command and indenting subsequent logs.
+    *   The `stderr` output from `ax` provides detailed traversal and matching information if `GLOBAL_DEBUG_ENABLED` is true in `Logging.swift`.
+    *   The `debug_logs` array in the JSON response provides command-specific logs.
 *   **Focus:** Ensuring the application and target window are active and frontmost is crucial, especially before sending keystrokes. The AppleScript snippets include `activate` and attempts to set `frontmost to true`.
-*   **`pathHint`:** Using `pathHint: ["window[1]"]` as a starting point for `ax` queries helps narrow down the search scope significantly.
+*   **`locator.root_element_path_hint`:** Using `locator.root_element_path_hint: ["window[1]"]` as a starting point for `ax` locators helps narrow down the search scope significantly when applying criteria.
 
 This summary should provide a good foundation for further automation of the Claude desktop application.
