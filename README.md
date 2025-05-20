@@ -210,9 +210,14 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 
 ### 3. `accessibility_query`
 
-Query and interact with the macOS accessibility interface to inspect UI elements of applications. This tool provides a powerful way to explore and manipulate the user interface elements of any application using the native macOS accessibility framework.
+Query and interact with the macOS accessibility interface to inspect UI elements of applications. This tool provides a powerful way to explore and manipulate the user interface elements of any application using the native macOS accessibility framework. It is powered by the `ax` command-line binary.
 
-This tool exposes the complete macOS accessibility API capabilities, allowing detailed inspection of UI elements and their properties. It\'s particularly useful for automating interactions with applications that don\'t have robust AppleScript support or when you need to inspect the UI structure in detail.
+The `ax` binary, and therefore this tool, can accept its JSON command input in multiple ways:
+1.  **Direct JSON String Argument:** If `ax` is invoked with a single command-line argument that is not a valid file path, it will attempt to parse this argument as a complete JSON string.
+2.  **File Path Argument:** If `ax` is invoked with a single command-line argument that is a valid file path, it will read the complete JSON command from this file.
+3.  **STDIN:** If `ax` is invoked with no command-line arguments, it will read the complete JSON command (which can be multi-line) from standard input.
+
+This tool exposes the complete macOS accessibility API capabilities, allowing detailed inspection of UI elements and their properties. It's particularly useful for automating interactions with applications that don't have robust AppleScript support or when you need to inspect the UI structure in detail.
 
 **Input Parameters:**
 
