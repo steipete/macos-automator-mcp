@@ -19,26 +19,39 @@ let package = Package(
             path: "Sources/AXHelper", // Specify the path to the source files
             sources: [ // Explicitly list all source files
                 "main.swift",
-                "AXConstants.swift",
-                "AXLogging.swift",
-                "AXModels.swift",
-                "AXSearch.swift",
-                "AXUtils.swift",
-                "AXCommands.swift",
-                "AXAttributeHelpers.swift",
-                "AXAttributeMatcher.swift",
-                "AXValueHelpers.swift",
-                "AXValueUnwrapper.swift",
-                "AXElement.swift",
-                "AXValueParser.swift",
-                "AXValueFormatter.swift",
-                "AXError.swift",
-                "AXProcessUtils.swift",
-                "AXPathUtils.swift",
-                "AXTextExtraction.swift",
-                "AXPermissions.swift",
-                "AXScanner.swift",
-                "AXAttribute.swift"
+                // Core
+                "Core/AXConstants.swift",
+                "Core/AXModels.swift",
+                "Core/AXElement.swift",
+                "Core/AXElement+Properties.swift",
+                "Core/AXElement+Hierarchy.swift",
+                "Core/AXAttribute.swift",
+                "Core/AXError.swift",
+                "Core/AXPermissions.swift",
+                "Core/AXProcessUtils.swift",
+                // Values
+                "Values/AXValueHelpers.swift",
+                "Values/AXValueUnwrapper.swift",
+                "Values/AXValueParser.swift",
+                "Values/AXValueFormatter.swift",
+                "Values/AXScannable.swift",
+                // Search
+                "Search/AXSearch.swift",
+                "Search/AXAttributeMatcher.swift",
+                "Search/AXPathUtils.swift",
+                "Search/AXAttributeHelpers.swift",
+                // Commands
+                "Commands/AXQueryCommandHandler.swift",
+                "Commands/AXCollectAllCommandHandler.swift",
+                "Commands/AXPerformCommandHandler.swift",
+                "Commands/AXExtractTextCommandHandler.swift",
+                // Utils
+                "Utils/AXLogging.swift",
+                "Utils/AXScanner.swift",
+                "Utils/AXCharacterSet.swift",
+                "Utils/AXStringExtensions.swift",
+                "Utils/AXTextExtraction.swift",
+                "Utils/AXGeneralParsingUtils.swift"
             ]
             // swiftSettings for framework linking removed, relying on Swift imports.
         ),

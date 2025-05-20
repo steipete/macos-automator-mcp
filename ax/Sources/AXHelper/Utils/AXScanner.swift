@@ -2,71 +2,13 @@
 
 import Foundation
 
-// String extension from AXScanner
-extension String {
-	subscript (i: Int) -> Character {
-		return self[index(startIndex, offsetBy: i)]
-	}
-	func range(from range: NSRange) -> Range<String.Index>? {
-		return Range(range, in: self)
-	}
-	func range(from range: Range<String.Index>) -> NSRange {
-		return NSRange(range, in: self)
-	}
-	var firstLine: String? {
-		var line: String?
-		self.enumerateLines {
-			line = $0
-			$1 = true
-		}
-		return line
-	}
-}
-
-// AXCharacterSet struct from AXScanner
-struct AXCharacterSet {
-	private var characters: Set<Character>
-	init(characters: Set<Character>) {
-		self.characters = characters
-	}
-	init(charactersInString: String) {
-		self.characters = Set(charactersInString.map { $0 })
-	}
-	func contains(_ character: Character) -> Bool {
-		return self.characters.contains(character)
-	}
-	mutating func add(_ characters: Set<Character>) {
-		self.characters.formUnion(characters)
-	}
-	func adding(_ characters: Set<Character>) -> AXCharacterSet {
-		return AXCharacterSet(characters: self.characters.union(characters))
-	}
-	mutating func remove(_ characters: Set<Character>) {
-		self.characters.subtract(characters)
-	}
-	func removing(_ characters: Set<Character>) -> AXCharacterSet   {
-		return AXCharacterSet(characters: self.characters.subtracting(characters))
-	}
-
-    // Add some common character sets that might be useful, similar to Foundation.CharacterSet
-    static var whitespacesAndNewlines: AXCharacterSet {
-        return AXCharacterSet(charactersInString: " \t\n\r")
-    }
-    static var decimalDigits: AXCharacterSet {
-        return AXCharacterSet(charactersInString: "0123456789")
-    }
-    static func punctuationAndSymbols() -> AXCharacterSet { // Example
-        // This would need a more comprehensive list based on actual needs
-        return AXCharacterSet(charactersInString: ".,:;?!()[]{}-_=+") // Simplified set
-    }
-     static func characters(in string: String) -> AXCharacterSet {
-        return AXCharacterSet(charactersInString: string)
-    }
-}
+// String extension MOVED to AXStringExtensions.swift
+// AXCharacterSet struct MOVED to AXCharacterSet.swift
 
 // AXScanner class from AXScanner
 class AXScanner {
 
+	// MARK: - Properties and Initialization
 	let string: String
 	var location: Int = 0
 	init(string: String) {
@@ -75,30 +17,8 @@ class AXScanner {
 	var isAtEnd: Bool {
 		return self.location >= self.string.count
 	}
-	@discardableResult func scanUpTo(characterSet: AXCharacterSet) -> String? {
-		var location = self.location
-		var characters = String()
-		while location < self.string.count {
-			let character = self.string[location]
-			if characterSet.contains(character) { // This seems to be inverted logic for "scanUpTo"
-                                            // It should scan *until* a char in the set is found.
-                                            // Original AXScanner `scanUpTo` scans *only* chars in the set.
-                                            // Let's assume it's meant to be "scanCharactersInSet"
-				characters.append(character)
-				self.location = location // This should be self.location = location + 1 to advance
-                                          // And update self.location only at the end.
-                                          // For now, keeping original logic but noting it.
-				location += 1
-			}
-			else {
-                self.location = location // Update location to where it stopped
-				return characters.isEmpty ? nil : characters // Return nil if empty, otherwise the string
-			}
-		}
-        self.location = location // Update location if loop finishes
-		return characters.isEmpty ? nil : characters
-	}
 
+    // MARK: - Character Set Scanning
     // A more conventional scanUpTo (scans until a character in the set is found)
     @discardableResult func scanUpToCharacters(in charSet: AXCharacterSet) -> String? {
         let initialLocation = self.location
@@ -152,6 +72,7 @@ class AXScanner {
 		}
 		return characters.isEmpty ? nil : characters
 	}
+	// MARK: - Specific Character and String Scanning
 	@discardableResult func scan(character: Character, options: NSString.CompareOptions = NSString.CompareOptions(rawValue: 0)) -> Character? {
 		let characterString = String(character)
 		if self.location < self.string.count {
@@ -190,7 +111,7 @@ class AXScanner {
 	}
 	func scan(token: String, options: NSString.CompareOptions = NSString.CompareOptions(rawValue: 0)) -> String? {
 		self.scanWhitespaces()
-		return self.scan(string: string, options: options) // Corrected to use the input `string` parameter, not self.string
+		return self.scan(string: token, options: options) // Corrected: use 'token' parameter
 	}
 	func scan(strings: [String], options: NSString.CompareOptions = NSString.CompareOptions(rawValue: 0)) -> String? {
 		for stringEntry in strings {
@@ -204,6 +125,7 @@ class AXScanner {
 		self.scanWhitespaces()
 		return self.scan(strings: tokens, options: options)
 	}
+	// MARK: - Integer Scanning
 	func scanSign() -> Int? {
 		return self.scan(dictionary: ["+": 1, "-": -1])
 	}
@@ -254,6 +176,7 @@ class AXScanner {
 		return value
 	}
     
+    // MARK: - Floating Point Scanning
     // Helper for Double parsing - scans an optional sign
     private func scanOptionalSign() -> Double {
         if self.scan(character: "-") != nil { return -1.0 }
@@ -261,61 +184,85 @@ class AXScanner {
         return 1.0
     }
 
+    // Helper to scan a sequence of decimal digits
+    private func _scanDecimalDigits() -> String? {
+        return self.scanCharacters(in: .decimalDigits)
+    }
+
+    // Helper to scan the integer part of a double
+    private func _scanIntegerPartForDouble() -> String? {
+        if self.location < self.string.count && self.string[self.location].isNumber {
+            return _scanDecimalDigits()
+        }
+        return nil
+    }
+
+    // Helper to scan the fractional part of a double
+    private func _scanFractionalPartForDouble() -> String? {
+        let initialDotLocation = self.location
+        if self.scan(character: ".") != nil {
+            if self.location < self.string.count && self.string[self.location].isNumber {
+                 return _scanDecimalDigits()
+            } else {
+                // Dot not followed by numbers, revert the dot scan
+                self.location = initialDotLocation
+                return nil // Indicate no fractional part *digits* were scanned after dot
+            }
+        }
+        return nil // No dot found
+    }
+
+    // Helper to scan the exponent part of a double
+    private func _scanExponentPartForDouble() -> Int? {
+        let initialExponentMarkerLocation = self.location
+        if self.scan(character: "e", options: .caseInsensitive) != nil { // Also handles "E"
+            let exponentSign = scanOptionalSign() // Returns 1.0 or -1.0
+            if let expDigitsStr = _scanDecimalDigits(), let expInt = Int(expDigitsStr) {
+                return Int(exponentSign) * expInt
+            } else {
+                // "e" not followed by valid exponent, revert scan of "e" and sign
+                // Revert to before "e" was scanned
+                self.location = initialExponentMarkerLocation 
+                return nil
+            }
+        }
+        return nil // No exponent marker found
+    }
+
     // Attempt to parse Double, more aligned with Foundation.Scanner's behavior
     func scanDouble() -> Double? {
         self.scanWhitespaces()
         let initialLocation = self.location
         
-        let sign = scanOptionalSign()
+        let sign = scanOptionalSign() // sign is 1.0 or -1.0
         
-        var integerPartStr: String?
-        if self.location < self.string.count && self.string[self.location].isNumber {
-            integerPartStr = self.scanCharacters(in: .decimalDigits)
-        }
+        let integerPartStr = _scanIntegerPartForDouble()
+        let fractionPartStr = _scanFractionalPartForDouble()
 
-        var fractionPartStr: String?
-        if self.scan(character: ".") != nil {
-            if self.location < self.string.count && self.string[self.location].isNumber {
-                 fractionPartStr = self.scanCharacters(in: .decimalDigits)
-            } else {
-                // Dot not followed by numbers, revert the dot scan
-                self.location -= 1
-            }
-        }
-        
+        // If no digits were scanned for either integer or fractional part
         if integerPartStr == nil && fractionPartStr == nil {
-            // Neither integer nor fractional part found after sign
-            self.location = initialLocation
+            self.location = initialLocation // Revert fully, including any sign scan
             return nil
         }
         
         var numberStr = ""
         if let intPart = integerPartStr { numberStr += intPart }
-        if fractionPartStr != nil { // Only add dot if there's a fractional part or an integer part before it
-            if !numberStr.isEmpty || fractionPartStr != nil { // ensure dot is meaningful
-                 numberStr += "."
-            }
-            if let fracPart = fractionPartStr { numberStr += fracPart }
-        }
-
-        // Exponent part
-        var exponentVal: Int?
-        if self.scan(character: "e", options: .caseInsensitive) != nil || self.scan(character: "E") != nil {
-            let exponentSign = scanOptionalSign()
-            if let expDigitsStr = self.scanCharacters(in: .decimalDigits), let expInt = Int(expDigitsStr) {
-                exponentVal = Int(exponentSign) * expInt
-            } else {
-                // "e" not followed by valid exponent, revert scan of "e" and sign
-                self.location = initialLocation // Full revert for simplicity, could be more granular
-                return nil
-            }
+        
+        if fractionPartStr != nil {
+            numberStr += "." // Add dot if fractional digits were found
+            numberStr += fractionPartStr! // Append fractional digits
         }
         
-        if numberStr == "." && integerPartStr == nil && fractionPartStr == nil { // Only a dot was scanned
-             self.location = initialLocation
-             return nil
+        let exponentVal = _scanExponentPartForDouble()
+        
+        if numberStr.isEmpty { // Should be covered by the (integerPartStr == nil && fractionPartStr == nil) check earlier
+            self.location = initialLocation
+            return nil
         }
-
+        if numberStr == "." { // Only a dot was assembled. This should not happen if _scanFractionalPartForDouble works correctly. But as a safeguard:
+            self.location = initialLocation
+            return nil
+        }
 
         if var finalValue = Double(numberStr) {
             finalValue *= sign
@@ -323,18 +270,11 @@ class AXScanner {
                 finalValue *= pow(10.0, Double(exp))
             }
             return finalValue
-        } else if numberStr.isEmpty && sign != 1.0 { // only a sign was scanned
-            self.location = initialLocation
+        } else {
+            // If Double(numberStr) failed, it implies an issue not caught by prior checks
+            self.location = initialLocation // Revert to original location if parsing fails
             return nil
-        } else if numberStr.isEmpty && sign == 1.0 {
-             self.location = initialLocation
-             return nil
         }
-        
-        // If Double(numberStr) failed, it means the constructed string is not a valid number
-        // (e.g. empty, or just a sign, or malformed due to previous logic)
-        self.location = initialLocation // Revert to original location if parsing fails
-        return nil
     }
 
 	lazy var hexadecimalDictionary: [Character: Int] = { return [
@@ -355,46 +295,6 @@ class AXScanner {
         if count == 0 { self.location = initialLoc } // revert if nothing scanned
 		return count > 0 ? value : nil
 	}
-	func scanFloatinPoint<T: FloatingPoint>() -> T? { // Original AXScanner method
-		let savepoint = self.location
-		self.scanWhitespaces()
-		var a = T(0)
-		var e = 0
-		if let value = self.scan(dictionary: ["inf": T.infinity, "nan": T.nan], options: [.caseInsensitive]) {
-			return value
-		}
-		else if let fractions = self.scanDigits() {
-			a = fractions.reduce(T(0)) { ($0 * T(10)) + T($1) }
-			if let _ = self.scan(string: ".") {
-				if let exponents = self.scanDigits() {
-					a = exponents.reduce(a) { ($0 * T(10)) + T($1) }
-					e = -exponents.count
-				}
-			}
-			if let _ = self.scan(string: "e", options: [.caseInsensitive]) {
-				var s = 1
-				if let signInt = self.scanSign() { // scanSign returns Int?
-					s = signInt
-				}
-				if let digits = self.scanDigits() {
-					let i = digits.reduce(0) { ($0 * 10) + $1 }
-					e += (i * s)
-				}
-				else {
-					self.location = savepoint
-					return nil
-				}
-			}
-			// prefer refactoring:
-             if e != 0 { // Avoid pow(10,0) issues if not needed
-                // Calculate 10^|e| for type T
-                let powerOf10 = scannerPower(base: T(10), exponent: abs(e)) // Using a helper for clarity
-                a = (e > 0) ? a * powerOf10 : a / powerOf10
-             }
-			return a
-		}
-		else { self.location = savepoint; return nil } // Revert if no fractions found
-	}
 
     // Helper function for power calculation with FloatingPoint types
     private func scannerPower<T: FloatingPoint>(base: T, exponent: Int) -> T {
@@ -407,6 +307,7 @@ class AXScanner {
         return result
     }
 
+	// MARK: - Identifier Scanning
 	static let lowercaseAlphabets = "abcdefghijklmnopqrstuvwxyz"
 	static let uppercaseAlphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	static let digits = "0123456789"
@@ -429,9 +330,11 @@ class AXScanner {
 		self.location = savepoint
 		return nil
 	}
+	// MARK: - Whitespace Scanning
 	func scanWhitespaces() {
 		_ = self.scanCharacters(in: .whitespacesAndNewlines)
 	}
+	// MARK: - Dictionary-based Scanning
 	func scan<T>(dictionary: [String: T], options: NSString.CompareOptions = []) -> T? {
 		for (key, value) in dictionary {
 			if self.scan(string: key, options: options) != nil {
@@ -440,24 +343,6 @@ class AXScanner {
 			}
 		}
 		return nil
-	}
-	func scan<T: AXScannable>() -> T? {
-		let savepoint = self.location
-		if let scannable = T(self) {
-			return scannable
-		}
-		self.location = savepoint
-		return nil
-	}
-	func scan<T: AXScannable>() -> [T]? {
-		var savepoint = self.location
-		var scannables = [T]()
-		while let scannable: T = self.scan() { // Explicit type annotation for clarity
-			savepoint = self.location
-			scannables.append(scannable)
-		}
-		self.location = savepoint
-		return scannables.isEmpty ? nil : scannables
 	}
 
     // Helper to get the remaining string
@@ -468,47 +353,4 @@ class AXScanner {
     }
 }
 
-// AXScannable protocol from AXScanner
-protocol AXScannable {
-	init?(_ scanner: AXScanner)
-}
-
-// Extensions for AXScannable conformance from AXScanner
-extension Int: AXScannable {
-	init?(_ scanner: AXScanner) {
-		if let value: Int = scanner.scanInteger() { self = value }
-		else { return nil }
-	}
-}
-
-extension UInt: AXScannable {
-	init?(_ scanner: AXScanner) {
-		if let value: UInt = scanner.scanUnsignedInteger() { self = value }
-		else { return nil }
-	}
-}
-
-extension Float: AXScannable {
-	init?(_ scanner: AXScanner) {
-        // Using the custom scanDouble and casting
-		if let value = scanner.scanDouble() { self = Float(value) }
-        // if let value: Float = scanner.scanFloatinPoint() { self = value } // This line should be commented or removed
-		else { return nil }
-	}
-}
-
-extension Double: AXScannable {
-	init?(_ scanner: AXScanner) {
-		if let value = scanner.scanDouble() { self = value }
-        // if let value: Double = scanner.scanFloatinPoint() { self = value } // This line should be commented or removed
-		else { return nil }
-	}
-}
-
-extension Bool: AXScannable {
-	init?(_ scanner: AXScanner) {
-		scanner.scanWhitespaces()
-		if let value: Bool = scanner.scan(dictionary: ["true": true, "false": false], options: [.caseInsensitive]) { self = value }
-		else { return nil }
-	}
-} 
+ 

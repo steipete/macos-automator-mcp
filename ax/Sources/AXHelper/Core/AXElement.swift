@@ -55,136 +55,18 @@ public struct AXElement: Equatable, Hashable {
         return nil // Return nil if not success or if value was nil (though success should mean value is populated)
     }
 
-    // MARK: - Common Attribute Getters
-    // Marked @MainActor because they call attribute(), which is @MainActor.
-    @MainActor public var role: String? { attribute(AXAttribute<String>.role) }
-    @MainActor public var subrole: String? { attribute(AXAttribute<String>.subrole) }
-    @MainActor public var title: String? { attribute(AXAttribute<String>.title) }
-    @MainActor public var axDescription: String? { attribute(AXAttribute<String>.description) }
-    @MainActor public var isEnabled: Bool? { attribute(AXAttribute<Bool>.enabled) }
-    @MainActor var value: Any? { attribute(AXAttribute<Any>.value) }
-    @MainActor var roleDescription: String? { attribute(AXAttribute<String>.roleDescription) }
-    @MainActor var help: String? { attribute(AXAttribute<String>.help) }
-    @MainActor var identifier: String? { attribute(AXAttribute<String>.identifier) }
+    // MARK: - Common Attribute Getters (MOVED to AXElement+Properties.swift)
+    // MARK: - Status Properties (MOVED to AXElement+Properties.swift)
+    // MARK: - Hierarchy and Relationship Getters (Simpler ones MOVED to AXElement+Properties.swift)
+    // MARK: - Action-related (supportedActions MOVED to AXElement+Properties.swift)
 
-    // MARK: - Status Properties
-    @MainActor var isFocused: Bool? { attribute(AXAttribute<Bool>.focused) }
-    @MainActor var isHidden: Bool? { attribute(AXAttribute<Bool>.hidden) }
-    @MainActor var isElementBusy: Bool? { attribute(AXAttribute<Bool>.busy) }
+    // Remaining properties and methods will stay here for now
+    // (e.g., children, isActionSupported, performAction, parameterizedAttribute, briefDescription, generatePathString, static factories)
 
-    @MainActor var isIgnored: Bool {
-        let hidden: Bool? = self.attribute(AXAttribute<Bool>.hidden)
-        // Basic check: if explicitly hidden, it's ignored.
-        // More complex checks could be added (e.g. disabled and non-interactive, purely decorative group etc.)
-        if hidden == true {
-            return true
-        }
-        return false
-    }
+    // MOVED to AXElement+Hierarchy.swift
+    // @MainActor public var children: [AXElement]? { ... }
 
-    @MainActor var pid: pid_t? {
-        var processID: pid_t = 0
-        let error = AXUIElementGetPid(self.underlyingElement, &processID)
-        if error == .success {
-            return processID
-        }
-        // debug("Failed to get PID for element \(self.underlyingElement): \(error.rawValue)")
-        return nil
-    }
-
-    // Path hint
-    // @MainActor var pathHint: String? { attribute(kAXPathHintAttribute) } // Removing, as kAXPathHintAttribute is not standard and removed from AXAttribute.swift
-
-    // MARK: - Hierarchy and Relationship Getters
-    // Marked @MainActor because they call attribute(), which is @MainActor.
-    @MainActor public var parent: AXElement? {
-        guard let parentElement: AXUIElement = attribute(AXAttribute<AXUIElement>.parent) else { return nil }
-        return AXElement(parentElement)
-    }
-
-    @MainActor public var children: [AXElement]? {
-        var collectedChildren: [AXElement] = []
-        var uniqueChildrenSet = Set<AXElement>()
-
-        // Primary children attribute
-        if let directChildrenUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.children) {
-            for childUI in directChildrenUI {
-                let childAX = AXElement(childUI)
-                if !uniqueChildrenSet.contains(childAX) {
-                    collectedChildren.append(childAX)
-                    uniqueChildrenSet.insert(childAX)
-                }
-            }
-        }
-
-        // Alternative children attributes, especially for web areas or complex views
-        // This logic is similar to what was in AXSearch and AXAttributeHelpers
-        // Check these if primary children are empty or if we want to be exhaustive.
-        // For now, let's always check them and add unique ones.
-        let alternativeAttributes: [String] = [
-            kAXVisibleChildrenAttribute, "AXWebAreaChildren", "AXHTMLContent",
-            "AXARIADOMChildren", "AXDOMChildren", "AXApplicationNavigation",
-            "AXApplicationElements", "AXContents", "AXBodyArea", "AXDocumentContent",
-            "AXWebPageContent", "AXSplitGroupContents", "AXLayoutAreaChildren",
-            "AXGroupChildren", kAXSelectedChildrenAttribute, kAXRowsAttribute, kAXColumnsAttribute,
-            kAXTabsAttribute // Tabs can also be considered children in some contexts
-        ]
-
-        for attrName in alternativeAttributes {
-            // Create an AXAttribute on the fly for the string-based attribute name
-            if let altChildrenUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>(attrName)) {
-                for childUI in altChildrenUI {
-                    let childAX = AXElement(childUI)
-                    if !uniqueChildrenSet.contains(childAX) {
-                        collectedChildren.append(childAX)
-                        uniqueChildrenSet.insert(childAX)
-                    }
-                }
-            }
-        }
-        
-        // For application elements, kAXWindowsAttribute is also very important
-        if self.role == AXAttribute<String>.role.rawValue && self.role == kAXApplicationRole {
-            if let windowElementsUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.windows) {
-                 for childUI in windowElementsUI {
-                    let childAX = AXElement(childUI)
-                    if !uniqueChildrenSet.contains(childAX) {
-                        collectedChildren.append(childAX)
-                        uniqueChildrenSet.insert(childAX)
-                    }
-                }
-            }
-        }
-
-        return collectedChildren.isEmpty ? nil : collectedChildren
-    }
-
-    @MainActor public var windows: [AXElement]? {
-        guard let windowElements: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.windows) else { return nil }
-        return windowElements.map { AXElement($0) }
-    }
-
-    @MainActor public var mainWindow: AXElement? {
-        guard let windowElement: AXUIElement = attribute(AXAttribute<AXUIElement?>.mainWindow) ?? nil else { return nil }
-        return AXElement(windowElement)
-    }
-
-    @MainActor public var focusedWindow: AXElement? {
-        guard let windowElement: AXUIElement = attribute(AXAttribute<AXUIElement?>.focusedWindow) ?? nil else { return nil }
-        return AXElement(windowElement)
-    }
-
-    @MainActor public var focusedElement: AXElement? {
-        guard let element: AXUIElement = attribute(AXAttribute<AXUIElement?>.focusedElement) ?? nil else { return nil }
-        return AXElement(element)
-    }
-
-    // MARK: - Actions
-
-    @MainActor
-    public var supportedActions: [String]? {
-        return attribute(AXAttribute<[String]>.actionNames)
-    }
+    // MARK: - Actions (supportedActions moved, other action methods remain)
 
     @MainActor
     public func isActionSupported(_ actionName: String) -> Bool {
@@ -285,6 +167,35 @@ public struct AXElement: Equatable, Hashable {
         debug("parameterizedAttribute: Fallback cast attempt for attribute '\(attribute.rawValue)' to type \(T.self) FAILED. Unwrapped value was \(type(of: finalValue)): \(finalValue)")
         return nil
     }
+
+    // MOVED to AXElement+Hierarchy.swift
+    // @MainActor
+    // public func generatePathString() -> String { ... }
+
+    // MARK: - Attribute Accessors (Raw and Typed)
+
+    // ... existing attribute accessors ...
+
+    // MARK: - Computed Properties for Common Attributes & Heuristics
+
+    // ... existing properties like role, title, isEnabled ...
+
+    /// A computed name for the element, derived from common attributes like title, value, description, etc.
+    /// This provides a general-purpose, human-readable name.
+    @MainActor
+    public var computedName: String? {
+        if let title = self.title, !title.isEmpty, title != kAXNotAvailableString { return title }
+        if let value: String = self.attribute(AXAttribute<String>(kAXValueAttribute)), !value.isEmpty, value != kAXNotAvailableString { return value }
+        if let desc = self.axDescription, !desc.isEmpty, desc != kAXNotAvailableString { return desc }
+        if let help: String = self.attribute(AXAttribute<String>(kAXHelpAttribute)), !help.isEmpty, help != kAXNotAvailableString { return help }
+        if let phValue: String = self.attribute(AXAttribute<String>(kAXPlaceholderValueAttribute)), !phValue.isEmpty, phValue != kAXNotAvailableString { return phValue }
+        if let roleDesc: String = self.attribute(AXAttribute<String>(kAXRoleDescriptionAttribute)), !roleDesc.isEmpty, roleDesc != kAXNotAvailableString {
+            return "\(roleDesc) (\(self.role ?? "Element"))"
+        }
+        return nil
+    }
+
+    // MARK: - Path and Hierarchy
 }
 
 // Convenience factory for the application element - already @MainActor
