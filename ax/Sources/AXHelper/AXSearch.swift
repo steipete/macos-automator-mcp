@@ -41,14 +41,14 @@ public struct AXUIElementHashableWrapper: Hashable {
 @MainActor 
 public func search(element: AXUIElement,
             locator: Locator,
-            requireAction: String?, // Added requireAction back, was in original plan
+            requireAction: String?,
             depth: Int = 0,
-            maxDepth: Int = 20) -> AXUIElement? { // Default maxDepth to 20 as per more recent versions
+            maxDepth: Int = 20) -> AXUIElement? {
 
     let currentElementRoleForLog: String? = axValue(of: element, attr: kAXRoleAttribute)
     let currentElementTitle: String? = axValue(of: element, attr: kAXTitleAttribute)
 
-    debug("search [D\(depth)]: Visiting. Role: \(currentElementRoleForLog ?? "nil"), Title: \(currentElementTitle ?? "N/A"). Locator: Role='\(locator.role)', Match=\(locator.match)")
+    debug("search [D\(depth)]: Visiting. Role: \(currentElementRoleForLog ?? "nil"), Title: \(currentElementTitle ?? "N/A"). Locator: Role='\(locator.role ?? "any")', Match=\(locator.match ?? [:])")
 
     if depth > maxDepth {
         debug("search [D\(depth)]: Max depth \(maxDepth) reached for element \(currentElementRoleForLog ?? "nil").")
@@ -56,121 +56,27 @@ public func search(element: AXUIElement,
     }
 
     var roleMatches = false
-    if let currentRole = currentElementRoleForLog, currentRole == locator.role {
-        roleMatches = true
-    } else if locator.role == "*" || locator.role.isEmpty {
-        roleMatches = true
-        debug("search [D\(depth)]: Wildcard role ('\(locator.role)') considered a match for element role \(currentElementRoleForLog ?? "nil").")
+    if let currentRole = currentElementRoleForLog, let wantedRole = locator.role, !wantedRole.isEmpty, wantedRole != "*" {
+        roleMatches = (currentRole == wantedRole)
+    } else {
+        roleMatches = true // Wildcard role "*", empty role, or nil role in locator means role check passes
+        debug("search [D\(depth)]: Wildcard/empty/nil role ('\(locator.role ?? "any")') considered a match for element role \(currentElementRoleForLog ?? "nil").")
     }
     
-    if !roleMatches {
-        // If role itself doesn't match (and not wildcard), then this element isn't a candidate.
-        // Still need to search children.
-        // debug("search [D\(depth)]: Role MISMATCH. Wanted: '\(locator.role)', Got: '\(currentElementRoleForLog ?? "nil")'.")
-    } else {
-        // Role matches (or is wildcard), now check attributes.
-        var allLocatorAttributesMatch = true // Assume true, set to false on first mismatch
-        if !locator.match.isEmpty {
-            for (attrKey, wantValueStr) in locator.match {
-                var currentSpecificAttributeMatch = false
-                
-                // 1. Boolean Matching
-                if wantValueStr.lowercased() == "true" || wantValueStr.lowercased() == "false" {
-                    let wantBool = wantValueStr.lowercased() == "true"
-                    if let gotBool: Bool = axValue(of: element, attr: attrKey) {
-                        currentSpecificAttributeMatch = (gotBool == wantBool)
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (Bool). Want: \(wantBool), Got: \(gotBool). Match: \(currentSpecificAttributeMatch)")
-                    } else {
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (Bool). Want: \(wantBool), Got: nil/non-bool.")
-                        currentSpecificAttributeMatch = false
-                    }
-                }
-                // 2. Array Matching (with Retry)
-                else if let expectedArr = decodeExpectedArray(fromString: wantValueStr) {
-                    var actualArr: [String]? = nil
-                    let maxRetries = 3
-                    let retryDelayUseconds: UInt32 = 50000 // 50ms
-
-                    for attempt in 0..<maxRetries {
-                        actualArr = axValue(of: element, attr: attrKey)
-                        if let currentActualArr = actualArr {
-                            if attrKey == "AXDOMClassList" && currentActualArr.isEmpty {
-                                if attempt < maxRetries - 1 {
-                                    debug("search [D\(depth)]: Attr '\(attrKey)' (AXDOMClassList) empty attempt \(attempt + 1). Retrying...")
-                                    usleep(retryDelayUseconds)
-                                    continue 
-                                } else {
-                                    debug("search [D\(depth)]: Attr '\(attrKey)' (AXDOMClassList) remained empty after \(maxRetries) attempts.")
-                                    break 
-                                }
-                            }
-                            break // Found non-nil (and for AXDOMClassList, non-empty or last attempt)
-                        } else { // actualArr is nil
-                            if attempt < maxRetries - 1 {
-                                debug("search [D\(depth)]: Attr '\(attrKey)' nil attempt \(attempt + 1). Retrying...")
-                                usleep(retryDelayUseconds)
-                            } else {
-                                debug("search [D\(depth)]: Attr '\(attrKey)' remained nil after \(maxRetries) attempts.")
-                                break 
-                            }
-                        }
-                    }
-                    
-                    if let finalActualArr = actualArr { 
-                        if attrKey == "AXDOMClassList" { 
-                            currentSpecificAttributeMatch = Set(expectedArr).isSubset(of: Set(finalActualArr))
-                            debug("search [D\(depth)]: Attr '\(attrKey)' (Array Subset). Want: \(expectedArr), Got: \(finalActualArr). Match: \(currentSpecificAttributeMatch)")
-                        } else {
-                            currentSpecificAttributeMatch = (Set(expectedArr) == Set(finalActualArr) && expectedArr.count == finalActualArr.count)
-                            debug("search [D\(depth)]: Attr '\(attrKey)' (Array Exact). Want: \(expectedArr), Got: \(finalActualArr). Match: \(currentSpecificAttributeMatch)")
-                        }
-                    } else {
-                        currentSpecificAttributeMatch = false
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (Array). Wanted: \(expectedArr), Got: nil/empty after retries.")
-                    }
-                }
-                // 3. Numeric Matching
-                else if let wantInt = Int(wantValueStr) {
-                    if let gotInt: Int = axValue(of: element, attr: attrKey) {
-                        currentSpecificAttributeMatch = (gotInt == wantInt)
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (Numeric). Want: \(wantInt), Got: \(gotInt). Match: \(currentSpecificAttributeMatch)")
-                    } else {
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (Numeric). Wanted: \(wantInt), Got: nil/non-integer.")
-                        currentSpecificAttributeMatch = false
-                    }
-                }
-                // 4. String Matching (Fallback)
-                else {
-                    if let gotString: String = axValue(of: element, attr: attrKey) {
-                        currentSpecificAttributeMatch = (gotString == wantValueStr)
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (String). Wanted: \(wantValueStr), Got: \(gotString). Match: \(currentSpecificAttributeMatch)")
-                    } else {
-                        debug("search [D\(depth)]: Attr '\(attrKey)' (String). Wanted: \(wantValueStr), Got: nil/non-string.")
-                        currentSpecificAttributeMatch = false
-                    }
-                }
-                
-                if !currentSpecificAttributeMatch {
-                    debug("search [D\(depth)]: Attribute '\(attrKey)' MISMATCH. Halting attribute checks for this element.")
-                    allLocatorAttributesMatch = false
-                    break 
-                }
-            } // End of attribute matching loop
-        } // else, if locator.match is empty, allLocatorAttributesMatch remains true by default.
-
-        // If role and all attributes match, then check action and potentially return
-        if allLocatorAttributesMatch { // This implies roleMatches was also true to get here
-            debug("search [D\(depth)]: Element Role & Attributes MATCHED. Role: \(currentElementRoleForLog ?? "nil").")
+    if roleMatches {
+        // Role matches (or is wildcard/not specified), now check attributes using the new function.
+        if attributesMatch(element: element, locator: locator, depth: depth) {
+            debug("search [D\(depth)]: Element Role & All Attributes MATCHED. Role: \(currentElementRoleForLog ?? "nil").")
             if let requiredActionStr = requireAction, !requiredActionStr.isEmpty {
                 if elementSupportsAction(element, action: requiredActionStr) {
-                    debug("search [D\(depth)]: Required action '\(requiredActionStr)' IS present.")
+                    debug("search [D\(depth)]: Required action '\(requiredActionStr)' IS present. Element is a full match.")
                     return element
                 } else {
                     debug("search [D\(depth)]: Element matched role/attrs, but required action '\(requiredActionStr)' is MISSING. Continuing child search.")
-                    // Don't return; continue search in children as this specific element is not a full match.
+                    // Don't return; continue search in children as this specific element is not a full match if action is required but missing.
                 }
             } else {
-                debug("search [D\(depth)]: No requireAction. Element is a match.")
+                debug("search [D\(depth)]: No requireAction specified. Element is a match based on role/attributes.")
                 return element // No requireAction, and role/attributes matched.
             }
         }
@@ -332,63 +238,106 @@ public func collectAll(element: AXUIElement,
 
 // Advanced attributesMatch function (from earlier discussions, adapted)
 @MainActor
-public func attributesMatch(element: AXUIElement, matchDetails: [String:String], depth: Int) -> Bool {
-    for (attrKey, wantValueStr) in matchDetails {
-        var currentAttributeMatches = false
+public func attributesMatch(element: AXUIElement, locator: Locator, depth: Int) -> Bool {
+    // Extracted and adapted from the search function's attribute matching logic
+    if locator.match.isEmpty {
+        debug("attributesMatch [D\(depth)]: No attributes in locator.match to check. Defaulting to true.")
+        return true // No attributes to match means it's a match by this criteria
+    }
 
+    for (attrKey, wantValueStr) in locator.match {
+        var currentSpecificAttributeMatch = false
+        
         // 1. Boolean Matching
         if wantValueStr.lowercased() == "true" || wantValueStr.lowercased() == "false" {
             let wantBool = wantValueStr.lowercased() == "true"
             if let gotBool: Bool = axValue(of: element, attr: attrKey) {
-                currentAttributeMatches = (gotBool == wantBool)
-                debug("attributesMatch [D\(depth)]: Boolean '\(attrKey)'. Wanted: \(wantBool), Got: \(gotBool), Match: \(currentAttributeMatches)")
+                currentSpecificAttributeMatch = (gotBool == wantBool)
+                debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Bool). Want: \(wantBool), Got: \(gotBool). Match: \(currentSpecificAttributeMatch)")
             } else {
-                debug("attributesMatch [D\(depth)]: Boolean '\(attrKey)'. Wanted: \(wantBool), Got: nil or non-boolean.")
-                currentAttributeMatches = false
+                debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Bool). Want: \(wantBool), Got: nil/non-bool.")
+                currentSpecificAttributeMatch = false
             }
         }
-        // 2. Array Matching (NO RETRY IN THIS HELPER - RETRY IS IN SEARCH/COLLECTALL CALLING AXVALUE)
+        // 2. Array Matching (with Retry)
         else if let expectedArr = decodeExpectedArray(fromString: wantValueStr) {
-            if let actualArr: [String] = axValue(of: element, attr: attrKey) { // Direct call to axValue
-                if attrKey == "AXDOMClassList" { // Constant kAXDOMClassListAttribute would be better
-                    currentAttributeMatches = Set(expectedArr).isSubset(of: Set(actualArr))
-                    debug("attributesMatch [D\(depth)]: Array (Subset) '\(attrKey)'. Wanted: \(expectedArr), Got: \(actualArr), Match: \(currentAttributeMatches)")
-                } else {
-                    currentAttributeMatches = (Set(expectedArr) == Set(actualArr) && expectedArr.count == actualArr.count)
-                    debug("attributesMatch [D\(depth)]: Array (Exact) '\(attrKey)'. Wanted: \(expectedArr), Got: \(actualArr), Match: \(currentAttributeMatches)")
+            var actualArr: [String]? = nil
+            let maxRetries = 3
+            let retryDelayUseconds: UInt32 = 50000 // 50ms
+
+            for attempt in 0..<maxRetries {
+                actualArr = axValue(of: element, attr: attrKey)
+                if let currentActualArr = actualArr {
+                    if attrKey == kAXDOMClassList && currentActualArr.isEmpty {
+                        if attempt < maxRetries - 1 {
+                            debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (AXDOMClassList) empty attempt \(attempt + 1). Retrying...")
+                            usleep(retryDelayUseconds)
+                            continue 
+                        } else {
+                            debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (AXDOMClassList) remained empty after \(maxRetries) attempts.")
+                            break 
+                        }
+                    }
+                    break // Found non-nil (and for AXDOMClassList, non-empty or last attempt)
+                } else { // actualArr is nil
+                    if attempt < maxRetries - 1 {
+                        debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' nil attempt \(attempt + 1). Retrying...")
+                        usleep(retryDelayUseconds)
+                    } else {
+                        debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' remained nil after \(maxRetries) attempts.")
+                        break 
+                    }
+                }
+            }
+            
+            if let finalActualArr = actualArr { 
+                if attrKey == kAXDOMClassList { // Special handling for AXDOMClassList (subset match)
+                    currentSpecificAttributeMatch = Set(expectedArr).isSubset(of: Set(finalActualArr))
+                    debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Array Subset). Want: \(expectedArr), Got: \(finalActualArr). Match: \(currentSpecificAttributeMatch)")
+                } else { // Exact match for other arrays
+                    currentSpecificAttributeMatch = (Set(expectedArr) == Set(finalActualArr) && expectedArr.count == finalActualArr.count)
+                    debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Array Exact). Want: \(expectedArr), Got: \(finalActualArr). Match: \(currentSpecificAttributeMatch)")
                 }
             } else {
-                currentAttributeMatches = false // axValue didn't return a [String]
-                debug("attributesMatch [D\(depth)]: Array '\(attrKey)'. Wanted: \(expectedArr), Got: nil or non-[String].")
+                currentSpecificAttributeMatch = false
+                debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Array). Wanted: \(expectedArr), Got: nil/empty after retries.")
             }
         }
         // 3. Numeric Matching
         else if let wantInt = Int(wantValueStr) {
             if let gotInt: Int = axValue(of: element, attr: attrKey) {
-                currentAttributeMatches = (gotInt == wantInt)
-                debug("attributesMatch [D\(depth)]: Numeric '\(attrKey)'. Wanted: \(wantInt), Got: \(gotInt), Match: \(currentAttributeMatches)")
+                currentSpecificAttributeMatch = (gotInt == wantInt)
+                debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Numeric). Want: \(wantInt), Got: \(gotInt). Match: \(currentSpecificAttributeMatch)")
             } else {
-                debug("attributesMatch [D\(depth)]: Numeric '\(attrKey)'. Wanted: \(wantInt), Got: nil or non-integer.")
-                currentAttributeMatches = false
+                debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Numeric). Wanted: \(wantInt), Got: nil/non-integer.")
+                currentSpecificAttributeMatch = false
             }
         }
         // 4. String Matching (Fallback)
         else {
             if let gotString: String = axValue(of: element, attr: attrKey) {
-                currentAttributeMatches = (gotString == wantValueStr)
-                debug("attributesMatch [D\(depth)]: String '\(attrKey)'. Wanted: \(wantValueStr), Got: \(gotString), Match: \(currentAttributeMatches)")
+                currentSpecificAttributeMatch = (gotString == wantValueStr)
+                debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (String). Wanted: \(wantValueStr), Got: \(gotString). Match: \(currentSpecificAttributeMatch)")
             } else {
-                debug("attributesMatch [D\(depth)]: String '\(attrKey)'. Wanted: \(wantValueStr), Got: nil or non-string.")
-                currentAttributeMatches = false
+                // If wantValueStr is empty and gotString is nil, consider it a match for empty string criteria.
+                if wantValueStr.isEmpty && axValue(of: element, attr: attrKey) == (nil as String?) {
+                    currentSpecificAttributeMatch = true
+                    debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (String). Wanted empty string, Got nil. Match: true (special case)")
+                } else {
+                    debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (String). Wanted: \(wantValueStr), Got: nil/non-string.")
+                    currentSpecificAttributeMatch = false
+                }
             }
         }
         
-        if !currentAttributeMatches {
-            // debug("attributesMatch [D\(depth)]: Attribute '\(attrKey)' overall MISMATCH for element.")
-            return false // Mismatch for this key, so the whole match fails
+        if !currentSpecificAttributeMatch {
+            debug("attributesMatch [D\(depth)]: Attribute '\(attrKey)' MISMATCH. Halting attribute checks for this element.")
+            return false // A single mismatch means the element doesn't match the locator's attributes
         }
-    } // End of loop through matchDetails
-    return true // All attributes in matchDetails matched
+    } // End of attribute matching loop
+    
+    debug("attributesMatch [D\(depth)]: All attributes in locator.match successfully matched.")
+    return true // All attributes in locator.match were checked and matched
 }
 
 // End of AXSearch.swift for now 
