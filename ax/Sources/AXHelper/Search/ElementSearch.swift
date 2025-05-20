@@ -1,14 +1,12 @@
-// AXSearch.swift - Contains search and element collection logic
+// ElementSearch.swift - Contains search and element collection logic
 
 import Foundation
 import ApplicationServices
 
-// Variable DEBUG_LOGGING_ENABLED is expected to be globally available from AXLogging.swift
-// AXElement is now the primary type for UI elements.
+// Variable DEBUG_LOGGING_ENABLED is expected to be globally available from Logging.swift
+// Element is now the primary type for UI elements.
 
-// decodeExpectedArray MOVED to Utils/AXGeneralParsingUtils.swift
-
-// AXUIElementHashableWrapper is obsolete and removed.
+// decodeExpectedArray MOVED to Utils/GeneralParsingUtils.swift
 
 enum ElementMatchStatus {
     case fullMatch          // Role, attributes, and (if specified) action all match
@@ -17,8 +15,8 @@ enum ElementMatchStatus {
 }
 
 @MainActor
-private func evaluateElementAgainstCriteria(axElement: AXElement, locator: Locator, actionToVerify: String?, depth: Int, isDebugLoggingEnabled: Bool) -> ElementMatchStatus {
-    let currentElementRoleForLog: String? = axElement.role
+private func evaluateElementAgainstCriteria(element: Element, locator: Locator, actionToVerify: String?, depth: Int, isDebugLoggingEnabled: Bool) -> ElementMatchStatus {
+    let currentElementRoleForLog: String? = element.role
     let wantedRoleFromCriteria = locator.criteria[kAXRoleAttribute as String] ?? locator.criteria["AXRole"]
     var roleMatchesCriteria = false
 
@@ -41,7 +39,7 @@ private func evaluateElementAgainstCriteria(axElement: AXElement, locator: Locat
     }
 
     // Role matches, now check other attributes
-    if !attributesMatch(axElement: axElement, matchDetails: locator.criteria, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+    if !attributesMatch(element: element, matchDetails: locator.criteria, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
         // attributesMatch itself will log the specific mismatch reason
         if isDebugLoggingEnabled {
             debug("evaluateElementAgainstCriteria [D\(depth)]: attributesMatch returned false. No match.")
@@ -51,7 +49,7 @@ private func evaluateElementAgainstCriteria(axElement: AXElement, locator: Locat
 
     // Role and attributes match. Now check for required action.
     if let requiredAction = actionToVerify, !requiredAction.isEmpty {
-        if !axElement.isActionSupported(requiredAction) {
+        if !element.isActionSupported(requiredAction) {
             if isDebugLoggingEnabled {
                 debug("evaluateElementAgainstCriteria [D\(depth)]: Role & Attributes matched, but required action '\(requiredAction)' is MISSING.")
             }
@@ -70,28 +68,28 @@ private func evaluateElementAgainstCriteria(axElement: AXElement, locator: Locat
 }
 
 @MainActor
-public func search(axElement: AXElement,
+public func search(element: Element,
             locator: Locator,
             requireAction: String?,
             depth: Int = 0,
             maxDepth: Int = DEFAULT_MAX_DEPTH_SEARCH,
-            isDebugLoggingEnabled: Bool) -> AXElement? {
+            isDebugLoggingEnabled: Bool) -> Element? {
 
     if isDebugLoggingEnabled {
         let criteriaDesc = locator.criteria.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
-        let roleStr = axElement.role ?? "nil"
-        let titleStr = axElement.title ?? "N/A"
+        let roleStr = element.role ?? "nil"
+        let titleStr = element.title ?? "N/A"
         debug("search [D\(depth)]: Visiting. Role: \(roleStr), Title: \(titleStr). Locator Criteria: [\(criteriaDesc)], Action: \(requireAction ?? "none")")
     }
 
     if depth > maxDepth {
         if isDebugLoggingEnabled {
-            debug("search [D\(depth)]: Max depth \(maxDepth) reached for element \(axElement.briefDescription()).")
+            debug("search [D\(depth)]: Max depth \(maxDepth) reached for element \(element.briefDescription()).")
         }
         return nil
     }
 
-    let matchStatus = evaluateElementAgainstCriteria(axElement: axElement, 
+    let matchStatus = evaluateElementAgainstCriteria(element: element, 
                                                  locator: locator, 
                                                  actionToVerify: requireAction, 
                                                  depth: depth, 
@@ -99,26 +97,26 @@ public func search(axElement: AXElement,
 
     if matchStatus == .fullMatch {
         if isDebugLoggingEnabled {
-            debug("search [D\(depth)]: evaluateElementAgainstCriteria returned .fullMatch for \(axElement.briefDescription()). Returning element.")
+            debug("search [D\(depth)]: evaluateElementAgainstCriteria returned .fullMatch for \(element.briefDescription()). Returning element.")
         }
-        return axElement
+        return element
     }
     
     // If .noMatch or .partialMatch_actionMissing, we continue to search children.
     // evaluateElementAgainstCriteria already logs the reasons for these statuses if isDebugLoggingEnabled.
     if isDebugLoggingEnabled && matchStatus == .partialMatch_actionMissing {
-        debug("search [D\(depth)]: Element \(axElement.briefDescription()) matched criteria but missed action '\(requireAction ?? "")'. Continuing child search.")
+        debug("search [D\(depth)]: Element \(element.briefDescription()) matched criteria but missed action '\(requireAction ?? "")'. Continuing child search.")
     }
     if isDebugLoggingEnabled && matchStatus == .noMatch {
-        debug("search [D\(depth)]: Element \(axElement.briefDescription()) did not match criteria. Continuing child search.")
+        debug("search [D\(depth)]: Element \(element.briefDescription()) did not match criteria. Continuing child search.")
     }
 
-    // Get children using the now comprehensive AXElement.children property
-    let childrenToSearch: [AXElement] = axElement.children ?? []
+    // Get children using the now comprehensive Element.children property
+    let childrenToSearch: [Element] = element.children ?? []
 
     if !childrenToSearch.isEmpty {
-      for childAXElement in childrenToSearch {
-          if let found = search(axElement: childAXElement, locator: locator, requireAction: requireAction, depth: depth + 1, maxDepth: maxDepth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+      for childElement in childrenToSearch {
+          if let found = search(element: childElement, locator: locator, requireAction: requireAction, depth: depth + 1, maxDepth: maxDepth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
               return found
           }
       }
@@ -128,47 +126,47 @@ public func search(axElement: AXElement,
 
 @MainActor
 public func collectAll(
-    appAXElement: AXElement,
+    appElement: Element,
     locator: Locator,
-    currentAXElement: AXElement,
+    currentElement: Element,
     depth: Int,
     maxDepth: Int,
     maxElements: Int,
-    currentPath: [AXElement],
-    elementsBeingProcessed: inout Set<AXElement>,
-    foundElements: inout [AXElement],
+    currentPath: [Element],
+    elementsBeingProcessed: inout Set<Element>,
+    foundElements: inout [Element],
     isDebugLoggingEnabled: Bool
 ) {
-    if elementsBeingProcessed.contains(currentAXElement) || currentPath.contains(currentAXElement) {
+    if elementsBeingProcessed.contains(currentElement) || currentPath.contains(currentElement) {
         if isDebugLoggingEnabled {
-            debug("collectAll [D\(depth)]: Cycle detected or element \(currentAXElement.briefDescription()) already processed/in path.")
+            debug("collectAll [D\(depth)]: Cycle detected or element \(currentElement.briefDescription()) already processed/in path.")
         }
         return
     }
-    elementsBeingProcessed.insert(currentAXElement)
+    elementsBeingProcessed.insert(currentElement)
 
     if foundElements.count >= maxElements {
         if isDebugLoggingEnabled {
-            debug("collectAll [D\(depth)]: Max elements limit of \(maxElements) reached before processing \(currentAXElement.briefDescription()).")
+            debug("collectAll [D\(depth)]: Max elements limit of \(maxElements) reached before processing \(currentElement.briefDescription()).")
         }
-        elementsBeingProcessed.remove(currentAXElement) // Important to remove before returning
+        elementsBeingProcessed.remove(currentElement) // Important to remove before returning
         return
     }
     if depth > maxDepth {
         if isDebugLoggingEnabled {
-            debug("collectAll [D\(depth)]: Max depth \(maxDepth) reached for \(currentAXElement.briefDescription()).")
+            debug("collectAll [D\(depth)]: Max depth \(maxDepth) reached for \(currentElement.briefDescription()).")
         }
-        elementsBeingProcessed.remove(currentAXElement) // Important to remove before returning
+        elementsBeingProcessed.remove(currentElement) // Important to remove before returning
         return
     }
 
     if isDebugLoggingEnabled {
         let criteriaDesc = locator.criteria.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
-        debug("collectAll [D\(depth)]: Visiting \(currentAXElement.briefDescription()). Criteria: [\(criteriaDesc)], Action: \(locator.requireAction ?? "none")")
+        debug("collectAll [D\(depth)]: Visiting \(currentElement.briefDescription()). Criteria: [\(criteriaDesc)], Action: \(locator.requireAction ?? "none")")
     }
 
     // Use locator.requireAction for actionToVerify in collectAll context
-    let matchStatus = evaluateElementAgainstCriteria(axElement: currentAXElement, 
+    let matchStatus = evaluateElementAgainstCriteria(element: currentElement, 
                                                  locator: locator, 
                                                  actionToVerify: locator.requireAction, 
                                                  depth: depth, 
@@ -176,38 +174,38 @@ public func collectAll(
 
     if matchStatus == .fullMatch {
         if foundElements.count < maxElements {
-            if !foundElements.contains(currentAXElement) { 
-                 foundElements.append(currentAXElement)
+            if !foundElements.contains(currentElement) { 
+                 foundElements.append(currentElement)
                  if isDebugLoggingEnabled {
-                     debug("collectAll [D\(depth)]: Added \(currentAXElement.briefDescription()). Hits: \(foundElements.count)/\(maxElements)")
+                     debug("collectAll [D\(depth)]: Added \(currentElement.briefDescription()). Hits: \(foundElements.count)/\(maxElements)")
                  }
             } else if isDebugLoggingEnabled {
-                debug("collectAll [D\(depth)]: Element \(currentAXElement.briefDescription()) was a full match but already in foundElements.")
+                debug("collectAll [D\(depth)]: Element \(currentElement.briefDescription()) was a full match but already in foundElements.")
             }
         } else if isDebugLoggingEnabled {
             // This case is covered by the check at the beginning of the function, 
             // but as a safeguard if logic changes:
-            debug("collectAll [D\(depth)]: Element \(currentAXElement.briefDescription()) was a full match but maxElements (\(maxElements)) already reached.")
+            debug("collectAll [D\(depth)]: Element \(currentElement.briefDescription()) was a full match but maxElements (\(maxElements)) already reached.")
         }
     }
     // evaluateElementAgainstCriteria handles logging for .noMatch or .partialMatch_actionMissing
     // We always try to explore children unless maxElements is hit.
 
-    let childrenToExplore: [AXElement] = currentAXElement.children ?? []
-    elementsBeingProcessed.remove(currentAXElement) // Remove before recursing on children
+    let childrenToExplore: [Element] = currentElement.children ?? []
+    elementsBeingProcessed.remove(currentElement) // Remove before recursing on children
 
-    let newPath = currentPath + [currentAXElement]
+    let newPath = currentPath + [currentElement]
     for child in childrenToExplore {
         if foundElements.count >= maxElements { 
             if isDebugLoggingEnabled {
-                debug("collectAll [D\(depth)]: Max elements (\(maxElements)) reached during child traversal of \(currentAXElement.briefDescription()). Stopping further exploration for this branch.")
+                debug("collectAll [D\(depth)]: Max elements (\(maxElements)) reached during child traversal of \(currentElement.briefDescription()). Stopping further exploration for this branch.")
             }
             break 
         }
         collectAll(
-            appAXElement: appAXElement, 
+            appElement: appElement, 
             locator: locator,
-            currentAXElement: child, 
+            currentElement: child, 
             depth: depth + 1, 
             maxDepth: maxDepth, 
             maxElements: maxElements,
@@ -220,18 +218,18 @@ public func collectAll(
 }
 
 @MainActor
-private func attributesMatch(axElement: AXElement, matchDetails: [String: String], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+private func attributesMatch(element: Element, matchDetails: [String: String], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
     if isDebugLoggingEnabled {
         let criteriaDesc = matchDetails.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
-        let roleForLog = axElement.role ?? "nil"
-        let titleForLog = axElement.title ?? "nil"
+        let roleForLog = element.role ?? "nil"
+        let titleForLog = element.title ?? "nil"
         debug("attributesMatch [D\(depth)]: Check. Role=\(roleForLog), Title=\(titleForLog). Criteria: [\(criteriaDesc)]")
     }
 
     // Check computed name criteria first
     let computedNameEquals = matchDetails["computed_name_equals"]
     let computedNameContains = matchDetails["computed_name_contains"]
-    if !matchComputedNameAttributes(axElement: axElement, computedNameEquals: computedNameEquals, computedNameContains: computedNameContains, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+    if !matchComputedNameAttributes(element: element, computedNameEquals: computedNameEquals, computedNameContains: computedNameContains, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
         return false // Computed name check failed
     }
 
@@ -245,7 +243,7 @@ private func attributesMatch(axElement: AXElement, matchDetails: [String: String
 
         // Handle boolean attributes explicitly
         if key == kAXEnabledAttribute || key == kAXFocusedAttribute || key == kAXHiddenAttribute || key == kAXElementBusyAttribute || key == "IsIgnored" {
-            if !matchBooleanAttribute(axElement: axElement, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+            if !matchBooleanAttribute(element: element, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
                 return false // No match
             }
             continue // Move to next criteria item
@@ -253,14 +251,14 @@ private func attributesMatch(axElement: AXElement, matchDetails: [String: String
         
         // For array attributes, decode the expected string value into an array
         if key == kAXActionNamesAttribute || key == kAXAllowedValuesAttribute || key == kAXChildrenAttribute /* add others if needed */ {
-            if !matchArrayAttribute(axElement: axElement, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+            if !matchArrayAttribute(element: element, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
                 return false // No match
             }
             continue
         }
 
         // Fallback to generic string attribute comparison
-        if !matchStringAttribute(axElement: axElement, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+        if !matchStringAttribute(element: element, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
             return false // No match
         }
     }
@@ -272,8 +270,8 @@ private func attributesMatch(axElement: AXElement, matchDetails: [String: String
 }
 
 @MainActor
-private func matchStringAttribute(axElement: AXElement, key: String, expectedValueString: String, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
-    if let currentValue = axElement.attribute(AXAttribute<String>(key)) { // AXAttribute<String> implies string conversion
+private func matchStringAttribute(element: Element, key: String, expectedValueString: String, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+    if let currentValue = element.attribute(Attribute<String>(key)) { // Attribute<String> implies string conversion
         if currentValue != expectedValueString {
             if isDebugLoggingEnabled {
                 debug("attributesMatch [D\(depth)]: Attribute '\(key)' expected '\(expectedValueString)', but found '\(currentValue)'. No match.")
@@ -299,7 +297,7 @@ private func matchStringAttribute(axElement: AXElement, key: String, expectedVal
 }
 
 @MainActor
-private func matchArrayAttribute(axElement: AXElement, key: String, expectedValueString: String, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+private func matchArrayAttribute(element: Element, key: String, expectedValueString: String, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
     guard let expectedArray = decodeExpectedArray(fromString: expectedValueString) else {
         if isDebugLoggingEnabled {
             debug("matchArrayAttribute [D\(depth)]: Could not decode expected array string '\(expectedValueString)' for attribute '\(key)'. No match.")
@@ -309,11 +307,11 @@ private func matchArrayAttribute(axElement: AXElement, key: String, expectedValu
     
     var actualArray: [String]? = nil
     if key == kAXActionNamesAttribute {
-        actualArray = axElement.supportedActions
+        actualArray = element.supportedActions
     } else if key == kAXAllowedValuesAttribute {
-        actualArray = axElement.attribute(AXAttribute<[String]>(key))
+        actualArray = element.attribute(Attribute<[String]>(key))
     } else if key == kAXChildrenAttribute {
-        actualArray = axElement.children?.map { $0.role ?? "UnknownRole" } 
+        actualArray = element.children?.map { $0.role ?? "UnknownRole" } 
     } else {
         if isDebugLoggingEnabled {
             debug("matchArrayAttribute [D\(depth)]: Unknown array key '\(key)'. This function needs to be extended for this key.")
@@ -345,14 +343,14 @@ private func matchArrayAttribute(axElement: AXElement, key: String, expectedValu
 }
 
 @MainActor
-private func matchBooleanAttribute(axElement: AXElement, key: String, expectedValueString: String, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+private func matchBooleanAttribute(element: Element, key: String, expectedValueString: String, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
     var currentBoolValue: Bool?
     switch key {
-    case kAXEnabledAttribute: currentBoolValue = axElement.isEnabled
-    case kAXFocusedAttribute: currentBoolValue = axElement.isFocused
-    case kAXHiddenAttribute: currentBoolValue = axElement.isHidden
-    case kAXElementBusyAttribute: currentBoolValue = axElement.isElementBusy
-    case "IsIgnored": currentBoolValue = axElement.isIgnored // This is already a Bool
+    case kAXEnabledAttribute: currentBoolValue = element.isEnabled
+    case kAXFocusedAttribute: currentBoolValue = element.isFocused
+    case kAXHiddenAttribute: currentBoolValue = element.isHidden
+    case kAXElementBusyAttribute: currentBoolValue = element.isElementBusy
+    case "IsIgnored": currentBoolValue = element.isIgnored // This is already a Bool
     default: 
         if isDebugLoggingEnabled {
             debug("matchBooleanAttribute [D\(depth)]: Unknown boolean key '\(key)'. This should not happen.")
@@ -378,12 +376,12 @@ private func matchBooleanAttribute(axElement: AXElement, key: String, expectedVa
 }
 
 @MainActor
-private func matchComputedNameAttributes(axElement: AXElement, computedNameEquals: String?, computedNameContains: String?, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+private func matchComputedNameAttributes(element: Element, computedNameEquals: String?, computedNameContains: String?, depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
     if computedNameEquals == nil && computedNameContains == nil {
         return true // No computed name criteria to check
     }
 
-    let computedAttrs = getComputedAttributes(for: axElement)
+    let computedAttrs = getComputedAttributes(for: element)
     if let currentComputedNameAny = computedAttrs["ComputedName"]?.value,
        let currentComputedName = currentComputedNameAny as? String {
         if let equals = computedNameEquals {
@@ -411,5 +409,3 @@ private func matchComputedNameAttributes(axElement: AXElement, computedNameEqual
         return false
     }
 }
-
-// End of AXSearch.swift for now 

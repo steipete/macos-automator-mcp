@@ -13,10 +13,10 @@ let encoder = JSONEncoder()
 
 if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-h") {
     let helpText = """
-    ax Accessibility Helper v\(AX_BINARY_VERSION)
+    ax Accessibility Helper v\(BINARY_VERSION)
     Communicates via JSON on stdin/stdout.
-    Input JSON: See CommandEnvelope in AXModels.swift
-    Output JSON: See response structs (QueryResponse, etc.) in AXModels.swift
+    Input JSON: See CommandEnvelope in Models.swift
+    Output JSON: See response structs (QueryResponse, etc.) in Models.swift
     """
     print(helpText)
     exit(0)
@@ -24,7 +24,7 @@ if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-
 
 do {
     try checkAccessibilityPermissions() // This needs to be called from main
-} catch let error as AXToolError {
+} catch let error as AccessibilityError {
     // Handle permission error specifically at startup
     let errorResponse = ErrorResponse(command_id: "startup_permissions_check", error: error.description, debug_logs: nil)
     sendResponse(errorResponse)
@@ -36,7 +36,7 @@ do {
     exit(1)
 }
 
-debug("ax binary version: \(AX_BINARY_VERSION) starting main loop.") // And this debug line
+debug("ax binary version: \(BINARY_VERSION) starting main loop.") // And this debug line
 
 while let line = readLine(strippingNewline: true) {
     commandSpecificDebugLoggingEnabled = false // Reset for each command
@@ -87,8 +87,8 @@ while let line = readLine(strippingNewline: true) {
         }
         
         sendResponse(response, commandId: currentCommandId) // Use currentCommandId
-    } catch let error as AXToolError {
-        debug("Error (AXToolError) for command \(currentCommandId): \(error.description)")
+    } catch let error as AccessibilityError {
+        debug("Error (AccessibilityError) for command \(currentCommandId): \(error.description)")
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: error.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
         // Consider exiting with error.exitCode if appropriate for the context
@@ -107,13 +107,13 @@ while let line = readLine(strippingNewline: true) {
         @unknown default:
             detailedError = "Unknown decoding error: \(error.localizedDescription)"
         }
-        let finalError = AXToolError.jsonDecodingFailed(error) // Wrap in AXToolError
+        let finalError = AccessibilityError.jsonDecodingFailed(error) // Wrap in AccessibilityError
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: "\(finalError.description) Details: \(detailedError)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
     } catch { // Catch any other errors, including encoding errors from sendResponse itself if they were rethrown
         debug("Unhandled/Generic error for command \(currentCommandId): \(error.localizedDescription)")
-        // Wrap generic swift errors into our AXToolError.genericError
-        let toolError = AXToolError.genericError("Unhandled Swift error: \(error.localizedDescription)")
+        // Wrap generic swift errors into our AccessibilityError.genericError
+        let toolError = AccessibilityError.genericError("Unhandled Swift error: \(error.localizedDescription)")
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: toolError.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
     }
@@ -176,10 +176,10 @@ func sendResponse(_ response: Codable, commandId: String? = nil) {
     } catch {
         // Fallback for encoding errors. This is a critical failure.
         // Constructing a simple JSON string to avoid using the potentially failing encoder.
-        let toolError = AXToolError.jsonEncodingFailed(error)
+        let toolError = AccessibilityError.jsonEncodingFailed(error)
         let errorDetails = String(describing: error).replacingOccurrences(of: "\"", with: "\\\"").replacingOccurrences(of: "\n", with: "\\n") // Basic escaping
         let finalCommandId = effectiveCommandId ?? "unknown_encoding_error"
-        // Using the description from AXToolError and adding specific details.
+        // Using the description from AccessibilityError and adding specific details.
         let errorMsg = "{\"command_id\":\"\(finalCommandId)\",\"error\":\"\(toolError.description) Specifics: \(errorDetails)\"}\n"
         fputs(errorMsg, stderr)
         fflush(stderr)

@@ -1,4 +1,4 @@
-// AXModels.swift - Contains Codable structs for command handling and responses
+// Models.swift - Contains Codable structs for command handling and responses
 
 import Foundation
 
@@ -230,4 +230,4 @@ public struct ErrorResponse: Codable {
         self.error = error
         self.debug_logs = debug_logs
     }
-} 
+}

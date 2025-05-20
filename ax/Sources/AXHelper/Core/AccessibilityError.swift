@@ -1,10 +1,10 @@
-// AXError.swift - Defines custom error types for the AX tool.
+// AccessibilityError.swift - Defines custom error types for the accessibility tool.
 
 import Foundation
 import ApplicationServices // Import to make AXError visible
 
-// Main error enum for the ax tool, incorporating parsing and operational errors.
-public enum AXToolError: Error, CustomStringConvertible {
+// Main error enum for the accessibility tool, incorporating parsing and operational errors.
+public enum AccessibilityError: Error, CustomStringConvertible {
     // Authorization & Setup Errors
     case apiDisabled // Accessibility API is disabled.
     case notAuthorized(String?) // Process is not authorized. Optional AXError for more detail.
@@ -105,4 +105,4 @@ public enum AXToolError: Error, CustomStringConvertible {
         case .unknownAXError, .genericError: return 1
         }
     }
-} 
+}

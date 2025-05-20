@@ -1,13 +1,13 @@
-// AXPermissions.swift - Utility for checking and managing accessibility permissions.
+// AccessibilityPermissions.swift - Utility for checking and managing accessibility permissions.
 
 import Foundation
 import ApplicationServices // For AXIsProcessTrusted(), AXUIElementCreateSystemWide(), etc.
 import AppKit // For NSRunningApplication
 
-// debug() is assumed to be globally available from AXLogging.swift
-// getParentProcessName() is assumed to be globally available from AXProcessUtils.swift
-// kAXFocusedUIElementAttribute is assumed to be globally available from AXConstants.swift
-// AXToolError is from AXError.swift
+// debug() is assumed to be globally available from Logging.swift
+// getParentProcessName() is assumed to be globally available from ProcessUtils.swift
+// kAXFocusedUIElementAttribute is assumed to be globally available from AccessibilityConstants.swift
+// AccessibilityError is from AccessibilityError.swift
 
 @MainActor
 public func checkAccessibilityPermissions() throws { // Mark as throwing
@@ -25,9 +25,9 @@ public func checkAccessibilityPermissions() throws { // Mark as throwing
         // A common way to check if API is disabled is if AXUIElementCreateSystemWide returns nil, but that's too late here.
         
         debug("Accessibility check failed. Details: \(errorDetail)")
-        // The fputs lines are now handled by how main.swift catches and prints AXToolError
-        throw AXToolError.notAuthorized(errorDetail) 
+        // The fputs lines are now handled by how main.swift catches and prints AccessibilityError
+        throw AccessibilityError.notAuthorized(errorDetail) 
     } else {
         debug("Accessibility permissions are granted.")
     }
-} 
+}

@@ -1,9 +1,9 @@
-// AXProcessUtils.swift - Utilities for process and application inspection.
+// ProcessUtils.swift - Utilities for process and application inspection.
 
 import Foundation
 import AppKit // For NSRunningApplication, NSWorkspace
 
-// debug() is assumed to be globally available from AXLogging.swift
+// debug() is assumed to be globally available from Logging.swift
 
 @MainActor
 public func pid(forAppIdentifier ident: String) -> pid_t? {
@@ -36,4 +36,4 @@ public func getParentProcessName() -> String? {
         return parentApp.localizedName ?? parentApp.bundleIdentifier
     }
     return nil
-} 
+}

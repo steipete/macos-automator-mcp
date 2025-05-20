@@ -1,18 +1,18 @@
 import Foundation
 import ApplicationServices // For AXUIElement, CFTypeRef etc.
 
-// debug() is assumed to be globally available from AXLogging.swift
-// DEBUG_LOGGING_ENABLED is a global public var from AXLogging.swift
+// debug() is assumed to be globally available from Logging.swift
+// DEBUG_LOGGING_ENABLED is a global public var from Logging.swift
 
 @MainActor
-func attributesMatch(axElement: AXElement, matchDetails: [String: Any], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+func attributesMatch(element: Element, matchDetails: [String: Any], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
     var allMatch = true
 
     for (key, expectedValueAny) in matchDetails {
         var perAttributeDebugMessages: [String]? = isDebugLoggingEnabled ? [] : nil
         var currentAttrMatch = false
         
-        let actualValueRef: CFTypeRef? = axElement.rawAttributeValue(named: key)
+        let actualValueRef: CFTypeRef? = element.rawAttributeValue(named: key)
 
         if actualValueRef == nil {
             if let expectedStr = expectedValueAny as? String,
@@ -164,11 +164,11 @@ func attributesMatch(axElement: AXElement, matchDetails: [String: Any], depth: I
         if !currentAttrMatch {
             allMatch = false
             if isDebugLoggingEnabled {
-                let message = "attributesMatch [D\(depth)]: Element for Role(\(axElement.role ?? "N/A")): Attribute '\(key)' MISMATCH. \(perAttributeDebugMessages?.joined(separator: "; ") ?? "Debug details not collected or empty.")"
+                let message = "attributesMatch [D\(depth)]: Element for Role(\(element.role ?? "N/A")): Attribute '\(key)' MISMATCH. \(perAttributeDebugMessages?.joined(separator: "; ") ?? "Debug details not collected or empty.")"
                 debug(message, file: #file, function: #function, line: #line)
             }
             return false
         }
     }
     return allMatch
-} 
+}

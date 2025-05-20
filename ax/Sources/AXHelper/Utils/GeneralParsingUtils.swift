@@ -1,4 +1,4 @@
-// AXGeneralParsingUtils.swift - General parsing utilities
+// GeneralParsingUtils.swift - General parsing utilities
 
 import Foundation
 
@@ -79,4 +79,4 @@ public func decodeExpectedArray(fromString: String) -> [String]? {
                            // as "[a,,b]" usually implies "[a,b]" in lenient contexts.
                            // If explicit empty strings like `["a", "", "b"]` are needed, JSON is better.
                            .filter { !$0.isEmpty } 
-} 
+}

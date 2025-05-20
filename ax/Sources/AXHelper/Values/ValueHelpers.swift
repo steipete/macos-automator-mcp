@@ -2,10 +2,10 @@ import Foundation
 import ApplicationServices
 import CoreGraphics // For CGPoint, CGSize etc.
 
-// debug() is assumed to be globally available from AXLogging.swift
-// Constants like kAXPositionAttribute are assumed to be globally available from AXConstants.swift
+// debug() is assumed to be globally available from Logging.swift
+// Constants like kAXPositionAttribute are assumed to be globally available from AccessibilityConstants.swift
 
-// AXValueUnwrapper has been moved to its own file: AXValueUnwrapper.swift
+// ValueUnwrapper has been moved to its own file: ValueUnwrapper.swift
 
 // MARK: - Attribute Value Accessors
 
@@ -21,7 +21,7 @@ public func copyAttributeValue(element: AXUIElement, attribute: String) -> CFTyp
 @MainActor
 public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
     let rawCFValue = copyAttributeValue(element: element, attribute: attr)
-    let unwrappedValue = AXValueUnwrapper.unwrap(rawCFValue)
+    let unwrappedValue = ValueUnwrapper.unwrap(rawCFValue)
 
     guard let value = unwrappedValue else { return nil }
 
@@ -68,18 +68,18 @@ public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
         return nil
     }
 
-    if T.self == [AXElement].self {
+    if T.self == [Element].self {
         if let anyArray = value as? [Any?] {
-            let result = anyArray.compactMap { item -> AXElement? in
+            let result = anyArray.compactMap { item -> Element? in
                 guard let cfItem = item else { return nil }
                 if CFGetTypeID(cfItem as CFTypeRef) == ApplicationServices.AXUIElementGetTypeID() {
-                    return AXElement(cfItem as! AXUIElement)
+                    return Element(cfItem as! AXUIElement)
                 }
                 return nil
             }
             return result as? T
         }
-        debug("axValue: Expected [AXElement] for attribute '\(attr)', but got \(type(of: value)): \(value)")
+        debug("axValue: Expected [Element] for attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
 
@@ -136,4 +136,4 @@ public func stringFromAXValueType(_ type: AXValueType) -> String {
         }
         return "Unknown AXValueType (rawValue: \(type.rawValue))"
     }
-} 
+}

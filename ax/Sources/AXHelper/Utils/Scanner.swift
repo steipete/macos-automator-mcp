@@ -1,12 +1,12 @@
-// AXScanner.swift - Custom scanner implementation (AXScanner)
+// Scanner.swift - Custom scanner implementation (Scanner)
 
 import Foundation
 
-// String extension MOVED to AXStringExtensions.swift
-// AXCharacterSet struct MOVED to AXCharacterSet.swift
+// String extension MOVED to String+HelperExtensions.swift
+// CustomCharacterSet struct MOVED to CustomCharacterSet.swift
 
-// AXScanner class from AXScanner
-class AXScanner {
+// Scanner class from Scanner
+class Scanner {
 
 	// MARK: - Properties and Initialization
 	let string: String
@@ -20,7 +20,7 @@ class AXScanner {
 
     // MARK: - Character Set Scanning
     // A more conventional scanUpTo (scans until a character in the set is found)
-    @discardableResult func scanUpToCharacters(in charSet: AXCharacterSet) -> String? {
+    @discardableResult func scanUpToCharacters(in charSet: CustomCharacterSet) -> String? {
         let initialLocation = self.location
         var scannedCharacters = String()
         while self.location < self.string.count {
@@ -34,8 +34,8 @@ class AXScanner {
         return scannedCharacters.isEmpty && self.location == initialLocation ? nil : scannedCharacters
     }
 
-    // Scans characters that ARE in the provided set (like original AXScanner's scanUpTo/scan(characterSet:))
-    @discardableResult func scanCharacters(in charSet: AXCharacterSet) -> String? {
+    // Scans characters that ARE in the provided set (like original Scanner's scanUpTo/scan(characterSet:))
+    @discardableResult func scanCharacters(in charSet: CustomCharacterSet) -> String? {
         let initialLocation = self.location
         var characters = String()
         while self.location < self.string.count {
@@ -55,7 +55,7 @@ class AXScanner {
     }
 
 
-	@discardableResult func scan(characterSet: AXCharacterSet) -> Character? {
+	@discardableResult func scan(characterSet: CustomCharacterSet) -> Character? {
 		if self.location < self.string.count {
 			let character = self.string[self.location]
 			if characterSet.contains(character) {
@@ -65,7 +65,7 @@ class AXScanner {
 		}
 		return nil
 	}
-	@discardableResult func scan(characterSet: AXCharacterSet) -> String? {
+	@discardableResult func scan(characterSet: CustomCharacterSet) -> String? {
 		var characters = String()
 		while let character: Character = self.scan(characterSet: characterSet) {
 			characters.append(character)
@@ -95,7 +95,7 @@ class AXScanner {
 				return nil
 			}
 		}
-        // Original AXScanner logic:
+        // Original Scanner logic:
 		// if self.location < self.string.count {
 		// 	if let last = string.last, last.isLetter, self.string[self.location].isLetter {
 		// 		self.location = savepoint
@@ -129,51 +129,43 @@ class AXScanner {
 	func scanSign() -> Int? {
 		return self.scan(dictionary: ["+": 1, "-": -1])
 	}
-	lazy var decimalDictionary: [String: Int] = { return [
-		"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
-	] }()
-	func scanDigit() -> Int? { // This scans a single digit character and converts to Int
-        if self.location < self.string.count {
-            let charStr = String(self.string[self.location])
-            if let digit = self.decimalDictionary[charStr] {
-                self.location += 1
-                return digit
-            }
-        }
-		return nil
+	
+	// Private helper that scans and returns a string of digits
+	private func scanDigits() -> String? {
+		return self.scanCharacters(in: .decimalDigits)
 	}
-	func scanDigits() -> [Int]? { // Scans multiple digits
-		var digits = [Int]()
-		while let digit = self.scanDigit() {
-			digits.append(digit)
+	
+	// Calculate integer value from digit string with given base
+	private func integerValue<T: BinaryInteger>(from digitString: String, base: T = 10) -> T {
+		return digitString.reduce(T(0)) { result, char in
+			result * base + T(Int(String(char))!)
 		}
-		return digits.isEmpty ? nil : digits
 	}
+	
 	func scanUnsignedInteger<T: UnsignedInteger>() -> T? {
 		self.scanWhitespaces()
-		if let digits = self.scanDigits() {
-			return digits.reduce(T(0)) { ($0 * 10) + T($1) }
-		}
-		return nil
+		guard let digitString = self.scanDigits() else { return nil }
+		return integerValue(from: digitString)
 	}
+	
 	func scanInteger<T: SignedInteger>() -> T? {
 		let savepoint = self.location
-		var value: T?
 		self.scanWhitespaces()
-        let signVal = self.scanSign()
-		if signVal != nil {
-			if let digits = self.scanDigits() {
-				value = T(signVal!) * digits.reduce(T(0)) { ($0 * 10) + T($1) }
-			}
-			else { // Sign found but no digits
+		
+		// Parse sign if present
+		let sign = self.scanSign() ?? 1
+		
+		// Parse digits
+		guard let digitString = self.scanDigits() else {
+			// If we found a sign but no digits, revert and return nil
+			if sign != 1 {
 				self.location = savepoint
-				value = nil
 			}
+			return nil
 		}
-		else if let digits = self.scanDigits() { // No sign, just digits
-			value = digits.reduce(T(0)) { ($0 * 10) + T($1) }
-		}
-		return value
+		
+		// Calculate final value with sign applied
+		return T(sign) * integerValue(from: digitString)
 	}
     
     // MARK: - Floating Point Scanning
@@ -287,7 +279,7 @@ class AXScanner {
 		var value: T = 0
 		var count = 0
         let initialLoc = self.location
-		while let character: Character = self.scan(characterSet: AXCharacterSet(charactersInString: hexadecimals)) {
+		while let character: Character = self.scan(characterSet: CustomCharacterSet(charactersInString: hexadecimals)) {
 			guard let digit = self.hexadecimalDictionary[character] else { fatalError() } // Should not happen if set is correct
 			value = value * T(16) + T(digit)
 			count += 1
@@ -318,10 +310,10 @@ class AXScanner {
 		self.scanWhitespaces()
 		var identifier: String?
 		let savepoint = self.location
-		let firstCharacterSet = AXCharacterSet(charactersInString: Self.identifierFirstCharacters)
+		let firstCharacterSet = CustomCharacterSet(charactersInString: Self.identifierFirstCharacters)
 		if let character: Character = self.scan(characterSet: firstCharacterSet) {
 			identifier = (identifier ?? "").appending(String(character))
-			let followingCharacterSet = AXCharacterSet(charactersInString: Self.identifierFollowingCharacters)
+			let followingCharacterSet = CustomCharacterSet(charactersInString: Self.identifierFollowingCharacters)
 			while let charFollowing: Character = self.scan(characterSet: followingCharacterSet) {
 				identifier = (identifier ?? "").appending(String(charFollowing))
 			}
@@ -338,7 +330,7 @@ class AXScanner {
 	func scan<T>(dictionary: [String: T], options: NSString.CompareOptions = []) -> T? {
 		for (key, value) in dictionary {
 			if self.scan(string: key, options: options) != nil {
-				// Original AXScanner asserts string == key, which is true if scan(string:) returns non-nil.
+				// Original Scanner asserts string == key, which is true if scan(string:) returns non-nil.
 				return value
 			}
 		}
@@ -352,5 +344,3 @@ class AXScanner {
         return String(string[startIndex...])
     }
 }
-
- 

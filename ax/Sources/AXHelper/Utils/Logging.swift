@@ -1,4 +1,4 @@
-// AXLogging.swift - Manages debug logging
+// Logging.swift - Manages debug logging
 
 import Foundation
 
@@ -15,7 +15,7 @@ public func debug(_ message: String, file: String = #file, function: String = #f
 
     if commandSpecificDebugLoggingEnabled {
         if !versionHeaderLoggedForCommand {
-            let header = "DEBUG: AX: \(AX_BINARY_VERSION) - Command Debugging Started"
+            let header = "DEBUG: AX: \(BINARY_VERSION) - Command Debugging Started"
             collectedDebugLogs.append(header)
             if GLOBAL_DEBUG_ENABLED {
                 // We'll print header and current message together if GLOBAL_DEBUG_ENABLED
@@ -32,7 +32,7 @@ public func debug(_ message: String, file: String = #file, function: String = #f
         // This is handled by the GLOBAL_DEBUG_ENABLED block below.
     } else if GLOBAL_DEBUG_ENABLED {
         // Only GLOBAL_DEBUG_ENABLED is true (commandSpecific is false)
-        messageToLog = "DEBUG: AX: \(AX_BINARY_VERSION) - \(message)"
+        messageToLog = "DEBUG: AX: \(BINARY_VERSION) - \(message)"
     } else {
         // Neither commandSpecificDebugLoggingEnabled nor GLOBAL_DEBUG_ENABLED is true.
         // No logging will occur. Initialize messageToLog to prevent errors, though it won't be used.
@@ -44,7 +44,7 @@ public func debug(_ message: String, file: String = #file, function: String = #f
             // Current message is already in messageToLog (indented).
             // If it was the first message, the header also needs to be printed.
             if printHeaderToStdErrSeparately {
-                 let header = "DEBUG: AX: \(AX_BINARY_VERSION) - Command Debugging Started"
+                 let header = "DEBUG: AX: \(BINARY_VERSION) - Command Debugging Started"
                  fputs(header + "\n", stderr)
             }
             // Print the (potentially indented) messageToLog
@@ -69,4 +69,4 @@ public func debug(_ message: String, file: String = #file, function: String = #f
 public func resetDebugLogContextForNewCommand() {
     versionHeaderLoggedForCommand = false
     // collectedDebugLogs and commandSpecificDebugLoggingEnabled are reset in main.swift
-} 
+}

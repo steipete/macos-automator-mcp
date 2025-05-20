@@ -2,11 +2,11 @@ import Foundation
 import ApplicationServices
 import CoreGraphics // For CGPoint, CGSize etc.
 
-// debug() is assumed to be globally available from AXLogging.swift
-// Constants like kAXPositionAttribute are assumed to be globally available from AXConstants.swift
+// debug() is assumed to be globally available from Logging.swift
+// Constants like kAXPositionAttribute are assumed to be globally available from AccessibilityConstants.swift
 
-// MARK: - AXValueUnwrapper Utility
-struct AXValueUnwrapper {
+// MARK: - ValueUnwrapper Utility
+struct ValueUnwrapper {
     @MainActor
     static func unwrap(_ cfValue: CFTypeRef?) -> Any? {
         guard let value = cfValue else { return nil }
@@ -43,10 +43,10 @@ struct AXValueUnwrapper {
                 var axErrorValue: AXError = .success 
                 return AXValueGetValue(axVal, .axError, &axErrorValue) ? axErrorValue : nil
             case .illegal:
-                debug("AXValueUnwrapper: Encountered AXValue with type .illegal")
+                debug("ValueUnwrapper: Encountered AXValue with type .illegal")
                 return nil
             @unknown default: // Added @unknown default to handle potential new AXValueType cases
-                debug("AXValueUnwrapper: AXValue with unhandled AXValueType: \(stringFromAXValueType(axValueType)).")
+                debug("ValueUnwrapper: AXValue with unhandled AXValueType: \(stringFromAXValueType(axValueType)).")
                 return axVal // Return the original AXValue if type is unknown
             }
         case CFStringGetTypeID():
@@ -80,12 +80,12 @@ struct AXValueUnwrapper {
                  // Fallback for more complex CFDictionary structures if direct bridging fails
                  // This part requires careful handling of CFDictionary keys and values
                  // For now, we'll log if direct bridging fails, as full CFDictionary iteration is complex.
-                 debug("AXValueUnwrapper: Failed to bridge CFDictionary to [String: AnyObject]. Full CFDictionary iteration not yet implemented here.")
+                 debug("ValueUnwrapper: Failed to bridge CFDictionary to [String: AnyObject]. Full CFDictionary iteration not yet implemented here.")
             }
             return swiftDict
         default:
-            debug("AXValueUnwrapper: Unhandled CFTypeID: \(typeID) - \(CFCopyTypeIDDescription(typeID) as String? ?? "Unknown"). Returning raw value.")
+            debug("ValueUnwrapper: Unhandled CFTypeID: \(typeID) - \(CFCopyTypeIDDescription(typeID) as String? ?? "Unknown"). Returning raw value.")
             return value // Return the original value if CFType is not handled
         }
     }
-} 
+}

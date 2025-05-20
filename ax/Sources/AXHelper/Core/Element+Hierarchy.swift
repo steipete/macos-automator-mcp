@@ -1,17 +1,17 @@
 import Foundation
 import ApplicationServices
 
-// MARK: - AXElement Hierarchy Logic
+// MARK: - Element Hierarchy Logic
 
-extension AXElement {
-    @MainActor public var children: [AXElement]? {
-        var collectedChildren: [AXElement] = []
-        var uniqueChildrenSet = Set<AXElement>()
+extension Element {
+    @MainActor public var children: [Element]? {
+        var collectedChildren: [Element] = []
+        var uniqueChildrenSet = Set<Element>()
 
         // Primary children attribute
-        if let directChildrenUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.children) {
+        if let directChildrenUI: [AXUIElement] = attribute(Attribute<[AXUIElement]>.children) {
             for childUI in directChildrenUI {
-                let childAX = AXElement(childUI)
+                let childAX = Element(childUI)
                 if !uniqueChildrenSet.contains(childAX) {
                     collectedChildren.append(childAX)
                     uniqueChildrenSet.insert(childAX)
@@ -30,9 +30,9 @@ extension AXElement {
         ]
 
         for attrName in alternativeAttributes {
-            if let altChildrenUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>(attrName)) {
+            if let altChildrenUI: [AXUIElement] = attribute(Attribute<[AXUIElement]>(attrName)) {
                 for childUI in altChildrenUI {
-                    let childAX = AXElement(childUI)
+                    let childAX = Element(childUI)
                     if !uniqueChildrenSet.contains(childAX) {
                         collectedChildren.append(childAX)
                         uniqueChildrenSet.insert(childAX)
@@ -44,9 +44,9 @@ extension AXElement {
         // For application elements, kAXWindowsAttribute is also very important
         // Use self.role (which calls attribute()) to get the role.
         if let role = self.role, role == kAXApplicationRole as String {
-            if let windowElementsUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.windows) {
+            if let windowElementsUI: [AXUIElement] = attribute(Attribute<[AXUIElement]>.windows) {
                  for childUI in windowElementsUI {
-                    let childAX = AXElement(childUI)
+                    let childAX = Element(childUI)
                     if !uniqueChildrenSet.contains(childAX) {
                         collectedChildren.append(childAX)
                         uniqueChildrenSet.insert(childAX)
@@ -61,7 +61,7 @@ extension AXElement {
     @MainActor
     public func generatePathString() -> String {
         var path: [String] = []
-        var currentElement: AXElement? = self
+        var currentElement: Element? = self
 
         var safetyCounter = 0 // To prevent infinite loops from bad hierarchy
         let maxPathDepth = 20
@@ -73,7 +73,7 @@ extension AXElement {
                 identifier = "'\(title.prefix(30))'" // Truncate long titles
             } else if let idAttr = element.identifier, !idAttr.isEmpty {
                 identifier = "#\(idAttr)"
-            } else if let desc = element.axDescription, !desc.isEmpty {
+            } else if let desc = element.description, !desc.isEmpty {
                 identifier = "(\(desc.prefix(30)))"
             } else if let val = element.value as? String, !val.isEmpty {
                 identifier = "[val:'(val.prefix(20))']"
@@ -87,7 +87,7 @@ extension AXElement {
             currentElement = element.parent
             if currentElement == nil { break }
             
-            // Extra check to prevent cycle if parent is somehow self (shouldn't happen with CFEqual based AXElement equality)
+            // Extra check to prevent cycle if parent is somehow self (shouldn't happen with CFEqual based Element equality)
             if currentElement == element { 
                 path.insert("...CYCLE_DETECTED...", at: 0)
                 break 
@@ -99,4 +99,4 @@ extension AXElement {
         }
         return path.joined(separator: " / ")
     }
-} 
+}

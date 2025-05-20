@@ -1,6 +1,6 @@
 import Foundation
 
-// String extension from AXScanner
+// String extension from Scanner
 extension String {
 	subscript (i: Int) -> Character {
 		return self[index(startIndex, offsetBy: i)]
@@ -28,4 +28,4 @@ extension Optional {
 		case .none:            return "nil"
 		}
 	}
-} 
+}

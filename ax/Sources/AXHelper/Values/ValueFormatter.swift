@@ -1,12 +1,12 @@
-// AXValueFormatter.swift - Utilities for formatting AX values into human-readable strings
+// ValueFormatter.swift - Utilities for formatting AX values into human-readable strings
 
 import Foundation
 import ApplicationServices
 import CoreGraphics // For CGPoint, CGSize, CGRect, CFRange
 
-// debug() is assumed to be globally available from AXLogging.swift
-// stringFromAXValueType() is assumed to be available from AXValueHelpers.swift
-// axErrorToString() is assumed to be available from AXConstants.swift
+// debug() is assumed to be globally available from Logging.swift
+// stringFromAXValueType() is assumed to be available from ValueHelpers.swift
+// axErrorToString() is assumed to be available from AccessibilityConstants.swift
 
 @MainActor
 public enum ValueFormatOption {
@@ -88,8 +88,8 @@ public func formatCFTypeRef(_ cfValue: CFTypeRef?, option: ValueFormatOption = .
 
     switch typeID {
     case AXUIElementGetTypeID():
-        let axElement = AXElement(value as! AXUIElement)
-        return axElement.briefDescription(option: option)
+        let element = Element(value as! AXUIElement)
+        return element.briefDescription(option: option)
     case AXValueGetTypeID():
         return formatAXValue(value as! AXValue, option: option)
     case CFStringGetTypeID():
@@ -143,8 +143,8 @@ public func formatCFTypeRef(_ cfValue: CFTypeRef?, option: ValueFormatOption = .
     }
 }
 
-// Add a helper to AXElement for a brief description
-extension AXElement {
+// Add a helper to Element for a brief description
+extension Element {
     @MainActor
     func briefDescription(option: ValueFormatOption = .default) -> String {
         if let titleStr = self.title, !titleStr.isEmpty {
@@ -155,9 +155,9 @@ extension AXElement {
             return "<\(self.role ?? "UnknownRole") id: \"\(escapeStringForDisplay(identifierStr))\">"
         } else if let valueStr = self.value as? String, !valueStr.isEmpty, valueStr.count < 50 { // Show brief values
              return "<\(self.role ?? "UnknownRole") val: \"\(escapeStringForDisplay(valueStr))\">"
-        } else if let descStr = self.axDescription, !descStr.isEmpty, descStr.count < 50 { // Show brief descriptions
+        } else if let descStr = self.description, !descStr.isEmpty, descStr.count < 50 { // Show brief descriptions
              return "<\(self.role ?? "UnknownRole") desc: \"\(escapeStringForDisplay(descStr))\">"
         }
         return "<\(self.role ?? "UnknownRole")>"
     }
-} 
+}

@@ -1,11 +1,11 @@
-// AXElement.swift - Wrapper for AXUIElement for a more Swift-idiomatic interface
+// Element.swift - Wrapper for AXUIElement for a more Swift-idiomatic interface
 
 import Foundation
 import ApplicationServices // For AXUIElement and other C APIs
-// We might need to import AXValueHelpers or other local modules later
+// We might need to import ValueHelpers or other local modules later
 
-// AXElement struct is NOT @MainActor. Isolation is applied to members that need it.
-public struct AXElement: Equatable, Hashable {
+// Element struct is NOT @MainActor. Isolation is applied to members that need it.
+public struct Element: Equatable, Hashable {
     public let underlyingElement: AXUIElement
 
     public init(_ element: AXUIElement) {
@@ -13,7 +13,7 @@ public struct AXElement: Equatable, Hashable {
     }
 
     // Implement Equatable - no longer needs nonisolated as struct is not @MainActor
-    public static func == (lhs: AXElement, rhs: AXElement) -> Bool {
+    public static func == (lhs: Element, rhs: Element) -> Bool {
         return CFEqual(lhs.underlyingElement, rhs.underlyingElement)
     }
 
@@ -24,7 +24,7 @@ public struct AXElement: Equatable, Hashable {
 
     // Generic method to get an attribute's value (converted to Swift type T)
     @MainActor
-    public func attribute<T>(_ attribute: AXAttribute<T>) -> T? {
+    public func attribute<T>(_ attribute: Attribute<T>) -> T? {
         return axValue(of: self.underlyingElement, attr: attribute.rawValue) as T?
     }
 
@@ -55,23 +55,23 @@ public struct AXElement: Equatable, Hashable {
         return nil // Return nil if not success or if value was nil (though success should mean value is populated)
     }
 
-    // MARK: - Common Attribute Getters (MOVED to AXElement+Properties.swift)
-    // MARK: - Status Properties (MOVED to AXElement+Properties.swift)
-    // MARK: - Hierarchy and Relationship Getters (Simpler ones MOVED to AXElement+Properties.swift)
-    // MARK: - Action-related (supportedActions MOVED to AXElement+Properties.swift)
+    // MARK: - Common Attribute Getters (MOVED to Element+Properties.swift)
+    // MARK: - Status Properties (MOVED to Element+Properties.swift)
+    // MARK: - Hierarchy and Relationship Getters (Simpler ones MOVED to Element+Properties.swift)
+    // MARK: - Action-related (supportedActions MOVED to Element+Properties.swift)
 
     // Remaining properties and methods will stay here for now
     // (e.g., children, isActionSupported, performAction, parameterizedAttribute, briefDescription, generatePathString, static factories)
 
-    // MOVED to AXElement+Hierarchy.swift
-    // @MainActor public var children: [AXElement]? { ... }
+    // MOVED to Element+Hierarchy.swift
+    // @MainActor public var children: [Element]? { ... }
 
     // MARK: - Actions (supportedActions moved, other action methods remain)
 
     @MainActor
     public func isActionSupported(_ actionName: String) -> Bool {
         // First, try getting the array of supported action names
-        if let actions: [String] = attribute(AXAttribute<[String]>.actionNames) {
+        if let actions: [String] = attribute(Attribute<[String]>.actionNames) {
             return actions.contains(actionName)
         }
         // Fallback for older systems or elements that might not return the array correctly,
@@ -92,22 +92,22 @@ public struct AXElement: Equatable, Hashable {
 
     @MainActor
     @discardableResult
-    public func performAction(_ actionName: AXAttribute<String>) throws -> AXElement {
+    public func performAction(_ actionName: Attribute<String>) throws -> Element {
         let error = AXUIElementPerformAction(self.underlyingElement, actionName.rawValue as CFString)
         if error != .success {
             let elementDescription = self.title ?? self.role ?? String(describing: self.underlyingElement)
-            throw AXToolError.actionFailed("Action \(actionName.rawValue) failed on element \(elementDescription)", error)
+            throw AccessibilityError.actionFailed("Action \(actionName.rawValue) failed on element \(elementDescription)", error)
         }
         return self
     }
 
     @MainActor
     @discardableResult
-    public func performAction(_ actionName: String) throws -> AXElement {
+    public func performAction(_ actionName: String) throws -> Element {
         let error = AXUIElementPerformAction(self.underlyingElement, actionName as CFString)
         if error != .success {
             let elementDescription = self.title ?? self.role ?? String(describing: self.underlyingElement)
-            throw AXToolError.actionFailed("Action \(actionName) failed on element \(elementDescription)", error)
+            throw AccessibilityError.actionFailed("Action \(actionName) failed on element \(elementDescription)", error)
         }
         return self
     }
@@ -115,7 +115,7 @@ public struct AXElement: Equatable, Hashable {
     // MARK: - Parameterized Attributes
 
     @MainActor
-    public func parameterizedAttribute<T>(_ attribute: AXAttribute<T>, forParameter parameter: Any) -> T? {
+    public func parameterizedAttribute<T>(_ attribute: Attribute<T>, forParameter parameter: Any) -> T? {
         var cfParameter: CFTypeRef?
 
         // Convert Swift parameter to CFTypeRef for the API
@@ -150,8 +150,8 @@ public struct AXElement: Equatable, Hashable {
         
         // Use axValue's unwrapping and casting logic if possible, by temporarily creating an element and attribute
         // This is a bit of a conceptual stretch, as axValue is designed for direct attributes.
-        // A more direct unwrap using AXValueUnwrapper might be cleaner here.
-        let unwrappedValue = AXValueUnwrapper.unwrap(resultCFValue)
+        // A more direct unwrap using ValueUnwrapper might be cleaner here.
+        let unwrappedValue = ValueUnwrapper.unwrap(resultCFValue)
         
         guard let finalValue = unwrappedValue else { return nil }
 
@@ -168,7 +168,7 @@ public struct AXElement: Equatable, Hashable {
         return nil
     }
 
-    // MOVED to AXElement+Hierarchy.swift
+    // MOVED to Element+Hierarchy.swift
     // @MainActor
     // public func generatePathString() -> String { ... }
 
@@ -185,11 +185,11 @@ public struct AXElement: Equatable, Hashable {
     @MainActor
     public var computedName: String? {
         if let title = self.title, !title.isEmpty, title != kAXNotAvailableString { return title }
-        if let value: String = self.attribute(AXAttribute<String>(kAXValueAttribute)), !value.isEmpty, value != kAXNotAvailableString { return value }
-        if let desc = self.axDescription, !desc.isEmpty, desc != kAXNotAvailableString { return desc }
-        if let help: String = self.attribute(AXAttribute<String>(kAXHelpAttribute)), !help.isEmpty, help != kAXNotAvailableString { return help }
-        if let phValue: String = self.attribute(AXAttribute<String>(kAXPlaceholderValueAttribute)), !phValue.isEmpty, phValue != kAXNotAvailableString { return phValue }
-        if let roleDesc: String = self.attribute(AXAttribute<String>(kAXRoleDescriptionAttribute)), !roleDesc.isEmpty, roleDesc != kAXNotAvailableString {
+        if let value: String = self.attribute(Attribute<String>(kAXValueAttribute)), !value.isEmpty, value != kAXNotAvailableString { return value }
+        if let desc = self.description, !desc.isEmpty, desc != kAXNotAvailableString { return desc }
+        if let help: String = self.attribute(Attribute<String>(kAXHelpAttribute)), !help.isEmpty, help != kAXNotAvailableString { return help }
+        if let phValue: String = self.attribute(Attribute<String>(kAXPlaceholderValueAttribute)), !phValue.isEmpty, phValue != kAXNotAvailableString { return phValue }
+        if let roleDesc: String = self.attribute(Attribute<String>(kAXRoleDescriptionAttribute)), !roleDesc.isEmpty, roleDesc != kAXNotAvailableString {
             return "\(roleDesc) (\(self.role ?? "Element"))"
         }
         return nil
@@ -200,27 +200,27 @@ public struct AXElement: Equatable, Hashable {
 
 // Convenience factory for the application element - already @MainActor
 @MainActor
-public func applicationElement(for bundleIdOrName: String) -> AXElement? {
+public func applicationElement(for bundleIdOrName: String) -> Element? {
     guard let pid = pid(forAppIdentifier: bundleIdOrName) else {
-        debug("Failed to find PID for app: \(bundleIdOrName) in applicationElement (AXElement)")
+        debug("Failed to find PID for app: \(bundleIdOrName) in applicationElement (Element)")
         return nil
     }
     let appElement = AXUIElementCreateApplication(pid)
-    return AXElement(appElement)
+    return Element(appElement)
 }
 
 // Convenience factory for the system-wide element - already @MainActor
 @MainActor
-public func systemWideElement() -> AXElement {
-    return AXElement(AXUIElementCreateSystemWide())
+public func systemWideElement() -> Element {
+    return Element(AXUIElementCreateSystemWide())
 }
 
 // Extension to generate a descriptive path string
-extension AXElement {
+extension Element {
     @MainActor
-    func generatePathString(upTo ancestor: AXElement? = nil) -> String {
+    func generatePathString(upTo ancestor: Element? = nil) -> String {
         var pathComponents: [String] = []
-        var currentElement: AXElement? = self
+        var currentElement: Element? = self
 
         var depth = 0 // Safety break for very deep or circular hierarchies
         let maxDepth = 25
@@ -253,4 +253,4 @@ extension AXElement {
 
         return pathComponents.reversed().joined(separator: " -> ")
     }
-} 
+}
