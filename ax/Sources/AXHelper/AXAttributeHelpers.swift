@@ -8,6 +8,21 @@ import CoreGraphics // For potential future use with geometry types from attribu
 // AXLogging (for debug), AXConstants, and AXUtils (for axValue) are available in the same module.
 
 @MainActor
+private func getSingleElementSummary(_ element: AXUIElement) -> ElementAttributes {
+    var summary = ElementAttributes()
+    summary[kAXRoleAttribute] = AnyCodable(axValue(of: element, attr: kAXRoleAttribute) as String?)
+    summary[kAXSubroleAttribute] = AnyCodable(axValue(of: element, attr: kAXSubroleAttribute) as String?)
+    summary[kAXRoleDescriptionAttribute] = AnyCodable(axValue(of: element, attr: kAXRoleDescriptionAttribute) as String?)
+    summary[kAXTitleAttribute] = AnyCodable(axValue(of: element, attr: kAXTitleAttribute) as String?)
+    summary[kAXDescriptionAttribute] = AnyCodable(axValue(of: element, attr: kAXDescriptionAttribute) as String?)
+    summary[kAXIdentifierAttribute] = AnyCodable(axValue(of: element, attr: kAXIdentifierAttribute) as String?)
+    summary[kAXHelpAttribute] = AnyCodable(axValue(of: element, attr: kAXHelpAttribute) as String?)
+    // Path hint is custom, so directly use the string literal if kAXPathHintAttribute is not yet in AXConstants (it is now, but good practice)
+    summary[kAXPathHintAttribute] = AnyCodable(axValue(of: element, attr: kAXPathHintAttribute) as String?)
+    return summary
+}
+
+@MainActor
 public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [String], forMultiDefault: Bool = false, targetRole: String? = nil, outputFormat: String = "smart") -> ElementAttributes {
     var result = ElementAttributes()
     var attributesToFetch = requestedAttributes
@@ -29,17 +44,16 @@ public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [S
     for attr in attributesToFetch {
         if attr == kAXParentAttribute { // Special handling for AXParent
             if let parentElement: AXUIElement = axValue(of: element, attr: kAXParentAttribute) {
-                var parentAttrs = ElementAttributes()
-                parentAttrs[kAXRoleAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXRoleAttribute) as String?)
-                parentAttrs[kAXSubroleAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXSubroleAttribute) as String?)
-                parentAttrs[kAXRoleDescriptionAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXRoleDescriptionAttribute) as String?)
-                parentAttrs[kAXTitleAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXTitleAttribute) as String?)
-                parentAttrs[kAXDescriptionAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXDescriptionAttribute) as String?)
-                parentAttrs[kAXIdentifierAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXIdentifierAttribute) as String?)
-                parentAttrs[kAXHelpAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXHelpAttribute) as String?)
-                // Fetch and include the parent's AXPathHint as a String
-                parentAttrs["AXPathHint"] = AnyCodable(axValue(of: parentElement, attr: "AXPathHint") as String?)
-                result[kAXParentAttribute] = AnyCodable(parentAttrs)
+                // Use getSingleElementSummary for parent if outputFormat is verbose or for general consistency
+                if outputFormat == "verbose" {
+                    result[kAXParentAttribute] = AnyCodable(getSingleElementSummary(parentElement))
+                } else {
+                    // For non-verbose, provide a simpler representation or just key attributes
+                    var simpleParentSummary = ElementAttributes()
+                    simpleParentSummary[kAXRoleAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXRoleAttribute) as String?)
+                    simpleParentSummary[kAXTitleAttribute] = AnyCodable(axValue(of: parentElement, attr: kAXTitleAttribute) as String?)
+                    result[kAXParentAttribute] = AnyCodable(simpleParentSummary)
+                }
             } else {
                 result[kAXParentAttribute] = AnyCodable(nil as ElementAttributes?) // Provide type hint for nil
             }
@@ -73,20 +87,9 @@ public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [S
                 if outputFormat == "verbose" {
                     var childrenSummaries: [ElementAttributes] = []
                     for childElement in actualChildren {
-                        var childSummary = ElementAttributes()
-                        // Basic, usually safe attributes for a summary
-                        childSummary[kAXRoleAttribute] = AnyCodable(axValue(of: childElement, attr: kAXRoleAttribute) as String?)
-                        childSummary[kAXSubroleAttribute] = AnyCodable(axValue(of: childElement, attr: kAXSubroleAttribute) as String?)
-                        childSummary[kAXRoleDescriptionAttribute] = AnyCodable(axValue(of: childElement, attr: kAXRoleDescriptionAttribute) as String?)
-                        childSummary[kAXTitleAttribute] = AnyCodable(axValue(of: childElement, attr: kAXTitleAttribute) as String?)
-                        childSummary[kAXDescriptionAttribute] = AnyCodable(axValue(of: childElement, attr: kAXDescriptionAttribute) as String?)
-                        childSummary[kAXIdentifierAttribute] = AnyCodable(axValue(of: childElement, attr: kAXIdentifierAttribute) as String?)
-                        childSummary[kAXHelpAttribute] = AnyCodable(axValue(of: childElement, attr: kAXHelpAttribute) as String?)
-                        
-                        // Replace temporary file logging with a call to the enhanced debug() function
-                        debug("Processing child element: \(childElement) for verbose output.")
-                        
-                        childrenSummaries.append(childSummary)
+                        // Use getSingleElementSummary for children in verbose mode
+                        childrenSummaries.append(getSingleElementSummary(childElement))
+                        debug("Processing child element for verbose output (summary created).")
                     }
                     result[attr] = AnyCodable(childrenSummaries) 
                 } else {
@@ -110,7 +113,13 @@ public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [S
             }
         }
         else if let count = (axValue(of: element, attr: attr) as [AXUIElement]?)?.count { extractedValue = "Array of \(count) UIElement(s)" }
-        else if let uiElement: AXUIElement = axValue(of: element, attr: attr) { extractedValue = "UIElement: \(String(describing: uiElement))"}
+        else if let uiElement: AXUIElement = axValue(of: element, attr: attr) { 
+            if outputFormat == "verbose" {
+                extractedValue = getSingleElementSummary(uiElement)
+            } else {
+                extractedValue = "UIElement: \( (axValue(of: uiElement, attr: kAXRoleAttribute) as String?) ?? "UnknownRole" ) - \( (axValue(of: uiElement, attr: kAXTitleAttribute) as String?) ?? "NoTitle" )"
+            }
+        }
         else if let val: [String: Int] = axValue(of: element, attr: attr) { 
              extractedValue = val
         }

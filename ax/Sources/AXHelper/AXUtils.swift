@@ -5,6 +5,95 @@ import ApplicationServices
 import AppKit // For NSRunningApplication, NSWorkspace
 import CoreGraphics // For CGPoint, CGSize etc.
 
+// MARK: - AXValueUnwrapper Utility
+// Inspired by AXSwift's separation of concerns for unpacking AXValue types.
+struct AXValueUnwrapper {
+    @MainActor // Ensure calls are on main actor if they involve AX APIs directly or indirectly
+    static func unwrap(_ cfValue: CFTypeRef?) -> Any? {
+        guard let value = cfValue else { return nil }
+        let typeID = CFGetTypeID(value)
+
+        switch typeID {
+        case AXUIElementGetTypeID():
+            return value as! AXUIElement // Return as is, caller can wrap if needed
+        case AXValueGetTypeID():
+            let axVal = value as! AXValue
+            let axValueType = AXValueGetType(axVal)
+            
+            // Prioritize our empirically found boolean handling
+            if axValueType.rawValue == 4 { // kAXValueCFRangeType in public enum, but contextually boolean
+                var boolResult: DarwinBoolean = false
+                if AXValueGetValue(axVal, axValueType, &boolResult) {
+                    return boolResult.boolValue
+                }
+                // If it's rawValue 4 but NOT extractable as bool, let it fall through
+                // to the switch to be handled as .cfRange or default.
+            }
+
+            switch axValueType {
+            case .cgPoint:
+                var point = CGPoint.zero
+                return AXValueGetValue(axVal, .cgPoint, &point) ? point : nil
+            case .cgSize:
+                var size = CGSize.zero
+                return AXValueGetValue(axVal, .cgSize, &size) ? size : nil
+            case .cgRect:
+                var rect = CGRect.zero
+                return AXValueGetValue(axVal, .cgRect, &rect) ? rect : nil
+            case .cfRange: // This handles the case where rawValue 4 wasn't our special boolean
+                var cfRange = CFRange()
+                return AXValueGetValue(axVal, .cfRange, &cfRange) ? cfRange : nil
+            case .axError:
+                var axError: AXError = .success
+                return AXValueGetValue(axVal, .axError, &axError) ? axError : nil
+            case .illegal:
+                debug("AXValueUnwrapper: Encountered AXValue with type .illegal")
+                return nil // Or some representation of illegal
+            default:
+                debug("AXValueUnwrapper: AXValue with unhandled AXValueType: \(axValueType.rawValue) - \(stringFromAXValueType(axValueType)). Returning raw AXValue.")
+                return axVal // Return the AXValue itself if type is not specifically handled
+            }
+        case CFStringGetTypeID():
+            return (value as! CFString) as String
+        case CFAttributedStringGetTypeID():
+             // Extract string content from CFAttributedString
+            return (value as! NSAttributedString).string
+        case CFBooleanGetTypeID():
+            return CFBooleanGetValue((value as! CFBoolean))
+        case CFNumberGetTypeID():
+            return value as! NSNumber // Let Swift bridge it to Int, Double, Bool as needed later
+        case CFArrayGetTypeID():
+            // Return as Swift array of Any?, caller can then process further
+            let cfArray = value as! CFArray
+            var swiftArray: [Any?] = []
+            for i in 0..<CFArrayGetCount(cfArray) {
+                guard let elementPtr = CFArrayGetValueAtIndex(cfArray, i) else {
+                    swiftArray.append(nil)
+                    continue
+                }
+                // Recursively unwrap elements within the array
+                swiftArray.append(unwrap(Unmanaged<CFTypeRef>.fromOpaque(elementPtr).takeUnretainedValue()))
+            }
+            return swiftArray
+        case CFDictionaryGetTypeID():
+            let cfDict = value as! CFDictionary
+            var swiftDict: [String: Any?] = [:]
+            if let nsDict = cfDict as? [String: AnyObject] { // Bridge to NSDictionary equivalent
+                for (key, val) in nsDict {
+                    // Recursively unwrap values from the bridged dictionary
+                    swiftDict[key] = unwrap(val)
+                }
+            } else {
+                 debug("AXValueUnwrapper: Failed to bridge CFDictionary to [String: AnyObject].")
+            }
+            return swiftDict
+        default:
+            debug("AXValueUnwrapper: Unhandled CFTypeID: \(typeID) - \(CFCopyTypeIDDescription(typeID) as String? ?? "Unknown"). Returning raw value.")
+            return value // Return the raw CFTypeRef if not recognized
+        }
+    }
+}
+
 // Helper function to get AXUIElement type ID (moved from main.swift)
 public func AXUIElementGetTypeID() -> CFTypeID {
     return AXUIElementGetTypeID_Impl()
@@ -20,6 +109,7 @@ public enum AXErrorString: Error, CustomStringConvertible {
     case actionFailed(AXError)
     case invalidCommand
     case genericError(String)
+    case typeMismatch(expected: String, actual: String)
 
     public var description: String {
         switch self {
@@ -28,6 +118,7 @@ public enum AXErrorString: Error, CustomStringConvertible {
         case .actionFailed(let e):  return "Action failed with AXError: \(e)"
         case .invalidCommand:       return "Invalid command specified."
         case .genericError(let msg): return msg
+        case .typeMismatch(let expected, let actual): return "Type mismatch: Expected \(expected), got \(actual)."
         }
     }
 }
@@ -118,120 +209,114 @@ public func navigateToElement(from root: AXUIElement, pathHint: [String]) -> AXU
 
 @MainActor
 public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
-    var value: CFTypeRef?
-    guard AXUIElementCopyAttributeValue(element, attr as CFString, &value) == .success else { return nil }
-    guard let unwrappedValue = value else { return nil }
+    let rawCFValue = copyAttributeValue(element: element, attribute: attr)
+    let unwrappedValue = AXValueUnwrapper.unwrap(rawCFValue)
 
-    if T.self == String.self || T.self == Optional<String>.self {
-        if CFGetTypeID(unwrappedValue) == CFStringGetTypeID() {
-            return (unwrappedValue as! CFString) as? T
-        } else if CFGetTypeID(unwrappedValue) == CFAttributedStringGetTypeID() {
-            debug("axValue: Attribute '\(attr)' is CFAttributedString. Extracting string content.")
-            let nsAttrStr = unwrappedValue as! NSAttributedString // Toll-free bridge
-            return nsAttrStr.string as? T
-        } else if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
-            let axVal = unwrappedValue as! AXValue
-            debug("axValue: Attribute '\(attr)' is AXValue, not directly convertible to String here. Type: \(AXValueGetType(axVal).rawValue)")
-            return nil
+    guard let value = unwrappedValue else { return nil }
+
+    // Now, handle specific type conversions and transformations based on T
+    if T.self == String.self {
+        if let str = value as? String { // Primary case: unwrapper already gave a String
+            return str as? T
+        } else if let attrStr = value as? NSAttributedString { // Fallback: if value is NSAttributedString
+            debug("axValue: Value for String was NSAttributedString, extracting .string. Attribute: \(attr)")
+            return attrStr.string as? T
         }
+        debug("axValue: Expected String for attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
     
     if T.self == Bool.self {
-        if CFGetTypeID(unwrappedValue) == CFBooleanGetTypeID() {
-            return CFBooleanGetValue((unwrappedValue as! CFBoolean)) as? T
-        } else if CFGetTypeID(unwrappedValue) == CFNumberGetTypeID() {
-            var intValue: Int = 0
-            if CFNumberGetValue((unwrappedValue as! CFNumber), CFNumberType.intType, &intValue) {
-                return (intValue != 0) as? T
-            }
-            return nil 
-        } else if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
-             let axVal = unwrappedValue as! AXValue
-             var boolResult: DarwinBoolean = false
-             // The rawValue 4 is used here for boolean extraction with AXValueGetValue.
-             // This may be an undocumented or specific behavior for boolean AXValues, 
-             // as the public AXValueType enum maps rawValue 4 to kAXValueCFRangeType.
-             // However, this pattern is crucial for correctly extracting boolean values.
-             if AXValueGetType(axVal).rawValue == 4 /* kAXValueBooleanType */ && AXValueGetValue(axVal, AXValueGetType(axVal), &boolResult) {
-                 return (boolResult.boolValue) as? T
-             }
-             return nil
+        if let boolVal = value as? Bool {
+            return boolVal as? T
+        } else if let numVal = value as? NSNumber { // CFNumber can represent booleans
+            return numVal.boolValue as? T
         }
+        debug("axValue: Expected Bool for attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
     
     if T.self == Int.self {
-        if CFGetTypeID(unwrappedValue) == CFNumberGetTypeID() {
-            var intValue: Int = 0
-            if CFNumberGetValue((unwrappedValue as! CFNumber), CFNumberType.intType, &intValue) {
-                return intValue as? T
-            }
+        if let intVal = value as? Int {
+            return intVal as? T
+        } else if let numVal = value as? NSNumber {
+            return numVal.intValue as? T
         }
+        debug("axValue: Expected Int for attribute '\(attr)', but got \(type(of: value)): \(value)")
+        return nil
+    }
+
+    if T.self == Double.self { // Added Double support
+        if let doubleVal = value as? Double {
+            return doubleVal as? T
+        } else if let numVal = value as? NSNumber {
+            return numVal.doubleValue as? T
+        }
+        debug("axValue: Expected Double for attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
     
     if T.self == [AXUIElement].self {
-        if CFGetTypeID(unwrappedValue) == CFArrayGetTypeID() {
-            let cfArray = unwrappedValue as! CFArray
-            var result = [AXUIElement]()
-            for i in 0..<CFArrayGetCount(cfArray) {
-                guard let elementPtr = CFArrayGetValueAtIndex(cfArray, i) else { continue }
-                let cfType = Unmanaged<CFTypeRef>.fromOpaque(elementPtr).takeUnretainedValue()
-                if CFGetTypeID(cfType) == AXUIElementGetTypeID() { 
-                    result.append(cfType as! AXUIElement)
+        if let anyArray = value as? [Any?] {
+            let result = anyArray.compactMap { item -> AXUIElement? in
+                guard let cfItem = item else { return nil } // Ensure item is not nil
+                // Check if cfItem is an AXUIElement by its TypeID before casting
+                // Ensure cfItem is treated as CFTypeRef for CFGetTypeID
+                if CFGetTypeID(cfItem as CFTypeRef) == AXUIElementGetTypeID() {
+                    return (cfItem as! AXUIElement) // Safe force-cast after type check
                 }
+                return nil
             }
+            // If T is [AXUIElement], an empty array is a valid result. Casting `result` to `T?` is appropriate.
             return result as? T
         }
+        debug("axValue: Expected [AXUIElement] for attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
 
     if T.self == [String].self {
-        if CFGetTypeID(unwrappedValue) == CFArrayGetTypeID() {
-            let cfArray = unwrappedValue as! CFArray
-            var result = [String]()
-            for i in 0..<CFArrayGetCount(cfArray) {
-                guard let elementPtr = CFArrayGetValueAtIndex(cfArray, i) else { continue }
-                let cfType = Unmanaged<CFTypeRef>.fromOpaque(elementPtr).takeUnretainedValue()
-                if CFGetTypeID(cfType) == CFStringGetTypeID() {
-                    result.append(cfType as! String)
-                }
+        if let stringArray = value as? [Any?] { // Unwrapper returns [Any?] for arrays
+            let result = stringArray.compactMap { $0 as? String }
+            if result.count == stringArray.count { // Ensure all elements were Strings
+                 return result as? T
             }
-            return result as? T
         }
+        debug("axValue: Expected [String] for attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
 
-    if T.self == [String: Int].self && (attr == kAXPositionAttribute || attr == kAXSizeAttribute) {
-        if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
-            let axTypedValue = unwrappedValue as! AXValue
-            let valueType = AXValueGetType(axTypedValue)
-            // Use direct enum case comparison for CGPoint and CGSize
-            if attr == kAXPositionAttribute && valueType == .cgPoint {
-                var point = CGPoint.zero
-                if AXValueGetValue(axTypedValue, .cgPoint, &point) == true {
-                    return ["x": Int(point.x), "y": Int(point.y)] as? T
-                }
-            } else if attr == kAXSizeAttribute && valueType == .cgSize {
-                var size = CGSize.zero
-                if AXValueGetValue(axTypedValue, .cgSize, &size) == true {
-                    return ["width": Int(size.width), "height": Int(size.height)] as? T
-                }
-            }
+    // Handle CGPoint and CGSize specifically for our [String: Int] format
+    if T.self == [String: Int].self {
+        if attr == kAXPositionAttribute, let point = value as? CGPoint {
+            return ["x": Int(point.x), "y": Int(point.y)] as? T
+        } else if attr == kAXSizeAttribute, let size = value as? CGSize {
+            return ["width": Int(size.width), "height": Int(size.height)] as? T
         }
-        return nil 
-    }
-    
-    if T.self == AXUIElement.self {
-        if CFGetTypeID(unwrappedValue) == AXUIElementGetTypeID() {
-            return unwrappedValue as? T
-        }
+        debug("axValue: Expected [String: Int] for position/size attribute '\(attr)', but got \(type(of: value)): \(value)")
         return nil
     }
     
-    debug("axValue: Fallback cast attempt for attribute '\(attr)' to type \(T.self).")
-    return unwrappedValue as? T
+    if T.self == AXUIElement.self {
+        // Ensure value is not nil and check its CFTypeID before attempting cast
+        // Make sure to cast `value` to CFTypeRef for CFGetTypeID
+        if let cfValue = value as CFTypeRef?, CFGetTypeID(cfValue) == AXUIElementGetTypeID() {
+            return (cfValue as! AXUIElement) as? T // Safe force-cast after type check
+        }
+        // If we are here, value is non-nil (due to earlier guard) but not an AXUIElement.
+        // So, value is of type 'Any'.
+        let typeDescription = String(describing: type(of: value)) 
+        let valueDescription = String(describing: value)
+        debug("axValue: Expected AXUIElement for attribute '\(attr)', but got \(typeDescription): \(valueDescription)")
+        return nil
+    }
+    
+    // Fallback direct cast if no specific handling matched T
+    if let castedValue = value as? T {
+        return castedValue
+    }
+    
+    debug("axValue: Fallback cast attempt for attribute '\(attr)' to type \(T.self) FAILED. Unwrapped value was \(type(of: value)): \(value)")
+    return nil
 }
 
 @MainActor
