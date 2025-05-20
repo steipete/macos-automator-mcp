@@ -9,138 +9,143 @@ This document outlines the functionality, build process, testing procedures, and
 
 ## 1. `ax` Binary Overview
 
-*   **Purpose**: Provides a JSON-based interface to query UI elements and perform actions using the macOS Accessibility API. It\'s intended to be called by other processes (like the MCP server).
+*   **Purpose**: Provides a JSON-based interface to query UI elements and perform actions using the macOS Accessibility API. It's intended to be called by other processes (like the MCP server). The core logic is wrapped in a Swift-idiomatic `AXElement` struct.
 *   **Communication**: Operates by reading JSON commands from `stdin` and writing JSON responses (or errors) to `stdout` (or `stderr` for errors).
-*   **Core Commands**:
+*   **Core Commands (as per `CommandEnvelope` in `AXModels.swift`)**:
     *   `query`: Retrieves information about UI elements.
+    *   `collectall`: Retrieves information about all UI elements matching criteria.
     *   `perform`: Executes an action on a UI element.
-*   **Key Input Fields (JSON)**:
-    *   `cmd` (string): "query" or "perform".
-    *   `locator` (object): Specifies the target element(s).
-        *   `app` (string): Bundle ID or localized name of the target application (e.g., "com.apple.TextEdit", "Safari").
-        *   `role` (string): The accessibility role of the target element (e.g., "AXWindow", "AXButton", "*").
-        *   `match` (object): Key-value pairs of attributes to match (e.g., `{"AXMain": "true"}`). Values are strings.
-        *   `pathHint` (array of strings, optional): A path to navigate the UI tree (e.g., `["window[1]", "toolbar[1]"]`).
-    *   `attributes` (array of strings, optional): For `query`, specific attributes to retrieve. Defaults to a common set if omitted.
-    *   `action` (string, optional): For `perform`, the action to execute (e.g., "AXPress").
-    *   `multi` (boolean, optional): For `query`, if `true`, returns all matching elements. Defaults to `false`.
-    *   `requireAction` (string, optional): For `query` (passed from `CommandEnvelope`), filters results to elements supporting a specific action.
+    *   `extracttext`: Extracts textual content from UI element(s).
+*   **Key Input Fields (JSON - see `CommandEnvelope` in `AXModels.swift`)**:
+    *   `command_id` (string): A unique identifier for the command, echoed in the response.
+    *   `command` (string): "query", "collectall", "perform", or "extracttext".
+    *   `application` (string, optional): Bundle ID or localized name of the target application (e.g., "com.apple.TextEdit", "Safari"). Defaults to the currently focused application if omitted.
+    *   `locator` (object, optional - see `Locator` in `AXModels.swift`): Specifies the target element(s).
+        *   `criteria` (object): Key-value pairs of attributes to match (e.g., `{"AXRole": "AXWindow", "AXMain":"true"}`). Values are typically strings.
+        *   `root_element_path_hint` (array of strings, optional): A pathHint to find a container element from which the locator criteria will be applied.
+        *   `requireAction` (string, optional): Filters results to elements supporting a specific action.
+    *   `action` (string, optional): For `perform` command, the action to execute (e.g., "AXPress", "AXSetValue").
+    *   `value` (string, optional): For `perform` command with actions like "AXSetValue", this is the value to set.
+    *   `attributes` (array of strings, optional): For `query` and `collectall`, specific attributes to retrieve. Defaults to a common set if omitted.
+    *   `path_hint` (array of strings, optional): A path to navigate the UI tree (e.g., `["window[1]", "toolbar[1]"]`) to find the primary target element or a base for the locator.
     *   `debug_logging` (boolean, optional): If `true`, includes detailed internal debug logs in the response.
-    *   `max_elements` (integer, optional): For `query` with `multi: true`, limits the number of elements for which full attributes are fetched to manage performance.
-    *   `output_format` (enum: 'smart' | 'verbose' | 'text_content', optional, default: 'smart'): Controls attribute verbosity and format.
-        *   `smart`: (Default) Omits empty/placeholder values. Key-value pairs.
-        *   `verbose`: Includes all attributes, even empty/placeholders. Key-value pairs.
-        *   `text_content`: Returns only concatenated text values of common textual attributes. No keys. Ignores `attributes_to_query`.
-*   **Key Output Fields (JSON)**:
-    *   Success (`query` with `output_format: 'smart'` or `'verbose'`): `{ "attributes": { "AXTitle": "...", ... } }`
-    *   Success (`query`, `multi: true` with `output_format: 'smart'` or `'verbose'`): `{ "elements": [ { "AXTitle": "..." }, ... ] }`
-    *   Success (`query` with `output_format: 'text_content'`): `{ "text_content": "extracted text..." }`
-    *   Success (`perform`): `{ "status": "ok" }`
-    *   Error: `{ "error": "Error message description" }`
-    *   `debug_logs` (array of strings, optional): Included in success or error responses if `debug_logging` was true in the input.
+    *   `max_elements` (int, optional): For `collectall`, the maximum number of elements to return. Also used as max depth in some search operations.
+    *   `output_format` (string, optional): For attribute retrieval, can be "smart", "verbose", "text_content".
+*   **Key Output Fields (JSON - see response structs in `AXModels.swift`)**:
+    *   `QueryResponse`: Contains `command_id`, `attributes` (an `ElementAttributes` dictionary), `error` (optional), and `debug_logs` (optional).
+    *   `MultiQueryResponse`: Contains `command_id`, `elements` (array of `ElementAttributes`), `count`, `error` (optional), and `debug_logs` (optional).
+    *   `PerformResponse`: Contains `command_id`, `success` (boolean), `error` (optional), and `debug_logs` (optional).
+    *   `TextContentResponse`: Contains `command_id`, `text_content` (string, optional), `error` (optional), and `debug_logs` (optional).
+    *   `ErrorResponse`: Contains `command_id`, `error` (string), and `debug_logs` (optional).
 
 ## 2. Functionality - How it Works
 
-The `ax` binary is implemented in Swift in `ax/Sources/AXHelper/main.swift`. (Current version: `AX_BINARY_VERSION = "1.1.0"`)
+The `ax` binary is implemented in Swift, with `main.swift` in `ax/Sources/AXHelper/` as the entry point. Core accessibility interactions are now primarily managed through the `AXElement` struct (`AXElement.swift`), which wraps `AXUIElement`. Most functions interacting with UI elements are marked `@MainActor`.
 
 *   **Application Targeting**:
-    *   `getApplicationElement(bundleIdOrName: String)`: (As originally described) Finds `NSRunningApplication` by bundle ID then localized name, then uses `AXUIElementCreateApplication(pid)`.
+    *   The global `applicationElement(for: String)` function (in `AXElement.swift`) is used:
+        *   It uses `pid(forAppIdentifier:)` (in `AXUtils.swift`) which tries `NSRunningApplication.runningApplications(withBundleIdentifier:)`, then `NSWorkspace.shared.runningApplications` matching `localizedName`.
+        *   Once the `pid_t` is found, `AXUIElementCreateApplication(pid)` gets the root `AXUIElement`, which is then wrapped in an `AXElement`.
+    *   `systemWideElement()` (in `AXElement.swift`) provides the system-wide accessibility object.
 
-*   **Element Location**:
-    *   **`search(element:locator:requireAction:depth:maxDepth:)`**:
-        *   Used for single-element queries (`multi: false`).
+*   **Element Location (`AXSearch.swift`, `AXUtils.swift`, `AXElement.swift`)**:
+    *   **`search(axElement:locator:requireAction:maxDepth:isDebugLoggingEnabled:)`**:
+        *   Takes an `AXElement` as its starting point.
         *   Performs a depth-first search.
-        *   Matches `AXRole` against `locator.role` and attributes in `locator.match`.
-            *   **Boolean attributes** (e.g., `AXMain`): Robustly handles direct `CFBooleanRef` and booleans wrapped in `AXValue` (by checking `AXValueGetType` raw value `4` for `kAXValueBooleanType` and using `AXValueGetValue`). Compares against input strings "true" or "false".
-        *   If `requireAction` (passed from `CommandEnvelope`) is specified, it filters the element if it doesn\'t support the action (checked via `kAXActionNamesAttribute`).
-        *   **Enhanced Child Discovery**: To find deeply nested elements (especially within web views or complex containers), it now probes for children not just via `kAXChildrenAttribute`, but also using a `webAttributesListForCollectAll` (e.g., "AXDOMChildren", "AXContents") if the current element\'s role is in `webContainerRoles` (which now includes "AXWebArea", "AXWebView", "BrowserAccessibilityCocoa", "AXScrollArea", "AXGroup", "AXWindow", "AXSplitGroup", "AXLayoutArea").
-    *   **`collectAll(appElement:locator:currentElement:depth:maxDepth:currentPath:elementsBeingProcessed:foundElements:)`**:
-        *   Used for multi-element queries (`multi: true`).
-        *   Recursively traverses, matching `locator.role` (supports `"*"` wildcard) and `locator.match` with robust boolean handling similar to `search`.
-        *   **Child Discovery**: Uses `kAXChildrenAttribute` and the same extended `webAttributesListForCollectAll` (like in `search`) if the element role is a known container (e.g., `AXWebArea`, `AXWindow`, `AXGroup`, etc.).
-        *   **Deduplication**: Uses `AXUIElementHashableWrapper` and an `elementsBeingProcessed` set to avoid cycles and redundant work.
-        *   Limited by `MAX_COLLECT_ALL_HITS` (e.g., 100000) and a recursion depth limit.
-    *   **`navigateToElement(from:pathHint:)`**: (As originally described) Parses path hints like "window[1]" to navigate the tree.
+        *   Uses `attributesMatch(axElement:matchDetails:depth:isDebugLoggingEnabled:)` (in `AXAttributeMatcher.swift`) for criteria matching. `attributesMatch` uses `axElement.rawAttributeValue(named:)` and handles various `CFTypeRef` comparisons.
+        *   Checks for `requireAction` using `axElement.isActionSupported()`.
+        *   Recursively searches children obtained via `axElement.children`.
+    *   **`collectAll(...)`**:
+        *   Traverses the accessibility tree starting from a given `AXElement`.
+        *   Uses `attributesMatch` for criteria and `axElement.isActionSupported` for `requireAction`.
+        *   Aggregates matching `AXElement`s.
+        *   Relies on `axElement.children` for comprehensive child discovery. `AXElement.children` itself queries multiple attributes (`kAXChildrenAttribute`, `kAXVisibleChildrenAttribute`, "AXWebAreaChildren", `kAXWindowsAttribute` for app elements, etc.) and handles deduplication.
+    *   **`navigateToElement(from:pathHint:)` (in `AXUtils.swift`)**:
+        *   Takes and returns `AXElement`.
+        *   Processes `pathHint` (e.g., `["window[1]", "toolbar[1]"]`).
+        *   Navigates using `axElement.windows` or `axElement.children` based on role and index.
 
-*   **Attribute Retrieval**:
-    *   `getElementAttributes(element:requestedAttributes:forMultiDefault:targetRole:)`:
-        *   Fetches attributes based on `requestedAttributes` or discovers all if empty (for `smart`/`verbose` formats).
-        *   Converts `CFTypeRef` to Swift/JSON, including specific handling for `AXValue` (CGPoint, CGSize, booleans).
-        *   **Output Formatting (`output_format` parameter)**:
-            *   `smart` (default): Omits attributes with empty string values or "Not available".
-            *   `verbose`: Includes all attributes, even if empty or "Not available".
-            *   `text_content`: This mode bypasses `getElementAttributes` for the final response structure. Instead, `handleQuery` calls a new `extractTextContent` function.
-        *   Includes `ComputedName` and `IsClickable` for `smart`/`verbose` formats.
+*   **Attribute Retrieval (`AXAttributeHelpers.swift`)**:
+    *   `getElementAttributes(axElement:requestedAttributes:outputFormat:)`:
+        *   Takes an `AXElement`.
+        *   If `requestedAttributes` is empty, discovers all via `AXUIElementCopyAttributeNames` on `axElement.underlyingElement`.
+        *   Retrieves values using `axElement.attribute<T>()`, direct `AXElement` computed properties (e.g., `axElement.role`, `axElement.title`, `axElement.pathHint`), or `axElement.rawAttributeValue(named:)` for complex/raw types.
+        *   Handles `AXValue` types (like position/size) by calling `AXValueUnwrapper.unwrap` (from `AXValueHelpers.swift`) and then processing known structures.
+        *   `AXValueUnwrapper.unwrap` handles conversion of various `CFTypeRef` (like `CFString`, `CFNumber`, `CFBoolean`, `AXValue`, `AXUIElement`) into Swift types.
+        *   Includes `ComputedName` (derived from title, value, description, etc.) and `IsClickable` (boolean, based on role or `kAXPressAction` support).
 
-*   **Text Extraction (`extractTextContent` for `output_format: 'text_content'`)**:
-    *   Called by `handleQuery` when `output_format` is `text_content`.
-    *   Ignores `attributes_to_query` from the input.
-    *   Fetches a predefined list of text-bearing attributes (e.g., "AXValue", "AXTitle", "AXDescription", "AXHelp", "AXPlaceholderValue", "AXLabelValue", "AXRoleDescription").
-    *   Extracts and concatenates their non-empty string values, separated by newlines.
-    *   If `multi: true`, concatenates text from all found elements, separated by double newlines.
-    *   Returns a simple JSON response: `{"text_content": "all extracted text..."}`.
+*   **Action Performing (`AXElement.swift`, `AXCommands.swift`)**:
+    *   `AXElement.isActionSupported(_ actionName: String)`: Checks if an action is supported, primarily by querying `kAXActionNamesAttribute`.
+    *   `AXElement.performAction(_ actionName: String)`: Calls `AXUIElementPerformAction`.
+    *   The `handlePerform` command in `AXCommands.swift` uses these `AXElement` methods. For "AXSetValue", it uses `AXUIElementSetAttributeValue` directly with `kAXValueAttribute`.
 
-*   **Action Performing**: (As originally described, uses `elementSupportsAction` and `AXUIElementPerformAction`).
+*   **Text Extraction (`AXUtils.swift`, `AXCommands.swift`)**:
+    *   `extractTextContent(axElement: AXElement)`: Iterates through a list of textual attributes (e.g., `kAXValueAttribute`, `kAXTitleAttribute`, `kAXDescriptionAttribute`) on the `AXElement`, concatenates unique non-empty values.
+    *   `handleExtractText` uses this after finding element(s) via `path_hint` or `locator` (using `collectAll`).
 
-*   **Error Handling**: (As originally described, `ErrorResponse` JSON to `stderr`).
+*   **Error Handling (`AXUtils.swift`)**:
+    *   Uses a custom `AXErrorString` Swift enum (`.notAuthorised`, `.elementNotFound`, `.actionFailed`, etc.).
+    *   Responds with a JSON `ErrorResponse` object.
 
-*   **Debugging**:
-    *   `GLOBAL_DEBUG_ENABLED` (Swift constant, `true`): If true, all `debug()` messages are printed *live* to `stderr` of the `ax` process.
-    *   `debug_logging: true` (input JSON field): Enables `commandSpecificDebugLoggingEnabled`.
-    *   `collectedDebugLogs` (Swift array): Stores debug messages if `commandSpecificDebugLoggingEnabled` is true. This array is included in the `debug_logs` field of the final JSON response (on `stdout` for success, or `stderr` for `ErrorResponse`).
-    *   `AX_BINARY_VERSION` constant is included in debug logs.
+*   **Threading**:
+    *   Many functions that interact with `AXUIElement` (especially attribute getting/setting and action performing) are marked with `@MainActor` to ensure they run on the main thread, as required by the Accessibility APIs. This includes most methods within `AXElement` and the command handlers in `AXCommands.swift`.
 
-*   **Concurrency**: Functions interacting with AppKit/Accessibility or calling `debug()` are annotated with `@MainActor`. Global variables for debug state are accessed from main-thread contexts.
+*   **Debugging (`AXLogging.swift`)**:
+    *   `GLOBAL_DEBUG_ENABLED` (Swift constant): If true, `debug()` messages are printed to `stderr`.
+    *   `debug_logging` field in input JSON: If `true`, enables `commandSpecificDebugLoggingEnabled` for the current command.
+    *   `collectedDebugLogs` (Swift array): Stores debug messages if `commandSpecificDebugLoggingEnabled` is true. This array is included in the `debug_logs` field of the JSON response.
+    *   `resetDebugLogContextForNewCommand()`: Called for each command to reset logging state.
 
 ## 3. Build Process & Optimization
 
-The `ax` binary is built using the `Makefile` located in the `ax/` directory.
+The `ax` binary is built using Swift Package Manager, with build configurations potentially managed by a `Makefile`.
 
-*   **Makefile (`ax/Makefile`)**:
-    *   **Universal Binary**: Builds for both `arm64` and `x86_64`.
-    *   **Cleaning**: The `all` target now first runs `rm -f ax/ax` and `swift package clean` to ensure a fresh build and help catch all compilation errors.
-    *   **Optimization Flags**:
-        *   `-Xswiftc -Osize`: Swift compiler optimizes for binary size.
-        *   `-Xlinker -dead_strip`: Linker performs dead code elimination (Note: `-Wl,-dead_strip` caused issues when specifying architecture, so `-Wl,` was removed).
-    *   **Symbol Stripping**:
-        *   `strip -x $(UNIVERSAL_BINARY_PATH)`: Aggressively removes symbols.
-    *   **Output**: `ax/ax`.
-*   **Optimization Journey Summary**:
-    *   The combination of `-Xswiftc -Osize`, `-Xlinker -dead_strip`, and `strip -x` is effective.
-    *   Link-Time Optimization (LTO) (`-Xswiftc -lto=llvm-full`) resulted in linker errors.
-    *   UPX compression created malformed, unusable binaries.
+*   **`Package.swift`**:
+    *   Defines the "ax" executable product and target.
+    *   Specifies `.macOS(.v13)` platform.
+    *   Explicitly lists all source files in `Sources/AXHelper`.
+*   **`Makefile` (`ax/Makefile`)** (if used for final release builds):
+    *   **Universal Binary**: Can be configured to build for `arm64` and `x86_64`.
+    *   **Optimization Flags**: May use `-Xswiftc -Osize` and `-Xlinker -Wl,-dead_strip`.
+    *   **Symbol Stripping**: May use `strip -x` on the final universal binary.
+    *   **Output**: The final binary is typically placed at `ax/ax` or in `.build/debug/ax` or `.build/release/ax`.
+*   **Optimization Summary**:
+    *   Size optimization and dead code stripping are primary goals for release builds.
+    *   UPX was explored but abandoned due to creating malformed binaries.
 
 ## 4. Running & Testing
 
-(Largely as originally described)
+The `ax` binary can be invoked by a parent process or tested manually.
 
-*   **Runner Script (`ax/ax_runner.sh`)**: Recommended for manual execution.
-*   **Manual Testing Workflow**:
-    1.  Verify target application state.
-    2.  Construct JSON input.
-    3.  Execute: `echo \'...\' | ./ax/ax_runner.sh`
-    4.  Interpret Output:
-        *   `stdout`: Primary JSON response.
-        *   `stderr`: Contains `ErrorResponse` JSON if `ax` itself errors. Also, if `GLOBAL_DEBUG_ENABLED` is true (default), `stderr` will *additionally* show a live stream of `DEBUG:` messages from the `ax` binary\'s operations, separate from the `debug_logs` array in the final JSON.
-*   **Example Test Queries (with `debug_logging` and `max_elements`)**:
-    1.  **Find TextEdit\'s main window**:
+*   **Runner Script (`ax/ax_runner.sh`)**:
+    *   Recommended for manual execution. Robustly executes `ax/ax` from its location.
+    *   Example:
         ```bash
-        echo \'{"cmd":"query","locator":{"app":"com.apple.TextEdit","role":"AXWindow","match":{"AXMain":"true"}},"return_all_matches":false,"debug_logging":true}\' | ./ax/ax_runner.sh
+        #!/bin/bash
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+        exec "$SCRIPT_DIR/ax" "$@"
         ```
-    2.  **List all text elements in TextEdit (potentially many, so `max_elements` is useful)**:
-        ```bash
-        echo \'{"cmd":"query","locator":{"app":"com.apple.TextEdit","role":"AXStaticText","match":{}},"return_all_matches":true,"max_elements":50,"debug_logging":true}\' | ./ax/ax_runner.sh
-        ```
-*   **Permissions**: (As originally described - crucial for the parent process).
+*   **Manual Testing**:
+    1.  **Verify Target Application State**: Ensure the app is running and in the expected UI state.
+    2.  **Construct JSON Input**: Single line of JSON.
+    3.  **Execute**: Pipe JSON to `./ax/ax_runner.sh` (or the direct path to the `ax` binary, e.g., `ax/.build/debug/ax`).
+        *   Example:
+            ```bash
+            echo '{"command_id":"test01","command":"query","application":"com.apple.TextEdit","locator":{"criteria":{"AXRole":"AXWindow","AXMain":"true"}},"debug_logging":true}' | ./ax/ax_runner.sh
+            ```
+    4.  **Interpret Output**: `stdout` for JSON response, `stderr` for `ErrorResponse` or global debug messages.
+
+*   **Permissions**: The executing process **must** have "Accessibility" permissions in "System Settings > Privacy & Security > Accessibility". `ax` calls `checkAccessibilityPermissions()` (in `AXUtils.swift`) on startup.
 
 ## 5. macOS Accessibility (AX) Intricacies & Swift Integration
 
-(Largely as originally described, but with emphasis on boolean handling)
+*   **Frameworks**: `ApplicationServices` (for C APIs), `AppKit` (for `NSRunningApplication`).
+*   **`AXElement` Wrapper**: Provides a more Swift-idiomatic interface over `AXUIElement`.
+*   **Attributes & `CFTypeRef`**: Values are `CFTypeRef`. Handled by `AXValueUnwrapper.unwrap` and `axValue<T>` in `AXValueHelpers.swift`, and direct `AXElement` properties.
+*   **`AXValue`**: Special type for geometry, ranges, etc., unwrapped via `AXValueUnwrapper`.
+*   **Actions**: Performed via `AXElement.performAction()`. Support checked with `AXElement.isActionSupported()`.
+*   **Roles**: `AXRole` (e.g., "AXWindow", "AXButton", "AXTextField") is key for identification.
+*   **Constants**: Defined in `AXConstants.swift`.
+*   **Tooling**: **Accessibility Inspector** (Xcode > Open Developer Tool) is vital.
 
-*   **`AXValue` for Booleans**: When an attribute like `AXMain` is an `AXValueRef` (e.g., `<AXValue ... {value = true}>`), it\'s not a direct `CFBooleanRef`. Code must:
-    1.  Check `CFGetTypeID(value)` against `AXValueGetTypeID()`.
-    2.  Use `AXValueGetType(axValueRef)` and compare its `rawValue` to `4` (which corresponds to `kAXValueBooleanType`, as the constant itself might not be available or compile).
-    3.  Use `AXValueGetValue(axValueRef, valueType, &boolResult)` to extract the `DarwinBoolean`.
-*   **Constants**: Key constants like `kAXActionNamesAttribute` are defined as Swift strings ("AXActionNames") if not directly available from frameworks.
-
-This document should serve as a good reference for understanding and working with the `ax` binary.
+This document reflects the state of the `ax` tool after significant refactoring towards a more Swift-idiomatic design using `AXElement`.
