@@ -10,83 +10,61 @@ import CoreGraphics // For potential future use with geometry types from attribu
 
 // MARK: - Element Summary Helpers
 
-@MainActor
-private func getSingleElementSummary(_ element: Element) -> ElementAttributes { // Changed to Element
-    var summary = ElementAttributes()
-    summary[kAXRoleAttribute] = AnyCodable(element.role)
-    summary[kAXSubroleAttribute] = AnyCodable(element.subrole)
-    summary[kAXRoleDescriptionAttribute] = AnyCodable(element.roleDescription)
-    summary[kAXTitleAttribute] = AnyCodable(element.title)
-    summary[kAXDescriptionAttribute] = AnyCodable(element.description)
-    summary[kAXIdentifierAttribute] = AnyCodable(element.identifier)
-    summary[kAXHelpAttribute] = AnyCodable(element.help)
-    summary[kAXPathHintAttribute] = AnyCodable(element.attribute(Attribute<String>(kAXPathHintAttribute)))
-    
-    // Add new status properties
-    summary["PID"] = AnyCodable(element.pid)
-    summary[kAXEnabledAttribute] = AnyCodable(element.isEnabled)
-    summary[kAXFocusedAttribute] = AnyCodable(element.isFocused)
-    summary[kAXHiddenAttribute] = AnyCodable(element.isHidden)
-    summary["IsIgnored"] = AnyCodable(element.isIgnored)
-    summary[kAXElementBusyAttribute] = AnyCodable(element.isElementBusy)
-
-    return summary
-}
+// Removed getSingleElementSummary as it was unused.
 
 // MARK: - Internal Fetch Logic Helpers
 
+// Approach using direct property access within a switch statement
 @MainActor
 private func extractDirectPropertyValue(for attributeName: String, from element: Element, outputFormat: OutputFormat) -> (value: Any?, handled: Bool) {
     var extractedValue: Any?
     var handled = true
-
-    // This block for pathHint should be fine, as pathHint is already a String?
-    if attributeName == kAXPathHintAttribute {
+    
+    switch attributeName {
+    case kAXPathHintAttribute:
         extractedValue = element.attribute(Attribute<String>(kAXPathHintAttribute))
-    }
-    // Prefer direct Element properties where available
-    else if attributeName == kAXRoleAttribute { extractedValue = element.role }
-    else if attributeName == kAXSubroleAttribute { extractedValue = element.subrole }
-    else if attributeName == kAXTitleAttribute { extractedValue = element.title }
-    else if attributeName == kAXDescriptionAttribute { extractedValue = element.description }
-    else if attributeName == kAXEnabledAttribute {
+    case kAXRoleAttribute:
+        extractedValue = element.role
+    case kAXSubroleAttribute:
+        extractedValue = element.subrole
+    case kAXTitleAttribute:
+        extractedValue = element.title
+    case kAXDescriptionAttribute:
+        extractedValue = element.description
+    case kAXEnabledAttribute:
         extractedValue = element.isEnabled
         if outputFormat == .text_content {
-            extractedValue = (extractedValue as? Bool)?.description ?? kAXNotAvailableString
+            extractedValue = element.isEnabled?.description ?? kAXNotAvailableString
         }
-    }
-    else if attributeName == kAXFocusedAttribute {
+    case kAXFocusedAttribute:
         extractedValue = element.isFocused
         if outputFormat == .text_content {
-            extractedValue = (extractedValue as? Bool)?.description ?? kAXNotAvailableString
+            extractedValue = element.isFocused?.description ?? kAXNotAvailableString
         }
-    }
-    else if attributeName == kAXHiddenAttribute {
+    case kAXHiddenAttribute:
         extractedValue = element.isHidden
         if outputFormat == .text_content {
-            extractedValue = (extractedValue as? Bool)?.description ?? kAXNotAvailableString
+            extractedValue = element.isHidden?.description ?? kAXNotAvailableString
         }
-    }
-    else if attributeName == "IsIgnored" { // String literal for IsIgnored
+    case "IsIgnored":
         extractedValue = element.isIgnored
         if outputFormat == .text_content {
-            extractedValue = (extractedValue as? Bool)?.description ?? kAXNotAvailableString
+            extractedValue = element.isIgnored ? "true" : "false"
         }
-    }
-    else if attributeName == "PID" { // String literal for PID
+    case "PID":
         extractedValue = element.pid
         if outputFormat == .text_content {
-            extractedValue = (extractedValue as? pid_t)?.description ?? kAXNotAvailableString
+            extractedValue = element.pid?.description ?? kAXNotAvailableString
         }
-    }
-    else if attributeName == kAXElementBusyAttribute {
+    case kAXElementBusyAttribute:
         extractedValue = element.isElementBusy
         if outputFormat == .text_content {
-            extractedValue = (extractedValue as? Bool)?.description ?? kAXNotAvailableString
+            extractedValue = element.isElementBusy?.description ?? kAXNotAvailableString
         }
-    } else {
-        handled = false // Attribute not handled by this direct property logic
+    default:
+        handled = false
     }
+    
     return (extractedValue, handled)
 }
 
