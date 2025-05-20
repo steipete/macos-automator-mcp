@@ -1,0 +1,163 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Automating Claude Desktop (com.anthropic.claudefordesktop)
+
+This document outlines key findings and strategies for automating the Claude desktop application using AppleScript and the `ax` accessibility helper tool.
+
+**Bundle Identifier:** `com.anthropic.claudefordesktop`
+
+### 1. Ensuring a Clean Application State
+
+It's recommended to quit and relaunch the Claude application before starting an automation sequence to ensure it's in a known, default state.
+
+**AppleScript to Relaunch Claude:**
+```applescript
+set claudeBundleID to "com.anthropic.claudefordesktop"
+
+-- Quit the application
+try
+    tell application id claudeBundleID
+        if it is running then
+            quit
+            delay 1 -- Give it a moment to quit
+        end if
+    end tell
+on error errMsg
+    log "Notice: Error during quit (or app not running): " & errMsg
+end try
+
+-- Ensure it's fully quit
+set maxAttempts to 5
+repeat maxAttempts times
+    if application id claudeBundleID is running then
+        delay 0.5
+    else
+        exit repeat
+    end if
+end repeat
+
+-- Relaunch the application
+try
+    tell application id claudeBundleID
+        launch
+        delay 1 -- Give it a moment to launch
+        activate -- Bring to front
+    end tell
+    log "Claude app relaunched successfully."
+on error errMsg
+    log "Error: Could not relaunch Claude: " & errMsg
+end try
+```
+
+### 2. Text Input
+
+Directly setting the `AXValue` of the main text input area via `ax` or simple AppleScript `set value of text area ...` has proven unreliable. The most robust method found is using AppleScript to simulate keystrokes.
+
+**AppleScript for Text Input (after app is active and window is frontmost):**
+```applescript
+tell application id "com.anthropic.claudefordesktop"
+    activate
+end tell
+delay 0.5 -- Give time for activation
+
+tell application "System Events"
+    tell process "Claude" -- Using name, but app should be frontmost by bundle ID
+        set frontmost to true
+        delay 0.2
+        if not (exists window 1) then
+            error "Claude window 1 not found after activation."
+        end if
+        
+        -- Optional: Try to explicitly focus the window
+        try
+            perform action "AXRaise" of window 1
+            set focused of window 1 to true
+            delay 0.2
+        on error
+            -- Non-critical if this fails
+        end try
+
+        try
+            keystroke "Your text to input here."
+            log "Keystroke successful."
+        on error errMsg number errNum
+            error "Error during keystroke: " & errMsg & " (Num: " & errNum & ")"
+        end try
+    end tell
+end tell
+```
+
+### 3. Identifying UI Elements with `ax`
+
+The Claude desktop application appears to be Electron-based, meaning UI elements are often nested within web areas.
+
+**a. Main Text Input Area:**
+*   **Role:** `AXTextArea`
+*   **Location:** Typically within the first window (`window[1]`). The full accessibility path can be quite deep (e.g., `window[1]/group[1]/group[1]/group[1]/group[1]/webArea[1]/group[1]/textArea[1]`).
+*   **`ax` Locator (Query):**
+    ```json
+    {
+        "cmd": "query",
+        "locator": {
+            "app": "com.anthropic.claudefordesktop",
+            "pathHint": ["window[1]"], // Start search within the first window
+            "role": "AXTextArea"
+        },
+        "attributes": ["AXValue", "AXFocused", "AXPathHint"],
+        "debug_logging": true
+    }
+    ```
+    Querying this after text input can verify the content of `AXValue`.
+
+**b. Send Message Button:**
+*   **Role:** `AXButton`
+*   **Identifying Attribute:** `AXTitle` is typically "Send message".
+*   **Location:** Also within `window[1]`.
+*   **`ax` Locator (Query to find):**
+    ```json
+    {
+        "cmd": "query",
+        "locator": {
+            "app": "com.anthropic.claudefordesktop",
+            "pathHint": ["window[1]"],
+            "role": "AXButton",
+            "title": "Send message" // Key for finding the correct button
+        },
+        "attributes": ["AXTitle", "AXIdentifier", "AXRoleDescription", "AXPathHint", "AXEnabled", "AXActionNames"],
+        "debug_logging": true
+    }
+    ```
+*   **`ax` Locator (Perform Action):**
+    ```json
+    {
+        "cmd": "perform",
+        "locator": {
+            "app": "com.anthropic.claudefordesktop",
+            "pathHint": ["window[1]"],
+            "role": "AXButton",
+            "title": "Send message"
+        },
+        "action": "AXPress",
+        "debug_logging": true
+    }
+    ```
+
+### 4. Performing Actions with `ax`
+
+*   **`AXPress`:** The "Send message" button supports the `AXPress` action. This can be reliably triggered using the `perform` command with the locator described above.
+*   **`AXActionNames` Attribute:** While `AXPress` works, the `AXActionNames` attribute might appear as `null` or "Not available" in the JSON output from `getElementAttributes` in the `ax` tool for some buttons. However, the `ax` tool's `search` (with `requireAction`) and `perform` functions correctly determine if an action is supported and can execute it.
+
+### 5. General Observations & Debugging Tips
+
+*   **Electron App:** The UI structure suggests an Electron application. This means standard AppKit/Cocoa control identification via simple AppleScript can be challenging, and accessibility often relies on traversing web areas.
+*   **`ax` Tool Debugging:**
+    *   Enable `debug_logging: true` in your `ax` commands.
+    *   The `stderr` output from `ax` provides detailed traversal and matching information.
+    *   The version 1.1.5+ of `ax` has improved debug logging conciseness, printing a version header once per command and indenting subsequent logs.
+*   **Focus:** Ensuring the application and target window are active and frontmost is crucial, especially before sending keystrokes. The AppleScript snippets include `activate` and attempts to set `frontmost to true`.
+*   **`pathHint`:** Using `pathHint: ["window[1]"]` as a starting point for `ax` queries helps narrow down the search scope significantly.
+
+This summary should provide a good foundation for further automation of the Claude desktop application.
