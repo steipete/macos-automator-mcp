@@ -14,9 +14,20 @@ let encoder = JSONEncoder()
 if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-h") {
     let helpText = """
     ax Accessibility Helper v\(BINARY_VERSION)
-    Communicates via JSON on stdin/stdout.
-    Input JSON: See CommandEnvelope in Models.swift
-    Output JSON: See response structs (QueryResponse, etc.) in Models.swift
+
+    Accepts a single JSON command conforming to CommandEnvelope (see Models.swift).
+    Input can be provided in one of three ways:
+    1. STDIN: If no arguments are provided, reads a single JSON object from stdin.
+       The JSON can be multi-line. This is the default interactive/piped mode.
+    2. File Path Argument: If a single argument is provided and it is a valid path
+       to a file, the tool will read the JSON command from that file.
+       Example: ax /path/to/your/command.json
+    3. Direct JSON String Argument: If a single argument is provided and it is NOT
+       a file path, the tool will attempt to parse the argument directly as a
+       JSON string.
+       Example: ax '{ "command_id": "test", "command": "query", ... }'
+
+    Output is a single JSON response (see response structs in Models.swift) on stdout.
     """
     print(helpText)
     exit(0)
@@ -38,27 +49,20 @@ do {
 
 debug("ax binary version: \(BINARY_VERSION) starting main loop.") // And this debug line
 
-while let line = readLine(strippingNewline: true) {
+// Function to process a single command from Data
+@MainActor
+func processCommandData(_ jsonData: Data, initialCommandId: String = "unknown_input_source_error") {
     commandSpecificDebugLoggingEnabled = false // Reset for each command
     collectedDebugLogs = [] // Reset for each command
     resetDebugLogContextForNewCommand() // Reset the version header log flag
-    var currentCommandId: String = "unknown_line_parse_error" // Default command_id
-
-    guard let jsonData = line.data(using: .utf8) else {
-        let errorResponse = ErrorResponse(command_id: currentCommandId, error: "Invalid input: Not UTF-8", debug_logs: nil)
-        sendResponse(errorResponse)
-        continue
-    }
+    var currentCommandId: String = initialCommandId
 
     // Attempt to pre-decode command_id for error reporting robustness
-    // This struct can be defined locally or globally if used in more places.
     struct CommandIdExtractor: Decodable { let command_id: String }
     if let partialCmd = try? decoder.decode(CommandIdExtractor.self, from: jsonData) {
         currentCommandId = partialCmd.command_id
     } else {
-        // If even partial decoding for command_id fails, keep the default or log more specifically.
-        debug("Failed to pre-decode command_id from input: \(line)")
-        // currentCommandId remains "unknown_line_parse_error" or a more specific default
+        debug("Failed to pre-decode command_id from provided data.")
     }
 
     do {
@@ -71,29 +75,25 @@ while let line = readLine(strippingNewline: true) {
         }
 
         let response: Codable
-        switch cmdEnvelope.command { // Use the CommandType enum directly
+        switch cmdEnvelope.command {
         case .query:
             response = try handleQuery(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        case .collectAll: // Matches CommandType.collectAll (raw value "collect_all")
+        case .collectAll:
             response = try handleCollectAll(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        case .performAction: // Matches CommandType.performAction (raw value "perform_action")
+        case .performAction:
             response = try handlePerform(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        case .extractText: // Matches CommandType.extractText (raw value "extract_text")
+        case .extractText:
             response = try handleExtractText(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        // No default case needed if all CommandType cases are handled.
-        // If CommandType could have more cases not handled here, a default would be required.
-        // For now, assuming all defined commands in CommandType will have a handler.
-        // If an unknown string comes from JSON, decoding CommandEnvelope itself would fail earlier.
         }
         
-        sendResponse(response, commandId: currentCommandId) // Use currentCommandId
+        sendResponse(response, commandId: currentCommandId)
     } catch let error as AccessibilityError {
         debug("Error (AccessibilityError) for command \(currentCommandId): \(error.description)")
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: error.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
-        // Consider exiting with error.exitCode if appropriate for the context
     } catch let error as DecodingError {
-        debug("Decoding error for command \(currentCommandId): \(error.localizedDescription). Raw input: \(line)")
+        let inputString = String(data: jsonData, encoding: .utf8) ?? "Invalid UTF-8 data"
+        debug("Decoding error for command \(currentCommandId): \(error.localizedDescription). Raw input: \(inputString)")
         let detailedError: String
         switch error {
         case .typeMismatch(let type, let context):
@@ -107,15 +107,100 @@ while let line = readLine(strippingNewline: true) {
         @unknown default:
             detailedError = "Unknown decoding error: \(error.localizedDescription)"
         }
-        let finalError = AccessibilityError.jsonDecodingFailed(error) // Wrap in AccessibilityError
+        let finalError = AccessibilityError.jsonDecodingFailed(error)
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: "\(finalError.description) Details: \(detailedError)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
-    } catch { // Catch any other errors, including encoding errors from sendResponse itself if they were rethrown
+    } catch {
         debug("Unhandled/Generic error for command \(currentCommandId): \(error.localizedDescription)")
-        // Wrap generic swift errors into our AccessibilityError.genericError
         let toolError = AccessibilityError.genericError("Unhandled Swift error: \(error.localizedDescription)")
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: toolError.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
+    }
+}
+
+// Main execution logic
+if CommandLine.arguments.count > 1 {
+    // Argument(s) provided. First argument (CommandLine.arguments[1]) is the potential file path or JSON string.
+    let argument = CommandLine.arguments[1]
+    var commandData: Data?
+
+    // Attempt to read as a file path first
+    if FileManager.default.fileExists(atPath: argument) {
+        do {
+            let fileURL = URL(fileURLWithPath: argument)
+            commandData = try Data(contentsOf: fileURL)
+            debug("Successfully read command from file: \(argument)")
+        } catch {
+            let errorResponse = ErrorResponse(command_id: "cli_file_read_error", error: "Failed to read command from file '\(argument)': \(error.localizedDescription)", debug_logs: nil)
+            sendResponse(errorResponse)
+            exit(1)
+        }
+    } else {
+        // If not a file, try to interpret the argument directly as JSON string
+        if let data = argument.data(using: .utf8) {
+            commandData = data
+            debug("Interpreting command directly from argument string.")
+        } else {
+            let errorResponse = ErrorResponse(command_id: "cli_arg_encoding_error", error: "Failed to encode command argument '\(argument)' to UTF-8 data.", debug_logs: nil)
+            sendResponse(errorResponse)
+            exit(1)
+        }
+    }
+
+    if let data = commandData {
+        processCommandData(data, initialCommandId: "cli_command")
+        exit(0) 
+    } else {
+        // This case should ideally not be reached if file read or string interpretation was successful or errored out.
+        let errorResponse = ErrorResponse(command_id: "cli_no_data_error", error: "Could not obtain command data from argument: \(argument)", debug_logs: nil)
+        sendResponse(errorResponse)
+        exit(1)
+    }
+
+} else {
+    // No arguments, read from STDIN (existing behavior)
+    debug("No command-line arguments detected. Reading from STDIN.")
+
+    var stdinData: Data? = nil
+    if isatty(STDIN_FILENO) == 0 { // Check if STDIN is not a TTY (i.e., it's a pipe or redirection)
+        debug("STDIN is a pipe or redirection. Reading all available data.")
+        // Read all data from stdin if it's a pipe
+        // This approach might be too simplistic if stdin is very large or never closes for some reason.
+        // For typical piped JSON, it should be okay.
+        var accumulatedData = Data()
+        let stdin = FileHandle.standardInput
+        while true {
+            let data = stdin.availableData
+            if data.isEmpty {
+                break // End of file or no more data currently available
+            }
+            accumulatedData.append(data)
+        }
+        if !accumulatedData.isEmpty {
+            stdinData = accumulatedData
+        } else {
+            debug("No data read from piped STDIN.")
+            // Allow to fall through to readLine behavior just in case, or exit? For now, fall through.
+        }
+    }
+
+    if let data = stdinData {
+        // Process the single block of data read from pipe
+        processCommandData(data, initialCommandId: "stdin_piped_command")
+        debug("Finished processing piped STDIN data.")
+    } else {
+        // Fallback to line-by-line reading if not a pipe or if pipe was empty
+        // This is the original behavior for interactive TTY or if pipe read failed to get data.
+        debug("STDIN is a TTY or pipe was empty. Reading line by line.")
+        while let line = readLine(strippingNewline: true) {
+            guard let jsonData = line.data(using: .utf8) else {
+                let errorResponse = ErrorResponse(command_id: "stdin_invalid_input_line", error: "Invalid input from STDIN line: Not UTF-8", debug_logs: nil)
+                sendResponse(errorResponse)
+                continue
+            }
+            processCommandData(jsonData, initialCommandId: "stdin_line_command")
+        }
+        debug("Finished reading from STDIN line by line.")
     }
 }
 

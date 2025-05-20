@@ -206,6 +206,8 @@ public func applicationElement(for bundleIdOrName: String) -> Element? {
         return nil
     }
     let appElement = AXUIElementCreateApplication(pid)
+    // TODO: Check if appElement is nil or somehow invalid after creation, though AXUIElementCreateApplication doesn't directly return an optional or throw errors easily checkable here.
+    // For now, assume valid if PID was found.
     return Element(appElement)
 }
 
