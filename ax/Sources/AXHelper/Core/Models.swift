@@ -36,8 +36,20 @@ public struct AnyCodable: Codable {
             self.value = bool
         } else if let int = try? container.decode(Int.self) {
             self.value = int
+        } else if let int32 = try? container.decode(Int32.self) {
+            self.value = int32
+        } else if let int64 = try? container.decode(Int64.self) {
+            self.value = int64
+        } else if let uint = try? container.decode(UInt.self) {
+            self.value = uint
+        } else if let uint32 = try? container.decode(UInt32.self) {
+            self.value = uint32
+        } else if let uint64 = try? container.decode(UInt64.self) {
+            self.value = uint64
         } else if let double = try? container.decode(Double.self) {
             self.value = double
+        } else if let float = try? container.decode(Float.self) {
+            self.value = float
         } else if let string = try? container.decode(String.self) {
             self.value = string
         } else if let array = try? container.decode([AnyCodable].self) {
@@ -60,8 +72,18 @@ public struct AnyCodable: Codable {
             try container.encode(int)
         case let int32 as Int32:
             try container.encode(Int(int32))
+        case let int64 as Int64:
+            try container.encode(int64)
+        case let uint as UInt:
+            try container.encode(uint)
+        case let uint32 as UInt32:
+            try container.encode(uint32)
+        case let uint64 as UInt64:
+            try container.encode(uint64)
         case let double as Double:
             try container.encode(double)
+        case let float as Float:
+            try container.encode(float)
         case let string as String:
             try container.encode(string)
         case let array as [AnyCodable]:
