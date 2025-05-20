@@ -58,6 +58,8 @@ public struct AnyCodable: Codable {
             try container.encode(bool)
         case let int as Int:
             try container.encode(int)
+        case let int32 as Int32:
+            try container.encode(Int(int32))
         case let double as Double:
             try container.encode(double)
         case let string as String:
