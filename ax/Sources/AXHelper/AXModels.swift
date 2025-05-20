@@ -2,6 +2,23 @@
 
 import Foundation
 
+// Enum for output formatting options
+public enum OutputFormat: String, Codable {
+    case smart        // Default, tries to be concise and informative
+    case verbose      // More detailed output, includes more attributes/info
+    case text_content // Primarily extracts textual content
+    case json_string  // Returns the attributes as a JSON string (new)
+}
+
+// Define CommandType enum
+public enum CommandType: String, Codable {
+    case query
+    case performAction = "perform_action"
+    case collectAll = "collect_all"
+    case extractText = "extract_text"
+    // Add future commands here, ensuring case matches JSON or provide explicit raw value
+}
+
 // For encoding/decoding 'Any' type in JSON, especially for element attributes.
 public struct AnyCodable: Codable {
     public let value: Any
@@ -66,24 +83,26 @@ public typealias ElementAttributes = [String: AnyCodable]
 // Main command envelope
 public struct CommandEnvelope: Codable {
     public let command_id: String
-    public let command: String // "query", "perform_action", "collect_all", "extract_text"
+    public let command: CommandType // Changed to CommandType enum
     public let application: String? // Bundle ID or name
     public let locator: Locator?
     public let action: String?
-    public let value: String? // For AXValue (e.g., text input)
+    public let value: String? // For AXValue (e.g., text input), will be parsed.
+    public let attribute_to_set: String? // Name of the attribute to set for 'setValue' or similar commands
     public let attributes: [String]? // Attributes to fetch for query
     public let path_hint: [String]? // Path to navigate to an element
     public let debug_logging: Bool? // Master switch for debug logging for this command
     public let max_elements: Int?   // Max elements for collect_all
-    public let output_format: String? // "smart", "verbose", "text_content" for getElementAttributes
+    public let output_format: OutputFormat? // Changed to enum
 
-    public init(command_id: String, command: String, application: String? = nil, locator: Locator? = nil, action: String? = nil, value: String? = nil, attributes: [String]? = nil, path_hint: [String]? = nil, debug_logging: Bool? = nil, max_elements: Int? = nil, output_format: String? = nil) {
+    public init(command_id: String, command: CommandType, application: String? = nil, locator: Locator? = nil, action: String? = nil, value: String? = nil, attribute_to_set: String? = nil, attributes: [String]? = nil, path_hint: [String]? = nil, debug_logging: Bool? = nil, max_elements: Int? = nil, output_format: OutputFormat? = .smart) {
         self.command_id = command_id
-        self.command = command
+        self.command = command // Ensure this matches the updated type
         self.application = application
         self.locator = locator
         self.action = action
         self.value = value
+        self.attribute_to_set = attribute_to_set
         self.attributes = attributes
         self.path_hint = path_hint
         self.debug_logging = debug_logging

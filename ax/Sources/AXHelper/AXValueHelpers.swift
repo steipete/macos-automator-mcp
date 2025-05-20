@@ -147,6 +147,21 @@ public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
         return nil
     }
 
+    if T.self == [AXElement].self {
+        if let anyArray = value as? [Any?] {
+            let result = anyArray.compactMap { item -> AXElement? in
+                guard let cfItem = item else { return nil }
+                if CFGetTypeID(cfItem as CFTypeRef) == ApplicationServices.AXUIElementGetTypeID() {
+                    return AXElement(cfItem as! AXUIElement)
+                }
+                return nil
+            }
+            return result as? T
+        }
+        debug("axValue: Expected [AXElement] for attribute '\(attr)', but got \(type(of: value)): \(value)")
+        return nil
+    }
+
     if T.self == [String].self {
         if let stringArray = value as? [Any?] { 
             let result = stringArray.compactMap { $0 as? String }

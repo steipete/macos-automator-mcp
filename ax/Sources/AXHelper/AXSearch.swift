@@ -120,7 +120,7 @@ public func search(axElement: AXElement,
     }
 
     // Get children using the now comprehensive AXElement.children property
-    var childrenToSearch: [AXElement] = axElement.children ?? []
+    let childrenToSearch: [AXElement] = axElement.children ?? []
     // No need for uniqueChildrenSet here if axElement.children already handles deduplication,
     // but if axElement.children can return duplicates from different sources, keep it.
     // AXElement.children as implemented now *does* deduplicate.
@@ -205,9 +205,9 @@ public func collectAll(
             if !foundElements.contains(currentAXElement) { 
                  foundElements.append(currentAXElement)
                  if isDebugLoggingEnabled {
-                     let pathHintStr: String = currentAXElement.attribute(kAXPathHintAttribute) ?? "nil"
+                     let pathHintStr: String = currentAXElement.attribute(AXAttribute<String>(kAXPathHintAttribute)) ?? "nil"
                      let titleStr: String = currentAXElement.title ?? "nil"
-                     let idStr: String = currentAXElement.attribute(kAXIdentifierAttribute) ?? "nil"
+                     let idStr: String = currentAXElement.attribute(AXAttribute<String>(kAXIdentifierAttribute)) ?? "nil"
                      let roleStr = elementRoleForLog ?? "nil"
                      let message = "collectAll [CD1 D\(depth)]: Added. Role:'\(roleStr)', Title:'\(titleStr)', ID:'\(idStr)', Path:'\(pathHintStr)'. Hits:\(foundElements.count)"
                      debug(message)
@@ -217,7 +217,7 @@ public func collectAll(
     }
 
     // Get children using the now comprehensive AXElement.children property
-    var childrenToExplore: [AXElement] = currentAXElement.children ?? []
+    let childrenToExplore: [AXElement] = currentAXElement.children ?? []
     // AXElement.children as implemented now *does* deduplicate.
 
     // The extensive alternative children logic and application role/windows check

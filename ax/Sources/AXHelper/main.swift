@@ -22,7 +22,20 @@ if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-
     exit(0)
 }
 
-checkAccessibilityPermissions() // This needs to be called from main
+do {
+    try checkAccessibilityPermissions() // This needs to be called from main
+} catch let error as AXToolError {
+    // Handle permission error specifically at startup
+    let errorResponse = ErrorResponse(command_id: "startup_permissions_check", error: error.description, debug_logs: nil)
+    sendResponse(errorResponse)
+    exit(error.exitCode) // Exit with a specific code for permission errors
+} catch {
+    // Catch any other unexpected error during permission check
+    let errorResponse = ErrorResponse(command_id: "startup_permissions_check_unexpected", error: "Unexpected error during startup permission check: \(error.localizedDescription)", debug_logs: nil)
+    sendResponse(errorResponse)
+    exit(1)
+}
+
 debug("ax binary version: \(AX_BINARY_VERSION) starting main loop.") // And this debug line
 
 while let line = readLine(strippingNewline: true) {
@@ -58,29 +71,50 @@ while let line = readLine(strippingNewline: true) {
         }
 
         let response: Codable
-        switch cmdEnvelope.command.lowercased() {
-        case "query":
+        switch cmdEnvelope.command { // Use the CommandType enum directly
+        case .query:
             response = try handleQuery(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        case "collectall":
+        case .collectAll: // Matches CommandType.collectAll (raw value "collect_all")
             response = try handleCollectAll(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        case "perform":
+        case .performAction: // Matches CommandType.performAction (raw value "perform_action")
             response = try handlePerform(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        case "extracttext":
+        case .extractText: // Matches CommandType.extractText (raw value "extract_text")
             response = try handleExtractText(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
-        default:
-            let errorResponse = ErrorResponse(command_id: currentCommandId, error: "Invalid command: \(cmdEnvelope.command)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
-            sendResponse(errorResponse)
-            continue
+        // No default case needed if all CommandType cases are handled.
+        // If CommandType could have more cases not handled here, a default would be required.
+        // For now, assuming all defined commands in CommandType will have a handler.
+        // If an unknown string comes from JSON, decoding CommandEnvelope itself would fail earlier.
         }
         
         sendResponse(response, commandId: currentCommandId) // Use currentCommandId
-    } catch let error as AXErrorString {
-        debug("Error (AXErrorString) for command \(currentCommandId): \(error.description)")
+    } catch let error as AXToolError {
+        debug("Error (AXToolError) for command \(currentCommandId): \(error.description)")
         let errorResponse = ErrorResponse(command_id: currentCommandId, error: error.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
-    } catch { // Catch any other errors
-        debug("Unhandled error for command \(currentCommandId): \(error.localizedDescription)")
-        let errorResponse = ErrorResponse(command_id: currentCommandId, error: "Unhandled error: \(error.localizedDescription)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
+        // Consider exiting with error.exitCode if appropriate for the context
+    } catch let error as DecodingError {
+        debug("Decoding error for command \(currentCommandId): \(error.localizedDescription). Raw input: \(line)")
+        let detailedError: String
+        switch error {
+        case .typeMismatch(let type, let context):
+            detailedError = "Type mismatch for key '\(context.codingPath.last?.stringValue ?? "unknown key")' (expected \(type)). Path: \(context.codingPath.map { $0.stringValue }.joined(separator: ".")). Details: \(context.debugDescription)"
+        case .valueNotFound(let type, let context):
+            detailedError = "Value not found for key '\(context.codingPath.last?.stringValue ?? "unknown key")' (expected \(type)). Path: \(context.codingPath.map { $0.stringValue }.joined(separator: ".")). Details: \(context.debugDescription)"
+        case .keyNotFound(let key, let context):
+            detailedError = "Key not found: '\(key.stringValue)'. Path: \(context.codingPath.map { $0.stringValue }.joined(separator: ".")). Details: \(context.debugDescription)"
+        case .dataCorrupted(let context):
+            detailedError = "Data corrupted at path: \(context.codingPath.map { $0.stringValue }.joined(separator: ".")). Details: \(context.debugDescription)"
+        @unknown default:
+            detailedError = "Unknown decoding error: \(error.localizedDescription)"
+        }
+        let finalError = AXToolError.jsonDecodingFailed(error) // Wrap in AXToolError
+        let errorResponse = ErrorResponse(command_id: currentCommandId, error: "\(finalError.description) Details: \(detailedError)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
+        sendResponse(errorResponse)
+    } catch { // Catch any other errors, including encoding errors from sendResponse itself if they were rethrown
+        debug("Unhandled/Generic error for command \(currentCommandId): \(error.localizedDescription)")
+        // Wrap generic swift errors into our AXToolError.genericError
+        let toolError = AXToolError.genericError("Unhandled Swift error: \(error.localizedDescription)")
+        let errorResponse = ErrorResponse(command_id: currentCommandId, error: toolError.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
         sendResponse(errorResponse)
     }
 }
@@ -140,10 +174,17 @@ func sendResponse(_ response: Codable, commandId: String? = nil) {
         fflush(stdout) // Ensure the output is flushed immediately
         // debug("Sent response for commandId \(effectiveCommandId ?? "N/A"): \(String(data: data, encoding: .utf8) ?? "non-utf8 data")")
     } catch {
-        // Fallback for encoding errors
-        let errorMsg = "{\"command_id\":\"encoding_error\",\"error\":\"Failed to encode response: \(error.localizedDescription)\"}\n"
+        // Fallback for encoding errors. This is a critical failure.
+        // Constructing a simple JSON string to avoid using the potentially failing encoder.
+        let toolError = AXToolError.jsonEncodingFailed(error)
+        let errorDetails = String(describing: error).replacingOccurrences(of: "\"", with: "\\\"").replacingOccurrences(of: "\n", with: "\\n") // Basic escaping
+        let finalCommandId = effectiveCommandId ?? "unknown_encoding_error"
+        // Using the description from AXToolError and adding specific details.
+        let errorMsg = "{\"command_id\":\"\(finalCommandId)\",\"error\":\"\(toolError.description) Specifics: \(errorDetails)\"}\n"
         fputs(errorMsg, stderr)
         fflush(stderr)
+        // Optionally, rethrow or handle more gracefully if this function can throw.
+        // For now, just printing to stderr as a last resort.
     }
 }
 

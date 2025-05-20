@@ -24,8 +24,8 @@ public struct AXElement: Equatable, Hashable {
 
     // Generic method to get an attribute's value (converted to Swift type T)
     @MainActor
-    public func attribute<T>(_ attributeName: String) -> T? {
-        return axValue(of: self.underlyingElement, attr: attributeName)
+    public func attribute<T>(_ attribute: AXAttribute<T>) -> T? {
+        return axValue(of: self.underlyingElement, attr: attribute.rawValue) as T?
     }
 
     // Method to get the raw CFTypeRef? for an attribute
@@ -57,20 +57,48 @@ public struct AXElement: Equatable, Hashable {
 
     // MARK: - Common Attribute Getters
     // Marked @MainActor because they call attribute(), which is @MainActor.
-    @MainActor public var role: String? { attribute(kAXRoleAttribute) }
-    @MainActor public var subrole: String? { attribute(kAXSubroleAttribute) }
-    @MainActor public var title: String? { attribute(kAXTitleAttribute) }
-    @MainActor public var axDescription: String? { attribute(kAXDescriptionAttribute) }
-    @MainActor public var isEnabled: Bool? { attribute(kAXEnabledAttribute) }
-    // value can be tricky as it can be many types. Defaulting to String? for now, or Any? if T can be inferred for Any
-    // For now, let's make it specific if we know the expected type, or use the generic attribute<T>() directly.
-    // Example: public var stringValue: String? { attribute(kAXValueAttribute) }
-    // Example: public var numberValue: NSNumber? { attribute(kAXValueAttribute) }
+    @MainActor public var role: String? { attribute(AXAttribute<String>.role) }
+    @MainActor public var subrole: String? { attribute(AXAttribute<String>.subrole) }
+    @MainActor public var title: String? { attribute(AXAttribute<String>.title) }
+    @MainActor public var axDescription: String? { attribute(AXAttribute<String>.description) }
+    @MainActor public var isEnabled: Bool? { attribute(AXAttribute<Bool>.enabled) }
+    @MainActor var value: Any? { attribute(AXAttribute<Any>.value) }
+    @MainActor var roleDescription: String? { attribute(AXAttribute<String>.roleDescription) }
+    @MainActor var help: String? { attribute(AXAttribute<String>.help) }
+    @MainActor var identifier: String? { attribute(AXAttribute<String>.identifier) }
+
+    // MARK: - Status Properties
+    @MainActor var isFocused: Bool? { attribute(AXAttribute<Bool>.focused) }
+    @MainActor var isHidden: Bool? { attribute(AXAttribute<Bool>.hidden) }
+    @MainActor var isElementBusy: Bool? { attribute(AXAttribute<Bool>.busy) }
+
+    @MainActor var isIgnored: Bool {
+        let hidden: Bool? = self.attribute(AXAttribute<Bool>.hidden)
+        // Basic check: if explicitly hidden, it's ignored.
+        // More complex checks could be added (e.g. disabled and non-interactive, purely decorative group etc.)
+        if hidden == true {
+            return true
+        }
+        return false
+    }
+
+    @MainActor var pid: pid_t? {
+        var processID: pid_t = 0
+        let error = AXUIElementGetPid(self.underlyingElement, &processID)
+        if error == .success {
+            return processID
+        }
+        // debug("Failed to get PID for element \(self.underlyingElement): \(error.rawValue)")
+        return nil
+    }
+
+    // Path hint
+    // @MainActor var pathHint: String? { attribute(kAXPathHintAttribute) } // Removing, as kAXPathHintAttribute is not standard and removed from AXAttribute.swift
 
     // MARK: - Hierarchy and Relationship Getters
     // Marked @MainActor because they call attribute(), which is @MainActor.
     @MainActor public var parent: AXElement? {
-        guard let parentElement: AXUIElement = attribute(kAXParentAttribute) else { return nil }
+        guard let parentElement: AXUIElement = attribute(AXAttribute<AXUIElement>.parent) else { return nil }
         return AXElement(parentElement)
     }
 
@@ -79,7 +107,7 @@ public struct AXElement: Equatable, Hashable {
         var uniqueChildrenSet = Set<AXElement>()
 
         // Primary children attribute
-        if let directChildrenUI: [AXUIElement] = attribute(kAXChildrenAttribute) {
+        if let directChildrenUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.children) {
             for childUI in directChildrenUI {
                 let childAX = AXElement(childUI)
                 if !uniqueChildrenSet.contains(childAX) {
@@ -103,7 +131,8 @@ public struct AXElement: Equatable, Hashable {
         ]
 
         for attrName in alternativeAttributes {
-            if let altChildrenUI: [AXUIElement] = attribute(attrName) {
+            // Create an AXAttribute on the fly for the string-based attribute name
+            if let altChildrenUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>(attrName)) {
                 for childUI in altChildrenUI {
                     let childAX = AXElement(childUI)
                     if !uniqueChildrenSet.contains(childAX) {
@@ -115,8 +144,8 @@ public struct AXElement: Equatable, Hashable {
         }
         
         // For application elements, kAXWindowsAttribute is also very important
-        if self.role == kAXApplicationRole {
-            if let windowElementsUI: [AXUIElement] = attribute(kAXWindowsAttribute) {
+        if self.role == AXAttribute<String>.role.rawValue && self.role == kAXApplicationRole {
+            if let windowElementsUI: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.windows) {
                  for childUI in windowElementsUI {
                     let childAX = AXElement(childUI)
                     if !uniqueChildrenSet.contains(childAX) {
@@ -131,22 +160,22 @@ public struct AXElement: Equatable, Hashable {
     }
 
     @MainActor public var windows: [AXElement]? {
-        guard let windowElements: [AXUIElement] = attribute(kAXWindowsAttribute) else { return nil }
+        guard let windowElements: [AXUIElement] = attribute(AXAttribute<[AXUIElement]>.windows) else { return nil }
         return windowElements.map { AXElement($0) }
     }
 
     @MainActor public var mainWindow: AXElement? {
-        guard let windowElement: AXUIElement = attribute(kAXMainWindowAttribute) else { return nil }
+        guard let windowElement: AXUIElement = attribute(AXAttribute<AXUIElement?>.mainWindow) ?? nil else { return nil }
         return AXElement(windowElement)
     }
 
     @MainActor public var focusedWindow: AXElement? {
-        guard let windowElement: AXUIElement = attribute(kAXFocusedWindowAttribute) else { return nil }
+        guard let windowElement: AXUIElement = attribute(AXAttribute<AXUIElement?>.focusedWindow) ?? nil else { return nil }
         return AXElement(windowElement)
     }
 
     @MainActor public var focusedElement: AXElement? {
-        guard let element: AXUIElement = attribute(kAXFocusedUIElementAttribute) else { return nil }
+        guard let element: AXUIElement = attribute(AXAttribute<AXUIElement?>.focusedElement) ?? nil else { return nil }
         return AXElement(element)
     }
 
@@ -154,13 +183,13 @@ public struct AXElement: Equatable, Hashable {
 
     @MainActor
     public var supportedActions: [String]? {
-        return attribute(kAXActionNamesAttribute)
+        return attribute(AXAttribute<[String]>.actionNames)
     }
 
     @MainActor
     public func isActionSupported(_ actionName: String) -> Bool {
         // First, try getting the array of supported action names
-        if let actions: [String] = attribute(kAXActionNamesAttribute) {
+        if let actions: [String] = attribute(AXAttribute<[String]>.actionNames) {
             return actions.contains(actionName)
         }
         // Fallback for older systems or elements that might not return the array correctly,
@@ -180,18 +209,31 @@ public struct AXElement: Equatable, Hashable {
     }
 
     @MainActor
-    public func performAction(_ actionName: String) throws {
-        let error = AXUIElementPerformAction(underlyingElement, actionName as CFString)
+    @discardableResult
+    public func performAction(_ actionName: AXAttribute<String>) throws -> AXElement {
+        let error = AXUIElementPerformAction(self.underlyingElement, actionName.rawValue as CFString)
         if error != .success {
-            // It would be good to have a more specific error here from AXErrorString
-            throw AXErrorString.actionFailed(error) // Ensure AXErrorString.actionFailed exists and takes AXError
+            let elementDescription = self.title ?? self.role ?? String(describing: self.underlyingElement)
+            throw AXToolError.actionFailed("Action \(actionName.rawValue) failed on element \(elementDescription)", error)
         }
+        return self
+    }
+
+    @MainActor
+    @discardableResult
+    public func performAction(_ actionName: String) throws -> AXElement {
+        let error = AXUIElementPerformAction(self.underlyingElement, actionName as CFString)
+        if error != .success {
+            let elementDescription = self.title ?? self.role ?? String(describing: self.underlyingElement)
+            throw AXToolError.actionFailed("Action \(actionName) failed on element \(elementDescription)", error)
+        }
+        return self
     }
 
     // MARK: - Parameterized Attributes
 
     @MainActor
-    public func parameterizedAttribute<T>(_ attributeName: String, forParameter parameter: Any) -> T? {
+    public func parameterizedAttribute<T>(_ attribute: AXAttribute<T>, forParameter parameter: Any) -> T? {
         var cfParameter: CFTypeRef?
 
         // Convert Swift parameter to CFTypeRef for the API
@@ -214,7 +256,7 @@ public struct AXElement: Equatable, Hashable {
         }
 
         var value: CFTypeRef?
-        let error = AXUIElementCopyParameterizedAttributeValue(underlyingElement, attributeName as CFString, actualCFParameter, &value)
+        let error = AXUIElementCopyParameterizedAttributeValue(underlyingElement, attribute.rawValue as CFString, actualCFParameter, &value)
 
         if error != .success {
             // Silently return nil, or consider throwing an error
@@ -240,7 +282,7 @@ public struct AXElement: Equatable, Hashable {
         if let castedValue = finalValue as? T {
             return castedValue
         }
-        debug("parameterizedAttribute: Fallback cast attempt for attribute '\(attributeName)' to type \(T.self) FAILED. Unwrapped value was \(type(of: finalValue)): \(finalValue)")
+        debug("parameterizedAttribute: Fallback cast attempt for attribute '\(attribute.rawValue)' to type \(T.self) FAILED. Unwrapped value was \(type(of: finalValue)): \(finalValue)")
         return nil
     }
 }
@@ -260,4 +302,44 @@ public func applicationElement(for bundleIdOrName: String) -> AXElement? {
 @MainActor
 public func systemWideElement() -> AXElement {
     return AXElement(AXUIElementCreateSystemWide())
+}
+
+// Extension to generate a descriptive path string
+extension AXElement {
+    @MainActor
+    func generatePathString(upTo ancestor: AXElement? = nil) -> String {
+        var pathComponents: [String] = []
+        var currentElement: AXElement? = self
+
+        var depth = 0 // Safety break for very deep or circular hierarchies
+        let maxDepth = 25
+
+        while let element = currentElement, depth < maxDepth {
+            let briefDesc = element.briefDescription(option: .default) // Use .default for concise path components
+            pathComponents.append(briefDesc)
+
+            if let ancestor = ancestor, element == ancestor {
+                break // Reached the specified ancestor
+            }
+
+            // Stop if we reach the application level and no specific ancestor was given, 
+            // or if it's a window and the parent is the app (to avoid App -> App paths)
+            let role = element.role
+            if role == kAXApplicationRole || (role == kAXWindowRole && element.parent?.role == kAXApplicationRole && ancestor == nil) {
+                break 
+            }
+            
+            currentElement = element.parent
+            depth += 1
+            if currentElement == nil && role != kAXApplicationRole { // Should ideally not happen if parent is correct before app
+                 pathComponents.append("< Orphaned >") // Indicate unexpected break
+                 break
+            }
+        }
+        if depth == maxDepth {
+             pathComponents.append("<...path_too_deep...>")
+        }
+
+        return pathComponents.reversed().joined(separator: " -> ")
+    }
 } 

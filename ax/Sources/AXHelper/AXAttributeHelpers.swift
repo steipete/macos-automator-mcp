@@ -13,25 +13,37 @@ private func getSingleElementSummary(_ axElement: AXElement) -> ElementAttribute
     var summary = ElementAttributes()
     summary[kAXRoleAttribute] = AnyCodable(axElement.role)
     summary[kAXSubroleAttribute] = AnyCodable(axElement.subrole)
-    summary[kAXRoleDescriptionAttribute] = AnyCodable(axElement.attribute(kAXRoleDescriptionAttribute) as String?)
+    summary[kAXRoleDescriptionAttribute] = AnyCodable(axElement.roleDescription)
     summary[kAXTitleAttribute] = AnyCodable(axElement.title)
     summary[kAXDescriptionAttribute] = AnyCodable(axElement.axDescription)
-    summary[kAXIdentifierAttribute] = AnyCodable(axElement.attribute(kAXIdentifierAttribute) as String?)
-    summary[kAXHelpAttribute] = AnyCodable(axElement.attribute(kAXHelpAttribute) as String?)
-    // Path hint is custom, so directly use the string literal if kAXPathHintAttribute is not yet in AXConstants (it is now, but good practice)
-    summary[kAXPathHintAttribute] = AnyCodable(axElement.attribute(kAXPathHintAttribute) as String?)
+    summary[kAXIdentifierAttribute] = AnyCodable(axElement.identifier)
+    summary[kAXHelpAttribute] = AnyCodable(axElement.help)
+    summary[kAXPathHintAttribute] = AnyCodable(axElement.attribute(AXAttribute<String>(kAXPathHintAttribute)))
+    
+    // Add new status properties
+    summary["PID"] = AnyCodable(axElement.pid)
+    summary[kAXEnabledAttribute] = AnyCodable(axElement.isEnabled)
+    summary[kAXFocusedAttribute] = AnyCodable(axElement.isFocused)
+    summary[kAXHiddenAttribute] = AnyCodable(axElement.isHidden)
+    summary["IsIgnored"] = AnyCodable(axElement.isIgnored)
+    summary[kAXElementBusyAttribute] = AnyCodable(axElement.isElementBusy)
+
     return summary
 }
 
 @MainActor
-public func getElementAttributes(_ axElement: AXElement, requestedAttributes: [String], forMultiDefault: Bool = false, targetRole: String? = nil, outputFormat: String = "smart") -> ElementAttributes { // Changed to AXElement
+public func getElementAttributes(_ axElement: AXElement, requestedAttributes: [String], forMultiDefault: Bool = false, targetRole: String? = nil, outputFormat: OutputFormat = .smart) -> ElementAttributes { // Changed to enum type
     var result = ElementAttributes()
     var attributesToFetch = requestedAttributes
+    var extractedValue: Any? // MOVED and DECLARED HERE
+
+    // Determine the actual format option for the new formatters
+    let valueFormatOption: ValueFormatOption = (outputFormat == .verbose) ? .verbose : .default
 
     if forMultiDefault {
         attributesToFetch = [kAXRoleAttribute, kAXValueAttribute, kAXTitleAttribute, kAXIdentifierAttribute]
         // Use axElement.role here for targetRole comparison
-        if let role = targetRole, role == "AXStaticText" { 
+        if let role = targetRole, role == kAXStaticTextRole as String { // Used constant
             attributesToFetch = [kAXRoleAttribute, kAXValueAttribute, kAXIdentifierAttribute]
         }
     } else if attributesToFetch.isEmpty {
@@ -45,141 +57,174 @@ public func getElementAttributes(_ axElement: AXElement, requestedAttributes: [S
     for attr in attributesToFetch {
         if attr == kAXParentAttribute { 
             if let parentAXElement = axElement.parent { // Use AXElement.parent
-                if outputFormat == "verbose" {
-                    result[kAXParentAttribute] = AnyCodable(getSingleElementSummary(parentAXElement))
+                if outputFormat == .text_content {
+                    result[kAXParentAttribute] = AnyCodable("AXElement: \(parentAXElement.role ?? "?Role")")
                 } else {
-                    var simpleParentSummary = ElementAttributes()
-                    simpleParentSummary[kAXRoleAttribute] = AnyCodable(parentAXElement.role)
-                    simpleParentSummary[kAXTitleAttribute] = AnyCodable(parentAXElement.title)
-                    result[kAXParentAttribute] = AnyCodable(simpleParentSummary)
+                    // Use new formatter for brief/verbose description
+                    result[kAXParentAttribute] = AnyCodable(parentAXElement.briefDescription(option: valueFormatOption))
                 }
             } else {
-                result[kAXParentAttribute] = AnyCodable(nil as ElementAttributes?) 
+                result[kAXParentAttribute] = AnyCodable(nil as String?) // Keep nil consistent with AnyCodable
             }
             continue 
         } else if attr == kAXChildrenAttribute { 
-            // Use the comprehensive axElement.children property
             if let actualChildren = axElement.children, !actualChildren.isEmpty {
-                if outputFormat == "verbose" {
-                    var childrenSummaries: [ElementAttributes] = []
+                if outputFormat == .text_content {
+                     result[attr] = AnyCodable("Array of \(actualChildren.count) AXElement(s)")
+                } else if outputFormat == .verbose { // Verbose gets full summaries for children
+                    var childrenSummaries: [String] = [] // Store as strings now
                     for childAXElement in actualChildren {
-                        childrenSummaries.append(getSingleElementSummary(childAXElement))
+                        // For children in verbose mode, maybe a slightly less verbose summary than full getElementAttributes recursion
+                        childrenSummaries.append(childAXElement.briefDescription(option: .verbose))
                     }
                     result[attr] = AnyCodable(childrenSummaries) 
-                } else {
-                     result[attr] = AnyCodable("Array of \(actualChildren.count) AXElement(s)")
+                } else { // Smart or default
+                    result[attr] = AnyCodable("<Collection of \(actualChildren.count) \(actualChildren.first?.role ?? "AXElement")s>")
                 }
             } else {
-                result[attr] = AnyCodable([]) // Or nil if preferred for no children
+                result[attr] = AnyCodable("[]") // Empty array string representation
             }
             continue
-        } else if attr == kAXFocusedUIElementAttribute { // Another example
+        } else if attr == kAXFocusedUIElementAttribute { 
             if let focusedElem = axElement.focusedElement {
-                extractedValue = (outputFormat == "verbose") ? getSingleElementSummary(focusedElem) : "AXElement: \(focusedElem.role ?? "?Role")"
+                if outputFormat == .text_content {
+                    extractedValue = "AXElement Focus: \(focusedElem.role ?? "?Role")"
+                } else {
+                    extractedValue = focusedElem.briefDescription(option: valueFormatOption)
+                }
             } else { extractedValue = nil }
         }
 
-        var extractedValue: Any? 
+        // This block for pathHint should be fine, as pathHint is already a String?
+        if attr == kAXPathHintAttribute {
+            extractedValue = axElement.attribute(AXAttribute<String>(kAXPathHintAttribute))
+        }
         // Prefer direct AXElement properties where available
-        if attr == kAXRoleAttribute { extractedValue = axElement.role }
+        else if attr == kAXRoleAttribute { extractedValue = axElement.role }
         else if attr == kAXSubroleAttribute { extractedValue = axElement.subrole }
         else if attr == kAXTitleAttribute { extractedValue = axElement.title }
         else if attr == kAXDescriptionAttribute { extractedValue = axElement.axDescription }
-        else if attr == kAXEnabledAttribute { extractedValue = axElement.isEnabled }
-        else if attr == kAXParentAttribute { // Example of handling specific AXElement-returning attribute
-            if let parentElem = axElement.parent {
-                extractedValue = (outputFormat == "verbose") ? getSingleElementSummary(parentElem) : "AXElement: \(parentElem.role ?? "?Role")"
-            } else { extractedValue = nil }
-        }
-        else if attr == kAXFocusedUIElementAttribute { // Another example
-            if let focusedElem = axElement.focusedElement {
-                extractedValue = (outputFormat == "verbose") ? getSingleElementSummary(focusedElem) : "AXElement: \(focusedElem.role ?? "?Role")"
-            } else { extractedValue = nil }
-        }
-        // For other attributes, use the generic attribute<T> method with common types
-        else if let val: String = axElement.attribute(attr) { extractedValue = val }
-        else if let val: Bool = axElement.attribute(attr) { extractedValue = val }
-        else if let val: Int = axElement.attribute(attr) { extractedValue = val }
-        else if let val: Double = axElement.attribute(attr) { extractedValue = val } // Added Double
-        else if let val: NSNumber = axElement.attribute(attr) { extractedValue = val } // Added NSNumber
-        else if let val: [String] = axElement.attribute(attr) { extractedValue = val }
-        // For attributes that return [AXUIElement], they should be handled by specific properties like .children, .windows
-        // or fetched as [AXUIElement] and then mapped if needed.
-        // Avoid trying to cast directly to [AXElement] via axElement.attribute<[AXElement]>(attr)
-        else if let uiElementArray: [AXUIElement] = axElement.attribute(attr) { // If an attribute returns an array of AXUIElements
-            if outputFormat == "verbose" {
-                extractedValue = uiElementArray.map { getSingleElementSummary(AXElement($0)) }
+        else if attr == kAXEnabledAttribute { 
+            if outputFormat == .text_content {
+                extractedValue = axElement.isEnabled?.description ?? kAXNotAvailableString
             } else {
-                extractedValue = "Array of \(uiElementArray.count) AXUIElement(s) (raw)"
+                extractedValue = axElement.isEnabled
             }
         }
-        else if let singleUIElement: AXUIElement = axElement.attribute(attr) { // If an attribute returns a single AXUIElement
-             let wrappedElement = AXElement(singleUIElement)
-            if outputFormat == "verbose" {
-                extractedValue = getSingleElementSummary(wrappedElement)
+        else if attr == kAXFocusedAttribute {
+            if outputFormat == .text_content {
+                extractedValue = axElement.isFocused?.description ?? kAXNotAvailableString
             } else {
-                extractedValue = "AXElement: \(wrappedElement.role ?? "?Role") - \(wrappedElement.title ?? "NoTitle") (wrapped from raw AXUIElement)"
+                extractedValue = axElement.isFocused
             }
         }
-        else if let val: [String: AnyCodable] = axElement.attribute(attr) { // For dictionaries like bounds
-             extractedValue = val
+        else if attr == kAXHiddenAttribute {
+            if outputFormat == .text_content {
+                extractedValue = axElement.isHidden?.description ?? kAXNotAvailableString
+            } else {
+                extractedValue = axElement.isHidden
+            }
         }
+        else if attr == "IsIgnored" {
+            if outputFormat == .text_content {
+                extractedValue = axElement.isIgnored.description
+            } else {
+                extractedValue = axElement.isIgnored
+            }
+        }
+        else if attr == "PID" {
+            if outputFormat == .text_content {
+                extractedValue = axElement.pid?.description ?? kAXNotAvailableString
+            } else {
+                extractedValue = axElement.pid
+            }
+        }
+        else if attr == kAXElementBusyAttribute {
+            if outputFormat == .text_content {
+                extractedValue = axElement.isElementBusy?.description ?? kAXNotAvailableString
+            } else {
+                extractedValue = axElement.isElementBusy
+            }
+        }
+        // For other attributes, use the generic attribute<T> or rawAttributeValue and then format
         else {
-            // Fallback for raw CFTypeRef if direct casting via axElement.attribute fails
-            let rawCFValue: CFTypeRef? = axElement.rawAttributeValue(named: attr) // Use rawAttributeValue
-            if let raw = rawCFValue {
-                let typeID = CFGetTypeID(raw)
-                if typeID == AXUIElementGetTypeID() {
-                    let wrapped = AXElement(raw as! AXUIElement)
-                    extractedValue = (outputFormat == "verbose") ? getSingleElementSummary(wrapped) : "AXElement (raw): \(wrapped.role ?? "?Role")"
-                } else if typeID == AXValueGetTypeID() {
-                    if let axVal = raw as? AXValue, let valType = AXValueGetTypeIfPresent(axVal) { // Safe getter for AXValueType
-                        extractedValue = "AXValue (type: \(stringFromAXValueType(valType)))"
-                    } else {
-                        extractedValue = "AXValue (unknown type)"
-                    }
+            let rawCFValue: CFTypeRef? = axElement.rawAttributeValue(named: attr)
+            if outputFormat == .text_content {
+                // Attempt to get a string representation for text_content
+                if let raw = rawCFValue {
+                    let typeID = CFGetTypeID(raw)
+                    if typeID == CFStringGetTypeID() { extractedValue = (raw as! String) }
+                    else if typeID == CFAttributedStringGetTypeID() { extractedValue = (raw as! NSAttributedString).string }
+                    else if typeID == AXValueGetTypeID() {
+                        let axVal = raw as! AXValue
+                        // For text_content, use formatAXValue to get a string representation.
+                        // This is simpler than trying to manually extract C strings for specific AXValueTypes.
+                        extractedValue = formatAXValue(axVal, option: .default)
+                    } else if typeID == CFNumberGetTypeID() { extractedValue = (raw as! NSNumber).stringValue }
+                    else if typeID == CFBooleanGetTypeID() { extractedValue = CFBooleanGetValue((raw as! CFBoolean)) ? "true" : "false" }
+                    else { extractedValue = "<\(CFCopyTypeIDDescription(typeID) as String? ?? "ComplexType")>" }
                 } else {
-                    if let desc = CFCopyTypeIDDescription(typeID) {
-                        extractedValue = "CFType: \(desc as String)"
-                    } else {
-                        extractedValue = "CFType: Unknown (ID: \(typeID))"
-                    }
+                    extractedValue = "<Not directly string representable>"
                 }
-            } else {
-                extractedValue = nil // Or some placeholder like "Not fetched/Not supported"
+            } else { // For "smart" or "verbose" output, use the new formatter
+                 extractedValue = formatCFTypeRef(rawCFValue, option: valueFormatOption)
             }
         }
         
         let finalValueToStore = extractedValue
-        if outputFormat == "smart" {
-            if let strVal = finalValueToStore as? String, (strVal.isEmpty || strVal == "Not available") {
+        // Smart filtering: if it's a string and empty OR specific unhelpful strings, skip it for 'smart' output.
+        if outputFormat == .smart {
+            if let strVal = finalValueToStore as? String,
+               (strVal.isEmpty || strVal == "<nil>" || strVal == "AXValue (Illegal)" || strVal.contains("Unknown CFType")) {
                 continue 
             }
         }
         result[attr] = AnyCodable(finalValueToStore)
     }
     
+    // Special handling for json_string output format
+    if outputFormat == .json_string {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted // Or .sortedKeys for deterministic output if needed
+        do {
+            let jsonData = try encoder.encode(result) // result is [String: AnyCodable]
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                // Return a dictionary containing the JSON string under a specific key
+                return ["json_representation": AnyCodable(jsonString)] 
+            } else {
+                return ["error": AnyCodable("Failed to convert encoded JSON data to string")]
+            }
+        } catch {
+            return ["error": AnyCodable("Failed to encode attributes to JSON: \(error.localizedDescription)")]
+        }
+    }
+
     if !forMultiDefault {
         // Use axElement.supportedActions directly in the result population
         if let currentActions = axElement.supportedActions, !currentActions.isEmpty {
             result[kAXActionNamesAttribute] = AnyCodable(currentActions)
         } else if result[kAXActionNamesAttribute] == nil && result[kAXActionsAttribute] == nil {
             // Fallback if axElement.supportedActions was nil or empty and not already populated
-            if let actions: [String] = axElement.attribute(kAXActionNamesAttribute) ?? axElement.attribute(kAXActionsAttribute) {
-               if !actions.isEmpty { result[kAXActionNamesAttribute] = AnyCodable(actions) }
-               else { result[kAXActionNamesAttribute] = AnyCodable("Not available (empty list)") }
+            // Ensure to wrap with AXAttribute<[String]>
+            let primaryActions: [String]? = axElement.attribute(AXAttribute<[String]>(kAXActionNamesAttribute))
+            let fallbackActions: [String]? = axElement.attribute(AXAttribute<[String]>(kAXActionsAttribute))
+
+            if let actions = primaryActions ?? fallbackActions, !actions.isEmpty {
+               result[kAXActionNamesAttribute] = AnyCodable(actions)
+            } else if primaryActions != nil || fallbackActions != nil { // If either was attempted and resulted in empty or nil
+               result[kAXActionNamesAttribute] = AnyCodable("\(kAXNotAvailableString) (empty list)")
             } else {
-               result[kAXActionNamesAttribute] = AnyCodable("Not available")
+               result[kAXActionNamesAttribute] = AnyCodable(kAXNotAvailableString)
             }
         }
 
         var computedName: String? = nil
-        if let title = axElement.title, !title.isEmpty, title != "Not available" { computedName = title }
-        else if let value: String = axElement.attribute(kAXValueAttribute), !value.isEmpty, value != "Not available" { computedName = value }
-        else if let desc = axElement.axDescription, !desc.isEmpty, desc != "Not available" { computedName = desc }
-        else if let help: String = axElement.attribute(kAXHelpAttribute), !help.isEmpty, help != "Not available" { computedName = help }
-        else if let phValue: String = axElement.attribute(kAXPlaceholderValueAttribute), !phValue.isEmpty, phValue != "Not available" { computedName = phValue }
-        else if let roleDesc: String = axElement.attribute(kAXRoleDescriptionAttribute), !roleDesc.isEmpty, roleDesc != "Not available" {
+        if let title = axElement.title, !title.isEmpty, title != kAXNotAvailableString { computedName = title }
+        else if let value: String = axElement.attribute(AXAttribute<String>(kAXValueAttribute)), !value.isEmpty, value != kAXNotAvailableString { computedName = value }
+        else if let desc = axElement.axDescription, !desc.isEmpty, desc != kAXNotAvailableString { computedName = desc }
+        else if let help: String = axElement.attribute(AXAttribute<String>(kAXHelpAttribute)), !help.isEmpty, help != kAXNotAvailableString { computedName = help }
+        else if let phValue: String = axElement.attribute(AXAttribute<String>(kAXPlaceholderValueAttribute)), !phValue.isEmpty, phValue != kAXNotAvailableString { computedName = phValue }
+        else if let roleDesc: String = axElement.attribute(AXAttribute<String>(kAXRoleDescriptionAttribute)), !roleDesc.isEmpty, roleDesc != kAXNotAvailableString {
             computedName = "\(roleDesc) (\(axElement.role ?? "Element"))"
         }
         if let name = computedName { result["ComputedName"] = AnyCodable(name) }
@@ -188,6 +233,11 @@ public func getElementAttributes(_ axElement: AXElement, requestedAttributes: [S
         // Use axElement.isActionSupported if available, or check availableActions array
         let hasPressAction = axElement.isActionSupported(kAXPressAction) // More direct way
         if isButton || hasPressAction { result["IsClickable"] = AnyCodable(true) }
+        
+        // Add descriptive path if in verbose mode
+        if outputFormat == .verbose {
+            result["ComputedPath"] = AnyCodable(axElement.generatePathString())
+        }
     }
     return result
 }

@@ -50,8 +50,8 @@ func handleQuery(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool) throws -> Qu
             foundAXElement,
             requestedAttributes: cmd.attributes ?? [],
             forMultiDefault: false, 
-            targetRole: locator.criteria[kAXRoleAttribute as String] ?? locator.criteria["AXRole"],
-            outputFormat: cmd.output_format ?? "smart"
+            targetRole: locator.criteria[kAXRoleAttribute],
+            outputFormat: cmd.output_format ?? .smart
         )
         return QueryResponse(command_id: cmd.command_id, attributes: attributes, error: nil, debug_logs: collectedDebugLogs)
     } else {
@@ -120,7 +120,7 @@ func handleCollectAll(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool) throws 
             requestedAttributes: cmd.attributes ?? [],
             forMultiDefault: (cmd.attributes?.isEmpty ?? true), 
             targetRole: axEl.role,
-            outputFormat: cmd.output_format ?? "smart"
+            outputFormat: cmd.output_format ?? .smart
         )
     }
     return MultiQueryResponse(command_id: cmd.command_id, elements: attributesArray, count: attributesArray.count, error: nil, debug_logs: collectedDebugLogs)
@@ -178,16 +178,39 @@ func handlePerform(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool) throws -> 
 @MainActor
 private func performActionOnElement(axElement: AXElement, action: String, cmd: CommandEnvelope) throws -> PerformResponse {
     debug("Final target element for action '\(action)': \(axElement.underlyingElement)")
-    if action == "AXSetValue" {
-        guard let valueToSet = cmd.value else {
+    if action == kAXSetValueAction {
+        guard let valueToSetString = cmd.value else {
             return PerformResponse(command_id: cmd.command_id, success: false, error: "Value not provided for AXSetValue action", debug_logs: collectedDebugLogs)
         }
-        debug("Attempting to set value '\(valueToSet)' for attribute \(kAXValueAttribute) on \(axElement.underlyingElement)")
-        let axErr = AXUIElementSetAttributeValue(axElement.underlyingElement, kAXValueAttribute as CFString, valueToSet as CFTypeRef)
-        if axErr == .success {
-            return PerformResponse(command_id: cmd.command_id, success: true, error: nil, debug_logs: collectedDebugLogs)
-        } else {
-            return PerformResponse(command_id: cmd.command_id, success: false, error: "Failed to set value. Error: \(axErr.rawValue)", debug_logs: collectedDebugLogs)
+        
+        // Determine the attribute to set. Default to kAXValueAttribute if not specified or empty.
+        let attributeToSet = cmd.attribute_to_set?.isEmpty == false ? cmd.attribute_to_set! : kAXValueAttribute
+        debug("AXSetValue: Attempting to set attribute '\(attributeToSet)' to value '\(valueToSetString)' on \(String(describing: axElement.underlyingElement))")
+
+        do {
+            guard let cfValueToSet = try createCFTypeRefFromString(stringValue: valueToSetString, forElement: axElement, attributeName: attributeToSet) else {
+                 return PerformResponse(command_id: cmd.command_id, success: false, error: "Could not parse value '\(valueToSetString)' for attribute '\(attributeToSet)'. Parsing returned nil.", debug_logs: collectedDebugLogs)
+            }
+            // Ensure the CFValue is released by ARC after the call if it was created with a +1 retain count (AXValueCreate does this)
+            // If it was a bridged string/number, ARC handles it.
+            defer { /* _ = Unmanaged.passRetained(cfValueToSet).autorelease() */ } // Releasing AXValueCreate result is important
+            
+            let axErr = AXUIElementSetAttributeValue(axElement.underlyingElement, attributeToSet as CFString, cfValueToSet)
+            if axErr == .success {
+                return PerformResponse(command_id: cmd.command_id, success: true, error: nil, debug_logs: collectedDebugLogs)
+            } else {
+                let errorDescription = "AXUIElementSetAttributeValue failed for attribute '\(attributeToSet)'. Error: \(axErr.rawValue) (\(axErrorToString(axErr)))"
+                debug(errorDescription)
+                throw AXToolError.actionFailed(errorDescription, axErr)
+            }
+        } catch let error as AXToolError {
+            let errorMessage = "Error during AXSetValue for attribute '\(attributeToSet)': \(error.description)"
+            debug(errorMessage)
+            throw error
+        } catch {
+            let errorMessage = "Unexpected Swift error preparing value for '\(attributeToSet)': \(error.localizedDescription)"
+            debug(errorMessage)
+            throw AXToolError.genericError(errorMessage)
         }
     } else {
         if !axElement.isActionSupported(action) {

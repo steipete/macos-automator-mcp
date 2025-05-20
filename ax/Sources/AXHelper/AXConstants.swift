@@ -1,6 +1,8 @@
 // AXConstants.swift - Defines global constants used throughout AXHelper
 
 import Foundation
+import ApplicationServices // Added for AXError type
+import AppKit // Added for NSAccessibility
 
 // Configuration Constants
 public let MAX_COLLECT_ALL_HITS = 200 // Default max elements for collect_all if not specified in command
@@ -9,7 +11,7 @@ public let DEFAULT_MAX_DEPTH_COLLECT_ALL = 15 // Default max recursion depth for
 public let AX_BINARY_VERSION = "1.1.6" // Updated version
 
 // Standard Accessibility Attributes - Values should match CFSTR defined in AXAttributeConstants.h
-public let kAXRoleAttribute = "AXRole"
+public let kAXRoleAttribute = "AXRole" // Reverted to String literal
 public let kAXSubroleAttribute = "AXSubrole"
 public let kAXRoleDescriptionAttribute = "AXRoleDescription"
 public let kAXTitleAttribute = "AXTitle"
@@ -77,6 +79,9 @@ public let kAXCancelAction = "AXCancel" // New
 public let kAXShowMenuAction = "AXShowMenu"
 public let kAXPickAction = "AXPick" // New (Obsolete in headers, but sometimes seen)
 
+// Specific action name for setting a value, used internally by performActionOnElement
+public let kAXSetValueAction = "AXSetValue"
+
 // Standard Accessibility Roles - Values should match CFSTR defined in AXRoleConstants.h (examples, add more as needed)
 public let kAXApplicationRole = "AXApplication"
 public let kAXSystemWideRole = "AXSystemWide" // New
@@ -128,9 +133,44 @@ public let kAXDisclosingAttribute = "AXDisclosing" // New (for outlines)
 // Custom or less standard attributes (verify usage and standard names)
 public let kAXPathHintAttribute = "AXPathHint" // Our custom attribute for pathing
 
+// String constant for "not available"
+public let kAXNotAvailableString = "n/a"
+
 // DOM specific attributes (these seem custom or web-specific, not standard Apple AX)
 // Verify if these are actual attribute names exposed by web views or custom implementations.
 public let kAXDOMIdentifierAttribute = "AXDOMIdentifier" // Example, might not be standard AX
 public let kAXDOMClassListAttribute = "AXDOMClassList" // Example, might not be standard AX
 public let kAXARIADOMResourceAttribute = "AXARIADOMResource" // Example
 public let kAXARIADOMFunctionAttribute = "AXARIADOM-función" // Corrected identifier, kept original string value.
+
+// New constants for missing attributes
+public let kAXToolbarButtonAttribute = "AXToolbarButton"
+public let kAXProxyAttribute = "AXProxy"
+public let kAXSelectedCellsAttribute = "AXSelectedCells"
+public let kAXHeaderAttribute = "AXHeader"
+public let kAXHorizontalScrollBarAttribute = "AXHorizontalScrollBar"
+public let kAXVerticalScrollBarAttribute = "AXVerticalScrollBar"
+
+// Helper function to convert AXError to a string
+public func axErrorToString(_ error: AXError) -> String {
+    switch error {
+    case .success: return "success"
+    case .failure: return "failure"
+    case .apiDisabled: return "apiDisabled"
+    case .invalidUIElement: return "invalidUIElement"
+    case .invalidUIElementObserver: return "invalidUIElementObserver"
+    case .cannotComplete: return "cannotComplete"
+    case .attributeUnsupported: return "attributeUnsupported"
+    case .actionUnsupported: return "actionUnsupported"
+    case .notificationUnsupported: return "notificationUnsupported"
+    case .notImplemented: return "notImplemented"
+    case .notificationAlreadyRegistered: return "notificationAlreadyRegistered"
+    case .notificationNotRegistered: return "notificationNotRegistered"
+    case .noValue: return "noValue"
+    case .parameterizedAttributeUnsupported: return "parameterizedAttributeUnsupported"
+    case .notEnoughPrecision: return "notEnoughPrecision"
+    case .illegalArgument: return "illegalArgument"
+    @unknown default:
+        return "unknown AXError (code: \(error.rawValue))"
+    }
+}
