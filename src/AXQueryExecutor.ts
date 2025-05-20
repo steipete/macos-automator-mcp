@@ -14,6 +14,7 @@ const logger = new Logger('AXQueryExecutor');
 export interface AXQueryExecutionResult {
   result: Record<string, unknown>;
   execution_time_seconds: number;
+  debug_logs?: string[];
 }
 
 export class AXQueryExecutor {
@@ -57,15 +58,18 @@ export class AXQueryExecutor {
       cmd: queryData.command,
       multi: queryData.return_all_matches,
       locator: {
-        app: queryData.locator.app,
-        role: queryData.locator.role,
-        match: queryData.locator.match,
-        pathHint: queryData.locator.navigation_path_hint,
+        app: (queryData.locator as { app: string }).app,
+        role: (queryData.locator as { role: string }).role,
+        match: (queryData.locator as { match: Record<string, string> }).match,
+        pathHint: (queryData.locator as { navigation_path_hint?: string[] }).navigation_path_hint,
       },
       attributes: queryData.attributes_to_query,
       requireAction: queryData.required_action_name,
       action: queryData.action_to_perform,
       // report_execution_time is not sent to the Swift binary
+      debug_logging: queryData.debug_logging,
+      max_elements: queryData.max_elements,
+      output_format: queryData.output_format
     };
     logger.debug('Mapped AX query for Swift binary:', mappedQueryData);
 
@@ -131,8 +135,10 @@ export class AXQueryExecutor {
           // If we got any JSON output, try to parse it
           if (stdoutData.trim()) {
             try {
-              const result = JSON.parse(stdoutData) as Record<string, unknown>;
-              return resolve({ result, execution_time_seconds });
+              const parsedJson = JSON.parse(stdoutData) as (Record<string, unknown> & { debug_logs?: string[] });
+              // Separate the core result from potential debug_logs
+              const { debug_logs, ...coreResult } = parsedJson;
+              return resolve({ result: coreResult, execution_time_seconds, debug_logs });
             } catch (error) {
               logger.error('Failed to parse JSON output', { error, stdout: stdoutData });
               // Fall through to error handling below if JSON parsing fails
@@ -145,10 +151,30 @@ export class AXQueryExecutor {
           } else if (code !== 0) {
             errorMessage = `Process exited with code ${code}: ${stderrData}`;
           } else {
-            errorMessage = `Process completed but no valid output: ${stderrData}`;
+            // Attempt to parse stderr as JSON ErrorResponse if stdout was empty but exit was 0
+            try {
+              const errorJson = JSON.parse(stderrData.split('\n').filter(line => line.startsWith("{\"error\":")).join('') || stderrData);
+              if (errorJson.error) {
+                errorMessage = `AX tool reported error: ${errorJson.error}`;
+                const errorToReject = new Error(errorMessage) as Error & { execution_time_seconds?: number; debug_logs?: string[] };
+                errorToReject.execution_time_seconds = execution_time_seconds;
+                errorToReject.debug_logs = errorJson.debug_logs; // Capture debug logs from error JSON
+                return reject(errorToReject);
+              }
+            } catch {
+              // stderr was not a JSON error response, proceed with generic message
+            }
+            errorMessage = `Process completed but no valid JSON output on stdout. Stderr: ${stderrData}`;
           }
-          const errorToReject = new Error(errorMessage) as Error & { execution_time_seconds?: number };
+          const errorToReject = new Error(errorMessage) as Error & { execution_time_seconds?: number; debug_logs?: string[] };
           errorToReject.execution_time_seconds = execution_time_seconds;
+          // If stderrData might contain our JSON error object with debug_logs, try to parse it
+          try {
+            const errorJson = JSON.parse(stderrData.split('\n').filter(line => line.startsWith("{\"error\":")).join('') || stderrData);
+            if (errorJson.debug_logs) {
+              errorToReject.debug_logs = errorJson.debug_logs;
+            }
+          } catch { /* ignore if stderr is not our JSON error */ }
           reject(errorToReject);
         });
         
