@@ -162,32 +162,61 @@ public func getElementAttributes(_ element: Element, requestedAttributes: [Strin
     }
     // --- End of moved block ---
 
+    // Populate action names regardless of forMultiDefault, similar to ComputedName/IsClickable
+    populateActionNamesAttribute(for: element, result: &result)
+
     if !forMultiDefault {
-        populateActionNamesAttribute(for: element, result: &result)
         // The ComputedName, IsClickable, and ComputedPath (for verbose) are now handled above, outside this !forMultiDefault block.
+        // AXActionNames is also handled above now.
     }
     return result
 }
 
 @MainActor
 private func populateActionNamesAttribute(for element: Element, result: inout ElementAttributes) {
-    // Use element.supportedActions directly in the result population
-    if let currentActions = element.supportedActions, !currentActions.isEmpty {
-        result[kAXActionNamesAttribute] = AnyCodable(currentActions)
-    } else if result[kAXActionNamesAttribute] == nil && result[kAXActionsAttribute] == nil {
-        // Fallback if element.supportedActions was nil or empty and not already populated
-        let primaryActions: [String]? = element.attribute(Attribute<[String]>(kAXActionNamesAttribute))
-        let fallbackActions: [String]? = element.attribute(Attribute<[String]>(kAXActionsAttribute))
+    // Check if AXActionNames is already populated (e.g., by explicit request)
+    if result[kAXActionNamesAttribute] != nil {
+        return // Already handled or explicitly requested
+    }
 
-        if let actions = primaryActions ?? fallbackActions, !actions.isEmpty {
-           result[kAXActionNamesAttribute] = AnyCodable(actions)
-        } else if primaryActions != nil || fallbackActions != nil { 
-           result[kAXActionNamesAttribute] = AnyCodable("\(kAXNotAvailableString) (empty list)")
-        } else {
-           result[kAXActionNamesAttribute] = AnyCodable(kAXNotAvailableString)
+    var actionsToStore: [String]?
+
+    // Try kAXActionNamesAttribute first
+    if let currentActions = element.supportedActions, !currentActions.isEmpty {
+        actionsToStore = currentActions
+    } else {
+        // If kAXActionNamesAttribute was nil or empty, try kAXActionsAttribute directly.
+        if let fallbackActions: [String] = element.attribute(Attribute<[String]>(kAXActionsAttribute)), !fallbackActions.isEmpty {
+            actionsToStore = fallbackActions
         }
     }
-    // The ComputedName, IsClickable, and ComputedPath (for verbose) are handled elsewhere.
+
+    // Additionally, check for kAXPressAction support explicitly
+    if element.isActionSupported(kAXPressAction) {
+        if actionsToStore == nil {
+            actionsToStore = [kAXPressAction]
+        } else if !actionsToStore!.contains(kAXPressAction) {
+            actionsToStore!.append(kAXPressAction)
+        }
+    }
+
+    if let finalActions = actionsToStore, !finalActions.isEmpty { // Ensure finalActions is not empty
+        result[kAXActionNamesAttribute] = AnyCodable(finalActions)
+    } else {
+        // If all attempts (kAXActionNames, kAXActions, kAXPressAction check) yield no actions,
+        // determine the precise "n/a" message.
+        let primaryResultNil = element.supportedActions == nil
+        let fallbackResultNil = element.attribute(Attribute<[String]>(kAXActionsAttribute)) == nil
+        let pressActionSupported = element.isActionSupported(kAXPressAction)
+
+        if primaryResultNil && fallbackResultNil && !pressActionSupported {
+            // All sources are nil or unsupported
+            result[kAXActionNamesAttribute] = AnyCodable(kAXNotAvailableString)
+        } else {
+            // At least one attribute was present but returned an empty list, or press action was supported but list ended up empty (shouldn't happen with current logic).
+            result[kAXActionNamesAttribute] = AnyCodable("\(kAXNotAvailableString) (no specific actions found or list empty)")
+        }
+    }
 }
 
 // MARK: - Attribute Formatting Helpers
