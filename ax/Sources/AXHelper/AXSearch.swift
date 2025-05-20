@@ -243,4 +243,157 @@ public func collectAll(
     }
 }
 
+@MainActor
+private func attributesMatch(axElement: AXElement, matchDetails: [String: String], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+    if isDebugLoggingEnabled {
+        let criteriaDesc = matchDetails.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
+        let roleForLog = axElement.role ?? "nil"
+        let titleForLog = axElement.title ?? "nil"
+        debug("attributesMatch [D\(depth)]: Check. Role=\(roleForLog), Title=\(titleForLog). Criteria: [\(criteriaDesc)]")
+    }
+
+    // Check computed name criteria first if present in the main locator
+    let computedNameEquals = matchDetails["computed_name_equals"]
+    let computedNameContains = matchDetails["computed_name_contains"]
+
+    if computedNameEquals != nil || computedNameContains != nil {
+        let computedAttrs = getComputedAttributes(for: axElement) // Call the helper
+        if let currentComputedNameAny = computedAttrs["ComputedName"]?.value,
+           let currentComputedName = currentComputedNameAny as? String {
+            if let equals = computedNameEquals {
+                if currentComputedName != equals {
+                    if isDebugLoggingEnabled {
+                        debug("attributesMatch [D\(depth)]: ComputedName '\(currentComputedName)' != '\(equals)'. No match.")
+                    }
+                    return false
+                }
+            }
+            if let contains = computedNameContains {
+                if !currentComputedName.localizedCaseInsensitiveContains(contains) {
+                    if isDebugLoggingEnabled {
+                        debug("attributesMatch [D\(depth)]: ComputedName '\(currentComputedName)' does not contain '\(contains)'. No match.")
+                    }
+                    return false
+                }
+            }
+        } else { // No ComputedName available from the element
+            // If locator requires computed name but element has none, it's not a match
+            if isDebugLoggingEnabled {
+                debug("attributesMatch [D\(depth)]: Locator requires ComputedName (equals: \(computedNameEquals ?? "nil"), contains: \(computedNameContains ?? "nil")), but element has none. No match.")
+            }
+            return false
+        }
+    }
+
+    // Existing criteria matching logic
+    for (key, expectedValue) in matchDetails {
+        // Skip computed_name keys here as they are handled above
+        if key == "computed_name_equals" || key == "computed_name_contains" { continue }
+
+        // Skip AXRole as it's handled by the caller (search/collectAll) before calling attributesMatch.
+        if key == kAXRoleAttribute || key == "AXRole" { continue }
+
+        // Handle boolean attributes explicitly, as axValue<String> might not work well for them.
+        if key == kAXEnabledAttribute || key == kAXFocusedAttribute || key == kAXHiddenAttribute || key == kAXElementBusyAttribute || key == "IsIgnored" {
+            var currentBoolValue: Bool?
+            switch key {
+            case kAXEnabledAttribute: currentBoolValue = axElement.isEnabled
+            case kAXFocusedAttribute: currentBoolValue = axElement.isFocused
+            case kAXHiddenAttribute: currentBoolValue = axElement.isHidden
+            case kAXElementBusyAttribute: currentBoolValue = axElement.isElementBusy
+            case "IsIgnored": currentBoolValue = axElement.isIgnored // This is already a Bool
+            default: break
+            }
+
+            if let actualBool = currentBoolValue {
+                let expectedBool = expectedValue.lowercased() == "true"
+                if actualBool != expectedBool {
+                    if isDebugLoggingEnabled {
+                        debug("attributesMatch [D\(depth)]: Boolean Attribute '\(key)' expected '\(expectedBool)', but found '\(actualBool)'. No match.")
+                    }
+                    return false
+                }
+            } else { // Attribute not present or not a boolean
+                if isDebugLoggingEnabled {
+                    debug("attributesMatch [D\(depth)]: Boolean Attribute '\(key)' (expected '\(expectedValue)') not found or not boolean in element. No match.")
+                }
+                return false
+            }
+            continue // Move to next criteria item
+        }
+        
+        // For array attributes, decode the expected string value into an array
+        if key == kAXActionNamesAttribute || key == kAXAllowedValuesAttribute || key == kAXChildrenAttribute /* add others if needed */ {
+            guard let expectedArray = decodeExpectedArray(fromString: expectedValue) else {
+                if isDebugLoggingEnabled {
+                    debug("attributesMatch [D\(depth)]: Could not decode expected array string '\(expectedValue)' for attribute '\(key)'. No match.")
+                }
+                return false
+            }
+            
+            // Fetch the actual array value from the element
+            var actualArray: [String]? = nil
+            if key == kAXActionNamesAttribute {
+                actualArray = axElement.supportedActions
+            } else if key == kAXAllowedValuesAttribute {
+                // Assuming axValue can fetch [String] for kAXAllowedValuesAttribute if that's its typical return type.
+                // If it returns other types, this needs adjustment.
+                actualArray = axElement.attribute(AXAttribute<[String]>(key))
+            } else if key == kAXChildrenAttribute {
+                // For children, we might compare against a list of roles or titles.
+                // This is a simplified example comparing against string representations.
+                actualArray = axElement.children?.map { $0.role ?? "UnknownRole" } // Example: comparing roles
+            }
+
+            if let actual = actualArray {
+                // Compare contents regardless of order (Set comparison)
+                if Set(actual) != Set(expectedArray) {
+                    if isDebugLoggingEnabled {
+                        debug("attributesMatch [D\(depth)]: Array Attribute '\(key)' expected '\(expectedArray)', but found '\(actual)'. No match.")
+                    }
+                    return false
+                }
+            } else {
+                if isDebugLoggingEnabled {
+                    debug("attributesMatch [D\(depth)]: Array Attribute '\(key)' (expected '\(expectedValue)') not found in element. No match.")
+                }
+                return false
+            }
+            continue
+        }
+
+        // Fallback to generic string attribute comparison
+        // This uses axElement.attribute<String>(AXAttribute(key)) which in turn uses axValue.
+        // axValue has its own logic for converting various types to String.
+        if let currentValue = axElement.attribute(AXAttribute<String>(key)) { // AXAttribute<String> implies string conversion
+            if currentValue != expectedValue {
+                if isDebugLoggingEnabled {
+                    debug("attributesMatch [D\(depth)]: Attribute '\(key)' expected '\(expectedValue)', but found '\(currentValue)'. No match.")
+                }
+                return false
+            }
+        } else {
+            // If axValue returns nil, it means the attribute doesn't exist, or couldn't be converted to String.
+            // Check if expected value was also indicating absence or a specific "not available" string
+            if expectedValue.lowercased() == "nil" || expectedValue == kAXNotAvailableString || expectedValue.isEmpty {
+                 // This could be considered a match if expectation is absence
+                 if isDebugLoggingEnabled {
+                    debug("attributesMatch [D\(depth)]: Attribute '\(key)' not found, but expected value ('\(expectedValue)') suggests absence is OK. Match for this key.")
+                }
+                // continue to next key
+            } else {
+                if isDebugLoggingEnabled {
+                    debug("attributesMatch [D\(depth)]: Attribute '\(key)' (expected '\(expectedValue)') not found or not convertible to String. No match.")
+                }
+                return false
+            }
+        }
+    }
+
+    if isDebugLoggingEnabled {
+        debug("attributesMatch [D\(depth)]: All attributes MATCHED criteria.")
+    }
+    return true
+}
+
 // End of AXSearch.swift for now 

@@ -168,11 +168,101 @@ func handlePerform(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool) throws -> 
     }
     debug("PerformAction: Searching for action element within: \(baseAXElementForSearch.underlyingElement) using locator criteria: \(locator.criteria)")
         
-    guard let targetAXElement = search(axElement: baseAXElementForSearch, locator: locator, requireAction: cmd.action, maxDepth: cmd.max_elements ?? DEFAULT_MAX_DEPTH_SEARCH, isDebugLoggingEnabled: isDebugLoggingEnabled) else {
-        return PerformResponse(command_id: cmd.command_id, success: false, error: "Target element for action not found or does not support action '\(actionToPerform)' with given locator and path hints.", debug_logs: collectedDebugLogs)
+    let actionRequiredForInitialSearch: String?
+    if actionToPerform == kAXSetValueAction || actionToPerform == kAXPressAction { 
+        actionRequiredForInitialSearch = nil 
+    } else {
+        actionRequiredForInitialSearch = actionToPerform
+    }
+
+    var targetAXElement: AXElement? = search(axElement: baseAXElementForSearch, locator: locator, requireAction: actionRequiredForInitialSearch, maxDepth: cmd.max_elements ?? DEFAULT_MAX_DEPTH_SEARCH, isDebugLoggingEnabled: isDebugLoggingEnabled)
+
+    // Smart Search / Fuzzy Find for perform_action
+    if targetAXElement == nil || 
+       (actionToPerform != kAXSetValueAction && 
+        actionToPerform != kAXPressAction && 
+        targetAXElement?.isActionSupported(actionToPerform) == false) {
+        
+        debug("PerformAction: Initial search failed or element found does not support action '\(actionToPerform)'. Attempting smart search...")
+        
+        var smartLocatorCriteria = locator.criteria
+        var useComputedNameForSmartSearch = false
+
+        if let titleFromCriteria = smartLocatorCriteria[kAXTitleAttribute] ?? smartLocatorCriteria["AXTitle"] {
+            smartLocatorCriteria["computed_name_contains"] = titleFromCriteria // Try contains first
+            // Remove original title criteria to avoid conflict if it was overly specific
+            smartLocatorCriteria.removeValue(forKey: kAXTitleAttribute)
+            smartLocatorCriteria.removeValue(forKey: "AXTitle")
+            useComputedNameForSmartSearch = true
+            debug("PerformAction (Smart): Using title '\(titleFromCriteria)' for computed_name_contains.")
+        } else if let idFromCriteria = smartLocatorCriteria[kAXIdentifierAttribute] ?? smartLocatorCriteria["AXIdentifier"] {
+            // If no title, but there's an ID, maybe the ID is also part of a useful computed name.
+            // This is less direct than title, but worth a try if title is absent.
+            smartLocatorCriteria["computed_name_contains"] = idFromCriteria
+            smartLocatorCriteria.removeValue(forKey: kAXIdentifierAttribute)
+            smartLocatorCriteria.removeValue(forKey: "AXIdentifier")
+            useComputedNameForSmartSearch = true
+            debug("PerformAction (Smart): No title, using ID '\(idFromCriteria)' for computed_name_contains.")
+        }
+
+        if useComputedNameForSmartSearch || (smartLocatorCriteria[kAXRoleAttribute] != nil || smartLocatorCriteria["AXRole"] != nil) {
+            let smartSearchLocator = Locator(
+                match_all: locator.match_all,
+                criteria: smartLocatorCriteria, 
+                root_element_path_hint: nil, // Search from current base, not re-evaluating root hint here
+                requireAction: actionToPerform, // Crucially, now require the specific action
+                computed_name_equals: nil, // Rely on contains from criteria for now
+                computed_name_contains: smartLocatorCriteria["computed_name_contains"] // Pass through if set
+            )
+
+            var foundCollectedElements: [AXElement] = []
+            var processingSet = Set<AXElement>()
+            let smartSearchMaxDepth = 3 // Limit depth for smart search
+
+            debug("PerformAction (Smart): Collecting candidates with smart locator: \(smartSearchLocator.criteria), requireAction: '\(actionToPerform)', depth: \(smartSearchMaxDepth)")
+            collectAll(
+                appAXElement: appAXElement, // Pass the main app element for context if needed by collectAll internals
+                locator: smartSearchLocator, 
+                currentAXElement: baseAXElementForSearch, 
+                depth: 0, 
+                maxDepth: smartSearchMaxDepth, 
+                maxElements: 5, // Collect a few candidates
+                currentPath: [], 
+                elementsBeingProcessed: &processingSet, 
+                foundElements: &foundCollectedElements,
+                isDebugLoggingEnabled: isDebugLoggingEnabled
+            )
+
+            // Filter for exact action support again, as collectAll's requireAction might be based on attributesMatch
+            let trulySupportingElements = foundCollectedElements.filter { $0.isActionSupported(actionToPerform) }
+
+            if trulySupportingElements.count == 1 {
+                targetAXElement = trulySupportingElements.first
+                debug("PerformAction (Smart): Found unique element via smart search: \(targetAXElement?.briefDescription(option: .verbose) ?? "nil")")
+            } else if trulySupportingElements.count > 1 {
+                debug("PerformAction (Smart): Found \(trulySupportingElements.count) elements via smart search. Ambiguous. Original error will be returned.")
+                // targetAXElement remains nil or the original non-supporting one, leading to error below
+            } else {
+                debug("PerformAction (Smart): No elements found via smart search that support the action.")
+                // targetAXElement remains nil or the original non-supporting one
+            }
+        } else {
+            debug("PerformAction (Smart): Not enough criteria (no title/ID for computed_name and no role) to attempt smart search.")
+        }
     }
     
-    return try performActionOnElement(axElement: targetAXElement, action: actionToPerform, cmd: cmd)
+    // After initial and potential smart search, check if we have a valid target
+    guard let finalTargetAXElement = targetAXElement else {
+        return PerformResponse(command_id: cmd.command_id, success: false, error: "Target element for action '\(actionToPerform)' not found with given locator and path hints, even after smart search.", debug_logs: collectedDebugLogs)
+    }
+    
+    // If the action is not setValue, ensure the final element supports it (if it wasn't nil from search)
+    if actionToPerform != kAXSetValueAction && !finalTargetAXElement.isActionSupported(actionToPerform) {
+         let supportedActions: [String]? = finalTargetAXElement.supportedActions
+         return PerformResponse(command_id: cmd.command_id, success: false, error: "Final target element for action '\(actionToPerform)' does not support it. Supported: \(supportedActions?.joined(separator: ", ") ?? "none")", debug_logs: collectedDebugLogs)
+    }
+
+    return try performActionOnElement(axElement: finalTargetAXElement, action: actionToPerform, cmd: cmd)
 }
 
 @MainActor

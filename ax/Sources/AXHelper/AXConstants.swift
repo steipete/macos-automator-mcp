@@ -8,7 +8,7 @@ import AppKit // Added for NSAccessibility
 public let MAX_COLLECT_ALL_HITS = 200 // Default max elements for collect_all if not specified in command
 public let DEFAULT_MAX_DEPTH_SEARCH = 20 // Default max recursion depth for search
 public let DEFAULT_MAX_DEPTH_COLLECT_ALL = 15 // Default max recursion depth for collect_all
-public let AX_BINARY_VERSION = "1.1.6" // Updated version
+public let AX_BINARY_VERSION = "1.1.7" // Updated version
 
 // Standard Accessibility Attributes - Values should match CFSTR defined in AXAttributeConstants.h
 public let kAXRoleAttribute = "AXRole" // Reverted to String literal
@@ -71,13 +71,13 @@ public let kAXActionsAttribute = "AXActions" // This is actually kAXActionNamesA
 public let kAXActionNamesAttribute = "AXActionNames" // Correct name for listing actions
 public let kAXActionDescriptionAttribute = "AXActionDescription" // To get desc of an action (not in AXActionConstants.h but AXUIElement.h)
 
-public let kAXPressAction = "AXPress"
 public let kAXIncrementAction = "AXIncrement" // New
 public let kAXDecrementAction = "AXDecrement" // New
 public let kAXConfirmAction = "AXConfirm" // New
 public let kAXCancelAction = "AXCancel" // New
 public let kAXShowMenuAction = "AXShowMenu"
 public let kAXPickAction = "AXPick" // New (Obsolete in headers, but sometimes seen)
+public let kAXPressAction = "AXPress" // New
 
 // Specific action name for setting a value, used internally by performActionOnElement
 public let kAXSetValueAction = "AXSetValue"

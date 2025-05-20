@@ -30,22 +30,30 @@ public func navigateToElement(from rootAXElement: AXElement, pathHint: [String])
         if role.lowercased() == "window" || role.lowercased() == kAXWindowRole.lowercased() { 
             // Fetch as [AXUIElement] first, then map to [AXElement]
             guard let windowUIElements: [AXUIElement] = axValue(of: currentAXElement.underlyingElement, attr: kAXWindowsAttribute) else {
-                debug("Window UI elements not found (or failed to cast to [AXUIElement]) for component: \(pathComponent). Current element: \(currentAXElement.briefDescription())")
+                debug("PathUtils: AXWindows attribute could not be fetched as [AXUIElement].")
                 return nil
             }
+            debug("PathUtils: Fetched \(windowUIElements.count) AXUIElements for AXWindows.")
+            
             let windows: [AXElement] = windowUIElements.map { AXElement($0) }
+            debug("PathUtils: Mapped to \(windows.count) AXElements.")
             
             guard index < windows.count else {
-                debug("Window not found for component: \(pathComponent) at index \(index). Available windows: \(windows.count). Current element: \(currentAXElement.briefDescription())")
+                debug("PathUtils: Index \(index) is out of bounds for windows array (count: \(windows.count)). Component: \(pathComponent).")
                 return nil
             }
             currentAXElement = windows[index]
         } else {
+            // Similar explicit logging for children
             guard let allChildrenUIElements: [AXUIElement] = axValue(of: currentAXElement.underlyingElement, attr: kAXChildrenAttribute) else {
-                debug("Children UI elements not found for element \(currentAXElement.briefDescription()) while processing component: \(pathComponent)")
+                debug("PathUtils: AXChildren attribute could not be fetched as [AXUIElement] for element \(currentAXElement.briefDescription()) while processing \(pathComponent).")
                 return nil
             }
+            debug("PathUtils: Fetched \(allChildrenUIElements.count) AXUIElements for AXChildren of \(currentAXElement.briefDescription()) for \(pathComponent).")
+
             let allChildren: [AXElement] = allChildrenUIElements.map { AXElement($0) }
+            debug("PathUtils: Mapped to \(allChildren.count) AXElements for children of \(currentAXElement.briefDescription()) for \(pathComponent).")
+
             guard !allChildren.isEmpty else {
                  debug("No children found for element \(currentAXElement.briefDescription()) while processing component: \(pathComponent)")
                  return nil

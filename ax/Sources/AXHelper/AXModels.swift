@@ -94,8 +94,9 @@ public struct CommandEnvelope: Codable {
     public let debug_logging: Bool? // Master switch for debug logging for this command
     public let max_elements: Int?   // Max elements for collect_all
     public let output_format: OutputFormat? // Changed to enum
+    public let perform_action_on_child_if_needed: Bool? // New flag for best-effort press
 
-    public init(command_id: String, command: CommandType, application: String? = nil, locator: Locator? = nil, action: String? = nil, value: String? = nil, attribute_to_set: String? = nil, attributes: [String]? = nil, path_hint: [String]? = nil, debug_logging: Bool? = nil, max_elements: Int? = nil, output_format: OutputFormat? = .smart) {
+    public init(command_id: String, command: CommandType, application: String? = nil, locator: Locator? = nil, action: String? = nil, value: String? = nil, attribute_to_set: String? = nil, attributes: [String]? = nil, path_hint: [String]? = nil, debug_logging: Bool? = nil, max_elements: Int? = nil, output_format: OutputFormat? = .smart, perform_action_on_child_if_needed: Bool? = false) {
         self.command_id = command_id
         self.command = command // Ensure this matches the updated type
         self.application = application
@@ -108,6 +109,7 @@ public struct CommandEnvelope: Codable {
         self.debug_logging = debug_logging
         self.max_elements = max_elements
         self.output_format = output_format
+        self.perform_action_on_child_if_needed = perform_action_on_child_if_needed // Initialize new flag
     }
 }
 
@@ -117,22 +119,26 @@ public struct Locator: Codable {
     public var criteria: [String: String]
     public var root_element_path_hint: [String]?
     public var requireAction: String? // Added: specific action the element must support
+    public var computed_name_equals: String?    // New
+    public var computed_name_contains: String?  // New
 
-    // CodingKeys can be added if JSON keys differ, e.g., require_action
+    // CodingKeys can be added if JSON keys differ
     enum CodingKeys: String, CodingKey {
         case match_all
         case criteria
         case root_element_path_hint
-        case requireAction = "require_action" // Example if JSON key is different
+        case requireAction = "require_action"
+        case computed_name_equals = "computed_name_equals" // New
+        case computed_name_contains = "computed_name_contains" // New
     }
     
-    // Custom init if default Codable behavior for optionals isn't enough
-    // or if require_action isn't always present in JSON
-    public init(match_all: Bool? = nil, criteria: [String: String], root_element_path_hint: [String]? = nil, requireAction: String? = nil) {
+    public init(match_all: Bool? = nil, criteria: [String: String] = [:], root_element_path_hint: [String]? = nil, requireAction: String? = nil, computed_name_equals: String? = nil, computed_name_contains: String? = nil) {
         self.match_all = match_all
         self.criteria = criteria
         self.root_element_path_hint = root_element_path_hint
         self.requireAction = requireAction
+        self.computed_name_equals = computed_name_equals
+        self.computed_name_contains = computed_name_contains
     }
 
      // If requireAction is consistently named in JSON as "requireAction"

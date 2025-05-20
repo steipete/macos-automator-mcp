@@ -28,6 +28,7 @@ let package = Package(
                 "AXAttributeHelpers.swift",
                 "AXAttributeMatcher.swift",
                 "AXValueHelpers.swift",
+                "AXValueUnwrapper.swift",
                 "AXElement.swift",
                 "AXValueParser.swift",
                 "AXValueFormatter.swift",

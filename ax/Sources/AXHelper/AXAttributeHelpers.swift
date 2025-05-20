@@ -242,4 +242,29 @@ public func getElementAttributes(_ axElement: AXElement, requestedAttributes: [S
     return result
 }
 
+// New helper function to get only computed/heuristic attributes for matching
+@MainActor
+internal func getComputedAttributes(for axElement: AXElement) -> ElementAttributes {
+    var computedAttrs = ElementAttributes()
+
+    var computedName: String? = nil
+    if let title = axElement.title, !title.isEmpty, title != kAXNotAvailableString { computedName = title }
+    else if let value: String = axElement.attribute(AXAttribute<String>(kAXValueAttribute)), !value.isEmpty, value != kAXNotAvailableString { computedName = value }
+    else if let desc = axElement.axDescription, !desc.isEmpty, desc != kAXNotAvailableString { computedName = desc }
+    else if let help: String = axElement.attribute(AXAttribute<String>(kAXHelpAttribute)), !help.isEmpty, help != kAXNotAvailableString { computedName = help }
+    else if let phValue: String = axElement.attribute(AXAttribute<String>(kAXPlaceholderValueAttribute)), !phValue.isEmpty, phValue != kAXNotAvailableString { computedName = phValue }
+    else if let roleDesc: String = axElement.attribute(AXAttribute<String>(kAXRoleDescriptionAttribute)), !roleDesc.isEmpty, roleDesc != kAXNotAvailableString {
+        computedName = "\(roleDesc) (\(axElement.role ?? "Element"))"
+    }
+    if let name = computedName { computedAttrs["ComputedName"] = AnyCodable(name) }
+
+    let isButton = axElement.role == "AXButton"
+    let hasPressAction = axElement.isActionSupported(kAXPressAction)
+    if isButton || hasPressAction { computedAttrs["IsClickable"] = AnyCodable(true) }
+    
+    // Add other lightweight heuristic attributes here if needed in the future for matching
+
+    return computedAttrs
+}
+
 // Any other attribute-specific helper functions could go here in the future. 
