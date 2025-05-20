@@ -29,7 +29,7 @@ internal func attributesMatch(element: Element, matchDetails: [String: String], 
         if key == kAXRoleAttribute || key == "AXRole" { continue }
 
         // Handle boolean attributes explicitly
-        if key == kAXEnabledAttribute || key == kAXFocusedAttribute || key == kAXHiddenAttribute || key == kAXElementBusyAttribute || key == "IsIgnored" {
+        if key == kAXEnabledAttribute || key == kAXFocusedAttribute || key == kAXHiddenAttribute || key == kAXElementBusyAttribute || key == "IsIgnored" || key == kAXMainAttribute {
             if !matchBooleanAttribute(element: element, key: key, expectedValueString: expectedValue, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
                 return false // No match
             }
@@ -138,6 +138,7 @@ internal func matchBooleanAttribute(element: Element, key: String, expectedValue
     case kAXHiddenAttribute: currentBoolValue = element.isHidden
     case kAXElementBusyAttribute: currentBoolValue = element.isElementBusy
     case "IsIgnored": currentBoolValue = element.isIgnored // This is already a Bool
+    case kAXMainAttribute: currentBoolValue = element.attribute(Attribute<Bool>(key)) // Fetch as Bool
     default: 
         if isDebugLoggingEnabled {
             debug("matchBooleanAttribute [D\(depth)]: Unknown boolean key '\(key)'. This should not happen.")
