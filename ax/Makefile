@@ -16,8 +16,8 @@ $(FINAL_BINARY_PATH): $(UNIVERSAL_BINARY_PATH)
 	@echo "Final binary ready at $(FINAL_BINARY_PATH)"
 
 $(UNIVERSAL_BINARY_PATH):
-	@echo "Building universal binary for $(UNIVERSAL_BINARY_NAME) (arm64 + x86_64) with size optimization (Osize, ThinLTO, dead_strip)..."
-	@swift build -c release --arch arm64 --arch x86_64 -Xswiftc -Osize -Xswiftc -lto=llvm-thin -Xcc -Wl,-dead_strip
+	@echo "Building universal binary for $(UNIVERSAL_BINARY_NAME) (arm64 + x86_64) with size optimization (Osize, dead_strip)..."
+	@swift build -c release --arch arm64 --arch x86_64 -Xswiftc -Osize -Xcc -Wl,-dead_strip
 	@echo "Stripping symbols from $(UNIVERSAL_BINARY_PATH)..."
 	@strip $(UNIVERSAL_BINARY_PATH)
 	@echo "Universal binary built and stripped at $(UNIVERSAL_BINARY_PATH)"
