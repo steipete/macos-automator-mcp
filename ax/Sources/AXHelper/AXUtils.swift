@@ -18,12 +18,16 @@ public enum AXErrorString: Error, CustomStringConvertible {
     case notAuthorised(AXError)
     case elementNotFound
     case actionFailed(AXError)
+    case invalidCommand
+    case genericError(String)
 
     public var description: String {
         switch self {
         case .notAuthorised(let e): return "AX authorisation failed: \(e)"
-        case .elementNotFound:      return "No element matches the locator"
-        case .actionFailed(let e):  return "Action failed: \(e)"
+        case .elementNotFound:      return "No element matches the locator criteria or path."
+        case .actionFailed(let e):  return "Action failed with AXError: \(e)"
+        case .invalidCommand:       return "Invalid command specified."
+        case .genericError(let msg): return msg
         }
     }
 }
@@ -145,6 +149,10 @@ public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
         } else if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
              let axVal = unwrappedValue as! AXValue
              var boolResult: DarwinBoolean = false
+             // The rawValue 4 is used here for boolean extraction with AXValueGetValue.
+             // This may be an undocumented or specific behavior for boolean AXValues, 
+             // as the public AXValueType enum maps rawValue 4 to kAXValueCFRangeType.
+             // However, this pattern is crucial for correctly extracting boolean values.
              if AXValueGetType(axVal).rawValue == 4 /* kAXValueBooleanType */ && AXValueGetValue(axVal, AXValueGetType(axVal), &boolResult) {
                  return (boolResult.boolValue) as? T
              }
@@ -199,14 +207,15 @@ public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
         if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
             let axTypedValue = unwrappedValue as! AXValue
             let valueType = AXValueGetType(axTypedValue)
-            if attr == kAXPositionAttribute && valueType.rawValue == AXValueType.cgPoint.rawValue {
+            // Use direct enum case comparison for CGPoint and CGSize
+            if attr == kAXPositionAttribute && valueType == .cgPoint {
                 var point = CGPoint.zero
-                if AXValueGetValue(axTypedValue, AXValueType.cgPoint, &point) == true {
+                if AXValueGetValue(axTypedValue, .cgPoint, &point) == true {
                     return ["x": Int(point.x), "y": Int(point.y)] as? T
                 }
-            } else if attr == kAXSizeAttribute && valueType.rawValue == AXValueType.cgSize.rawValue {
+            } else if attr == kAXSizeAttribute && valueType == .cgSize {
                 var size = CGSize.zero
-                if AXValueGetValue(axTypedValue, AXValueType.cgSize, &size) == true {
+                if AXValueGetValue(axTypedValue, .cgSize, &size) == true {
                     return ["width": Int(size.width), "height": Int(size.height)] as? T
                 }
             }
@@ -223,97 +232,6 @@ public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
     
     debug("axValue: Fallback cast attempt for attribute '\(attr)' to type \(T.self).")
     return unwrappedValue as? T
-}
-
-@MainActor
-public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [String], forMultiDefault: Bool = false, targetRole: String? = nil, outputFormat: String = "smart") -> ElementAttributes {
-    var result = ElementAttributes()
-    var attributesToFetch = requestedAttributes
-
-    if forMultiDefault {
-        attributesToFetch = [kAXRoleAttribute, kAXValueAttribute, kAXTitleAttribute, kAXIdentifierAttribute]
-        if let role = targetRole, role == "AXStaticText" { 
-            attributesToFetch = [kAXRoleAttribute, kAXValueAttribute, kAXIdentifierAttribute]
-        }
-    } else if attributesToFetch.isEmpty {
-        var attrNames: CFArray?
-        if AXUIElementCopyAttributeNames(element, &attrNames) == .success, let names = attrNames as? [String] {
-            attributesToFetch.append(contentsOf: names)
-        }
-    }
-
-    var availableActions: [String] = []
-
-    for attr in attributesToFetch {
-        var extractedValue: Any? 
-        if let val: String = axValue(of: element, attr: attr) { extractedValue = val }
-        else if let val: Bool = axValue(of: element, attr: attr) { extractedValue = val }
-        else if let val: Int = axValue(of: element, attr: attr) { extractedValue = val }
-        else if let val: [String] = axValue(of: element, attr: attr) { 
-            extractedValue = val
-            if attr == kAXActionNamesAttribute || attr == kAXActionsAttribute { 
-                availableActions.append(contentsOf: val)
-            }
-        }
-        else if let count = (axValue(of: element, attr: attr) as [AXUIElement]?)?.count { extractedValue = "Array of \(count) UIElement(s)" }
-        else if let uiElement: AXUIElement = axValue(of: element, attr: attr) { extractedValue = "UIElement: \(String(describing: uiElement))"}
-        else if let val: [String: Int] = axValue(of: element, attr: attr) { 
-             extractedValue = val
-        }
-        else {
-            let rawCFValue: CFTypeRef? = copyAttributeValue(element: element, attribute: attr) 
-            if let raw = rawCFValue {
-                if CFGetTypeID(raw) == AXUIElementGetTypeID() {
-                    extractedValue = "AXUIElement (raw)"
-                } else if CFGetTypeID(raw) == AXValueGetTypeID() {
-                    extractedValue = "AXValue (type: \(AXValueGetType(raw as! AXValue).rawValue))"
-                } else {
-                    extractedValue = "CFType: \(String(describing: CFCopyTypeIDDescription(CFGetTypeID(raw))))"
-                }
-            } else {
-                extractedValue = nil
-            }
-        }
-        
-        let finalValueToStore = extractedValue
-        if outputFormat == "smart" {
-            if let strVal = finalValueToStore as? String, (strVal.isEmpty || strVal == "Not available") {
-                continue 
-            }
-        }
-        result[attr] = AnyCodable(finalValueToStore)
-    }
-    
-    if !forMultiDefault {
-        if result[kAXActionNamesAttribute] == nil && result[kAXActionsAttribute] == nil {
-             if let actions: [String] = axValue(of: element, attr: kAXActionNamesAttribute) ?? axValue(of: element, attr: kAXActionsAttribute) {
-                if !actions.isEmpty { result[kAXActionNamesAttribute] = AnyCodable(actions); availableActions = actions }
-                else { result[kAXActionNamesAttribute] = AnyCodable("Not available (empty list)") }
-             } else {
-                result[kAXActionNamesAttribute] = AnyCodable("Not available")
-             }
-        } else if let anyCodableActions = result[kAXActionNamesAttribute], let currentActions = anyCodableActions.value as? [String] {
-            availableActions = currentActions
-        } else if let anyCodableActions = result[kAXActionsAttribute], let currentActions = anyCodableActions.value as? [String] {
-            availableActions = currentActions
-        }
-
-        var computedName: String? = nil
-        if let title: String = axValue(of: element, attr: kAXTitleAttribute), !title.isEmpty, title != "Not available" { computedName = title }
-        else if let value: String = axValue(of: element, attr: kAXValueAttribute), !value.isEmpty, value != "Not available" { computedName = value }
-        else if let desc: String = axValue(of: element, attr: kAXDescriptionAttribute), !desc.isEmpty, desc != "Not available" { computedName = desc }
-        else if let help: String = axValue(of: element, attr: kAXHelpAttribute), !help.isEmpty, help != "Not available" { computedName = help }
-        else if let phValue: String = axValue(of: element, attr: kAXPlaceholderValueAttribute), !phValue.isEmpty, phValue != "Not available" { computedName = phValue }
-        else if let roleDesc: String = axValue(of: element, attr: kAXRoleDescriptionAttribute), !roleDesc.isEmpty, roleDesc != "Not available" {
-            computedName = "\(roleDesc) (\((axValue(of: element, attr: kAXRoleAttribute) as String?) ?? "Element"))"
-        }
-        if let name = computedName { result["ComputedName"] = AnyCodable(name) }
-
-        let isButton = (axValue(of: element, attr: kAXRoleAttribute) as String?) == "AXButton"
-        let hasPressAction = availableActions.contains(kAXPressAction)
-        if isButton || hasPressAction { result["IsClickable"] = AnyCodable(true) }
-    }
-    return result
 }
 
 @MainActor
@@ -339,4 +257,57 @@ public func extractTextContent(element: AXUIElement) -> String {
     return uniqueTexts.joined(separator: "\n")
 }
 
-// End of AXUtils.swift for now
+@MainActor
+public func checkAccessibilityPermissions() {
+    if !AXIsProcessTrusted() {
+        fputs("ERROR: Accessibility permissions are not granted.\n", stderr)
+        fputs("Please enable in System Settings > Privacy & Security > Accessibility.\n", stderr)
+        if let parentName = getParentProcessName() {
+            fputs("Hint: Grant accessibility permissions to '\(parentName)'.\n", stderr)
+        }
+        let systemWideElement = AXUIElementCreateSystemWide()
+        var focusedElement: AnyObject?
+        _ = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute as CFString, &focusedElement)
+        exit(1)
+    } else {
+        debug("Accessibility permissions are granted.")
+    }
+}
+
+@MainActor
+public func getParentProcessName() -> String? {
+    let parentPid = getppid()
+    if let parentApp = NSRunningApplication(processIdentifier: parentPid) {
+        return parentApp.localizedName ?? parentApp.bundleIdentifier
+    }
+    return nil
+}
+
+@MainActor 
+public func getApplicationElement(bundleIdOrName: String) -> AXUIElement? {
+    guard let processID = pid(forAppIdentifier: bundleIdOrName) else { // pid is in AXUtils.swift
+        debug("Failed to find PID for app: \(bundleIdOrName)")
+        return nil
+    }
+    debug("Creating application element for PID: \(processID) for app '\(bundleIdOrName)'.")
+    return AXUIElementCreateApplication(processID)
+}
+
+// Helper function to get a string description for AXValueType
+public func stringFromAXValueType(_ type: AXValueType) -> String {
+    switch type {
+    case .cgPoint: return "CGPoint (kAXValueCGPointType)"
+    case .cgSize: return "CGSize (kAXValueCGSizeType)"
+    case .cgRect: return "CGRect (kAXValueCGRectType)"
+    case .cfRange: return "CFRange (kAXValueCFRangeType)" // Publicly this is rawValue 4
+    case .axError: return "AXError (kAXValueAXErrorType)"
+    case .illegal: return "Illegal (kAXValueIllegalType)"
+    // Add other known public cases if necessary
+    default:
+        // Handle the special case where rawValue 4 is treated as Boolean by AXValueGetValue
+        if type.rawValue == 4 { // Check if this is the boolean-specific context
+            return "Boolean (rawValue 4, contextually kAXValueBooleanType)"
+        }
+        return "Unknown AXValueType (rawValue: \(type.rawValue))"
+    }
+}

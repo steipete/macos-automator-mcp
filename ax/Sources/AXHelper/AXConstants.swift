@@ -2,6 +2,12 @@
 
 import Foundation
 
+// Configuration Constants
+public let MAX_COLLECT_ALL_HITS = 200 // Default max elements for collect_all if not specified in command
+public let DEFAULT_MAX_DEPTH_SEARCH = 20 // Default max recursion depth for search
+public let DEFAULT_MAX_DEPTH_COLLECT_ALL = 15 // Default max recursion depth for collect_all
+public let AX_BINARY_VERSION = "1.1.5" // Updated version
+
 // Standard Accessibility Attributes
 public let kAXRoleAttribute = "AXRole"
 public let kAXSubroleAttribute = "AXSubrole"
@@ -36,6 +42,19 @@ public let kAXActionNamesAttribute = "AXActionNames"
 public let kAXPressAction = "AXPress"
 public let kAXShowMenuAction = "AXShowMenu"
 
+// Standard Accessibility Roles (examples, add more as needed)
+public let kAXApplicationRole = "AXApplication"
+public let kAXWindowRole = "AXWindow"
+public let kAXButtonRole = "AXButton"
+public let kAXCheckBoxRole = "AXCheckBox"
+public let kAXStaticTextRole = "AXStaticText"
+public let kAXTextFieldRole = "AXTextField"
+public let kAXTextAreaRole = "AXTextArea"
+public let kAXScrollAreaRole = "AXScrollArea"
+public let kAXGroupRole = "AXGroup"
+public let kAXWebAreaRole = "AXWebArea"
+public let kAXToolbarRole = "AXToolbar"
+
 // Attributes for web content and tables/lists
 public let kAXVisibleChildrenAttribute = "AXVisibleChildren"
 public let kAXTabsAttribute = "AXTabs"
@@ -48,7 +67,3 @@ public let kAXDOMIdentifierAttribute = "AXDOMIdentifier" // Example, might not b
 public let kAXDOMClassListAttribute = "AXDOMClassList" // Example, might not be standard AX
 public let kAXARIADOMResourceAttribute = "AXARIADOMResource" // Example
 public let kAXARIADOMFunctionAttribute = "AXARIADOM-función" // Corrected identifier, kept original string value.
-
-// Configuration Constants
-public let MAX_COLLECT_ALL_HITS = 100000
-public let AX_BINARY_VERSION = "1.1.3" // Updated version

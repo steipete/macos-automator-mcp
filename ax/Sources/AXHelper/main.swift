@@ -1,147 +1,15 @@
 import Foundation
 import ApplicationServices     // AXUIElement*
 import AppKit                 // NSRunningApplication, NSWorkspace
-// CoreGraphics may be used by other files but not directly needed in this lean main.swift
+import CoreGraphics           // For CGPoint, CGSize etc.
 
 fputs("AX_SWIFT_TOP_SCOPE_FPUTS_STDERR\n", stderr) // For initial stderr check by caller
-
-// Low-level type ID functions are now in AXUtils.swift
-// func AXUIElementGetTypeID() -> CFTypeID {
-//     return AXUIElementGetTypeID_Impl()
-// }
-// @_silgen_name("AXUIElementGetTypeID")
-// func AXUIElementGetTypeID_Impl() -> CFTypeID
-
-@MainActor
-func checkAccessibilityPermissions() {
-    debug("Checking accessibility permissions...")
-    if !AXIsProcessTrusted() {
-        fputs("ERROR: Accessibility permissions are not granted.\n", stderr)
-        fputs("Please enable in System Settings > Privacy & Security > Accessibility.\n", stderr)
-        if let parentName = getParentProcessName() {
-            fputs("Hint: Grant accessibility permissions to '\(parentName)'.\n", stderr)
-        }
-        let systemWideElement = AXUIElementCreateSystemWide()
-        var focusedElement: AnyObject?
-        _ = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute as CFString, &focusedElement)
-        exit(1)
-    } else {
-        debug("Accessibility permissions are granted.")
-    }
-}
-
-@MainActor
-func getParentProcessName() -> String? {
-    let parentPid = getppid()
-    if let parentApp = NSRunningApplication(processIdentifier: parentPid) {
-        return parentApp.localizedName ?? parentApp.bundleIdentifier
-    }
-    return nil
-}
-
-@MainActor 
-func getApplicationElement(bundleIdOrName: String) -> AXUIElement? {
-    guard let processID = pid(forAppIdentifier: bundleIdOrName) else { // pid is in AXUtils.swift
-        debug("Failed to find PID for app: \(bundleIdOrName)")
-        return nil
-    }
-    debug("Creating application element for PID: \(processID) for app '\(bundleIdOrName)'.")
-    return AXUIElementCreateApplication(processID)
-}
-
-// MARK: - Core Verbs
-
-@MainActor
-func handleQuery(cmd: CommandEnvelope) throws -> Codable {
-    debug("Handling query for app '\(cmd.locator.app)', role '\(cmd.locator.role ?? "any")', multi: \(cmd.multi ?? false)")
-
-    guard let appElement = getApplicationElement(bundleIdOrName: cmd.locator.app) else {
-        return ErrorResponse(error: "Application not found: \(cmd.locator.app)", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-    }
-
-    var startElement = appElement
-    if let pathHint = cmd.locator.pathHint, !pathHint.isEmpty {
-        guard let navigatedElement = navigateToElement(from: appElement, pathHint: pathHint) else { // navigateToElement from AXUtils.swift
-            return ErrorResponse(error: "Element not found via path hint: \(pathHint)", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-        }
-        startElement = navigatedElement
-    }
-
-    let reqAttrs = cmd.attributes ?? []
-    let outputFormat = cmd.output_format ?? "smart"
-
-    if outputFormat == "text_content" {
-        var allTexts: [String] = []
-        if cmd.multi == true {
-            var hits: [AXUIElement] = []
-            // collectAll from AXSearch.swift
-            collectAll(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction, hits: &hits)
-            let elementsToProcess = Array(hits.prefix(cmd.max_elements ?? 200))
-            for el in elementsToProcess {
-                allTexts.append(extractTextContent(element: el)) // extractTextContent from AXUtils.swift
-            }
-        } else {
-            guard let found = search(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction) else { // search from AXSearch.swift
-                return ErrorResponse(error: "No element matched for text_content single query", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-            }
-            allTexts.append(extractTextContent(element: found))
-        }
-        return TextContentResponse(text_content: allTexts.filter { !$0.isEmpty }.joined(separator: "\n\n"), debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-    }
-
-    if cmd.multi == true {
-        var hits: [AXUIElement] = []
-        collectAll(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction, hits: &hits)
-        if hits.isEmpty {
-             return ErrorResponse(error: "No elements matched multi-query criteria", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-        }
-        var elementsToProcess = hits
-        if let max = cmd.max_elements, elementsToProcess.count > max {
-            elementsToProcess = Array(elementsToProcess.prefix(max))
-            debug("Capped multi-query results from \(hits.count) to \(max)")
-        }
-        let resultArray = elementsToProcess.map {
-            getElementAttributes($0, requestedAttributes: reqAttrs, forMultiDefault: (reqAttrs.isEmpty), targetRole: cmd.locator.role, outputFormat: outputFormat)
-        }
-        return MultiQueryResponse(elements: resultArray, debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-    } else {
-        guard let foundElement = search(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction) else {
-            return ErrorResponse(error: "No element matches single query criteria", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-        }
-        let attributes = getElementAttributes(foundElement, requestedAttributes: reqAttrs, forMultiDefault: false, targetRole: cmd.locator.role, outputFormat: outputFormat)
-        return QueryResponse(attributes: attributes, debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-    }
-}
-
-@MainActor
-func handlePerform(cmd: CommandEnvelope) throws -> PerformResponse {
-    debug("Handling perform for app '\(cmd.locator.app)', role '\(cmd.locator.role ?? "any")', action: \(cmd.action ?? "nil")")
-    guard let appElement = getApplicationElement(bundleIdOrName: cmd.locator.app),
-          let actionToPerform = cmd.action else {
-        throw AXErrorString.elementNotFound
-    }
-    var startElement = appElement
-    if let pathHint = cmd.locator.pathHint, !pathHint.isEmpty {
-        guard let navigatedElement = navigateToElement(from: appElement, pathHint: pathHint) else {
-            throw AXErrorString.elementNotFound
-        }
-        startElement = navigatedElement
-    }
-    guard let targetElement = search(element: startElement, locator: cmd.locator, requireAction: actionToPerform) else {
-        throw AXErrorString.elementNotFound
-    }
-    let err = AXUIElementPerformAction(targetElement, actionToPerform as CFString)
-    guard err == .success else {
-        throw AXErrorString.actionFailed(err)
-    }
-    return PerformResponse(status: "ok", message: nil, debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
-}
 
 // MARK: - Main Loop
 
 let decoder = JSONDecoder()
 let encoder = JSONEncoder()
-encoder.outputFormatting = [.withoutEscapingSlashes]
+// encoder.outputFormatting = .prettyPrinted // Temporarily remove for testing
 
 if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-h") {
     let helpText = """
@@ -154,52 +22,128 @@ if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-
     exit(0)
 }
 
-checkAccessibilityPermissions()
-debug("ax binary version: \(AX_BINARY_VERSION) starting main loop.")
+checkAccessibilityPermissions() // This needs to be called from main
+debug("ax binary version: \(AX_BINARY_VERSION) starting main loop.") // And this debug line
 
 while let line = readLine(strippingNewline: true) {
-    collectedDebugLogs = [] 
-    commandSpecificDebugLoggingEnabled = false
+    commandSpecificDebugLoggingEnabled = false // Reset for each command
+    collectedDebugLogs = [] // Reset for each command
+    resetDebugLogContextForNewCommand() // Reset the version header log flag
+    var currentCommandId: String = "unknown_line_parse_error" // Default command_id
 
-    fputs("AX_SWIFT_INSIDE_WHILE_LOOP_FPUTS_STDERR\n", stderr)
+    guard let jsonData = line.data(using: .utf8) else {
+        let errorResponse = ErrorResponse(command_id: currentCommandId, error: "Invalid input: Not UTF-8", debug_logs: nil)
+        sendResponse(errorResponse)
+        continue
+    }
+
+    // Attempt to pre-decode command_id for error reporting robustness
+    // This struct can be defined locally or globally if used in more places.
+    struct CommandIdExtractor: Decodable { let command_id: String }
+    if let partialCmd = try? decoder.decode(CommandIdExtractor.self, from: jsonData) {
+        currentCommandId = partialCmd.command_id
+    } else {
+        // If even partial decoding for command_id fails, keep the default or log more specifically.
+        debug("Failed to pre-decode command_id from input: \(line)")
+        // currentCommandId remains "unknown_line_parse_error" or a more specific default
+    }
 
     do {
-        let data = Data(line.utf8)
-        let cmdEnvelope = try decoder.decode(CommandEnvelope.self, from: data)
+        let cmdEnvelope = try decoder.decode(CommandEnvelope.self, from: jsonData)
+        currentCommandId = cmdEnvelope.command_id // Update with the definite command_id
 
         if cmdEnvelope.debug_logging == true {
             commandSpecificDebugLoggingEnabled = true
             debug("Command-specific debug logging explicitly enabled for this request.")
         }
 
-        var response: Codable
-        switch cmdEnvelope.cmd {
-        case .query:
-            response = try handleQuery(cmd: cmdEnvelope)
-        case .perform:
-            response = try handlePerform(cmd: cmdEnvelope)
+        let response: Codable
+        switch cmdEnvelope.command.lowercased() {
+        case "query":
+            response = try handleQuery(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
+        case "collectall":
+            response = try handleCollectAll(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
+        case "perform":
+            response = try handlePerform(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
+        case "extracttext":
+            response = try handleExtractText(cmd: cmdEnvelope, isDebugLoggingEnabled: commandSpecificDebugLoggingEnabled)
+        default:
+            let errorResponse = ErrorResponse(command_id: currentCommandId, error: "Invalid command: \(cmdEnvelope.command)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
+            sendResponse(errorResponse)
+            continue
         }
         
-        let reply = try encoder.encode(response)
-        FileHandle.standardOutput.write(reply)
-        FileHandle.standardOutput.write("\n".data(using: .utf8)!)
-
+        sendResponse(response, commandId: currentCommandId) // Use currentCommandId
     } catch let error as AXErrorString {
-        let errorResponse = ErrorResponse(error: error.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
-        if let errorData = try? encoder.encode(errorResponse) {
-            FileHandle.standardError.write(errorData)
-            FileHandle.standardError.write("\n".data(using: .utf8)!)
-        } else {
-            fputs("{\"error\":\"Failed to encode AXErrorString: \(error.description)\"}\n", stderr)
+        debug("Error (AXErrorString) for command \(currentCommandId): \(error.description)")
+        let errorResponse = ErrorResponse(command_id: currentCommandId, error: error.description, debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
+        sendResponse(errorResponse)
+    } catch { // Catch any other errors
+        debug("Unhandled error for command \(currentCommandId): \(error.localizedDescription)")
+        let errorResponse = ErrorResponse(command_id: currentCommandId, error: "Unhandled error: \(error.localizedDescription)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
+        sendResponse(errorResponse)
+    }
+}
+
+@MainActor
+func sendResponse(_ response: Codable, commandId: String? = nil) {
+    var responseToSend = response
+    var effectiveCommandId = commandId
+
+    // Inject command_id and debug_logs if the response type supports it
+    // This uses reflection (Mirror) but a more robust way would be a protocol.
+    if var responseWithFields = responseToSend as? ErrorResponse {
+        if commandSpecificDebugLoggingEnabled, !collectedDebugLogs.isEmpty {
+            responseWithFields.debug_logs = collectedDebugLogs
         }
+        if effectiveCommandId == nil { effectiveCommandId = responseWithFields.command_id } else { responseWithFields.command_id = effectiveCommandId! }
+        responseToSend = responseWithFields
+    } else if var responseWithFields = responseToSend as? QueryResponse {
+        if commandSpecificDebugLoggingEnabled, !collectedDebugLogs.isEmpty {
+            responseWithFields.debug_logs = collectedDebugLogs
+        }
+        if effectiveCommandId == nil { effectiveCommandId = responseWithFields.command_id } else { responseWithFields.command_id = effectiveCommandId! }
+        responseToSend = responseWithFields
+    } else if var responseWithFields = responseToSend as? MultiQueryResponse {
+        if commandSpecificDebugLoggingEnabled, !collectedDebugLogs.isEmpty {
+            responseWithFields.debug_logs = collectedDebugLogs
+        }
+         if effectiveCommandId == nil { effectiveCommandId = responseWithFields.command_id } else { responseWithFields.command_id = effectiveCommandId! }
+        responseToSend = responseWithFields
+    } else if var responseWithFields = responseToSend as? PerformResponse {
+        if commandSpecificDebugLoggingEnabled, !collectedDebugLogs.isEmpty {
+            responseWithFields.debug_logs = collectedDebugLogs
+        }
+        if effectiveCommandId == nil { effectiveCommandId = responseWithFields.command_id } else { responseWithFields.command_id = effectiveCommandId! }
+        responseToSend = responseWithFields
+    } else if var responseWithFields = responseToSend as? TextContentResponse {
+        if commandSpecificDebugLoggingEnabled, !collectedDebugLogs.isEmpty {
+            responseWithFields.debug_logs = collectedDebugLogs
+        }
+        if effectiveCommandId == nil { effectiveCommandId = responseWithFields.command_id } else { responseWithFields.command_id = effectiveCommandId! }
+        responseToSend = responseWithFields
+    }
+    // Ensure command_id is set for ErrorResponse even if not directly passed
+    else if var errorResp = responseToSend as? ErrorResponse, effectiveCommandId != nil {
+        errorResp.command_id = effectiveCommandId!
+        responseToSend = errorResp
+    }
+
+
+    do {
+        var data = try encoder.encode(responseToSend)
+        // Append newline character if not already present
+        if let lastChar = data.last, lastChar != UInt8(ascii: "\n") {
+            data.append(UInt8(ascii: "\n"))
+        }
+        FileHandle.standardOutput.write(data)
+        fflush(stdout) // Ensure the output is flushed immediately
+        // debug("Sent response for commandId \(effectiveCommandId ?? "N/A"): \(String(data: data, encoding: .utf8) ?? "non-utf8 data")")
     } catch {
-        let errorResponse = ErrorResponse(error: "Unknown error: \(error.localizedDescription)", debug_logs: collectedDebugLogs.isEmpty ? nil : collectedDebugLogs)
-        if let errorData = try? encoder.encode(errorResponse) {
-            FileHandle.standardError.write(errorData)
-            FileHandle.standardError.write("\n".data(using: .utf8)!)
-        } else {
-            fputs("{\"error\":\"Unknown error and failed to encode: \(error.localizedDescription)\"}\n", stderr)
-        }
+        // Fallback for encoding errors
+        let errorMsg = "{\"command_id\":\"encoding_error\",\"error\":\"Failed to encode response: \(error.localizedDescription)\"}\n"
+        fputs(errorMsg, stderr)
+        fflush(stderr)
     }
 }
 
