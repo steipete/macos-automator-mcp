@@ -157,14 +157,16 @@ public func collectAll(element: AXUIElement,
         return 
     }
 
-    let wildcardRole = locator.role == "*" || locator.role.isEmpty
+    // Safely unwrap locator.role for isEmpty check, default to true if nil (empty string behavior)
+    let roleIsEmpty = locator.role?.isEmpty ?? true
+    let wildcardRole = locator.role == "*" || roleIsEmpty
     let elementRole: String? = axValue(of: element, attr: kAXRoleAttribute)
     let roleMatches = wildcardRole || elementRole == locator.role
     
     if roleMatches {
-        // Use the attributesMatch helper function
-        let currentAttributesMatch = attributesMatch(element: element, matchDetails: locator.match, depth: depth)
-        var 최종결정Ok = currentAttributesMatch // Renamed 'ok' to avoid conflict if 'ok' is used inside attributesMatch's scope for its own logic.
+        // Use the attributesMatch helper function - corrected call
+        let currentAttributesMatch = attributesMatch(element: element, locator: locator, depth: depth)
+        var 최종결정Ok = currentAttributesMatch // Renamed 'ok' to avoid conflict
         
         if 최종결정Ok, let required = requireAction, !required.isEmpty {
             if !elementSupportsAction(element, action: required) { 
@@ -240,12 +242,13 @@ public func collectAll(element: AXUIElement,
 @MainActor
 public func attributesMatch(element: AXUIElement, locator: Locator, depth: Int) -> Bool {
     // Extracted and adapted from the search function's attribute matching logic
-    if locator.match.isEmpty {
-        debug("attributesMatch [D\(depth)]: No attributes in locator.match to check. Defaulting to true.")
+    // Safely unwrap locator.match, default to empty dictionary if nil
+    guard let matchDict = locator.match, !matchDict.isEmpty else {
+        debug("attributesMatch [D\(depth)]: No attributes in locator.match to check or locator.match is nil. Defaulting to true.")
         return true // No attributes to match means it's a match by this criteria
     }
 
-    for (attrKey, wantValueStr) in locator.match {
+    for (attrKey, wantValueStr) in matchDict { // Iterate over the unwrapped matchDict
         var currentSpecificAttributeMatch = false
         
         // 1. Boolean Matching
@@ -268,7 +271,7 @@ public func attributesMatch(element: AXUIElement, locator: Locator, depth: Int) 
             for attempt in 0..<maxRetries {
                 actualArr = axValue(of: element, attr: attrKey)
                 if let currentActualArr = actualArr {
-                    if attrKey == kAXDOMClassList && currentActualArr.isEmpty {
+                    if attrKey == kAXDOMClassListAttribute && currentActualArr.isEmpty {
                         if attempt < maxRetries - 1 {
                             debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (AXDOMClassList) empty attempt \(attempt + 1). Retrying...")
                             usleep(retryDelayUseconds)
@@ -291,7 +294,7 @@ public func attributesMatch(element: AXUIElement, locator: Locator, depth: Int) 
             }
             
             if let finalActualArr = actualArr { 
-                if attrKey == kAXDOMClassList { // Special handling for AXDOMClassList (subset match)
+                if attrKey == kAXDOMClassListAttribute { // Special handling for AXDOMClassList (subset match)
                     currentSpecificAttributeMatch = Set(expectedArr).isSubset(of: Set(finalActualArr))
                     debug("attributesMatch [D\(depth)]: Attr '\(attrKey)' (Array Subset). Want: \(expectedArr), Got: \(finalActualArr). Match: \(currentSpecificAttributeMatch)")
                 } else { // Exact match for other arrays

@@ -72,7 +72,7 @@ public struct ErrorResponse: Codable, Error { // Make it conform to Error for th
 
 // Wrapper for AnyCodable to handle mixed types in ElementAttributes
 public struct AnyCodable: Codable {
-    private let value: Any
+    public let value: Any
 
     public init<T>(_ value: T?) {
         self.value = value ?? ()

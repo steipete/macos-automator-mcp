@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "ax", // Package name
     platforms: [
-        .macOS(.v11) // macOS 11.0 or later
+        .macOS(.v13) // macOS 13.0 or later
     ],
     products: [ // EXPLICITLY DEFINE THE EXECUTABLE PRODUCT
         .executable(name: "ax", targets: ["ax"])
@@ -18,7 +18,7 @@ let package = Package(
             name: "ax", // Target name, product will be 'ax'
             path: "Sources/AXHelper", // Specify the path to the source files
             sources: [ // Explicitly list all source files
-                "AXTool.swift",
+                "main.swift",
                 "AXConstants.swift",
                 "AXLogging.swift",
                 "AXModels.swift",

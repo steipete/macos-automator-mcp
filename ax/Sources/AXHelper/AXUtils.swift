@@ -255,46 +255,46 @@ public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [S
                 availableActions.append(contentsOf: val)
             }
         }
-        else if let val: [AXUIElement] = axValue(of: element, attr: attr) { extractedValue = "Array of \(val.count) UIElement(s)" }
-        else if let val: AXUIElement = axValue(of: element, attr: attr) { extractedValue = "UIElement: \(val)"}
+        else if let count = (axValue(of: element, attr: attr) as [AXUIElement]?)?.count { extractedValue = "Array of \(count) UIElement(s)" }
+        else if let uiElement: AXUIElement = axValue(of: element, attr: attr) { extractedValue = "UIElement: \(String(describing: uiElement))"}
         else if let val: [String: Int] = axValue(of: element, attr: attr) { 
              extractedValue = val
         }
         else {
             let rawCFValue: CFTypeRef? = copyAttributeValue(element: element, attribute: attr) 
             if let raw = rawCFValue {
-                if CFGetTypeID(raw) == AXValueGetTypeID() {
+                if CFGetTypeID(raw) == AXUIElementGetTypeID() {
+                    extractedValue = "AXUIElement (raw)"
+                } else if CFGetTypeID(raw) == AXValueGetTypeID() {
                     extractedValue = "AXValue (type: \(AXValueGetType(raw as! AXValue).rawValue))"
                 } else {
                     extractedValue = "CFType: \(String(describing: CFCopyTypeIDDescription(CFGetTypeID(raw))))"
                 }
             } else {
-                extractedValue = "Not available"
+                extractedValue = nil
             }
         }
         
+        let finalValueToStore = extractedValue
         if outputFormat == "smart" {
-            if let strVal = extractedValue as? String, (strVal.isEmpty || strVal == "Not available") {
-                continue 
-            }
-            if extractedValue is NSNull {
+            if let strVal = finalValueToStore as? String, (strVal.isEmpty || strVal == "Not available") {
                 continue 
             }
         }
-        result[attr] = extractedValue ?? "Not available"
+        result[attr] = AnyCodable(finalValueToStore)
     }
     
     if !forMultiDefault {
-        if result[kAXActionNamesAttribute] == nil && result[kAXActionsAttribute] == nil { // Check if actions were already fetched
+        if result[kAXActionNamesAttribute] == nil && result[kAXActionsAttribute] == nil {
              if let actions: [String] = axValue(of: element, attr: kAXActionNamesAttribute) ?? axValue(of: element, attr: kAXActionsAttribute) {
-                if !actions.isEmpty { result[kAXActionNamesAttribute] = actions; availableActions = actions }
-                else { result[kAXActionNamesAttribute] = "Not available (empty list)" }
+                if !actions.isEmpty { result[kAXActionNamesAttribute] = AnyCodable(actions); availableActions = actions }
+                else { result[kAXActionNamesAttribute] = AnyCodable("Not available (empty list)") }
              } else {
-                result[kAXActionNamesAttribute] = "Not available"
+                result[kAXActionNamesAttribute] = AnyCodable("Not available")
              }
-        } else if let currentActions = result[kAXActionNamesAttribute] as? [String] {
+        } else if let anyCodableActions = result[kAXActionNamesAttribute], let currentActions = anyCodableActions.value as? [String] {
             availableActions = currentActions
-        } else if let currentActions = result[kAXActionsAttribute] as? [String] {
+        } else if let anyCodableActions = result[kAXActionsAttribute], let currentActions = anyCodableActions.value as? [String] {
             availableActions = currentActions
         }
 
@@ -305,14 +305,13 @@ public func getElementAttributes(_ element: AXUIElement, requestedAttributes: [S
         else if let help: String = axValue(of: element, attr: kAXHelpAttribute), !help.isEmpty, help != "Not available" { computedName = help }
         else if let phValue: String = axValue(of: element, attr: kAXPlaceholderValueAttribute), !phValue.isEmpty, phValue != "Not available" { computedName = phValue }
         else if let roleDesc: String = axValue(of: element, attr: kAXRoleDescriptionAttribute), !roleDesc.isEmpty, roleDesc != "Not available" {
-            let role: String = axValue(of: element, attr: kAXRoleAttribute) ?? "Element"
-            computedName = "\(roleDesc) (\(role))"
+            computedName = "\(roleDesc) (\((axValue(of: element, attr: kAXRoleAttribute) as String?) ?? "Element"))"
         }
-        if let name = computedName { result["ComputedName"] = name }
+        if let name = computedName { result["ComputedName"] = AnyCodable(name) }
 
         let isButton = (axValue(of: element, attr: kAXRoleAttribute) as String?) == "AXButton"
         let hasPressAction = availableActions.contains(kAXPressAction)
-        if isButton || hasPressAction { result["IsClickable"] = true }
+        if isButton || hasPressAction { result["IsClickable"] = AnyCodable(true) }
     }
     return result
 }

@@ -5,12 +5,12 @@ import AppKit                 // NSRunningApplication, NSWorkspace
 
 fputs("AX_SWIFT_TOP_SCOPE_FPUTS_STDERR\n", stderr) // For initial stderr check by caller
 
-// Low-level type ID functions (kept in main as they are fundamental for AXUIElement type checking)
-func AXUIElementGetTypeID() -> CFTypeID {
-    return AXUIElementGetTypeID_Impl()
-}
-@_silgen_name("AXUIElementGetTypeID")
-func AXUIElementGetTypeID_Impl() -> CFTypeID
+// Low-level type ID functions are now in AXUtils.swift
+// func AXUIElementGetTypeID() -> CFTypeID {
+//     return AXUIElementGetTypeID_Impl()
+// }
+// @_silgen_name("AXUIElementGetTypeID")
+// func AXUIElementGetTypeID_Impl() -> CFTypeID
 
 @MainActor
 func checkAccessibilityPermissions() {
@@ -53,7 +53,7 @@ func getApplicationElement(bundleIdOrName: String) -> AXUIElement? {
 
 @MainActor
 func handleQuery(cmd: CommandEnvelope) throws -> Codable {
-    debug("Handling query for app '\(cmd.locator.app)', role '\(cmd.locator.role)', multi: \(cmd.multi ?? false)")
+    debug("Handling query for app '\(cmd.locator.app)', role '\(cmd.locator.role ?? "any")', multi: \(cmd.multi ?? false)")
 
     guard let appElement = getApplicationElement(bundleIdOrName: cmd.locator.app) else {
         return ErrorResponse(error: "Application not found: \(cmd.locator.app)", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
@@ -75,13 +75,13 @@ func handleQuery(cmd: CommandEnvelope) throws -> Codable {
         if cmd.multi == true {
             var hits: [AXUIElement] = []
             // collectAll from AXSearch.swift
-            collectAll(element: startElement, locator: cmd.locator, requireAction: cmd.requireAction, hits: &hits)
+            collectAll(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction, hits: &hits)
             let elementsToProcess = Array(hits.prefix(cmd.max_elements ?? 200))
             for el in elementsToProcess {
                 allTexts.append(extractTextContent(element: el)) // extractTextContent from AXUtils.swift
             }
         } else {
-            guard let found = search(element: startElement, locator: cmd.locator, requireAction: cmd.requireAction) else { // search from AXSearch.swift
+            guard let found = search(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction) else { // search from AXSearch.swift
                 return ErrorResponse(error: "No element matched for text_content single query", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
             }
             allTexts.append(extractTextContent(element: found))
@@ -91,7 +91,7 @@ func handleQuery(cmd: CommandEnvelope) throws -> Codable {
 
     if cmd.multi == true {
         var hits: [AXUIElement] = []
-        collectAll(element: startElement, locator: cmd.locator, requireAction: cmd.requireAction, hits: &hits)
+        collectAll(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction, hits: &hits)
         if hits.isEmpty {
              return ErrorResponse(error: "No elements matched multi-query criteria", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
         }
@@ -105,7 +105,7 @@ func handleQuery(cmd: CommandEnvelope) throws -> Codable {
         }
         return MultiQueryResponse(elements: resultArray, debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
     } else {
-        guard let foundElement = search(element: startElement, locator: cmd.locator, requireAction: cmd.requireAction) else {
+        guard let foundElement = search(element: startElement, locator: cmd.locator, requireAction: cmd.locator.requireAction) else {
             return ErrorResponse(error: "No element matches single query criteria", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
         }
         let attributes = getElementAttributes(foundElement, requestedAttributes: reqAttrs, forMultiDefault: false, targetRole: cmd.locator.role, outputFormat: outputFormat)
@@ -115,7 +115,7 @@ func handleQuery(cmd: CommandEnvelope) throws -> Codable {
 
 @MainActor
 func handlePerform(cmd: CommandEnvelope) throws -> PerformResponse {
-    debug("Handling perform for app '\(cmd.locator.app)', role '\(cmd.locator.role)', action: \(cmd.action ?? "nil")")
+    debug("Handling perform for app '\(cmd.locator.app)', role '\(cmd.locator.role ?? "any")', action: \(cmd.action ?? "nil")")
     guard let appElement = getApplicationElement(bundleIdOrName: cmd.locator.app),
           let actionToPerform = cmd.action else {
         throw AXErrorString.elementNotFound
@@ -134,7 +134,7 @@ func handlePerform(cmd: CommandEnvelope) throws -> PerformResponse {
     guard err == .success else {
         throw AXErrorString.actionFailed(err)
     }
-    return PerformResponse(status: "ok", debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
+    return PerformResponse(status: "ok", message: nil, debug_logs: commandSpecificDebugLoggingEnabled ? collectedDebugLogs : nil)
 }
 
 // MARK: - Main Loop
