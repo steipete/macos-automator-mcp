@@ -1,0 +1,176 @@
+---
+description: text edit
+globs: 
+alwaysApply: false
+---
+**Core Workflow:**
+
+1.  **`rg` to find:** Use `rg` with its TypeScript type filter (`-tts`) or glob patterns (`--glob '*.ts' --glob '*.tsx'`) to precisely target TypeScript files.
+2.  **Pipe to `xargs`:** Pass the list of TypeScript files to `gsed`.
+3.  **`gsed` to edit:** Perform in-place modifications.
+
+**Always Test First!**
+
+*   **Test `rg` pattern:** `rg 'YOUR_RG_PATTERN' -tts`
+*   **Test `gsed` command on a single `.ts` file:**
+    `gsed 'YOUR_GSED_SCRIPT' component.ts` (outputs to stdout)
+    `cp component.ts component.bak.ts && gsed -i 'YOUR_GSED_SCRIPT' component.ts`
+
+---
+
+**Guide to TypeScript Editing Operations with `rg` + `gsed`**
+
+**1. Simple String Replacement (e.g., Renaming an Import or Variable)**
+
+*   **Goal:** Replace all occurrences of an old import path `old-module-path` with `new-module-path`.
+
+*   **Steps:**
+    1.  **Find files (dry run):**
+        ```bash
+        rg -l 'old-module-path' -tts
+        # -tts is short for --type=typescript
+        # Alternatively, for more specificity if rg's default TS types aren't enough:
+        # rg -l 'old-module-path' --glob '*.ts' --glob '*.tsx'
+        ```
+    2.  **Perform in-place replacement:**
+        ```bash
+        rg -l 'old-module-path' -tts | xargs gsed -i "s|old-module-path|new-module-path|g"
+        # Using | as a delimiter for s/// is helpful when paths contain /
+        ```
+        *   `rg -l 'old-module-path' -tts`: Lists TypeScript files containing the old path.
+        *   `| xargs gsed -i`: Pipes filenames to `gsed` for in-place editing.
+        *   `"s|old-module-path|new-module-path|g"`: `gsed` substitution.
+
+**2. Regex-Based Refactoring (e.g., Updating a Function Signature)**
+
+*   **Goal:** Change `myFunction(paramA: string, paramB: number)` to `myFunction({ paramA, paramB }: MyFunctionArgs)` and assume `MyFunctionArgs` type needs to be added/handled separately or is pre-existing.
+
+*   **Steps (this is a simplified example; complex refactoring often needs AST-based tools):**
+    1.  **Find files:**
+        ```bash
+        rg -l 'myFunction\([^,]+: string,\s*[^)]+: number\)' -tts
+        ```
+    2.  **Perform in-place replacement using `gsed -E` (Extended Regex):**
+        ```bash
+        rg -l 'myFunction\([^,]+: string,\s*[^)]+: number\)' -tts | \
+          xargs gsed -i -E 's/myFunction\(([^:]+): string,\s*([^:]+): number\)/myFunction({ \1, \2 }: MyFunctionArgs)/g'
+        ```
+        *   `gsed -i -E`: Enables extended regex.
+        *   `myFunction\(([^:]+): string,\s*([^:]+): number\)`: Captures parameter names (`paramA` -> `\1`, `paramB` -> `\2`).
+        *   `myFunction({ \1, \2 }: MyFunctionArgs)`: The new signature.
+        *   **Caution:** Regex for code refactoring can be fragile. For complex changes, consider `ts-morph`, `jscodeshift`, or your IDE's refactoring tools.
+
+**3. Deleting Lines (e.g., Removing Obsolete Log Statements)**
+
+*   **Goal:** Delete all lines containing `console.debug("some specific debug message");`.
+
+*   **Steps:**
+    1.  **Find files:**
+        ```bash
+        rg -l 'console\.debug("some specific debug message");' -tts
+        ```
+    2.  **Perform in-place deletion:**
+        ```bash
+        rg -l 'console\.debug("some specific debug message");' -tts | xargs gsed -i '/console\.debug("some specific debug message");/d'
+        ```
+        *   `'/.../d'`: `gsed` command to `d`elete matching lines. Escape regex metacharacters like `.` and `(`.
+
+**4. Commenting/Uncommenting Code Blocks or Features**
+
+*   **Goal:** Comment out all usages of a deprecated feature flag `FeatureFlags.isOldFeatureEnabled`.
+
+*   **Steps:**
+    1.  **Find files:**
+        ```bash
+        rg -l 'FeatureFlags\.isOldFeatureEnabled' -tts
+        ```
+    2.  **Perform in-place commenting (adding `// `):**
+        ```bash
+        rg -l 'FeatureFlags\.isOldFeatureEnabled' -tts | xargs gsed -i '/FeatureFlags\.isOldFeatureEnabled/s/^\s*/\/\/ &/'
+        ```
+        *   `/FeatureFlags\.isOldFeatureEnabled/s/^\s*/\/\/ &/`:
+            *   Finds lines with the feature flag.
+            *   `s/^\s*/\/\/ &/`: On those lines, replaces the leading whitespace (`^\s*`) with `// ` followed by the original matched leading whitespace (`&` refers to the whole match of `^\s*`). This attempts to preserve indentation.
+            *   A simpler version: `'/FeatureFlags\.isOldFeatureEnabled/s/^/\/\/ /'` just adds `// ` at the very start.
+
+*   **Goal:** Uncomment those lines (assuming they start with `// ` and then the feature flag).
+    ```bash
+    rg -l '^\s*\/\/\s*FeatureFlags\.isOldFeatureEnabled' -tts | \
+      xargs gsed -i -E 's|^\s*//\s*(.*FeatureFlags\.isOldFeatureEnabled.*)|\1|'
+    ```
+    *   `rg -l '^\s*\/\/\s*FeatureFlags\.isOldFeatureEnabled'`: Finds the commented lines.
+    *   `gsed ... 's|...|\1|'`: Removes the `// ` and surrounding whitespace.
+
+**5. Adding/Modifying Imports**
+
+*   **Goal:** Add `import { newUtil } from 'utils-library';` if it's missing, but only in files that already import from `utils-library`. (This is more advanced for sed).
+
+*   **Approach (simplified, might need refinement for edge cases like existing multi-line imports):**
+    1.  **Find files that import from 'utils-library' but DON'T import `newUtil` yet:**
+        ```bash
+        # This rg command gets tricky. It's easier to just process all files importing from 'utils-library'
+        # and let gsed handle the conditional insertion.
+        rg -l "from 'utils-library'" -tts
+        ```
+    2.  **Conditionally add the import using `gsed`:**
+        ```bash
+        rg -l "from 'utils-library'" -tts | xargs gsed -i -E "
+        /from 'utils-library'/ {
+          h;  # Hold the line with the existing import
+          x;  # Get the held line back (now in pattern space)
+          /newUtil/! { # If newUtil is NOT already in this import line
+            x; # Get original line back (the one that triggered the block)
+            # Attempt to add to existing import or add a new line
+            # This part is complex for sed and highly dependent on import style
+            # Option A: Add as a new line (simpler, might not be formatted ideally)
+            /from 'utils-library'/a import { newUtil } from 'utils-library';
+            # Option B: Try to modify existing line (more complex, error-prone with sed)
+            # s/(from 'utils-library'.*\{)([^}]*)(\})/\1 \2, newUtil \3/
+            # The above attempt to modify is illustrative and would need robust testing.
+          }
+          x; # Get original line back if newUtil was already there, or after modification
+        }
+        "
+        ```
+        *   **This is a very tricky task for `sed` due to varying import styles.** A more robust solution for imports would involve AST manipulation (`ts-morph`, ESLint fixers).
+        *   The `gsed` script above tries:
+            *   When a line `from 'utils-library'` is found:
+            *   It checks if `newUtil` is *already* part of that import line (or a nearby related one, which sed struggles with).
+            *   If not, it appends a *new* import line. This is often the safest `sed` can do. Modifying existing multi-item import statements correctly with `sed` is very hard.
+
+**6. Updating Type Annotations**
+
+*   **Goal:** Change `Promise<OldType>` to `Promise<NewType>`.
+
+*   **Steps:**
+    1.  **Find files:**
+        ```bash
+        rg -l 'Promise<OldType>' -tts
+        ```
+    2.  **Perform in-place replacement:**
+        ```bash
+        rg -l 'Promise<OldType>' -tts | xargs gsed -i 's/Promise<OldType>/Promise<NewType>/g'
+        ```
+        *   Be mindful of generics within generics: `Promise<Wrapper<OldType>>` would not be matched by the simple pattern above. `rg`'s PCRE2 regex can be more helpful for complex initial filtering if needed.
+
+**Considerations for TypeScript:**
+
+*   **AST-Based Tools are Often Better:** For complex refactoring, understanding code structure is crucial. Tools like:
+    *   **`ts-morph`**: Programmatic TypeScript AST manipulation.
+    *   **`jscodeshift`**: A toolkit for running codemods (often used with TypeScript via parsers).
+    *   **ESLint with `--fix`**: Can fix many stylistic and some structural issues based on configured rules.
+    *   **IDE Refactoring**: Your IDE (VS Code, WebStorm) has powerful, AST-aware refactoring tools.
+    These are generally safer and more reliable than regex for anything beyond simple string replacements in code.
+*   **File Types:** Use `rg -tts` (or `--type typescript`) or be explicit with `--glob '*.ts' --glob '*.tsx' --glob '*.d.ts'` etc., to ensure you're only touching TypeScript files.
+*   **Regex Complexity:** TypeScript syntax (generics, decorators, complex types) can make regex patterns very complex and brittle. Test thoroughly.
+*   **Build Process:** After making changes, always run your TypeScript compiler (`tsc --noEmit`) and linters/formatters to catch any errors or style issues introduced.
+*   **Backup Strategy:** Always use `gsed -i'.bak'` or ensure your code is under version control (Git) and commit before running widespread automated changes.
+
+**When `rg + gsed` Shines for TypeScript:**
+
+*   Quick, relatively simple string replacements across many files.
+*   Bulk commenting/uncommenting of specific patterns.
+*   Automating repetitive small changes where an AST tool might be overkill or not readily available for a quick script.
+*   Initial cleanup or search before using a more sophisticated tool.
+
+This guide should help you leverage `rg` and `gsed` effectively for common editing tasks in TypeScript projects. Always prioritize safety by testing and using backups/version control.

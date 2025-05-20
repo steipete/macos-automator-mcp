@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Agent Instructions
 
 This file provides guidance to AI assistants when working with code in this repository.
@@ -21,6 +26,13 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 - Each file has YAML frontmatter with metadata: `id`, `title`, `description`, `language`, etc.
 - The actual script code is contained in the Markdown body in a fenced code block
 - Scripts can use placeholders like `--MCP_INPUT:keyName` and `--MCP_ARG_N` for parameter substitution
+
+## General useful for debug loops:
+- The Claude Code tool is helpful to analyze large logs or do complex file edits.
+- Pipe scripts that output lots of logs into a file for easier reading.
+- Use AppleScript to execute apps such as Claude Code to test the mcp.
+(This requires that the mcp is correctly set up)
+- Whenever you want to ask something to the user, ask Claude Code first instead.
 
 ## Common Development Commands
 
