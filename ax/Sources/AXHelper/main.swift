@@ -8,6 +8,10 @@ let kAXActionsAttribute = "AXActions"
 let kAXWindowsAttribute = "AXWindows"
 let kAXPressAction = "AXPress" 
 
+// Configuration Constants
+let MAX_COLLECT_ALL_HITS = 100000
+let AX_BINARY_VERSION = "1.0.0"
+
 // Helper function to get AXUIElement type ID
 func AXUIElementGetTypeID() -> CFTypeID {
     return AXUIElementGetTypeID_Impl()
@@ -257,30 +261,36 @@ func getElementAttributes(_ element: AXUIElement, attributes: [String]) -> Eleme
         }
         else if attr == "AXPosition" || attr == "AXSize" {
             // Handle AXValue types (usually for position and size)
-            // Safely check if it's an AXValue
-            let axValueType = AXValueGetType(unwrappedValue as! AXValue)
-            
-            if attr == "AXPosition" && axValueType.rawValue == AXValueType.cgPoint.rawValue {
-                // It's a position value
-                var point = CGPoint.zero
-                if AXValueGetValue(unwrappedValue as! AXValue, AXValueType.cgPoint, &point) {
-                    extractedValue = ["x": Int(point.x), "y": Int(point.y)]
-                } else {
-                    extractedValue = ["error": "Position data (conversion failed)"]
+            if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
+                let axValue = unwrappedValue as! AXValue
+                let axValueType = AXValueGetType(axValue)
+
+                if attr == "AXPosition" && axValueType.rawValue == AXValueType.cgPoint.rawValue {
+                    // It's a position value
+                    var point = CGPoint.zero
+                    if AXValueGetValue(axValue, AXValueType.cgPoint, &point) {
+                        extractedValue = ["x": Int(point.x), "y": Int(point.y)]
+                    } else {
+                        extractedValue = ["error": "Position data (conversion failed)"]
+                    }
+                } 
+                else if attr == "AXSize" && axValueType.rawValue == AXValueType.cgSize.rawValue {
+                    // It's a size value
+                    var size = CGSize.zero
+                    if AXValueGetValue(axValue, AXValueType.cgSize, &size) {
+                        extractedValue = ["width": Int(size.width), "height": Int(size.height)]
+                    } else {
+                        extractedValue = ["error": "Size data (conversion failed)"]
+                    }
                 }
-            } 
-            else if attr == "AXSize" && axValueType.rawValue == AXValueType.cgSize.rawValue {
-                // It's a size value
-                var size = CGSize.zero
-                if AXValueGetValue(unwrappedValue as! AXValue, AXValueType.cgSize, &size) {
-                    extractedValue = ["width": Int(size.width), "height": Int(size.height)]
-                } else {
-                    extractedValue = ["error": "Size data (conversion failed)"]
+                else {
+                    // It's some other kind of AXValue
+                    extractedValue = ["error": "AXValue type: \(axValueType.rawValue)"]
                 }
-            }
-            else {
-                // It's some other kind of AXValue
-                extractedValue = ["error": "AXValue type: \(axValueType.rawValue)"]
+            } else {
+                let typeDescriptionCF = CFCopyTypeIDDescription(CFGetTypeID(unwrappedValue))
+                let typeDescription = String(describing: typeDescriptionCF ?? "Unknown CFType" as CFString)
+                extractedValue = ["error": "Expected AXValue for attribute \(attr) but got different type: \(typeDescription)"]
             }
         }
         else if attr == "AXTitleUIElement" || attr == "AXLabelUIElement" {
@@ -696,8 +706,8 @@ func collectAll(element: AXUIElement,
                 maxDepth: Int = 200) {
 
     // Safety limit on matches - increased to handle larger web pages
-    if hits.count > 100000 {
-        debug("Safety limit of 100000 matching elements reached, stopping search")
+    if hits.count > MAX_COLLECT_ALL_HITS {
+        debug("Safety limit of \(MAX_COLLECT_ALL_HITS) matching elements reached, stopping search")
         return
     }
 
@@ -868,7 +878,7 @@ func collectAll(element: AXUIElement,
             
             let childrenToProcess = uniqueElements.prefix(maxChildrenToProcess)
             for (i, child) in childrenToProcess.enumerated() {
-                if hits.count > 100000 { break } // Safety check
+                if hits.count > MAX_COLLECT_ALL_HITS { break } // Safety check - Use constant
                 
                 // Safety check - skip this step instead of validating type
                 // The AXUIElement type was already validated during collection
@@ -1036,8 +1046,46 @@ func handlePerform(cmd: CommandEnvelope) throws -> PerformResponse {
 
 let decoder = JSONDecoder()
 let encoder = JSONEncoder()
-if #available(macOS 10.15, *) {
-    encoder.outputFormatting = [.withoutEscapingSlashes]
+encoder.outputFormatting = [.withoutEscapingSlashes]
+
+// Check for command-line arguments like --help before entering main JSON processing loop
+if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-h") {
+    // Placeholder for help text
+    // We'll populate this in the next step
+    let helpText = """
+    ax Accessibility Helper v\(AX_BINARY_VERSION)
+
+    This command-line utility interacts with the macOS Accessibility framework.
+    It is typically invoked by a parent process and communicates via JSON on stdin/stdout.
+
+    Usage:
+        <json_command> | ./ax
+
+    Input JSON Command Structure:
+    {
+        "cmd": "query" | "perform",
+        "locator": {
+            "app": "<BundleID_or_AppName>",
+            "role": "<AXRole>",
+            "match": { "<Attribute>": "<Value>", ... },
+            "pathHint": ["<element>[index]", ...]
+        },
+        "attributes": ["<AXAttributeName>", ...], // For cmd: "query"
+        "action": "<AXActionName>",             // For cmd: "perform"
+        "multi": true | false,                   // For cmd: "query", to get all matches
+        "requireAction": "<AXActionName>"      // For cmd: "query", filter by action support
+    }
+
+    Example Query:
+    echo '{"cmd":"query","locator":{"app":"Safari","role":"AXWindow","match":{"AXMain": "true"}},"attributes":["AXTitle"]}' | ./ax
+
+    Permissions:
+    Ensure the application that executes 'ax' (e.g., Terminal, an IDE, or a Node.js process)
+    has 'Accessibility' permissions enabled in:
+    System Settings > Privacy & Security > Accessibility.
+    """
+    print(helpText)
+    exit(0)
 }
 
 // Check for accessibility permissions before starting
