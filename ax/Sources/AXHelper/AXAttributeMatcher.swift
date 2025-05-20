@@ -5,14 +5,14 @@ import ApplicationServices // For AXUIElement, CFTypeRef etc.
 // DEBUG_LOGGING_ENABLED is a global public var from AXLogging.swift
 
 @MainActor
-func attributesMatch(element: AXUIElement, matchDetails: [String: Any], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
+func attributesMatch(axElement: AXElement, matchDetails: [String: Any], depth: Int, isDebugLoggingEnabled: Bool) -> Bool {
     var allMatch = true
 
     for (key, expectedValueAny) in matchDetails {
         var perAttributeDebugMessages: [String]? = isDebugLoggingEnabled ? [] : nil
         var currentAttrMatch = false
         
-        let actualValueRef: CFTypeRef? = copyAttributeValue(element: element, attribute: key)
+        let actualValueRef: CFTypeRef? = axElement.rawAttributeValue(named: key)
 
         if actualValueRef == nil {
             if let expectedStr = expectedValueAny as? String,
@@ -46,7 +46,7 @@ func attributesMatch(element: AXUIElement, matchDetails: [String: Any], depth: I
                     let cfDesc = CFCopyDescription(actualValueRef) as String?
                     actualValueSwift = cfDesc ?? "UnknownCFTypeID:\(valueRefTypeID)"
                 } else {
-                    actualValueSwift = "NonDebuggableCFType" // Placeholder if not debugging
+                    actualValueSwift = "NonDebuggableCFType"
                 }
             }
 
@@ -152,7 +152,6 @@ func attributesMatch(element: AXUIElement, matchDetails: [String: Any], depth: I
                     }
                  }
             } else {
-                // Fallback: compare string descriptions
                 let actualDescText = String(describing: actualValueSwift ?? "nil")
                 let expectedDescText = String(describing: expectedValueAny)
                 currentAttrMatch = actualDescText == expectedDescText
@@ -165,11 +164,10 @@ func attributesMatch(element: AXUIElement, matchDetails: [String: Any], depth: I
         if !currentAttrMatch {
             allMatch = false
             if isDebugLoggingEnabled {
-                // roleDesc and detail are only used here for this debug message.
-                let message = "attributesMatch [D\(depth)]: Element for Role(\(axValue(of: element, attr: kAXRoleAttribute) ?? "N/A")): Attribute '\(key)' MISMATCH. \(perAttributeDebugMessages?.joined(separator: "; ") ?? "Debug details not collected or empty.")"
+                let message = "attributesMatch [D\(depth)]: Element for Role(\(axElement.role ?? "N/A")): Attribute '\(key)' MISMATCH. \(perAttributeDebugMessages?.joined(separator: "; ") ?? "Debug details not collected or empty.")"
                 debug(message, file: #file, function: #function, line: #line)
             }
-            return false // Early exit if any attribute mismatches
+            return false
         }
     }
     return allMatch

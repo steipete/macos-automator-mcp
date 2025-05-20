@@ -4,6 +4,7 @@ import Foundation
 import ApplicationServices
 
 // Variable DEBUG_LOGGING_ENABLED is expected to be globally available from AXLogging.swift
+// AXElement is now the primary type for UI elements.
 
 @MainActor
 public func decodeExpectedArray(fromString: String) -> [String]? {
@@ -28,6 +29,8 @@ public func decodeExpectedArray(fromString: String) -> [String]? {
                            .filter { !$0.isEmpty }
 }
 
+// AXUIElementHashableWrapper is no longer needed.
+/*
 public struct AXUIElementHashableWrapper: Hashable {
     public let element: AXUIElement
     private let identifier: ObjectIdentifier
@@ -42,17 +45,18 @@ public struct AXUIElementHashableWrapper: Hashable {
         hasher.combine(identifier)
     }
 }
+*/
 
 @MainActor 
-public func search(element: AXUIElement,
+public func search(axElement: AXElement,
             locator: Locator,
             requireAction: String?,
             depth: Int = 0,
             maxDepth: Int = DEFAULT_MAX_DEPTH_SEARCH,
-            isDebugLoggingEnabled: Bool) -> AXUIElement? {
+            isDebugLoggingEnabled: Bool) -> AXElement? {
 
-    let currentElementRoleForLog: String? = axValue(of: element, attr: kAXRoleAttribute)
-    let currentElementTitle: String? = axValue(of: element, attr: kAXTitleAttribute)
+    let currentElementRoleForLog: String? = axElement.role
+    let currentElementTitle: String? = axElement.title
     
     if isDebugLoggingEnabled {
         let criteriaDesc = locator.criteria.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
@@ -86,19 +90,19 @@ public func search(element: AXUIElement,
     }
     
     if roleMatchesCriteria {
-        if attributesMatch(element: element, matchDetails: locator.criteria, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+        if attributesMatch(axElement: axElement, matchDetails: locator.criteria, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
             if isDebugLoggingEnabled {
                 let roleStr = currentElementRoleForLog ?? "nil"
                 let message = "search [D\(depth)]: Element Role & All Attributes MATCHED criteria. Role: \(roleStr)."
                 debug(message)
             }
             if let requiredActionStr = requireAction, !requiredActionStr.isEmpty {
-                if elementSupportsAction(element, action: requiredActionStr) {
+                if axElement.isActionSupported(requiredActionStr) {
                     if isDebugLoggingEnabled {
                         let message = "search [D\(depth)]: Required action '\(requiredActionStr)' IS present. Element is a full match."
                         debug(message)
                     }
-                    return element
+                    return axElement
                 } else {
                     if isDebugLoggingEnabled {
                         let message = "search [D\(depth)]: Element matched criteria, but required action '\(requiredActionStr)' is MISSING. Continuing child search."
@@ -110,59 +114,23 @@ public func search(element: AXUIElement,
                     let message = "search [D\(depth)]: No requireAction specified. Element is a match based on criteria."
                     debug(message)
                 }
-                return element 
+                return axElement 
             }
         }
     }
 
-    var childrenToSearch: [AXUIElement] = []
-    var uniqueChildrenSet = Set<AXUIElementHashableWrapper>()
+    // Get children using the now comprehensive AXElement.children property
+    var childrenToSearch: [AXElement] = axElement.children ?? []
+    // No need for uniqueChildrenSet here if axElement.children already handles deduplication,
+    // but if axElement.children can return duplicates from different sources, keep it.
+    // AXElement.children as implemented now *does* deduplicate.
 
-    if let directChildren: [AXUIElement] = axValue(of: element, attr: kAXChildrenAttribute) {
-        for child in directChildren {
-            let wrapper = AXUIElementHashableWrapper(element: child)
-            if !uniqueChildrenSet.contains(wrapper) {
-                childrenToSearch.append(child); uniqueChildrenSet.insert(wrapper)
-            }
-        }
-    }
-
-    let webContainerRoles: [String] = [kAXWebAreaRole, "AXWebView", "BrowserAccessibilityCocoa", kAXScrollAreaRole, kAXGroupRole, kAXWindowRole, "AXSplitGroup", "AXLayoutArea"]
-    if let currentRole = currentElementRoleForLog, webContainerRoles.contains(currentRole) {
-        let webAttributesList: [String] = [
-            kAXVisibleChildrenAttribute, kAXTabsAttribute, "AXWebAreaChildren", "AXHTMLContent", 
-            "AXARIADOMChildren", "AXDOMChildren", "AXApplicationNavigation", 
-            "AXApplicationElements", "AXContents", "AXBodyArea", "AXDocumentContent", 
-            "AXWebPageContent", "AXAttributedString", "AXSplitGroupContents",
-            "AXLayoutAreaChildren", "AXGroupChildren", kAXSelectedChildrenAttribute, 
-            kAXRowsAttribute, kAXColumnsAttribute 
-        ]
-        for attrName in webAttributesList {
-            if let webChildren: [AXUIElement] = axValue(of: element, attr: attrName) {
-                for child in webChildren {
-                    let wrapper = AXUIElementHashableWrapper(element: child)
-                    if !uniqueChildrenSet.contains(wrapper) {
-                        childrenToSearch.append(child); uniqueChildrenSet.insert(wrapper)
-                    }
-                }
-            }
-        }
-    }
-    
-    if currentElementRoleForLog == kAXApplicationRole { 
-        if let windowChildren: [AXUIElement] = axValue(of: element, attr: kAXWindowsAttribute) {
-            for child in windowChildren {
-                let wrapper = AXUIElementHashableWrapper(element: child)
-                if !uniqueChildrenSet.contains(wrapper) {
-                    childrenToSearch.append(child); uniqueChildrenSet.insert(wrapper)
-                }
-            }
-        }
-    }
+    // The extensive alternative children logic and application role/windows check 
+    // has been moved into AXElement.children getter.
 
     if !childrenToSearch.isEmpty {
-      for child in childrenToSearch {
-          if let found = search(element: child, locator: locator, requireAction: requireAction, depth: depth + 1, maxDepth: maxDepth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
+      for childAXElement in childrenToSearch {
+          if let found = search(axElement: childAXElement, locator: locator, requireAction: requireAction, depth: depth + 1, maxDepth: maxDepth, isDebugLoggingEnabled: isDebugLoggingEnabled) {
               return found
           }
       }
@@ -172,33 +140,32 @@ public func search(element: AXUIElement,
 
 @MainActor
 public func collectAll(
-    appElement: AXUIElement, 
+    appAXElement: AXElement,
     locator: Locator,
-    currentElement: AXUIElement, 
+    currentAXElement: AXElement,
     depth: Int,
     maxDepth: Int,
     maxElements: Int,
-    currentPath: [AXUIElementHashableWrapper],
-    elementsBeingProcessed: inout Set<AXUIElementHashableWrapper>,
-    foundElements: inout [AXUIElement],
+    currentPath: [AXElement],
+    elementsBeingProcessed: inout Set<AXElement>,
+    foundElements: inout [AXElement],
     isDebugLoggingEnabled: Bool
 ) {
-    let elementWrapper = AXUIElementHashableWrapper(element: currentElement)
-    if elementsBeingProcessed.contains(elementWrapper) || currentPath.contains(elementWrapper) {
+    if elementsBeingProcessed.contains(currentAXElement) || currentPath.contains(currentAXElement) {
         if isDebugLoggingEnabled {
-            let message = "collectAll [D\(depth)]: Cycle detected or element already processed for \(currentElement)."
+            let message = "collectAll [D\(depth)]: Cycle detected or element already processed for \(currentAXElement.underlyingElement)." 
             debug(message)
         }
         return
     }
-    elementsBeingProcessed.insert(elementWrapper)
+    elementsBeingProcessed.insert(currentAXElement)
 
     if foundElements.count >= maxElements {
         if isDebugLoggingEnabled {
             let message = "collectAll [D\(depth)]: Max elements limit of \(maxElements) reached."
             debug(message)
         }
-        elementsBeingProcessed.remove(elementWrapper)
+        elementsBeingProcessed.remove(currentAXElement)
         return
     }
     if depth > maxDepth {
@@ -206,11 +173,11 @@ public func collectAll(
             let message = "collectAll [D\(depth)]: Max depth \(maxDepth) reached."
             debug(message)
         }
-        elementsBeingProcessed.remove(elementWrapper)
+        elementsBeingProcessed.remove(currentAXElement)
         return
     }
 
-    let elementRoleForLog: String? = axValue(of: currentElement, attr: kAXRoleAttribute)
+    let elementRoleForLog: String? = currentAXElement.role
     
     let wantedRoleFromCriteria = locator.criteria[kAXRoleAttribute as String] ?? locator.criteria["AXRole"]
     var roleMatchesCriteria = false
@@ -221,10 +188,10 @@ public func collectAll(
     }
     
     if roleMatchesCriteria {
-        var finalMatch = attributesMatch(element: currentElement, matchDetails: locator.criteria, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled)
+        var finalMatch = attributesMatch(axElement: currentAXElement, matchDetails: locator.criteria, depth: depth, isDebugLoggingEnabled: isDebugLoggingEnabled)
         
         if finalMatch, let requiredAction = locator.requireAction, !requiredAction.isEmpty {
-            if !elementSupportsAction(currentElement, action: requiredAction) {
+            if !currentAXElement.isActionSupported(requiredAction) {
                  if isDebugLoggingEnabled {
                     let roleStr = elementRoleForLog ?? "nil"
                     let message = "collectAll [D\(depth)]: Action '\(requiredAction)' not supported by element with role '\(roleStr)'."
@@ -235,12 +202,12 @@ public func collectAll(
         }
         
         if finalMatch {
-            if !foundElements.contains(where: { $0 === currentElement }) { 
-                 foundElements.append(currentElement)
+            if !foundElements.contains(currentAXElement) { 
+                 foundElements.append(currentAXElement)
                  if isDebugLoggingEnabled {
-                     let pathHintStr: String = axValue(of: currentElement, attr: "AXPathHint") ?? "nil"
-                     let titleStr: String = axValue(of: currentElement, attr: kAXTitleAttribute) ?? "nil"
-                     let idStr: String = axValue(of: currentElement, attr: kAXIdentifierAttribute) ?? "nil"
+                     let pathHintStr: String = currentAXElement.attribute(kAXPathHintAttribute) ?? "nil"
+                     let titleStr: String = currentAXElement.title ?? "nil"
+                     let idStr: String = currentAXElement.attribute(kAXIdentifierAttribute) ?? "nil"
                      let roleStr = elementRoleForLog ?? "nil"
                      let message = "collectAll [CD1 D\(depth)]: Added. Role:'\(roleStr)', Title:'\(titleStr)', ID:'\(idStr)', Path:'\(pathHintStr)'. Hits:\(foundElements.count)"
                      debug(message)
@@ -249,73 +216,31 @@ public func collectAll(
         }
     }
 
-    if depth < maxDepth && foundElements.count < maxElements {
-        var childrenToSearch: [AXUIElement] = []
-        var uniqueChildrenForThisLevel = Set<AXUIElementHashableWrapper>()
+    // Get children using the now comprehensive AXElement.children property
+    var childrenToExplore: [AXElement] = currentAXElement.children ?? []
+    // AXElement.children as implemented now *does* deduplicate.
 
-        if let directChildren: [AXUIElement] = axValue(of: currentElement, attr: kAXChildrenAttribute) {
-            for child in directChildren {
-                let wrapper = AXUIElementHashableWrapper(element: child)
-                if !uniqueChildrenForThisLevel.contains(wrapper) {
-                    childrenToSearch.append(child); uniqueChildrenForThisLevel.insert(wrapper)
-                }
-            }
-        }
+    // The extensive alternative children logic and application role/windows check
+    // has been moved into AXElement.children getter.
 
-        let webContainerRolesCF: [String] = [kAXWebAreaRole, "AXWebView", "BrowserAccessibilityCocoa", kAXScrollAreaRole, kAXGroupRole, kAXWindowRole, "AXSplitGroup", "AXLayoutArea"]
-        if let currentRoleCF = elementRoleForLog, webContainerRolesCF.contains(currentRoleCF) {
-            let webAttributesList: [String] = [
-                kAXVisibleChildrenAttribute, kAXTabsAttribute, "AXWebAreaChildren", "AXHTMLContent", 
-                "AXARIADOMChildren", "AXDOMChildren", "AXApplicationNavigation", 
-                "AXApplicationElements", "AXContents", "AXBodyArea", "AXDocumentContent", 
-                "AXWebPageContent", "AXAttributedString", "AXSplitGroupContents",
-                "AXLayoutAreaChildren", "AXGroupChildren", kAXSelectedChildrenAttribute, 
-                kAXRowsAttribute, kAXColumnsAttribute
-            ]
-            for attrName in webAttributesList {
-                if let webChildren: [AXUIElement] = axValue(of: currentElement, attr: attrName) {
-                    for child in webChildren {
-                        let wrapper = AXUIElementHashableWrapper(element: child)
-                        if !uniqueChildrenForThisLevel.contains(wrapper) {
-                            childrenToSearch.append(child); uniqueChildrenForThisLevel.insert(wrapper)
-                        }
-                    }
-                }
-            }
-        }
-        
-        if elementRoleForLog == kAXApplicationRole { 
-            if let windowChildren: [AXUIElement] = axValue(of: currentElement, attr: kAXWindowsAttribute) {
-                for child in windowChildren {
-                    let wrapper = AXUIElementHashableWrapper(element: child)
-                    if !uniqueChildrenForThisLevel.contains(wrapper) {
-                        childrenToSearch.append(child); uniqueChildrenForThisLevel.insert(wrapper)
-                    }
-                }
-            }
-        }
-        
-        let newPath = currentPath + [elementWrapper]
+    elementsBeingProcessed.remove(currentAXElement)
 
-        if !childrenToSearch.isEmpty {
-            for child in childrenToSearch {
-                if foundElements.count >= maxElements { break } 
-                collectAll(
-                    appElement: appElement,
-                    locator: locator,
-                    currentElement: child,
-                    depth: depth + 1,
-                    maxDepth: maxDepth,
-                    maxElements: maxElements,
-                    currentPath: newPath,
-                    elementsBeingProcessed: &elementsBeingProcessed,
-                    foundElements: &foundElements,
-                    isDebugLoggingEnabled: isDebugLoggingEnabled
-                )
-            }
-        }
+    let newPath = currentPath + [currentAXElement]
+    for child in childrenToExplore {
+        if foundElements.count >= maxElements { break }
+        collectAll(
+            appAXElement: appAXElement, 
+            locator: locator,
+            currentAXElement: child, 
+            depth: depth + 1, 
+            maxDepth: maxDepth, 
+            maxElements: maxElements,
+            currentPath: newPath, 
+            elementsBeingProcessed: &elementsBeingProcessed, 
+            foundElements: &foundElements,
+            isDebugLoggingEnabled: isDebugLoggingEnabled
+        )
     }
-    elementsBeingProcessed.remove(elementWrapper)
 }
 
 // End of AXSearch.swift for now 

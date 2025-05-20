@@ -26,7 +26,9 @@ let package = Package(
                 "AXUtils.swift",
                 "AXCommands.swift",
                 "AXAttributeHelpers.swift",
-                "AXAttributeMatcher.swift"
+                "AXAttributeMatcher.swift",
+                "AXValueHelpers.swift",
+                "AXElement.swift"
             ]
             // swiftSettings for framework linking removed, relying on Swift imports.
         ),
