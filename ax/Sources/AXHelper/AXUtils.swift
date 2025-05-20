@@ -121,6 +121,10 @@ public func axValue<T>(of element: AXUIElement, attr: String) -> T? {
     if T.self == String.self || T.self == Optional<String>.self {
         if CFGetTypeID(unwrappedValue) == CFStringGetTypeID() {
             return (unwrappedValue as! CFString) as? T
+        } else if CFGetTypeID(unwrappedValue) == CFAttributedStringGetTypeID() {
+            debug("axValue: Attribute '\(attr)' is CFAttributedString. Extracting string content.")
+            let nsAttrStr = unwrappedValue as! NSAttributedString // Toll-free bridge
+            return nsAttrStr.string as? T
         } else if CFGetTypeID(unwrappedValue) == AXValueGetTypeID() {
             let axVal = unwrappedValue as! AXValue
             debug("axValue: Attribute '\(attr)' is AXValue, not directly convertible to String here. Type: \(AXValueGetType(axVal).rawValue)")
