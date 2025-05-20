@@ -107,22 +107,22 @@ public typealias ElementAttributes = [String: AnyCodable]
 // Main command envelope
 public struct CommandEnvelope: Codable {
     public let command_id: String
-    public let command: CommandType // Changed to CommandType enum
-    public let application: String? // Bundle ID or name
+    public let command: CommandType
+    public let application: String?
     public let locator: Locator?
     public let action: String?
-    public let value: String? // For AXValue (e.g., text input), will be parsed.
-    public let attribute_to_set: String? // Name of the attribute to set for 'setValue' or similar commands
-    public let attributes: [String]? // Attributes to fetch for query
-    public let path_hint: [String]? // Path to navigate to an element
-    public let debug_logging: Bool? // Master switch for debug logging for this command
-    public let max_elements: Int?   // Max elements for collect_all
-    public let output_format: OutputFormat? // Changed to enum
-    public let perform_action_on_child_if_needed: Bool? // New flag for best-effort press
+    public let value: String?
+    public let attribute_to_set: String?
+    public let attributes: [String]?
+    public let path_hint: [String]?
+    public let debug_logging: Bool?
+    public let max_elements: Int?
+    public let output_format: OutputFormat?
+    public let perform_action_on_child_if_needed: Bool?
 
     public init(command_id: String, command: CommandType, application: String? = nil, locator: Locator? = nil, action: String? = nil, value: String? = nil, attribute_to_set: String? = nil, attributes: [String]? = nil, path_hint: [String]? = nil, debug_logging: Bool? = nil, max_elements: Int? = nil, output_format: OutputFormat? = .smart, perform_action_on_child_if_needed: Bool? = false) {
         self.command_id = command_id
-        self.command = command // Ensure this matches the updated type
+        self.command = command
         self.application = application
         self.locator = locator
         self.action = action
@@ -133,27 +133,26 @@ public struct CommandEnvelope: Codable {
         self.debug_logging = debug_logging
         self.max_elements = max_elements
         self.output_format = output_format
-        self.perform_action_on_child_if_needed = perform_action_on_child_if_needed // Initialize new flag
+        self.perform_action_on_child_if_needed = perform_action_on_child_if_needed
     }
 }
 
 // Locator for finding elements
 public struct Locator: Codable {
-    public var match_all: Bool? // If true, all criteria must match. If false or nil, any can match (currently implemented as all must match implicitly by attributesMatch)
+    public var match_all: Bool?
     public var criteria: [String: String]
     public var root_element_path_hint: [String]?
-    public var requireAction: String? // Added: specific action the element must support
-    public var computed_name_equals: String?    // New
-    public var computed_name_contains: String?  // New
+    public var requireAction: String?
+    public var computed_name_equals: String?
+    public var computed_name_contains: String?
 
-    // CodingKeys can be added if JSON keys differ
     enum CodingKeys: String, CodingKey {
         case match_all
         case criteria
         case root_element_path_hint
         case requireAction = "require_action"
-        case computed_name_equals = "computed_name_equals" // New
-        case computed_name_contains = "computed_name_contains" // New
+        case computed_name_equals = "computed_name_equals"
+        case computed_name_contains = "computed_name_contains"
     }
     
     public init(match_all: Bool? = nil, criteria: [String: String] = [:], root_element_path_hint: [String]? = nil, requireAction: String? = nil, computed_name_equals: String? = nil, computed_name_contains: String? = nil) {
@@ -164,21 +163,7 @@ public struct Locator: Codable {
         self.computed_name_equals = computed_name_equals
         self.computed_name_contains = computed_name_contains
     }
-
-     // If requireAction is consistently named in JSON as "requireAction"
-     // then custom CodingKeys/init might not be strictly necessary for just adding the field,
-     // but provided for robustness if key name differs or more complex init logic is needed.
-     // For now, to keep it simple, let's assume JSON key is "requireAction" or it's fine if it's absent.
-     // Removing explicit CodingKeys and init to rely on synthesized one for simplicity for now if "require_action" isn't a firm requirement for JSON key.
 }
-
-// Simplified Locator for now if custom coding keys are not immediately needed:
-// public struct Locator: Codable {
-//    public var match_all: Bool?
-//    public var criteria: [String: String]
-//    public var root_element_path_hint: [String]?
-//    public var requireAction: String?
-// }
 
 // Response for query command (single element)
 public struct QueryResponse: Codable {
@@ -198,7 +183,7 @@ public struct QueryResponse: Codable {
 // Response for collect_all command (multiple elements)
 public struct MultiQueryResponse: Codable {
     public var command_id: String
-    public var elements: [ElementAttributes]? // Array of attribute dictionaries
+    public var elements: [ElementAttributes]?
     public var count: Int?
     public var error: String?
     public var debug_logs: [String]?

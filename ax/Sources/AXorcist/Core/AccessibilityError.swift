@@ -94,7 +94,7 @@ public enum AccessibilityError: Error, CustomStringConvertible {
 
     // Helper to get a more specific exit code if needed, or a general one.
     // This is just an example; actual exit codes might vary.
-    var exitCode: Int32 {
+    public var exitCode: Int32 {
         switch self {
         case .apiDisabled, .notAuthorized: return 10
         case .invalidCommand, .missingArgument, .invalidArgument: return 20

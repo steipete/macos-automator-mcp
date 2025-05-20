@@ -59,6 +59,7 @@ public let kAXSizeAttribute = "AXSize"
 public let kAXMinValueAttribute = "AXMinValue" // New
 public let kAXMaxValueAttribute = "AXMaxValue" // New
 public let kAXValueIncrementAttribute = "AXValueIncrement" // New
+public let kAXAllowedValuesAttribute = "AXAllowedValues" // New
 
 // Text-specific attributes
 public let kAXSelectedTextAttribute = "AXSelectedText" // New
@@ -143,6 +144,8 @@ public let kAXDOMIdentifierAttribute = "AXDOMIdentifier" // Example, might not b
 public let kAXDOMClassListAttribute = "AXDOMClassList" // Example, might not be standard AX
 public let kAXARIADOMResourceAttribute = "AXARIADOMResource" // Example
 public let kAXARIADOMFunctionAttribute = "AXARIADOM-función" // Corrected identifier, kept original string value.
+public let kAXARIADOMChildrenAttribute = "AXARIADOMChildren" // New
+public let kAXDOMChildrenAttribute = "AXDOMChildren" // New
 
 // New constants for missing attributes
 public let kAXToolbarButtonAttribute = "AXToolbarButton"
@@ -175,3 +178,11 @@ public func axErrorToString(_ error: AXError) -> String {
         return "unknown AXError (code: \(error.rawValue))"
     }
 }
+
+// MARK: - Custom Application/Computed Keys
+
+public let focusedApplicationKey = "focused"
+public let computedNameAttributeKey = "ComputedName"
+public let isClickableAttributeKey = "IsClickable"
+public let isIgnoredAttributeKey = "IsIgnored" // Used in AttributeMatcher
+public let computedPathAttributeKey = "ComputedPath"

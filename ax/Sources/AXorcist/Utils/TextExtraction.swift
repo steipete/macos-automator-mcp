@@ -8,7 +8,9 @@ import ApplicationServices // For Element and kAX...Attribute constants
 // axValue<T>() is assumed to be globally available from ValueHelpers.swift
 
 @MainActor
-public func extractTextContent(element: Element) -> String {
+public func extractTextContent(element: Element, isDebugLoggingEnabled: Bool, currentDebugLogs: inout [String]) -> String {
+    func dLog(_ message: String) { if isDebugLoggingEnabled { currentDebugLogs.append(message) } }
+    dLog("Extracting text content for element: \(element.briefDescription(option: .default, isDebugLoggingEnabled: isDebugLoggingEnabled, currentDebugLogs: &currentDebugLogs))")
     var texts: [String] = []
     let textualAttributes = [
         kAXValueAttribute, kAXTitleAttribute, kAXDescriptionAttribute, kAXHelpAttribute,
@@ -17,11 +19,13 @@ public func extractTextContent(element: Element) -> String {
         // kAXSelectedTextAttribute could also be relevant depending on use case
     ]
     for attrName in textualAttributes {
-        // Ensure element.attribute returns an optional String or can be cast to it.
-        // The original code directly cast to String, assuming non-nil, which can be risky.
-        // A safer approach is to conditionally unwrap or use nil coalescing.
-        if let strValue: String = axValue(of: element.underlyingElement, attr: attrName), !strValue.isEmpty, strValue.lowercased() != "not available" {
+        var tempLogs: [String] = [] // For the axValue call
+        // Pass the received logging parameters to axValue
+        if let strValue: String = axValue(of: element.underlyingElement, attr: attrName, isDebugLoggingEnabled: isDebugLoggingEnabled, currentDebugLogs: &tempLogs), !strValue.isEmpty, strValue.lowercased() != "not available" {
             texts.append(strValue)
+            currentDebugLogs.append(contentsOf: tempLogs) // Collect logs from axValue
+        } else {
+            currentDebugLogs.append(contentsOf: tempLogs) // Still collect logs if value was nil/empty
         }
     }
     

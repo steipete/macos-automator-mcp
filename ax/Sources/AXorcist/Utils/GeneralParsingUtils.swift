@@ -8,7 +8,10 @@ import Foundation
 /// Decodes a string representation of an array into an array of strings.
 /// The input string can be JSON-style (e.g., "["item1", "item2"]")
 /// or a simple comma-separated list (e.g., "item1, item2", with or without brackets).
-public func decodeExpectedArray(fromString: String) -> [String]? {
+public func decodeExpectedArray(fromString: String, isDebugLoggingEnabled: Bool, currentDebugLogs: inout [String]) -> [String]? {
+    // This function itself does not log, but takes the parameters as it's called by functions that do.
+    // func dLog(_ message: String) { if isDebugLoggingEnabled { currentDebugLogs.append(message) } }
+
     let trimmedString = fromString.trimmingCharacters(in: .whitespacesAndNewlines)
     
     // Try JSON deserialization first for robustness with escaped characters, etc.
@@ -32,8 +35,7 @@ public func decodeExpectedArray(fromString: String) -> [String]? {
                     }
                 }
             } catch {
-                // If JSON parsing fails, don't log an error yet, fallback to simpler comma separation
-                // debug("JSON decoding failed for string: \(trimmedString). Error: \(error.localizedDescription)")
+                // dLog("JSON decoding failed for string: \(trimmedString). Error: \(error.localizedDescription)")
             }
         }
     }
