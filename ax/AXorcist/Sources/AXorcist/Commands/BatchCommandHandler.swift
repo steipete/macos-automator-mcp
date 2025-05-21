@@ -6,8 +6,9 @@ import AppKit
 // public struct BatchCommandBody: Codable { ... commands ... }
 
 @MainActor
-public func handleBatch(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool, currentDebugLogs: inout [String]) throws -> MultiQueryResponse {
-    func dLog(_ message: String) { if isDebugLoggingEnabled { currentDebugLogs.append(message) } }
+public func handleBatch(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool) throws -> MultiQueryResponse {
+    var handlerLogs: [String] = [] // Local logs for this handler
+    func dLog(_ message: String) { if isDebugLoggingEnabled { handlerLogs.append(message) } }
     dLog("Handling batch command for app: \(cmd.application ?? "focused app")")
 
     // Actual implementation would involve:
@@ -23,5 +24,5 @@ public func handleBatch(cmd: CommandEnvelope, isDebugLoggingEnabled: Bool, curre
     dLog(errorMessage)
     // For now, returning an empty MultiQueryResponse with the error.
     // Consider how to structure 'elements' if sub-commands return different response types.
-    return MultiQueryResponse(command_id: cmd.command_id, elements: [], count: 0, error: errorMessage, debug_logs: currentDebugLogs)
+    return MultiQueryResponse(command_id: cmd.command_id, elements: [], count: 0, error: errorMessage, debug_logs: isDebugLoggingEnabled ? handlerLogs : nil)
 } 

@@ -20,6 +20,7 @@ public enum CommandType: String, Codable {
     case getFocusedElement = "get_focused_element"
     case collectAll = "collect_all"
     case extractText = "extract_text"
+    case ping
     // Add future commands here, ensuring case matches JSON or provide explicit raw value
 }
 
@@ -248,12 +249,39 @@ public struct TextContentResponse: Codable {
 // Generic error response
 public struct ErrorResponse: Codable {
     public var command_id: String
-    public let error: String
+    public var error: String
     public var debug_logs: [String]?
 
     public init(command_id: String, error: String, debug_logs: [String]? = nil) {
         self.command_id = command_id
         self.error = error
         self.debug_logs = debug_logs
+    }
+}
+
+// Simple success response, e.g. for ping
+public struct SimpleSuccessResponse: Codable, Equatable {
+    public var command_id: String
+    public var status: String
+    public var message: String?
+    public var debug_logs: [String]?
+
+    public init(command_id: String, status: String, message: String? = nil, debug_logs: [String]? = nil) {
+        self.command_id = command_id
+        self.status = status
+        self.message = message
+        self.debug_logs = debug_logs
+    }
+}
+
+// Placeholder for any additional models if needed
+
+public struct AXElement: Codable {
+    public var attributes: ElementAttributes?
+    public var path: [String]?
+
+    public init(attributes: ElementAttributes?, path: [String]? = nil) {
+        self.attributes = attributes
+        self.path = path
     }
 }
