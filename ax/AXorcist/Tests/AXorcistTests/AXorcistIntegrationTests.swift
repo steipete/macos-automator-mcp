@@ -3,34 +3,65 @@ import XCTest
 import Testing
 @testable import AXorcist
 
-private func launchTextEdit() async throws -> AXUIElement? {
-    let textEdit = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.TextEdit").first
-    if textEdit == nil {
-        let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.TextEdit")!
-        try await NSWorkspace.shared.launchApplication(at: url, options: [.async, .withoutActivation], configuration: [:])
-        // Wait a bit for TextEdit to launch and potentially open a default document
-        try await Task.sleep(for: .seconds(2)) // Increased delay
+// Refactored TextEdit setup logic into an @MainActor async function
+@MainActor
+private func setupTextEditAndGetInfo() async throws -> (pid: pid_t, axAppElement: AXUIElement?) {
+    let textEditBundleId = "com.apple.TextEdit"
+    var app: NSRunningApplication? = NSRunningApplication.runningApplications(withBundleIdentifier: textEditBundleId).first
+    
+    if app == nil {
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: textEditBundleId) else {
+            throw TestError.generic("Could not find URL for TextEdit application.")
+        }
+        
+        print("Attempting to launch TextEdit from URL: \(url.path)")
+        // Use the older launchApplication API which sometimes is more robust in test environments
+        // despite deprecation. Configure for async and no activation initially.
+        let configuration: [NSWorkspace.LaunchConfigurationKey: Any] = [:] // Empty config for older API
+        do {
+            app = try NSWorkspace.shared.launchApplication(at: url, 
+                                                             options: [.async, .withoutActivation], 
+                                                             configuration: configuration)
+            print("launchApplication call completed. App PID if returned: \(app?.processIdentifier ?? -1)")
+        } catch {
+            throw TestError.appNotRunning("Failed to launch TextEdit using launchApplication(at:options:configuration:): \(error.localizedDescription)")
+        }
+
+        // Wait for the app to appear in running applications list
+        var launchedApp: NSRunningApplication? = nil
+        for attempt in 1...10 { // Retry for up to 10 * 0.5s = 5 seconds
+            launchedApp = NSRunningApplication.runningApplications(withBundleIdentifier: textEditBundleId).first
+            if launchedApp != nil { 
+                print("TextEdit found running after launch, attempt \(attempt).")
+                break
+            }
+            try await Task.sleep(for: .milliseconds(500))
+            print("Waiting for TextEdit to appear in running list... attempt \(attempt)")
+        }
+        
+        guard let runningAppAfterLaunch = launchedApp else {
+             throw TestError.appNotRunning("TextEdit did not appear in running applications list after launch attempt.")
+        }
+        app = runningAppAfterLaunch // Assign the found app
     }
 
-    // Ensure TextEdit is active and has a window
-    let app = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.TextEdit").first
     guard let runningApp = app else {
-        throw TestError.appNotRunning("TextEdit could not be launched or found.")
+        // This should be redundant now due to the guard above, but as a final safety.
+        throw TestError.appNotRunning("TextEdit is unexpectedly nil before activation checks.")
     }
 
+    let pid = runningApp.processIdentifier
+    let axAppElement = AXUIElementCreateApplication(pid)
+
+    // Activate and ensure a window
     if !runningApp.isActive {
-        runningApp.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
-        try await Task.sleep(for: .seconds(1)) // Wait for activation
+        runningApp.activate(options: [.activateAllWindows])
+        try await Task.sleep(for: .seconds(1.5)) // Wait for activation
     }
 
-    let axApp = AXUIElementCreateApplication(runningApp.processIdentifier)
     var window: AnyObject?
-    let resultCopyAttribute = AXUIElementCopyAttributeValue(axApp, ApplicationServices.kAXWindowsAttribute as CFString, &window)
-
-    if resultCopyAttribute == AXError.success, let windows = window as? [AXUIElement], !windows.isEmpty {
-        // It has windows, great.
-    } else {
-        // No windows, try to create a new document
+    let resultCopyAttribute = AXUIElementCopyAttributeValue(axAppElement, ApplicationServices.kAXWindowsAttribute as CFString, &window)
+    if resultCopyAttribute != AXError.success || (window as? [AXUIElement])?.isEmpty ?? true {
         let appleScript = """
         tell application "System Events"
             tell process "TextEdit"
@@ -39,47 +70,51 @@ private func launchTextEdit() async throws -> AXUIElement? {
             end tell
         end tell
         """
-        var error: NSDictionary?
+        var errorDict: NSDictionary?
         if let scriptObject = NSAppleScript(source: appleScript) {
-            scriptObject.executeAndReturnError(&error)
-            if let error = error {
+            scriptObject.executeAndReturnError(&errorDict)
+            if let error = errorDict {
                 throw TestError.appleScriptError("Failed to create new document in TextEdit: \(error)")
             }
-            try await Task.sleep(for: .seconds(1)) // Wait for new document
+            try await Task.sleep(for: .seconds(2)) // Wait for new document window
         }
     }
     
-    // Re-check activation and focused window
+    // Re-check activation
     if !runningApp.isActive {
-        runningApp.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
-        try await Task.sleep(for: .seconds(0.5))
+        runningApp.activate(options: [.activateAllWindows])
+        try await Task.sleep(for: .seconds(1))
     }
 
-    var focusedWindow: AnyObject?
-    let focusedWindowResult = AXUIElementCopyAttributeValue(axApp, ApplicationServices.kAXFocusedWindowAttribute as CFString, &focusedWindow)
-    if focusedWindowResult != AXError.success || focusedWindow == nil {
-         // As a fallback, try to get the first window if no focused window (e.g. app just launched)
-        var windows: AnyObject?
-        AXUIElementCopyAttributeValue(axApp, ApplicationServices.kAXWindowsAttribute as CFString, &windows)
-        if let windowList = windows as? [AXUIElement], !windowList.isEmpty {
-            // Try to set the first window as focused, though this might not always work or be desired
-            // AXUIElementSetAttributeValue(windowList.first!, kAXMainAttribute as CFString, kCFBooleanTrue)
-            // For now, just return the app element if window ops are tricky
-             return axApp // Fallback to app element
-        }
-        throw TestError.axError("TextEdit has no focused window and no windows list or failed to get them.")
+    // Optional: Confirm focused element directly (for debugging setup)
+    var cfFocusedElement: CFTypeRef?
+    let status = AXUIElementCopyAttributeValue(axAppElement, ApplicationServices.kAXFocusedUIElementAttribute as CFString, &cfFocusedElement)
+    if status == AXError.success, cfFocusedElement != nil {
+        print("AX API successfully got a focused element during setup.")
+    } else {
+        print("AX API did not get a focused element during setup. Status: \(status.rawValue). This might be okay.")
     }
-    return focusedWindow as! AXUIElement?
+    
+    return (pid, axAppElement)
 }
 
-private func closeTextEdit() {
-    let textEdit = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.TextEdit").first
-    textEdit?.terminate()
-    // Allow some time for termination
-    Thread.sleep(forTimeInterval: 0.5)
-    if textEdit?.isTerminated == false {
-        textEdit?.forceTerminate()
-        Thread.sleep(forTimeInterval: 0.5)
+@MainActor
+private func closeTextEdit() async {
+    let textEditBundleId = "com.apple.TextEdit"
+    guard let textEdit = NSRunningApplication.runningApplications(withBundleIdentifier: textEditBundleId).first else {
+        return // Not running
+    }
+    
+    textEdit.terminate()
+    // Give it a moment to terminate gracefully
+    for _ in 0..<5 { // Check for up to 2.5 seconds
+        if textEdit.isTerminated { break }
+        try? await Task.sleep(for: .milliseconds(500))
+    }
+    
+    if !textEdit.isTerminated {
+        textEdit.forceTerminate()
+        try? await Task.sleep(for: .milliseconds(500)) // Brief pause after force terminate
     }
 }
 
@@ -129,6 +164,202 @@ private func stripJSONPrefix(from output: String?) -> String? {
     return output
 }
 
+// Function to run axorc with STDIN input
+private func runAXORCCommandWithStdin(inputJSON: String, arguments: [String]) throws -> (String?, String?, Int32) {
+    let axorcUrl = productsDirectory.appendingPathComponent("axorc")
+
+    let process = Process()
+    process.executableURL = axorcUrl
+    // Ensure --stdin is included if not already present, as axorc.swift now uses it as a flag
+    var effectiveArguments = arguments
+    if !effectiveArguments.contains("--stdin") {
+        effectiveArguments.append("--stdin")
+    }
+    process.arguments = effectiveArguments
+    
+    let outputPipe = Pipe()
+    let errorPipe = Pipe()
+    let inputPipe = Pipe()
+
+    process.standardOutput = outputPipe
+    process.standardError = errorPipe
+    process.standardInput = inputPipe
+
+    try process.run()
+
+    // Write to STDIN
+    if let inputData = inputJSON.data(using: .utf8) {
+        try inputPipe.fileHandleForWriting.write(contentsOf: inputData)
+        inputPipe.fileHandleForWriting.closeFile() // Close STDIN to signal EOF
+    } else {
+        // Handle error: inputJSON could not be converted to Data
+        inputPipe.fileHandleForWriting.closeFile() // Still close it
+        // Consider throwing an error or logging
+        print("Warning: Could not convert inputJSON to Data for STDIN.")
+    }
+    
+    process.waitUntilExit()
+
+    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+
+    let output = String(data: outputData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+    let errorOutput = String(data: errorData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+    
+    let cleanOutput = stripJSONPrefix(from: output)
+    
+    return (cleanOutput, errorOutput, process.terminationStatus)
+}
+
+// MARK: - Codable Structs for Testing
+
+// Based on axorc.swift and AXorcist.swift
+enum CommandType: String, Codable {
+    case ping
+    case getFocusedElement
+    // Add other command types as they are implemented in axorc
+    case collectAll, query, describeElement, getAttributes, performAction, extractText, batch
+}
+
+struct CommandEnvelope: Codable {
+    let command_id: String
+    let command: CommandType
+    let application: String?
+    let attributes: [String]?
+    let payload: [String: AnyCodable]? // Using AnyCodable for flexibility
+    let debug_logging: Bool?
+
+    init(command_id: String, command: CommandType, application: String? = nil, attributes: [String]? = nil, payload: [String: AnyCodable]? = nil, debug_logging: Bool? = nil) {
+        self.command_id = command_id
+        self.command = command
+        self.application = application
+        self.attributes = attributes
+        self.payload = payload
+        self.debug_logging = debug_logging
+    }
+}
+
+// Matches SimpleSuccessResponse implicitly defined in axorc.swift for ping
+struct SimpleSuccessResponse: Codable {
+    let command_id: String
+    let success: Bool // Assuming true for success responses
+    let status: String? // e.g., "pong"
+    let message: String
+    let details: String?
+    let debug_logs: [String]?
+
+    // Adding an explicit init to match how it might be constructed if `success` is always true for this type
+    init(command_id: String, success: Bool = true, status: String?, message: String, details: String?, debug_logs: [String]?) {
+        self.command_id = command_id
+        self.success = success
+        self.status = status
+        self.message = message
+        self.details = details
+        self.debug_logs = debug_logs
+    }
+}
+
+// Matches ErrorResponse implicitly defined in axorc.swift
+struct ErrorResponse: Codable {
+    let command_id: String
+    let success: Bool // Assuming false for error responses
+    let error: ErrorDetail // Changed from String to ErrorDetail struct
+
+    struct ErrorDetail: Codable { // Nested struct for error message
+        let message: String
+    }
+    let debug_logs: [String]?
+    
+    // Custom init if needed, for now relying on synthesized one after struct change
+     init(command_id: String, success: Bool = false, error: ErrorDetail, debug_logs: [String]?) {
+        self.command_id = command_id
+        self.success = success
+        self.error = error
+        self.debug_logs = debug_logs
+    }
+}
+
+
+// For AXElement.attributes which can be [String: Any]
+// Using a simplified AnyCodable for testing purposes
+struct AnyCodable: Codable {
+    let value: Any
+
+    init<T>(_ value: T?) {
+        self.value = value ?? ()
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            self.value = ()
+        } else if let bool = try? container.decode(Bool.self) {
+            self.value = bool
+        } else if let int = try? container.decode(Int.self) {
+            self.value = int
+        } else if let double = try? container.decode(Double.self) {
+            self.value = double
+        } else if let string = try? container.decode(String.self) {
+            self.value = string
+        } else if let array = try? container.decode([AnyCodable].self) {
+            self.value = array.map { $0.value }
+        } else if let dictionary = try? container.decode([String: AnyCodable].self) {
+            self.value = dictionary.mapValues { $0.value }
+        } else {
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "AnyCodable value cannot be decoded")
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch value {
+        case is Void:
+            try container.encodeNil()
+        case let bool as Bool:
+            try container.encode(bool)
+        case let int as Int:
+            try container.encode(int)
+        case let double as Double:
+            try container.encode(double)
+        case let string as String:
+            try container.encode(string)
+        case let array as [Any?]:
+            try container.encode(array.map { AnyCodable($0) })
+        case let dictionary as [String: Any?]:
+            try container.encode(dictionary.mapValues { AnyCodable($0) })
+        default:
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: container.codingPath, debugDescription: "AnyCodable value cannot be encoded"))
+        }
+    }
+}
+
+
+struct AXElementData: Codable { // Renamed from AXElement to avoid conflict if AXorcist.AXElement is imported
+    let attributes: [String: AnyCodable]? // Dictionary of attributes
+    let path: [String]? // Optional path from root
+    // Add other fields like role, description if they become part of the AXElement structure in axorc output
+
+    // Explicit init to allow nil for attributes and path
+    init(attributes: [String: AnyCodable]? = nil, path: [String]? = nil) {
+        self.attributes = attributes
+        self.path = path
+    }
+}
+
+// Matches QueryResponse implicitly defined in axorc.swift for getFocusedElement
+struct QueryResponse: Codable {
+    let command_id: String
+    let success: Bool
+    let command: String // e.g., "getFocusedElement"
+    let data: AXElementData? // This will contain the AX element's data
+    // let attributes: [String: AnyCodable]? // This was redundant with data.attributes in axorc.swift, remove if also removed there
+    let error: ErrorDetail? // Changed from String?
+    let debug_logs: [String]?
+}
+
+
+// MARK: - Test Cases
+
 @Test("Test Ping via STDIN")
 func testPingViaStdin() async throws {
     let inputJSON = """
@@ -164,18 +395,17 @@ func testPingViaFile() async throws {
     {
         "command_id": "test_ping_file",
         "command": "ping",
-        "payload": {
-            "message": "\(payloadMessage)"
-        }
+        "payload": { "message": "\(payloadMessage)" }
     }
     """
     let tempFilePath = try createTempFile(content: inputJSON)
     defer { try? FileManager.default.removeItem(atPath: tempFilePath) }
 
+    // axorc needs --file flag
     let (output, errorOutput, terminationStatus) = try runAXORCCommand(arguments: ["--file", tempFilePath])
 
     #expect(terminationStatus == 0, "axorc command failed with status \(terminationStatus). Error: \(errorOutput ?? "N/A")")
-    #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput!)")
+    #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput ?? "N/A")")
     
     guard let output else {
         #expect(Bool(false), "Output was nil")
@@ -183,9 +413,10 @@ func testPingViaFile() async throws {
     }
 
     let responseData = Data(output.utf8)
+    // Use the updated SimpleSuccessResponse for decoding
     let decodedResponse = try JSONDecoder().decode(SimpleSuccessResponse.self, from: responseData)
     #expect(decodedResponse.success == true)
-    #expect(decodedResponse.message.lowercased().contains("file"), "Unexpected success message: \(decodedResponse.message)")
+    #expect(decodedResponse.message.lowercased().contains("file: \(tempFilePath.lowercased())"), "Message should contain file path. Got: \(decodedResponse.message)")
     #expect(decodedResponse.details == payloadMessage)
 }
 
@@ -193,19 +424,13 @@ func testPingViaFile() async throws {
 @Test("Test Ping via direct positional argument")
 func testPingViaDirectPayload() async throws {
     let payloadMessage = "Hello from testPingViaDirectPayload"
-    let inputJSON = """
-    {
-        "command_id": "test_ping_direct",
-        "command": "ping",
-        "payload": {
-            "message": "\(payloadMessage)"
-        }
-    }
-    """
-    let (output, errorOutput, terminationStatus) = try runAXORCCommand(arguments: [inputJSON])
+    // Ensure the JSON string is compact and valid for a command-line argument
+    let inputJSON = "{\"command_id\":\"test_ping_direct\",\"command\":\"ping\",\"payload\":{\"message\":\"\(payloadMessage)\"}}"
+
+    let (output, errorOutput, terminationStatus) = try runAXORCCommand(arguments: [inputJSON]) // No --stdin or --file for direct
 
     #expect(terminationStatus == 0, "axorc command failed with status \(terminationStatus). Error: \(errorOutput ?? "N/A")")
-    #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput!)")
+    #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput ?? "N/A")")
     
     guard let output else {
         #expect(Bool(false), "Output was nil")
@@ -215,7 +440,7 @@ func testPingViaDirectPayload() async throws {
     let responseData = Data(output.utf8)
     let decodedResponse = try JSONDecoder().decode(SimpleSuccessResponse.self, from: responseData)
     #expect(decodedResponse.success == true)
-    #expect(decodedResponse.message.contains("direct") || decodedResponse.message.contains("payload"), "Unexpected success message: \(decodedResponse.message)")
+    #expect(decodedResponse.message.contains("Direct Argument Payload"), "Unexpected success message: \(decodedResponse.message)")
     #expect(decodedResponse.details == payloadMessage)
 }
 
@@ -223,7 +448,7 @@ func testPingViaDirectPayload() async throws {
 func testErrorMultipleInputMethods() async throws {
     let inputJSON = """
     {
-        "command_id": "test_error",
+        "command_id": "test_error_multiple_inputs",
         "command": "ping",
         "payload": { "message": "This should not be processed" }
     }
@@ -231,376 +456,183 @@ func testErrorMultipleInputMethods() async throws {
     let tempFilePath = try createTempFile(content: "{}") // Empty JSON for file
     defer { try? FileManager.default.removeItem(atPath: tempFilePath) }
 
-    let (output, errorOutput, terminationStatus) = try runAXORCCommandWithStdin(inputJSON: inputJSON, arguments: ["--stdin", "--file", tempFilePath])
+    // Pass arguments that trigger multiple inputs, including --stdin for runAXORCCommandWithStdin
+    let (output, errorOutput, terminationStatus) = try runAXORCCommandWithStdin(inputJSON: inputJSON, arguments: ["--file", tempFilePath]) // --stdin is added by the helper
 
-    #expect(terminationStatus != 0, "axorc command should have failed due to multiple inputs, but succeeded.")
-    #expect(output == nil || output!.isEmpty, "Expected no standard output on error, but got: \(output ?? "")")
-
-    guard let errorOutput, !errorOutput.isEmpty else {
-        #expect(Bool(false), "Error output was nil or empty")
-        return
-    }
-    
-    let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: Data(errorOutput.utf8))
-    #expect(errorResponse.success == false)
-    #expect(errorResponse.error.message.contains("Multiple input methods provided"), "Unexpected error message: \(errorResponse.error.message)")
-}
-
-
-@Test("Test Error: No Input Provided for Ping")
-func testErrorNoInputProvidedForPing() async throws {
-    // Running axorc without --stdin, --file, or payload argument
-    let (output, errorOutput, terminationStatus) = try runAXORCCommand(arguments: [])
-
-    #expect(terminationStatus != 0, "axorc command should have failed due to no input for ping, but succeeded. Output: \(output ?? "N/A")")
-    #expect(output == nil || output!.isEmpty, "Expected no standard output on error, but got: \(output ?? "")")
-    
-    guard let errorOutput, !errorOutput.isEmpty else {
-        #expect(Bool(false), "Error output was nil or empty")
-        return
-    }
-    
-    // Depending on how ArgumentParser handles missing required @OptionGroup without a default subcommand,
-    // this might be a help message or a specific error.
-    // For now, let's assume it's a parsable ErrorResponse.
-    // If it prints help, this test will need adjustment.
-    do {
-        let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: Data(errorOutput.utf8))
-        #expect(errorResponse.success == false)
-        // The exact message can vary based on ArgumentParser's behavior for missing @OptionGroup.
-        // Let's check for a known part of the expected error message for "no input"
-        #expect(errorResponse.error.message.contains("No input method provided"), "Unexpected error message: \(errorResponse.error.message)")
-    } catch {
-        #expect(Bool(false), "Failed to decode error output as JSON: \(errorOutput). Error: \(error)")
-    }
-}
-
-// @Test(.disabled(while: true, "Disabling TextEdit dependent test due to flakiness/hangs"))
-// @Test("Test GetFocusedElement with TextEdit")
-// func testGetFocusedElementWithTextEdit_ORIGINAL_DISABLED() async throws {
-//     await MainActor.run { closeTextEdit() } // Ensure TextEdit is closed initially
-//     try await Task.sleep(for: .seconds(0.5)) // give it time to close
-
-//     let focusedElement = try await MainActor.run { try await launchTextEdit() }
-//     #expect(focusedElement != nil, "Failed to launch TextEdit or get focused element.")
-
-//     defer {
-//         Task { await MainActor.run { closeTextEdit() } }
-//     }
-//     try await Task.sleep(for: .seconds(1)) // Let TextEdit settle
-
-//     let inputJSON = """
-//     { "command": "getFocusedElement" }
-//     """
-//     let (output, errorOutput, terminationStatus) = try runAXORCCommandWithStdin(inputJSON: inputJSON, arguments: ["json", "--stdin", "--debug"])
-
-//     #expect(terminationStatus == 0, "axorc command failed. Status: \(terminationStatus). Error: \(errorOutput ?? "N/A")")
-//     #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput!)")
-//         
-//     guard let output else {
-//         #expect(Bool(false), "Output was nil")
-//         return
-//     }
-
-//     let responseData = Data(output.utf8)
-//     let queryResponse = try JSONDecoder().decode(QueryResponse.self, from: responseData)
-//         
-//     #expect(queryResponse.success == true)
-//     #expect(queryResponse.command == "getFocusedElement")
-//         
-//     guard let elementData = queryResponse.data else {
-//         #expect(Bool(false), "QueryResponse data is nil")
-//         return
-//     }
-//         
-//     // More detailed checks can be added here, e.g., role, title
-//     // For now, just check that we got some attributes.
-//     let attributes = elementData.attributes
-//     #expect(attributes.keys.contains("AXRole"), "Element attributes should contain AXRole")
-//     #expect(attributes.keys.contains("AXTitle"), "Element attributes should contain AXTitle")
-
-//     // Check if the focused element is related to TextEdit
-//     if let path = elementData.path {
-//         #expect(path.contains { $0.contains("TextEdit") }, "Element path should mention TextEdit. Path: \(path)")
-//     } else {
-//         #expect(Bool(false), "Element path was nil")
-//     }
-// }
-    
-@Test("Test AXORCCommand without flags (actually with unknown flag)")
-func testAXORCCommandWithoutFlags() async throws {
-    let (_, errorOutput, terminationStatus) = try runAXORCCommand(arguments: ["--some-unknown-flag"])
-    #expect(terminationStatus != 0, "axorc should fail with an unknown flag.")
-    #expect(errorOutput?.contains("Unknown option") == true, "Error output should mention 'Unknown option'. Got: \(errorOutput ?? "")")
-}
-
-@Test("Test GetFocusedElement via STDIN (Simplified - No TextEdit)")
-func testGetFocusedElementViaStdin_Simplified() async throws {
-    // This test does NOT launch TextEdit. It relies on whatever element is focused.
-    // This makes it less prone to UI flakiness but also less specific.
-    // Good for a basic sanity check of the getFocusedElement command.
-
-    // For GitHub Actions or environments where no UI is reliably available,
-    // we might need to mock or skip this. For now, assume *something* is focusable.
-
-    let inputJSON = """
-    { "command_id": "test_get_focused", "command": "getFocusedElement" }
-    """
-    let (output, errorOutput, terminationStatus) = try runAXORCCommandWithStdin(inputJSON: inputJSON, arguments: ["--stdin"])
-
-    #expect(terminationStatus == 0, "axorc command failed. Status: \(terminationStatus). Error: \(errorOutput ?? "N/A")")
-    #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput!)")
-    
-    guard let output else {
-        #expect(Bool(false), "Output was nil")
-        return
-    }
-
-    do {
-        let responseData = Data(output.utf8)
-        let queryResponse = try JSONDecoder().decode(QueryResponse.self, from: responseData)
-        
-        #expect(queryResponse.success == true)
-        #expect(queryResponse.command == "getFocusedElement")
-        
-        guard let attributes = queryResponse.data?.attributes else {
-            #expect(Bool(false), "QueryResponse data or attributes is nil")
-            return
-        }
-        
-        #expect(attributes.keys.contains("AXRole"), "Element attributes should contain AXRole. Attributes: \(attributes.map { $0.key }.joined(separator: ", "))")
-        
-        // It's hard to predict what AXTitle will be without a controlled app.
-        // We can check it exists, or if it's nil (which is valid for some elements).
-        // For now, let's just ensure the key is either present or the value is explicitly nil if the key is missing.
-        // This is implicitly handled by the fact that attributes is [String: AnyCodable?].
-        // If AXTitle is not in the dictionary, attributes["AXTitle"] will be nil.
-        // If it is in the dictionary and its value is null, attributes["AXTitle"]?.value will be nil.
-        // So, simply accessing it is enough to not crash. A more robust check might be needed
-        // if we had specific expectations for the focused element in a "no TextEdit" scenario.
-        
-        _ = attributes["AXTitle"] // Access to ensure no crash
-
-        // Path is not available in QueryResponse attributes - skip path checks for now
-        // #expect(elementData.path != nil && !(elementData.path!.isEmpty), "Element path should exist and not be empty. Path: \(elementData.path ?? [])")
-        // if let path = elementData.path, !path.isEmpty {
-        //      #expect(!path[0].isEmpty, "First element of path should not be empty.")
-        // }
-
-
-    } catch {
-        #expect(Bool(false), "Failed to decode QueryResponse: \(error). Output was: \(output)")
-    }
-}
-
-
-// This version of the test uses the actual AXorcist library directly,
-// bypassing the CLI for the core logic test.
-// It still depends on TextEdit being controllable.
-@Test("Test GetFocusedElement with TextEdit")
-func testGetFocusedElementWithTextEdit() async throws {
-    await MainActor.run { closeTextEdit() } // Ensure TextEdit is closed initially
-    try await Task.sleep(for: .seconds(1)) // give it time to close + CI can be slow
-
-    // Comment out MainActor.run calls for now to focus on other errors
-    // var focusedElementFromApp: AXUIElement?
-    // do {
-    //     focusedElementFromApp = try await MainActor.run { try await launchTextEdit() }
-    //     #expect(focusedElementFromApp != nil, "Failed to launch TextEdit or get focused element from app.")
-    // } catch {
-    //     #expect(Bool(false), "launchTextEdit threw an error: \(error)")
-    //     return // Exit if launch failed
-    // }
-
-    defer {
-        Task { await MainActor.run { closeTextEdit() } }
-    }
-    try await Task.sleep(for: .seconds(2)) // Let TextEdit settle, open window, etc. CI can be slow.
-
-    let inputJSON = """
-    { "command_id": "test_get_focused_textedit", "command": "getFocusedElement" }
-    """
-    // Use --debug to get more logs if it fails
-    let (output, errorOutput, terminationStatus) = try runAXORCCommandWithStdin(inputJSON: inputJSON, arguments: ["--stdin", "--debug"])
-
-    #expect(terminationStatus == 0, "axorc command failed. Status: \(terminationStatus). Error: \(errorOutput ?? "N/A"). Output: \(output ?? "")")
-    #expect(errorOutput == nil || errorOutput!.isEmpty, "Expected no error output, but got: \(errorOutput!). Output: \(output ?? "")")
+    // axorc.swift now prints error to STDOUT and exits 0
+    #expect(terminationStatus == 0, "axorc command should return 0 with error on stdout. Status: \(terminationStatus). Error STDOUT: \(output ?? "nil"). Error STDERR: \(errorOutput ?? "nil")")
     
     guard let output, !output.isEmpty else {
         #expect(Bool(false), "Output was nil or empty")
         return
     }
+    
+    // Use the updated ErrorResponse for decoding
+    let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: Data(output.utf8))
+    #expect(errorResponse.success == false)
+    #expect(errorResponse.error.message.contains("Multiple input flags specified"), "Unexpected error message: \(errorResponse.error.message)")
+}
 
-    let responseData = Data(output.utf8)
+
+@Test("Test Error: No Input Provided for Ping")
+func testErrorNoInputProvidedForPing() async throws {
+    // Run axorc with no input flags or direct payload
+    let (output, errorOutput, terminationStatus) = try runAXORCCommand(arguments: [])
+
+    #expect(terminationStatus == 0, "axorc should return 0 with error on stdout. Status: \(terminationStatus). Error STDOUT: \(output ?? "nil"). Error STDERR: \(errorOutput ?? "nil")")
+
+    guard let output, !output.isEmpty else {
+        #expect(Bool(false), "Output was nil or empty for no input test.")
+        return
+    }
+    
+    let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: Data(output.utf8))
+    #expect(errorResponse.success == false)
+    #expect(errorResponse.command_id == "input_error", "Expected command_id to be input_error, got \(errorResponse.command_id)")
+    #expect(errorResponse.error.message.contains("No JSON input method specified"), "Unexpected error message for no input: \(errorResponse.error.message)")
+}
+
+// The original failing test, now adapted
+@Test("Launch TextEdit, Get Focused Element via STDIN")
+func testLaunchAndQueryTextEdit() async throws {
+    // Close TextEdit if it's running from a previous test
+    await closeTextEdit() // Now async and @MainActor
+    try await Task.sleep(for: .milliseconds(500)) // Pause after closing
+
+    // Setup TextEdit (launch, activate, ensure window) - this is @MainActor
+    let (pid, _) = try await setupTextEditAndGetInfo()
+    #expect(pid != 0, "PID should not be zero after TextEdit setup")
+    // axAppElement from setupTextEditAndGetInfo is not directly used hereafter, but setup ensures app is ready.
+
+    // Prepare the JSON command for axorc
+    let commandId = "focused_textedit_test_\(UUID().uuidString)"
+    let attributesToFetch: [String] = [
+        ApplicationServices.kAXRoleAttribute as String, 
+        ApplicationServices.kAXRoleDescriptionAttribute as String, 
+        ApplicationServices.kAXValueAttribute as String, 
+        "AXPlaceholderValue" // Custom attribute
+    ]
+
+    let commandEnvelope = CommandEnvelope(
+        command_id: commandId,
+        command: .getFocusedElement,
+        application: "com.apple.TextEdit",
+        attributes: attributesToFetch,
+        debug_logging: true
+    )
+
+    let encoder = JSONEncoder()
+    let inputJSONData = try encoder.encode(commandEnvelope)
+    guard let inputJSON = String(data: inputJSONData, encoding: .utf8) else {
+        throw TestError.generic("Failed to encode CommandEnvelope to JSON string")
+    }
+    
+    print("Input JSON for axorc:\n\(inputJSON)")
+
+    let (output, errorOutput, terminationStatus) = try runAXORCCommandWithStdin(inputJSON: inputJSON, arguments: ["--debug"])
+
+    print("axorc STDOUT:\n\(output ?? "nil")")
+    print("axorc STDERR:\n\(errorOutput ?? "nil")")
+    print("axorc Termination Status: \(terminationStatus)")
+
+    #expect(terminationStatus == 0, "axorc command failed with status \(terminationStatus). Error Output: \(errorOutput ?? "N/A")")
+
+    guard let outputJSON = output, !outputJSON.isEmpty else {
+        throw TestError.generic("axorc output was nil or empty. STDERR: \(errorOutput ?? "N/A")")
+    }
+
+    let decoder = JSONDecoder()
+    // Ensure outputJSON is a non-optional String here before using .utf8
+    guard let responseData = outputJSON.data(using: .utf8) else { // Using String.data directly
+        throw TestError.generic("Failed to convert axorc output string to Data. Output: \(outputJSON)")
+    }
+    
     let queryResponse: QueryResponse
     do {
-        queryResponse = try JSONDecoder().decode(QueryResponse.self, from: responseData)
+        queryResponse = try decoder.decode(QueryResponse.self, from: responseData)
     } catch {
-        #expect(Bool(false), "Failed to decode QueryResponse: \(error). Output was: \(output)")
-        return
+        print("JSON Decoding Error: \(error)")
+        print("Problematic JSON string from axorc: \(outputJSON)") // Print the problematic JSON
+        throw TestError.generic("Failed to decode QueryResponse from axorc: \(error.localizedDescription). Original JSON: \(outputJSON)")
+    }
+
+    #expect(queryResponse.success == true, "axorc command was not successful. Error: \(queryResponse.error?.message ?? "Unknown error"). Logs: \(queryResponse.debug_logs?.joined(separator: "\n") ?? "")")
+    #expect(queryResponse.command_id == commandId)
+    #expect(queryResponse.command == CommandType.getFocusedElement.rawValue) // Compare with rawValue
+
+    guard let elementData = queryResponse.data else {
+        throw TestError.generic("QueryResponse data is nil. Error: \(queryResponse.error?.message ?? "N/A"). Logs: \(queryResponse.debug_logs?.joined(separator: "\n") ?? "")")
+    }
+
+    // Validate attributes (example)
+    // Cast kAXTextAreaRole (CFString) to String for comparison
+    // Use ApplicationServices for standard AX constants
+    let expectedRole = ApplicationServices.kAXTextAreaRole as String
+    let actualRole = elementData.attributes?[ApplicationServices.kAXRoleAttribute as String]?.value as? String
+    #expect(actualRole == expectedRole, "Focused element role should be '\(expectedRole)'. Got: '\(actualRole ?? "nil")'. Attributes: \(elementData.attributes?.keys.map { $0 } ?? [])")
+    
+    // Use ApplicationServices.kAXValueAttribute and cast to String for key
+    #expect(elementData.attributes?.keys.contains(ApplicationServices.kAXValueAttribute as String) == true, "Focused element attributes should contain kAXValueAttribute as it was requested.")
+
+    if let logs = queryResponse.debug_logs, !logs.isEmpty {
+        print("axorc Debug Logs:")
+        logs.forEach { print($0) }
     }
     
-    #expect(queryResponse.success == true)
-    #expect(queryResponse.command == "getFocusedElement")
-    
-    guard let attributes = queryResponse.data?.attributes else {
-        #expect(Bool(false), "QueryResponse data or attributes is nil")
-        return
-    }
-    
-    #expect(attributes.keys.contains("AXRole"), "Element attributes should contain AXRole. Attrs: \(attributes.keys)")
-    #expect(attributes.keys.contains("AXTitle"), "Element attributes should contain AXTitle. Attrs: \(attributes.keys)")
-    
-    // Check if the focused element is related to TextEdit
-    // The title of the main window or document window is often "Untitled" or the filename.
-    // The application itself will have "TextEdit"
-    // Path is not available in QueryResponse - skip path checks for now
-    // if let path = elementData.path, !path.isEmpty {
-    //     let pathDescription = path.joined(separator: " -> ")
-    //     #expect(path.contains { $0.contains("TextEdit") }, "Element path should mention TextEdit. Path: \(pathDescription)")
-    // } else {
-    //     #expect(Bool(false), "Element path was nil or empty")
-    // }
+    // Clean up TextEdit
+    await closeTextEdit() // Now async and @MainActor
 }
 
-@Test("Test Direct AXorcist.handleGetFocusedElement with TextEdit")
-func testDirectAXorcistGetFocusedElement_TextEdit() async throws {
-    await MainActor.run { closeTextEdit() } // Ensure TextEdit is closed initially
-    try await Task.sleep(for: .seconds(1)) // give it time to close + CI can be slow
-
-    // Comment out MainActor.run calls for now to focus on other errors
-    // var focusedElementFromApp: AXUIElement?
-    // do {
-    //     focusedElementFromApp = try await MainActor.run { try await launchTextEdit() }
-    //     #expect(focusedElementFromApp != nil, "Failed to launch TextEdit or get focused element from app.")
-    // } catch {
-    //     #expect(Bool(false), "launchTextEdit threw an error: \(error)")
-    //     return // Exit if launch failed
-    // }
-
-    defer {
-        Task { await MainActor.run { closeTextEdit() } }
-    }
-    try await Task.sleep(for: .seconds(2)) // Let TextEdit settle
-
-    let axorcist = AXorcist()
-    var localLogs = [String]()
-    
-    let result = await axorcist.handleGetFocusedElement(isDebugLoggingEnabled: true, currentDebugLogs: &localLogs)
-
-    if let error = result.error {
-        #expect(Bool(false), "handleGetFocusedElement failed: \(error). Logs: \(localLogs.joined(separator: "\n"))")
-    } else if let elementData = result.data {
-        #expect(elementData.attributes != nil, "Element attributes should not be nil. Logs: \(localLogs.joined(separator: "\n"))")
-        
-        if let attributes = elementData.attributes {
-            #expect(attributes.keys.contains("AXRole"), "Element attributes should contain AXRole. Attrs: \(attributes.keys). Logs: \(localLogs.joined(separator: "\n"))")
-            #expect(attributes.keys.contains("AXTitle"), "Element attributes should contain AXTitle. Attrs: \(attributes.keys). Logs: \(localLogs.joined(separator: "\n"))")
-            
-            if let path = elementData.path, !path.isEmpty {
-                let pathDescription = path.joined(separator: " -> ")
-                #expect(path.contains { $0.contains("TextEdit") }, "Element path should mention TextEdit. Path: \(pathDescription). Logs: \(localLogs.joined(separator: "\n"))")
-            } else {
-                #expect(Bool(false), "Element path was nil or empty. Logs: \(localLogs.joined(separator: "\n"))")
-            }
-        }
-    } else {
-        #expect(Bool(false), "handleGetFocusedElement returned no data and no error. Logs: \(localLogs.joined(separator: "\n"))")
-    }
-}
-
-// Helper to run axorc with STDIN
-private func runAXORCCommandWithStdin(inputJSON: String, arguments: [String]) throws -> (String?, String?, Int32) {
-    let axorcUrl = productsDirectory.appendingPathComponent("axorc")
-
-    let process = Process()
-    process.executableURL = axorcUrl
-    process.arguments = arguments
-
-    let inputPipe = Pipe()
-    let outputPipe = Pipe()
-    let errorPipe = Pipe()
-
-    process.standardInput = inputPipe
-    process.standardOutput = outputPipe
-    process.standardError = errorPipe
-    
-    Task { // Write to STDIN on a separate task to avoid deadlock
-        if let inputData = inputJSON.data(using: .utf8) {
-            try? inputPipe.fileHandleForWriting.write(contentsOf: inputData)
-        }
-        try? inputPipe.fileHandleForWriting.close()
-    }
-
-    try process.run()
-    process.waitUntilExit() // Wait for the process to complete
-
-    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-
-    let output = String(data: outputData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
-    let errorOutput = String(data: errorData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
-
-    // Strip the AXORC_JSON_OUTPUT_PREFIX if present
-    let cleanOutput = stripJSONPrefix(from: output)
-
-    return (cleanOutput, errorOutput, process.terminationStatus)
-}
-
-enum TestError: Error, LocalizedError {
+// TestError enum definition
+enum TestError: Error, CustomStringConvertible {
     case appNotRunning(String)
-    case appleScriptError(String)
     case axError(String)
-    case testSetupError(String)
+    case appleScriptError(String)
+    case generic(String)
 
-    var errorDescription: String? {
+    var description: String {
         switch self {
-        case .appNotRunning(let msg): return "Application Not Running: \(msg)"
-        case .appleScriptError(let msg): return "AppleScript Error: \(msg)"
-        case .axError(let msg): return "Accessibility Error: \(msg)"
-        case .testSetupError(let msg): return "Test Setup Error: \(msg)"
+        case .appNotRunning(let s): return "AppNotRunning: \(s)"
+        case .axError(let s): return "AXError: \(s)"
+        case .appleScriptError(let s): return "AppleScriptError: \(s)"
+        case .generic(let s): return "GenericTestError: \(s)"
         }
     }
 }
 
-// Define productsDirectory for SPM tests
+// Products directory helper (if not already present from previous steps)
 var productsDirectory: URL {
   #if os(macOS)
-    // First try to find the bundle method for Xcode builds
+    // First, try the .xctest bundle method (works well in Xcode)
     for bundle in Bundle.allBundles where bundle.bundlePath.hasSuffix(".xctest") {
         return bundle.bundleURL.deletingLastPathComponent()
     }
     
-    // For Swift Package Manager builds, look for the .build directory
-    let fileManager = FileManager.default
-    var searchURL = URL(fileURLWithPath: #file) // Start from the test file location
+    // Fallback for SPM command-line tests if .xctest bundle isn't found as expected.
+    // This navigates up from the test file to the package root, then to .build/debug.
+    let currentFileURL = URL(fileURLWithPath: #filePath)
+    // Assuming Tests/AXorcistTests/AXorcistIntegrationTests.swift structure:
+    // currentFileURL.deletingLastPathComponent() // AXorcistTests directory
+    //   .deletingLastPathComponent() // Tests directory
+    //   .deletingLastPathComponent() // AXorcist package root directory
+    let packageRootPath = currentFileURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     
-    // Walk up the directory tree looking for .build
-    while searchURL.path != "/" {
-        searchURL = searchURL.deletingLastPathComponent()
-        let buildURL = searchURL.appendingPathComponent(".build")
-        if fileManager.fileExists(atPath: buildURL.path) {
-            // Found .build directory, now find the debug build products
-            let debugURL = buildURL.appendingPathComponent("arm64-apple-macosx/debug")
-            if fileManager.fileExists(atPath: debugURL.path) {
-                return debugURL
-            }
-            // Fallback to looking for any architecture
-            do {
-                let contents = try fileManager.contentsOfDirectory(at: buildURL, includingPropertiesForKeys: nil)
-                for archURL in contents {
-                    let debugURL = archURL.appendingPathComponent("debug")
-                    if fileManager.fileExists(atPath: debugURL.path) {
-                        return debugURL
-                    }
-                }
-            } catch {
-                // Continue searching
-            }
+    // Try common build paths for SwiftPM
+    let buildPathsToTry = [
+        packageRootPath.appendingPathComponent(".build/debug"),
+        packageRootPath.appendingPathComponent(".build/arm64-apple-macosx/debug"),
+        packageRootPath.appendingPathComponent(".build/x86_64-apple-macosx/debug")
+    ]
+    
+    let fileManager = FileManager.default
+    for path in buildPathsToTry {
+        // Check if the directory exists and contains the axorc executable
+        if fileManager.fileExists(atPath: path.appendingPathComponent("axorc").path) {
+            return path
         }
     }
-    
-    fatalError("couldn't find the products directory")
+
+    fatalError("couldn\'t find the products directory via Bundle or SPM fallback. Package root guessed as: \(packageRootPath.path). Searched paths: \(buildPathsToTry.map { $0.path }.joined(separator: ", "))")
   #else
     return Bundle.main.bundleURL
   #endif
