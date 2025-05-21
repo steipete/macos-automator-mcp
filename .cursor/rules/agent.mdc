@@ -33,6 +33,9 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 - Use AppleScript to execute apps such as Claude Code to test the mcp.
 (This requires that the mcp is correctly set up)
 - Whenever you want to ask something to the user, ask Claude Code first instead.
+- Use AppleScript to find the bundle identifier for an app name
+- Do not ask me to run commands, use the iTerm MCP to run it and read output. Send a control character before sending a new command if the current app did not exit.
+- read_file, write_file, move_file all need absolute paths!
 
 ## Common Development Commands
 

@@ -3,174 +3,165 @@ description: text edit
 globs: 
 alwaysApply: false
 ---
-**Core Workflow:**
-
-1.  **`rg` to find:** Use `rg` with its TypeScript type filter (`-tts`) or glob patterns (`--glob '*.ts' --glob '*.tsx'`) to precisely target TypeScript files.
-2.  **Pipe to `xargs`:** Pass the list of TypeScript files to `gsed`.
-3.  **`gsed` to edit:** Perform in-place modifications.
-
-**Always Test First!**
-
-*   **Test `rg` pattern:** `rg 'YOUR_RG_PATTERN' -tts`
-*   **Test `gsed` command on a single `.ts` file:**
-    `gsed 'YOUR_GSED_SCRIPT' component.ts` (outputs to stdout)
-    `cp component.ts component.bak.ts && gsed -i 'YOUR_GSED_SCRIPT' component.ts`
+**Core Philosophy for LLM:**
+*   **Perl is the Workhorse:** Prioritize Perl for its powerful regex (PCRE), in-place editing with backups (`-pi.bak`), multi-line handling (especially `-0777` slurp mode), and range operators (`/START/../END/`).
+*   **`ripgrep` (`rg`) for Extraction (if needed):** Use `rg` if its speed or specific regex features are beneficial for *finding and extracting* a block, which can then be piped to Perl or used to inform a Perl command.
+*   **One-Liners:** Aim for concise, powerful one-liners.
+*   **Backups are Non-Negotiable:** Always include `.bak` with Perl's `-i` or instruct manual `cp` if another tool is (exceptionally) used.
+*   **Regex Quoting:** Single quotes (`'...'`) are the default for Perl code/regex on the command line. If a regex comes from an LLM-generated variable, it needs careful handling.
+*   **Specificity & Non-Greedy:** LLM must generate specific start/end regexes. Non-greedy matching (`.*?`) within blocks is crucial. The `s` flag (dotall) in regex makes `.` match newlines.
+*   **Variable Interpolation:** If the LLM generates Perl code that uses shell variables for regexes or replacement text, it must be aware of how Perl will interpolate these. It's often safer to pass these as arguments or construct the Perl string carefully.
 
 ---
 
-**Guide to TypeScript Editing Operations with `rg` + `gsed`**
+**Perl & `ripgrep` One-Liner Guide for LLM-Driven File Editing**
 
-**1. Simple String Replacement (e.g., Renaming an Import or Variable)**
+**Placeholders (for LLM to fill):**
+*   `source_file.txt`
+*   `target_file.txt`
+*   `'START_REGEX'`: Perl regex string for the start of a block.
+*   `'END_REGEX'`: Perl regex string for the end of a block.
+*   `'FULL_BLOCK_REGEX_PCRE'`: A complete PCRE regex (often `(?s)START_REGEX.*?END_REGEX`) to match the entire block.
+*   `'REGEX_WITHIN_BLOCK'`: Perl regex for content to change *inside* a block.
+*   `'NEW_TEXT_CONTENT'`: The replacement text (can be multi-line). LLM must ensure newlines are actual newlines or properly escaped for Perl strings.
+*   `'TARGET_INSERTION_MARKER_REGEX'`: Perl regex matching where to insert content in `target_file.txt`.
 
-*   **Goal:** Replace all occurrences of an old import path `old-module-path` with `new-module-path`.
+---
 
-*   **Steps:**
-    1.  **Find files (dry run):**
-        ```bash
-        rg -l 'old-module-path' -tts
-        # -tts is short for --type=typescript
-        # Alternatively, for more specificity if rg's default TS types aren't enough:
-        # rg -l 'old-module-path' --glob '*.ts' --glob '*.tsx'
-        ```
-    2.  **Perform in-place replacement:**
-        ```bash
-        rg -l 'old-module-path' -tts | xargs gsed -i "s|old-module-path|new-module-path|g"
-        # Using | as a delimiter for s/// is helpful when paths contain /
-        ```
-        *   `rg -l 'old-module-path' -tts`: Lists TypeScript files containing the old path.
-        *   `| xargs gsed -i`: Pipes filenames to `gsed` for in-place editing.
-        *   `"s|old-module-path|new-module-path|g"`: `gsed` substitution.
+**1. Editing Text *within* a Defined Block (In-Place)**
 
-**2. Regex-Based Refactoring (e.g., Updating a Function Signature)**
-
-*   **Goal:** Change `myFunction(paramA: string, paramB: number)` to `myFunction({ paramA, paramB }: MyFunctionArgs)` and assume `MyFunctionArgs` type needs to be added/handled separately or is pre-existing.
-
-*   **Steps (this is a simplified example; complex refactoring often needs AST-based tools):**
-    1.  **Find files:**
-        ```bash
-        rg -l 'myFunction\([^,]+: string,\s*[^)]+: number\)' -tts
-        ```
-    2.  **Perform in-place replacement using `gsed -E` (Extended Regex):**
-        ```bash
-        rg -l 'myFunction\([^,]+: string,\s*[^)]+: number\)' -tts | \
-          xargs gsed -i -E 's/myFunction\(([^:]+): string,\s*([^:]+): number\)/myFunction({ \1, \2 }: MyFunctionArgs)/g'
-        ```
-        *   `gsed -i -E`: Enables extended regex.
-        *   `myFunction\(([^:]+): string,\s*([^:]+): number\)`: Captures parameter names (`paramA` -> `\1`, `paramB` -> `\2`).
-        *   `myFunction({ \1, \2 }: MyFunctionArgs)`: The new signature.
-        *   **Caution:** Regex for code refactoring can be fragile. For complex changes, consider `ts-morph`, `jscodeshift`, or your IDE's refactoring tools.
-
-**3. Deleting Lines (e.g., Removing Obsolete Log Statements)**
-
-*   **Goal:** Delete all lines containing `console.debug("some specific debug message");`.
-
-*   **Steps:**
-    1.  **Find files:**
-        ```bash
-        rg -l 'console\.debug("some specific debug message");' -tts
-        ```
-    2.  **Perform in-place deletion:**
-        ```bash
-        rg -l 'console\.debug("some specific debug message");' -tts | xargs gsed -i '/console\.debug("some specific debug message");/d'
-        ```
-        *   `'/.../d'`: `gsed` command to `d`elete matching lines. Escape regex metacharacters like `.` and `(`.
-
-**4. Commenting/Uncommenting Code Blocks or Features**
-
-*   **Goal:** Comment out all usages of a deprecated feature flag `FeatureFlags.isOldFeatureEnabled`.
-
-*   **Steps:**
-    1.  **Find files:**
-        ```bash
-        rg -l 'FeatureFlags\.isOldFeatureEnabled' -tts
-        ```
-    2.  **Perform in-place commenting (adding `// `):**
-        ```bash
-        rg -l 'FeatureFlags\.isOldFeatureEnabled' -tts | xargs gsed -i '/FeatureFlags\.isOldFeatureEnabled/s/^\s*/\/\/ &/'
-        ```
-        *   `/FeatureFlags\.isOldFeatureEnabled/s/^\s*/\/\/ &/`:
-            *   Finds lines with the feature flag.
-            *   `s/^\s*/\/\/ &/`: On those lines, replaces the leading whitespace (`^\s*`) with `// ` followed by the original matched leading whitespace (`&` refers to the whole match of `^\s*`). This attempts to preserve indentation.
-            *   A simpler version: `'/FeatureFlags\.isOldFeatureEnabled/s/^/\/\/ /'` just adds `// ` at the very start.
-
-*   **Goal:** Uncomment those lines (assuming they start with `// ` and then the feature flag).
+*   **Goal:** Modify specific text found *between* `START_REGEX` and `END_REGEX`.
+*   **Tool:** Perl
+*   **One-Liner:**
     ```bash
-    rg -l '^\s*\/\/\s*FeatureFlags\.isOldFeatureEnabled' -tts | \
-      xargs gsed -i -E 's|^\s*//\s*(.*FeatureFlags\.isOldFeatureEnabled.*)|\1|'
+    perl -pi.bak -e 'if (/START_REGEX/../END_REGEX/) { s/REGEX_WITHIN_BLOCK/NEW_TEXT_CONTENT/g }' source_file.txt
     ```
-    *   `rg -l '^\s*\/\/\s*FeatureFlags\.isOldFeatureEnabled'`: Finds the commented lines.
-    *   `gsed ... 's|...|\1|'`: Removes the `// ` and surrounding whitespace.
+*   **LLM Notes:**
+    *   `NEW_TEXT_CONTENT` is inserted literally. If it comes from a shell variable, the LLM needs to ensure it's correctly expanded and quoted if it contains special Perl characters or shell metacharacters. E.g., using environment variables: `REPL_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 'if (/START_REGEX/../END_REGEX/) { s/REGEX_WITHIN_BLOCK/$ENV{REPL_VAR}/g }' source_file.txt`
+    *   Ensure `START_REGEX`, `END_REGEX`, and `REGEX_WITHIN_BLOCK` are valid Perl regexes.
 
-**5. Adding/Modifying Imports**
+---
 
-*   **Goal:** Add `import { newUtil } from 'utils-library';` if it's missing, but only in files that already import from `utils-library`. (This is more advanced for sed).
+**2. Replacing an *Entire* Block of Text (In-Place)**
 
-*   **Approach (simplified, might need refinement for edge cases like existing multi-line imports):**
-    1.  **Find files that import from 'utils-library' but DON'T import `newUtil` yet:**
-        ```bash
-        # This rg command gets tricky. It's easier to just process all files importing from 'utils-library'
-        # and let gsed handle the conditional insertion.
-        rg -l "from 'utils-library'" -tts
-        ```
-    2.  **Conditionally add the import using `gsed`:**
-        ```bash
-        rg -l "from 'utils-library'" -tts | xargs gsed -i -E "
-        /from 'utils-library'/ {
-          h;  # Hold the line with the existing import
-          x;  # Get the held line back (now in pattern space)
-          /newUtil/! { # If newUtil is NOT already in this import line
-            x; # Get original line back (the one that triggered the block)
-            # Attempt to add to existing import or add a new line
-            # This part is complex for sed and highly dependent on import style
-            # Option A: Add as a new line (simpler, might not be formatted ideally)
-            /from 'utils-library'/a import { newUtil } from 'utils-library';
-            # Option B: Try to modify existing line (more complex, error-prone with sed)
-            # s/(from 'utils-library'.*\{)([^}]*)(\})/\1 \2, newUtil \3/
-            # The above attempt to modify is illustrative and would need robust testing.
-          }
-          x; # Get original line back if newUtil was already there, or after modification
-        }
-        "
-        ```
-        *   **This is a very tricky task for `sed` due to varying import styles.** A more robust solution for imports would involve AST manipulation (`ts-morph`, ESLint fixers).
-        *   The `gsed` script above tries:
-            *   When a line `from 'utils-library'` is found:
-            *   It checks if `newUtil` is *already* part of that import line (or a nearby related one, which sed struggles with).
-            *   If not, it appends a *new* import line. This is often the safest `sed` can do. Modifying existing multi-item import statements correctly with `sed` is very hard.
+*   **Goal:** Replace the whole block (from `START_REGEX` to `END_REGEX`) with `NEW_TEXT_CONTENT`.
+*   **Tool:** Perl (slurp mode is excellent here)
+*   **One-Liner:**
+    ```bash
+    perl -0777 -pi.bak -e 's/FULL_BLOCK_REGEX_PCRE/NEW_TEXT_CONTENT/sg' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   `-0777`: Slurps the entire file into one string.
+    *   `FULL_BLOCK_REGEX_PCRE`: Should be like `(?s)START_REGEX.*?END_REGEX`. The `(?s)` makes `.` match newlines. The `s` flag on the `s///sg` also ensures `.` matches newlines *within this specific regex*. The `g` flag is for global replacement if the block could appear multiple times.
+    *   `NEW_TEXT_CONTENT`: Can be multi-line. If it's from a shell variable, ensure proper quoting and expansion for the shell, then ensure it's a valid Perl string literal. Example with env var:
+        `NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -0777 -pi.bak -e 's/FULL_BLOCK_REGEX_PCRE/$ENV{NEW_BLOCK_VAR}/sg' source_file.txt`
 
-**6. Updating Type Annotations**
+---
 
-*   **Goal:** Change `Promise<OldType>` to `Promise<NewType>`.
+**3. Deleting a Block of Text (In-Place)**
 
-*   **Steps:**
-    1.  **Find files:**
-        ```bash
-        rg -l 'Promise<OldType>' -tts
-        ```
-    2.  **Perform in-place replacement:**
-        ```bash
-        rg -l 'Promise<OldType>' -tts | xargs gsed -i 's/Promise<OldType>/Promise<NewType>/g'
-        ```
-        *   Be mindful of generics within generics: `Promise<Wrapper<OldType>>` would not be matched by the simple pattern above. `rg`'s PCRE2 regex can be more helpful for complex initial filtering if needed.
+*   **Goal:** Remove everything from `START_REGEX` to `END_REGEX`.
+*   **Tool:** Perl
+*   **Option A (Range Operator - often simplest):**
+    ```bash
+    perl -ni.bak -e 'print unless /START_REGEX/../END_REGEX/' source_file.txt
+    ```
+*   **Option B (Slurp mode - good if block definition is complex or spans tricky boundaries):**
+    ```bash
+    perl -0777 -pi.bak -e 's/FULL_BLOCK_REGEX_PCRE//sg' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   Option A (`-n` and `print unless`): Processes line by line. `START_REGEX` and `END_REGEX` mark the boundaries.
+    *   Option B (`-0777`): Treats file as one string, replaces the matched block with nothing.
+    *   Choose Option A if start/end markers are clear line-based patterns. Choose B if the block's structure is more complex and better captured by a single regex over the whole file.
 
-**Considerations for TypeScript:**
+---
 
-*   **AST-Based Tools are Often Better:** For complex refactoring, understanding code structure is crucial. Tools like:
-    *   **`ts-morph`**: Programmatic TypeScript AST manipulation.
-    *   **`jscodeshift`**: A toolkit for running codemods (often used with TypeScript via parsers).
-    *   **ESLint with `--fix`**: Can fix many stylistic and some structural issues based on configured rules.
-    *   **IDE Refactoring**: Your IDE (VS Code, WebStorm) has powerful, AST-aware refactoring tools.
-    These are generally safer and more reliable than regex for anything beyond simple string replacements in code.
-*   **File Types:** Use `rg -tts` (or `--type typescript`) or be explicit with `--glob '*.ts' --glob '*.tsx' --glob '*.d.ts'` etc., to ensure you're only touching TypeScript files.
-*   **Regex Complexity:** TypeScript syntax (generics, decorators, complex types) can make regex patterns very complex and brittle. Test thoroughly.
-*   **Build Process:** After making changes, always run your TypeScript compiler (`tsc --noEmit`) and linters/formatters to catch any errors or style issues introduced.
-*   **Backup Strategy:** Always use `gsed -i'.bak'` or ensure your code is under version control (Git) and commit before running widespread automated changes.
+**4. Adding/Inserting a New Block of Text (In-Place)**
 
-**When `rg + gsed` Shines for TypeScript:**
+*   **Goal:** Insert `NEW_TEXT_CONTENT` after a line matching `TARGET_INSERTION_MARKER_REGEX`.
+*   **Tool:** Perl
+*   **One-Liner (Insert *after* marker):**
+    ```bash
+    perl -pi.bak -e 'if (s/TARGET_INSERTION_MARKER_REGEX/$&\nNEW_TEXT_CONTENT/) {}' source_file.txt
+    ```
+    *   Or, if `NEW_TEXT_CONTENT` might contain `$&` or other special vars:
+    ```bash
+    NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 'if (s/TARGET_INSERTION_MARKER_REGEX/$&\n$ENV{NEW_BLOCK_VAR}/) {}' source_file.txt
+    ```
+*   **One-Liner (Insert *before* marker - more complex to do robustly in one pass without temp vars in pure one-liner):**
+    It's often simpler to replace the marker with the new block *and* the marker:
+    ```bash
+    NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 'if (s/TARGET_INSERTION_MARKER_REGEX/$ENV{NEW_BLOCK_VAR}\n$&/) {}' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   `$&` in the replacement part of `s///` refers to the entire matched string (the marker).
+    *   `NEW_TEXT_CONTENT` is appended after the marker and a newline.
+    *   The `if` and empty `{}` ensure the substitution happens and Perl continues.
+    *   If `TARGET_INSERTION_MARKER_REGEX` should be *replaced* by the new block:
+        `NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 's/TARGET_INSERTION_MARKER_REGEX/$ENV{NEW_BLOCK_VAR}/g' source_file.txt`
 
-*   Quick, relatively simple string replacements across many files.
-*   Bulk commenting/uncommenting of specific patterns.
-*   Automating repetitive small changes where an AST tool might be overkill or not readily available for a quick script.
-*   Initial cleanup or search before using a more sophisticated tool.
+---
 
-This guide should help you leverage `rg` and `gsed` effectively for common editing tasks in TypeScript projects. Always prioritize safety by testing and using backups/version control.
+**5. Moving a Block of Text from `source_file.txt` to `target_file.txt`**
+
+*   **Goal:** Extract block from source, insert into target, delete from source.
+*   **Tools:** Perl for all steps. (`rg` could be used for extraction if its specific regex capabilities are needed, then pipe to Perl for insertion).
+*   **One-Liner Sequence (conceptual, hard to make a true single shell one-liner without temp files or complex shell quoting for the block content):**
+
+    This task inherently involves state (the extracted block). True one-liners that pass this state without a temp file are tricky and less readable. A clear sequence is better for LLM reliability.
+
+    **Recommended Approach (using a shell variable to hold the block - LLM must handle quoting for this variable carefully):**
+
+    ```bash
+    # Step 1: Extract block from source_file.txt into a shell variable
+    # Use rg (very fast for extraction) or Perl. Using Perl here for consistency:
+    EXTRACTED_BLOCK=$(perl -0777 -ne 'print $& if /FULL_BLOCK_REGEX_PCRE/sg' source_file.txt)
+
+    # Check if block was extracted
+    if [ -z "$EXTRACTED_BLOCK" ]; then
+      echo "Error: Block not found in source_file.txt or is empty. Aborting move."
+      # exit 1 # LLM could add this
+    else
+      # Step 2: Insert block into target_file.txt (e.g., after TARGET_INSERTION_MARKER_REGEX)
+      # Pass EXTRACTED_BLOCK via an environment variable to avoid quoting hell with Perl -e
+      BLOCK_TO_INSERT="$EXTRACTED_BLOCK" \
+      perl -pi.bak_target -e 's/(TARGET_INSERTION_MARKER_REGEX)/$1\n$ENV{BLOCK_TO_INSERT}/' target_file.txt && \
+      \
+      # Step 3: Delete block from source_file.txt (only if insertion seemed to succeed)
+      perl -0777 -pi.bak_source -e 's/FULL_BLOCK_REGEX_PCRE//sg' source_file.txt && \
+      echo "Block moved successfully."
+    fi
+    ```
+*   **LLM Notes for Move:**
+    *   **Atomicity:** This is NOT atomic. LLM must warn that if a step fails, files can be in an inconsistent state.
+    *   **Shell Variable for Block:** The `EXTRACTED_BLOCK=$(...)` captures the output.
+    *   **Passing to Perl:** Using an environment variable (`BLOCK_TO_INSERT="$EXTRACTED_BLOCK" perl ... $ENV{BLOCK_TO_INSERT}`) is generally the most robust way to pass multi-line, potentially complex strings to a Perl `-e` script from the shell.
+    *   **Insertion Logic:** The example inserts the block *after* the marker and a newline. The LLM can adapt this (e.g., replace marker, insert before).
+    *   **Error Check:** The `if [ -z "$EXTRACTED_BLOCK" ]` is a basic check.
+    *   **Backup Suffixes:** Using distinct backup suffixes like `.bak_target` and `.bak_source` is good practice.
+
+**Simplifying "Move" for a "Stricter" One-Liner (using process substitution if target insertion is simple):**
+
+If inserting into the target is simple (e.g., appending, or simple marker replacement not requiring the original marker), you *could* pipe:
+
+```bash
+# Appending extracted block to target, then deleting from source
+(perl -0777 -ne 'print $& if /FULL_BLOCK_REGEX_PCRE/sg' source_file.txt >> target_file.txt.new && \
+ cp target_file.txt target_file.txt.bak_target && mv target_file.txt.new target_file.txt) && \
+perl -0777 -pi.bak_source -e 's/FULL_BLOCK_REGEX_PCRE//sg' source_file.txt
+```
+This is less flexible for targeted insertion within `target_file.txt` without more complex `perl` in the receiving end. The previous multi-step approach with an intermediate shell variable is often more robust for an LLM to generate correctly for various insertion scenarios.
+
+---
+
+**General "Fuzzy Knowledge" Mitigation for LLM:**
+
+1.  **Request Regex Flavor Explicitly:** "Generate a Perl Compatible Regular Expression (PCRE)..."
+2.  **Emphasize Non-Greedy:** "Ensure the regex for the block content uses non-greedy matching (e.g., `.*?` with the `s` flag)."
+3.  **Ask for Backup Command:** "Always include a backup mechanism, like Perl's `-pi.bak`."
+4.  **Specify Multi-line Handling:**
+    *   "If operating on a whole block as one unit, use Perl's `-0777` slurp mode."
+    *   "If processing line-by-line but needing to act on a range, use Perl's `/START/../END/` range operator."
+5.  **Newline in Replacement:** "When providing `NEW_TEXT_CONTENT` for Perl, ensure newlines are actual newlines if it's a direct string in the `-e` script, or that they are correctly handled if coming from a shell variable."
+6.  **Quoting for LLM-Generated Variables:** If the LLM is told to use a shell variable for `START_REGEX` or `NEW_TEXT_CONTENT`, it must be reminded about shell quoting for the variable assignment and then how Perl will see that variable (e.g., via `$ENV{VAR_NAME}` to avoid Perl trying to interpret it as a Perl variable directly).
