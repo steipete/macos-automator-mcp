@@ -186,12 +186,18 @@ public struct Locator: Codable {
 // Response for query command (single element)
 public struct QueryResponse: Codable {
     public var command_id: String
+    public var success: Bool
+    public var command: String
+    public var data: AXElement?
     public var attributes: ElementAttributes?
     public var error: String?
     public var debug_logs: [String]?
 
-    public init(command_id: String, attributes: ElementAttributes? = nil, error: String? = nil, debug_logs: [String]? = nil) {
+    public init(command_id: String, success: Bool = true, command: String = "getFocusedElement", data: AXElement? = nil, attributes: ElementAttributes? = nil, error: String? = nil, debug_logs: [String]? = nil) {
         self.command_id = command_id
+        self.success = success
+        self.command = command
+        self.data = data
         self.attributes = attributes
         self.error = error
         self.debug_logs = debug_logs
@@ -249,27 +255,41 @@ public struct TextContentResponse: Codable {
 // Generic error response
 public struct ErrorResponse: Codable {
     public var command_id: String
-    public var error: String
+    public var success: Bool
+    public var error: ErrorDetail
     public var debug_logs: [String]?
 
     public init(command_id: String, error: String, debug_logs: [String]? = nil) {
         self.command_id = command_id
-        self.error = error
+        self.success = false
+        self.error = ErrorDetail(message: error)
         self.debug_logs = debug_logs
+    }
+}
+
+public struct ErrorDetail: Codable {
+    public var message: String
+    
+    public init(message: String) {
+        self.message = message
     }
 }
 
 // Simple success response, e.g. for ping
 public struct SimpleSuccessResponse: Codable, Equatable {
     public var command_id: String
+    public var success: Bool
     public var status: String
-    public var message: String?
+    public var message: String
+    public var details: String?
     public var debug_logs: [String]?
 
-    public init(command_id: String, status: String, message: String? = nil, debug_logs: [String]? = nil) {
+    public init(command_id: String, status: String, message: String, details: String? = nil, debug_logs: [String]? = nil) {
         self.command_id = command_id
+        self.success = true
         self.status = status
         self.message = message
+        self.details = details
         self.debug_logs = debug_logs
     }
 }

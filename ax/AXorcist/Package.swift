@@ -13,7 +13,8 @@ let package = Package(
         .executable(name: "axorc", targets: ["axorc"]) // Product 'axorc' comes from target 'axorc'
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0") // Added swift-argument-parser
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"), // Added swift-argument-parser
+        .package(url: "https://github.com/apple/swift-testing.git", from: "0.6.0") // Added swift-testing
     ],
     targets: [
         .target(
@@ -32,7 +33,10 @@ let package = Package(
         ),
         .testTarget(
             name: "AXorcistTests",
-            dependencies: ["AXorcist"], // Test target depends on the library
+            dependencies: [
+                "AXorcist", // Test target depends on the library
+                .product(name: "Testing", package: "swift-testing") // Added swift-testing dependency
+            ],
             path: "Tests/AXorcistTests" // Explicit path
             // Sources will be inferred by SPM
         )

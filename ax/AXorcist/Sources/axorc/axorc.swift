@@ -109,10 +109,23 @@ struct AXORCCommand: ParsableCommand {
                 let messageValue = inputSourceDescription
                 let successMessage = prefix + messageValue
                 currentLogs.append(successMessage)
+                
+                // Extract details from command envelope for ping
+                let details: String?
+                if let payloadData = jsonToProcess.data(using: .utf8),
+                   let payload = try? JSONSerialization.jsonObject(with: payloadData) as? [String: Any],
+                   let payloadDict = payload["payload"] as? [String: Any],
+                   let payloadMessage = payloadDict["message"] as? String {
+                    details = payloadMessage
+                } else {
+                    details = nil
+                }
+                
                 let successResponse = SimpleSuccessResponse(
                     command_id: commandEnvelope.command_id,
                     status: "pong", 
-                    message: successMessage, 
+                    message: successMessage,
+                    details: details,
                     debug_logs: debug ? currentLogs : nil
                 )
                 if let data = try? encoder.encode(successResponse), let str = String(data: data, encoding: .utf8) { print(str) }
@@ -143,7 +156,10 @@ struct AXORCCommand: ParsableCommand {
                 if let actualResponse = operationResult {
                     let finalDebugLogs = debug || (commandEnvelope.debug_logging ?? false) ? handlerLogs : nil 
                     let queryResponse = QueryResponse(
-                        command_id: commandIDForResponse, 
+                        command_id: commandIDForResponse,
+                        success: actualResponse.error == nil,
+                        command: "getFocusedElement",
+                        data: actualResponse.data,
                         attributes: actualResponse.data?.attributes, 
                         error: actualResponse.error,
                         debug_logs: finalDebugLogs
