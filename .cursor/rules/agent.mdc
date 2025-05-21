@@ -35,12 +35,8 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 - Whenever you want to ask something to the user, ask Claude Code first instead.
 - Use AppleScript to find the bundle identifier for an app name
 
-- Do not ask me to run commands, use the Terminal MCP to run it and read output.
-Send a control character before sending a new command if the current app did not exit.
-Always cd into the absolute path
-When using iTerm, you can detect if the test or command executed successfully or hangs,
-by inspecting the output and seeing if the last line contains the path and a $ sign (success)
-or if it still hangs and didn't exit correctly.
+- To run any terminal command, use `osascript .cursor/scripts/terminator.scpt`.
+  Call it without arguments to understand syntax.
 
 - read_file, write_file, move_file all need absolute paths!
 
