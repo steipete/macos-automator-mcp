@@ -72,3 +72,6 @@ scripts/*.js
 # Validation output file
 validation-output.txt
 test_output.txt
+
+# Swift Package Manager
+Package.resolved
