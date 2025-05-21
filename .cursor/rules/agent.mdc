@@ -44,6 +44,8 @@ or if it still hangs and didn't exit correctly.
 
 - read_file, write_file, move_file all need absolute paths!
 
+- To run tests for AXorcist reliable, use `run_tests.sh`.
+
 ## Common Development Commands
 
 ```bash
