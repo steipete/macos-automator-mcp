@@ -75,3 +75,6 @@ test_output.txt
 
 # Swift Package Manager
 Package.resolved
+
+# AXorcist binary
+axorc/axorc
