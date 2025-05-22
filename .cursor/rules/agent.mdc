@@ -42,7 +42,7 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 
 - To run tests for AXorcist reliable, use `run_tests.sh`.
 
-- To test the stdin feature of `axorc`, you MUST use `axorc_runner.sh`.
+- To test the stdin feature of `axorc`, you MUST use `axorc/axorc_runner.sh`.
 
 ## Common Development Commands
 
