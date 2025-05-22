@@ -44,6 +44,23 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 
 - To test the stdin feature of `axorc`, you MUST use `axorc/axorc_runner.sh`.
 
+## AXorcist Binary Management
+
+The `axorc/` directory contains:
+- `axorc`: The main AXorcist binary (tracked in git)
+- `AXorcist`: Symlink to `/Users/steipete/Projects/CodeLooper/AXorcist` (DO NOT REMOVE - needed for builds)
+- `axorc_runner.sh`: Wrapper script that tries multiple binary locations
+
+To rebuild the AXorcist binary:
+1. Ensure the `AXorcist` symlink exists (points to CodeLooper project)
+2. Copy the latest binary from CodeLooper: `cp /Users/steipete/Projects/CodeLooper/AXorcist/.build/debug/axorc axorc/axorc`
+3. Also copy to expected location: `cp axorc/axorc axorc/AXorcist/.build/debug/axorc`
+
+The symlink is ESSENTIAL for:
+- Development workflow integration
+- Build process access to source code
+- Testing and debugging
+
 ## Common Development Commands
 
 ```bash
