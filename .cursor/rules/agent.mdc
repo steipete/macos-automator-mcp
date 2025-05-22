@@ -37,6 +37,7 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 
 - To run any terminal command, use `osascript .cursor/scripts/terminator.scpt`.
   Call it without arguments to understand syntax.
+  Call it with just your tag and it will return the log.
 
 - read_file, write_file, move_file all need absolute paths!
 
