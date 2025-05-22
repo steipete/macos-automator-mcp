@@ -27,16 +27,16 @@ export class AXQueryExecutor {
     const isProdBuild = __dirname.includes(path.join(path.sep, 'dist', path.sep));
 
     if (isProdBuild) {
-      // In production (dist), ax_runner.sh and ax binary are directly in dist/
+      // In production (dist), axorc_runner.sh and axorc binary are directly in dist/
       // So, utility path is one level up from dist/src (i.e., dist/)
       this.axUtilityPath = path.resolve(__dirname, '..'); 
     } else {
-      // In development (src), ax_runner.sh and ax binary are in project_root/ax/
-      // So, utility path is one level up from src/ and then into ax/
-      this.axUtilityPath = path.resolve(__dirname, '..', 'ax');
+      // In development (src), axorc_runner.sh and axorc binary are in project_root/axorc/
+      // So, utility path is one level up from src/ and then into axorc/
+      this.axUtilityPath = path.resolve(__dirname, '..', 'axorc');
     }
     
-    this.scriptPath = path.join(this.axUtilityPath, 'ax_runner.sh');
+    this.scriptPath = path.join(this.axUtilityPath, 'axorc_runner.sh');
     logger.debug('AXQueryExecutor initialized', { 
       isProdBuild, 
       axUtilityPath: this.axUtilityPath, 
@@ -125,7 +125,7 @@ export class AXQueryExecutor {
             logger.debug('Checking log file for more information');
             try {
               // We won't actually read it here, but we'll mention it in the error
-              const logPath = path.join(this.axUtilityPath, 'ax_runner.log');
+              const logPath = path.join(this.axUtilityPath, 'axorc_runner.log');
               stderrData += `\nCheck log file at ${logPath} for more details.`;
             } catch {
               // Ignore errors reading the log
