@@ -13,13 +13,13 @@ public enum OutputFormat: String, Codable {
 // Define CommandType enum
 public enum CommandType: String, Codable {
     case query
-    case performAction = "perform_action"
-    case getAttributes = "get_attributes"
+    case performAction = "performAction"
+    case getAttributes = "getAttributes"
     case batch
-    case describeElement = "describe_element"
-    case getFocusedElement = "get_focused_element"
-    case collectAll = "collect_all"
-    case extractText = "extract_text"
+    case describeElement = "describeElement"
+    case getFocusedElement = "getFocusedElement"
+    case collectAll = "collectAll"
+    case extractText = "extractText"
     case ping
     // Add future commands here, ensuring case matches JSON or provide explicit raw value
 }
@@ -109,52 +109,50 @@ public struct AnyCodable: Codable {
 // Type alias for element attributes dictionary
 public typealias ElementAttributes = [String: AnyCodable]
 
-// Main command envelope
+// Main command envelope - REPLACED with definition from axorc.swift for consistency
 public struct CommandEnvelope: Codable {
     public let command_id: String
-    public let command: CommandType
+    public let command: CommandType // Uses CommandType from this file
     public let application: String?
-    public let locator: Locator?
-    public let action: String?
-    public let value: String?
-    public let attribute_to_set: String?
     public let attributes: [String]?
-    public let path_hint: [String]?
+    public let payload: [String: String]? // For ping compatibility
     public let debug_logging: Bool?
+    public let locator: Locator? // Locator from this file
+    public let path_hint: [String]?
     public let max_elements: Int?
-    public let output_format: OutputFormat?
-    public let perform_action_on_child_if_needed: Bool?
+    public let output_format: OutputFormat? // OutputFormat from this file
+    public let action_name: String? // For performAction
+    public let action_value: AnyCodable? // For performAction (AnyCodable from this file)
+    public let sub_commands: [CommandEnvelope]? // For batch command
 
-    enum CodingKeys: String, CodingKey {
-        case command_id
-        case command
-        case application
-        case locator
-        case action
-        case value
-        case attribute_to_set
-        case attributes
-        case path_hint
-        case debug_logging
-        case max_elements
-        case output_format
-        case perform_action_on_child_if_needed
-    }
-
-    public init(command_id: String, command: CommandType, application: String? = nil, locator: Locator? = nil, action: String? = nil, value: String? = nil, attribute_to_set: String? = nil, attributes: [String]? = nil, path_hint: [String]? = nil, debug_logging: Bool? = nil, max_elements: Int? = nil, output_format: OutputFormat? = .smart, perform_action_on_child_if_needed: Bool? = false) {
+    // Added a public initializer for convenience, matching fields.
+    public init(command_id: String, 
+                command: CommandType, 
+                application: String? = nil, 
+                attributes: [String]? = nil, 
+                payload: [String : String]? = nil, 
+                debug_logging: Bool? = nil, 
+                locator: Locator? = nil, 
+                path_hint: [String]? = nil, 
+                max_elements: Int? = nil, 
+                output_format: OutputFormat? = nil, 
+                action_name: String? = nil, 
+                action_value: AnyCodable? = nil,
+                sub_commands: [CommandEnvelope]? = nil
+    ) {
         self.command_id = command_id
         self.command = command
         self.application = application
-        self.locator = locator
-        self.action = action
-        self.value = value
-        self.attribute_to_set = attribute_to_set
         self.attributes = attributes
-        self.path_hint = path_hint
+        self.payload = payload
         self.debug_logging = debug_logging
+        self.locator = locator
+        self.path_hint = path_hint
         self.max_elements = max_elements
         self.output_format = output_format
-        self.perform_action_on_child_if_needed = perform_action_on_child_if_needed
+        self.action_name = action_name
+        self.action_value = action_value
+        self.sub_commands = sub_commands
     }
 }
 

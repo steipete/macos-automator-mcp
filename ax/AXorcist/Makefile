@@ -1,7 +1,7 @@
-# Makefile for ax helper
+# Makefile for axorc helper
 
 # Define the output binary name
-BINARY_NAME = ax
+BINARY_NAME = axorc
 UNIVERSAL_BINARY_PATH = ./$(BINARY_NAME)
 RELEASE_BUILD_DIR := ./.build/arm64-apple-macosx/release
 RELEASE_BUILD_DIR_X86 := ./.build/x86_64-apple-macosx/release

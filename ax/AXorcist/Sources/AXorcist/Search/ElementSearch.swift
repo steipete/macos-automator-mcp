@@ -15,7 +15,7 @@ enum ElementMatchStatus {
 }
 
 @MainActor
-private func evaluateElementAgainstCriteria(element: Element, locator: Locator, actionToVerify: String?, depth: Int, isDebugLoggingEnabled: Bool, currentDebugLogs: inout [String]) -> ElementMatchStatus {
+internal func evaluateElementAgainstCriteria(element: Element, locator: Locator, actionToVerify: String?, depth: Int, isDebugLoggingEnabled: Bool, currentDebugLogs: inout [String]) -> ElementMatchStatus {
     func dLog(_ message: String) { if isDebugLoggingEnabled { currentDebugLogs.append(message) } }
     
     var tempLogs: [String] = [] // For calls to Element methods that need their own log scope temporarily
