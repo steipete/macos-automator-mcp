@@ -56,6 +56,9 @@ To rebuild the AXorcist binary:
 2. Copy the latest binary from CodeLooper: `cp /Users/steipete/Projects/CodeLooper/AXorcist/.build/debug/axorc axorc/axorc`
 3. Also copy to expected location: `cp axorc/axorc axorc/AXorcist/.build/debug/axorc`
 
+- Long-term this project simply ships with a compiled binary of `axorc`.
+  During developent, we have a symlink of the `AXorcist` directory from another folder to simplify development across projects.
+
 The symlink is ESSENTIAL for:
 - Development workflow integration
 - Build process access to source code
