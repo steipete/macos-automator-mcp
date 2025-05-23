@@ -1,5 +1,7 @@
 # macOS Automator MCP Server: System and Knowledge Base Specification
 
+https://aistudio.google.com/prompts/1Uj4Cs_wt6Yt7tndf8bUy6BSTZDHIlU74
+
 This document details the `macos_automator` MCP server, focusing on its architecture, features, and the specification for its extensive Markdown-file-based AppleScript/JXA Knowledge Base.
 
 ## Part 1: Server Implementation Specification
