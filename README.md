@@ -1,21 +1,23 @@
-# macOS Automator MCP Server
+# 🤖 macOS Automator MCP Server: Your Friendly Neighborhood RoboScripter™
 
 ![macOS Automator MCP Server](assets/logo.png)
 
-## Overview
-This project provides a Model Context Protocol (MCP) server, `macos_automator`, that allows execution of AppleScript and JavaScript for Automation (JXA) scripts on macOS. It features a knowledge base of pre-defined scripts accessible by ID and supports inline scripts, script files, and argument passing.
-The knowledge base is loaded lazily on first use for fast server startup.
+## 🎯 Mission Control: Teaching Robots to Click Buttons Since 2024
 
-## Benefits
-- Execute AppleScript/JXA scripts remotely via MCP.
-- Utilize a rich, extensible knowledge base of common macOS automation tasks.
-- Control macOS applications and system functions programmatically.
-- Integrate macOS automation into larger AI-driven workflows.
+Welcome to the automated future where your Mac finally does what you tell it to! This Model Context Protocol (MCP) server transforms your AI assistant into a silicon-based intern who actually knows AppleScript and JavaScript for Automation (JXA). 
 
-## Prerequisites
-- Node.js (version >=18.0.0 recommended, see `package.json` engines).
-- macOS.
-- **CRITICAL PERMISSIONS SETUP:**
+No more copy-pasting scripts like a caveman - let the robots handle the robot work! Our knowledge base contains over 200 pre-programmed automation sequences, loaded faster than you can say "Hey Siri, why don't you work like this?"
+
+## 🚀 Why Let Robots Run Your Mac?
+- **Remote Control Reality**: Execute AppleScript/JXA scripts via MCP - it's like having a tiny robot inside your Mac!
+- **Knowledge Base of Power**: 200+ pre-built automation recipes. From "toggle dark mode" to "extract all URLs from Safari" - we've got your robot needs covered.
+- **App Whisperer**: Control any macOS application programmatically. Make Finder dance, Safari sing, and Terminal... well, terminate things.
+- **AI Workflow Integration**: Connect your Mac to the AI revolution. Your LLM can now actually DO things instead of just talking about them!
+
+## 🔧 Robot Requirements (Prerequisites)
+- **Node.js** (version >=18.0.0) - Because even robots need a runtime
+- **macOS** - Sorry Windows users, this is an Apple-only party 🍎
+- **⚠️ CRITICAL: Permission to Automate (Your Mac's Trust Issues):**
     - The application running THIS MCP server (e.g., Terminal, your Node.js application) requires explicit user permissions on the macOS machine where the server is running.
     - **Automation Permissions:** To control other applications (Finder, Safari, Mail, etc.).
         - Go to: System Settings > Privacy & Security > Automation.
@@ -27,11 +29,11 @@ The knowledge base is loaded lazily on first use for fast server startup.
         - Add the application running the server (e.g., Terminal) to the list and ensure its checkbox is ticked.
     - First-time attempts to control a new application or use accessibility features may still trigger a macOS confirmation prompt, even if pre-authorized. The server itself cannot grant these permissions.
 
-## Installation & Usage
+## 🏃‍♂️ Quick Start: Release the Robots!
 
-The primary way to run this server is via `npx`. This ensures you're using the latest version without needing a global install.
+The easiest way to deploy your automation army is via `npx`. No installation needed - just pure robot magic!
 
-Add the following configuration to your MCP client's `mcp.json` (or equivalent configuration):
+Add this to your MCP client's `mcp.json` and watch the automation begin:
 
 ```json
 {
@@ -47,9 +49,9 @@ Add the following configuration to your MCP client's `mcp.json` (or equivalent c
 }
 ```
 
-### Running Locally (for Development or Direct Use)
+### 🛠️ Robot Workshop Mode (Local Development)
 
-Alternatively, for development or if you prefer to run the server directly from a cloned repository, you can use the provided `start.sh` script. This is useful if you want to make local modifications or run a specific version.
+Want to tinker with the robot's brain? Clone the repo and become a robot surgeon!
 
 1.  **Clone the repository:**
     ```bash
@@ -80,11 +82,11 @@ Alternatively, for development or if you prefer to run the server directly from 
 
     **Note for Developers:** The `start.sh` script, particularly if modified to remove any pre-existing compiled `dist/server.js` before execution (e.g., by adding `rm -f dist/server.js`), is designed to ensure you are always running the latest TypeScript code from the `src/` directory via `tsx`. This is ideal for development to prevent issues with stale builds. For production deployment (e.g., when published to npm), a build process would typically create a definitive `dist/server.js` which would then be the entry point for the published package.
 
-## Tools Provided
+## 🤖 Robot Toolbox
 
-### 1. `execute_script`
+### 1. `execute_script` - The Script Launcher 9000
 
-Executes an AppleScript or JavaScript for Automation (JXA) script on macOS. 
+Your robot's primary weapon for macOS domination. Feed it AppleScript or JXA, and watch the magic happen! 
 Scripts can be provided as inline content (`script_content`), an absolute file path (`script_path`), or by referencing a script from the built-in knowledge base using its unique `kb_script_id`.
 
 **Script Sources (mutually exclusive):**
@@ -186,9 +188,9 @@ The `execute_script` tool returns a response in the following format:
 }
 ```
 
-### 2. `get_scripting_tips`
+### 2. `get_scripting_tips` - The Robot's Encyclopedia
 
-Retrieves AppleScript/JXA tips, examples, and runnable script details from the server's knowledge base. Useful for discovering available scripts, their functionalities, and how to use them with `execute_script` (especially `kb_script_id`).
+Your personal automation librarian! Searches through 200+ pre-built scripts faster than you can Google "how to AppleScript". Perfect for when your robot needs inspiration.
 
 **Arguments:**
 -   `list_categories` (boolean, optional, default: false): If true, returns only the list of available knowledge base categories and their descriptions. Overrides other parameters.
@@ -208,9 +210,9 @@ Retrieves AppleScript/JXA tips, examples, and runnable script details from the s
 -   Search for tips related to "clipboard":
     `{ "toolName": "get_scripting_tips", "input": { "search_term": "clipboard" } }`
 
-### 3. `accessibility_query`
+### 3. `accessibility_query` - The UI X-Ray Vision
 
-Query and interact with the macOS accessibility interface to inspect UI elements of applications. This tool provides a powerful way to explore and manipulate the user interface elements of any application using the native macOS accessibility framework. It is powered by the `ax` command-line binary.
+Give your robot superhero powers to see and click ANY button in ANY app! This tool peers into the soul of macOS applications using the accessibility framework. Powered by the mystical `ax` binary, it's like having X-ray vision for user interfaces.
 
 The `ax` binary, and therefore this tool, can accept its JSON command input in multiple ways:
 1.  **Direct JSON String Argument:** If `ax` is invoked with a single command-line argument that is not a valid file path, it will attempt to parse this argument as a complete JSON string.
@@ -296,62 +298,50 @@ This tool exposes the complete macOS accessibility API capabilities, allowing de
 
 **Note:** Using this tool requires that the application running this server has the necessary Accessibility permissions in macOS System Settings > Privacy & Security > Accessibility.
 
-## Key Use Cases & Examples
+## 🎮 Robot Playground: Cool Things Your New Robot Friend Can Do
 
--   **Application Control:**
+-   **Application Control (Teaching Apps Who's Boss):**
     -   Get the current URL from Safari: `{ "input": { "script_content": "tell application \"Safari\" to get URL of front document" } }`
     -   Get subjects of unread emails in Mail: `{ "input": { "script_content": "tell application \"Mail\" to get subject of messages of inbox whose read status is false" } }`
--   **File System Operations:**
+-   **File System Operations (Digital Housekeeping):**
     -   List files on the Desktop: `{ "input": { "script_content": "tell application \"Finder\" to get name of every item of desktop" } }`
-    -   Create a new folder: `{ "input": { "script_content": "tell application \"Finder\" to make new folder at desktop with properties {name:\"My New Folder\"}" } }`
--   **System Interactions:**
-    -   Display a system notification: `{ "input": { "script_content": "display notification \"Important Update!\" with title \"System Alert\"" } }`
+    -   Create a new folder: `{ "input": { "script_content": "tell application \"Finder\" to make new folder at desktop with properties {name:\"Robot's Secret Stash\"}" } }`
+-   **System Interactions (Mac Mind Control):**
+    -   Display a system notification: `{ "input": { "script_content": "display notification \"🤖 Beep boop! Task complete!\" with title \"Robot Report\"" } }`
     -   Set system volume: `{ "input": { "script_content": "set volume output volume 50" } }` (0-100)
     -   Get current clipboard content: `{ "input": { "script_content": "the clipboard" } }`
 
-## Troubleshooting
+## 🔧 When Robots Rebel (Troubleshooting)
 
--   **Permissions Errors:** If scripts fail to control apps or perform UI actions, double-check Automation and Accessibility permissions in System Settings for the application running the MCP server (e.g., Terminal).
--   **Script Syntax Errors:** `osascript` errors will be returned in the `stderr` or error message. Test complex scripts locally using Script Editor (for AppleScript) or a JXA runner first.
--   **Timeouts:** If a script takes longer than `timeout_seconds` (default 60s), it will be terminated. Increase the timeout for long-running scripts.
--   **File Not Found:** Ensure `script_path` is an absolute POSIX path accessible by the user running the MCP server.
--   **Incorrect Output/JXA Issues:** For JXA scripts, especially those using Objective-C bridging, ensure `output_format_mode` is set to `'direct'` or `'auto'` (default). Using AppleScript-specific formatting flags like `human_readable` with JXA can cause errors. If AppleScript output is not parsing correctly, try `structured_output_and_error` or `structured_error`.
+-   **"Access Denied" Drama:** Your robot lacks permissions! Check System Settings > Privacy & Security. Give your Terminal the keys to the kingdom.
+-   **Script Syntax Sadness:** Even robots make typos. Test scripts in Script Editor first - it's like spell-check for automation.
+-   **Timeout Tantrums:** Some tasks take time. Increase `timeout_seconds` if your robot needs more than 60 seconds to complete its mission.
+-   **File Not Found Fiasco:** Robots need absolute paths, not relative ones. No shortcuts in robot land!
+-   **JXA Output Oddities:** JavaScript robots are picky. Use `output_format_mode: 'direct'` or let `'auto'` mode handle it.
 
-## Configuration via Environment Variables
+## 🎛️ Robot Control Panel (Configuration)
 
--   `LOG_LEVEL`: Set the logging level for the server.
-    -   Values: `DEBUG`, `INFO`, `WARN`, `ERROR`
+Fine-tune your robot's behavior with these environment variables:
+
+-   **`LOG_LEVEL`**: How chatty should your robot be?
+    -   `DEBUG`: Robot tells you EVERYTHING (TMI mode)
+    -   `INFO`: Normal robot chatter
+    -   `WARN`: Only important stuff
+    -   `ERROR`: Silent mode (robot speaks only when things explode)
     -   Example: `LOG_LEVEL=DEBUG npx @steipete/macos-automator-mcp@latest`
 
--   `KB_PARSING`: Controls when the knowledge base (script tips) is parsed.
-    -   Values:
-        -   `lazy` (default): The knowledge base is parsed on the first request to `get_scripting_tips` or when a `kb_script_id` is used in `execute_script`. This allows for faster server startup.
-        -   `eager`: The knowledge base is parsed when the server starts up. This may slightly increase startup time but ensures the KB is immediately available and any parsing errors are caught early.
-    -   Example (when running via `start.sh` or similar):
-        ```bash
-        KB_PARSING=eager ./start.sh
-        ```
-    -   Example (when configuring via an MCP runner that supports `env`, like `mcp-agentify`):
-        ```json
-        {
-          "env": {
-            "LOG_LEVEL": "INFO",
-            "KB_PARSING": "eager"
-          }
-        }
-        ```
+-   **`KB_PARSING`**: When should the robot load its brain?
+    -   `lazy` (default): Loads knowledge on-demand (fast startup, lazy robot)
+    -   `eager`: Loads everything at startup (slower start, ready-to-go robot)
+    -   Example: `KB_PARSING=eager ./start.sh`
 
-## For Developers
+## 👨‍🔬 Robot Scientists Welcome!
 
-For detailed instructions on local development, project structure (including the `knowledge_base`), and contribution guidelines, please see [DEVELOPMENT.md](DEVELOPMENT.md).
+Want to upgrade your robot? Check out [DEVELOPMENT.md](DEVELOPMENT.md) for the full technical manual on teaching new tricks to your automation assistant.
 
-## Development
+## 🧠 Teach Your Robot New Tricks (Local Knowledge Base)
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md) for details on the project structure, building, and testing.
-
-## Local Knowledge Base
-
-You can supplement the built-in knowledge base with your own local tips and shared handlers. Create a directory structure identical to the `knowledge_base` in this repository (or a subset of it).
+Your robot can learn custom skills! Create your own automation recipes and watch your robot evolve.
 
 By default, the application will look for this local knowledge base at `~/.macos-automator/knowledge_base`.
 You can customize this path by setting the `LOCAL_KB_PATH` environment variable.
@@ -375,81 +365,60 @@ Or, if you are running the validator script, you can use the `--local-kb-path` a
 
 This allows for personalization and extension of the available automation scripts and tips without modifying the core application files.
 
-## Contributing
+## 🤝 Join the Robot Revolution!
 
-Contributions are welcome! Please submit issues and pull requests to the [GitHub repository](https://github.com/steipete/macos-automator-mcp).
+Found a bug? Got a cool automation idea? Your robot army needs YOU! Submit issues and pull requests to the [GitHub repository](https://github.com/steipete/macos-automator-mcp).
 
-## Automation Capabilities
+## 💪 Robot Superpowers Showcase
 
-This server provides powerful macOS automation capabilities through AppleScript and JavaScript for Automation (JXA). Here are some of the most useful examples:
+Here's what your new silicon sidekick can do out of the box:
 
-### Terminal Automation
-- **Run commands in new Terminal tabs:**
+### 🖥️ Terminal Tamer
+- **Command Line Wizardry:** Open new tabs, run commands, capture output - your robot speaks fluent bash!
   ```
-  { "input": { "kb_script_id": "terminal_app_run_command_new_tab", "input_data": { "command": "ls -la" } } }
+  { "input": { "kb_script_id": "terminal_app_run_command_new_tab", "input_data": { "command": "echo '🤖 Hello World!'" } } }
   ```
-- **Execute commands with sudo and provide password securely**
-- **Capture command output for processing**
 
-### Browser Control
-- **Chrome/Safari automation:**
-  ```
-  { "input": { "kb_script_id": "chrome_open_url_new_tab_profile", "input_data": { "url": "https://example.com", "profile_name": "Default" } } }
-  ```
+### 🌐 Browser Bot
+- **Web Automation Master:** Control Chrome and Safari like a puppet master!
   ```
   { "input": { "kb_script_id": "safari_get_front_tab_url" } }
   ```
-- **Execute JavaScript in browser context:**
-  ```
-  { "input": { "kb_script_id": "chrome_execute_javascript", "input_data": { "javascript_code": "document.title" } } }
-  ```
-- **Extract page content, manipulate forms, and automate workflows**
-- **Take screenshots of web pages**
+- **JavaScript Injection:** Make web pages dance to your robot's tune
+- **Screenshot Sniper:** Capture any webpage faster than you can say "cheese"
 
-### System Interaction
-- **Toggle system settings (dark mode, volume, network):**
+### ⚙️ System Sorcerer
+- **Dark Mode Toggle:** Because robots have sensitive optical sensors
   ```
   { "input": { "kb_script_id": "systemsettings_toggle_dark_mode_ui" } }
   ```
-- **Get/set clipboard content:**
-  ```
-  { "input": { "kb_script_id": "system_clipboard_get_file_paths" } }
-  ```
-- **Open/control system dialogs and alerts**
-- **Create and manage system notifications**
+- **Clipboard Commander:** Copy, paste, and manipulate like a pro
+- **Notification Ninja:** Send alerts that actually get noticed
 
-### File Operations
-- **Create, move, and manipulate files/folders:**
+### 📁 File System Feng Shui
+- **Folder Creator 3000:** Organize your digital life with robotic precision
   ```
-  { "input": { "kb_script_id": "finder_create_new_folder_desktop", "input_data": { "folder_name": "My Project" } } }
+  { "input": { "kb_script_id": "finder_create_new_folder_desktop", "input_data": { "folder_name": "Robot Paradise" } } }
   ```
-- **Read and write text files:**
-  ```
-  { "input": { "kb_script_id": "fileops_read_text_file", "input_data": { "file_path": "~/Documents/notes.txt" } } }
-  ```
-- **List and filter files in directories**
-- **Get file metadata and properties**
+- **Text File Telepathy:** Read and write files faster than humanly possible
 
-### Application Integration
-- **Calendar/Reminders management:**
-  ```
-  { "input": { "kb_script_id": "calendar_create_event", "input_data": { "title": "Meeting", "start_date": "2023-06-01 10:00", "end_date": "2023-06-01 11:00" } } }
-  ```
-- **Email automation with Mail.app:**
-  ```
-  { "input": { "kb_script_id": "mail_send_email_direct", "input_data": { "recipient": "user@example.com", "subject": "Hello", "body_content": "Message content" } } }
-  ```
-- **Control music playback:**
+### 📱 App Whisperer
+- **Calendar Conductor:** Schedule meetings while you sleep
+- **Email Automator:** Send emails without lifting a finger
+- **Music Maestro:** DJ your playlists programmatically
   ```
   { "input": { "kb_script_id": "music_playback_controls", "input_data": { "action": "play" } } }
   ```
-- **Work with creative apps (Keynote, Pages, Numbers)**
 
-Use the `get_scripting_tips` tool to explore all available automation capabilities organized by category.
+🎯 **Pro Tip:** Use `get_scripting_tips` to discover all 200+ automation recipes!
 
-## License
+## 📜 Legal Stuff (Robot Rights)
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - which means your robot is free to roam! See the [LICENSE](LICENSE) file for the fine print.
+
+---
+
+🤖 **Remember:** With great automation power comes great responsibility. Use your robot wisely!
 
 <a href="https://glama.ai/mcp/servers/@steipete/macos-automator-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@steipete/macos-automator-mcp/badge" alt="macOS Automator Server MCP server" />
