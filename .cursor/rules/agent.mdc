@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Agent Instructions
 
 This file provides guidance to AI assistants when working with code in this repository.
@@ -21,6 +26,44 @@ The knowledge base (`knowledge_base/` directory) contains numerous Markdown file
 - Each file has YAML frontmatter with metadata: `id`, `title`, `description`, `language`, etc.
 - The actual script code is contained in the Markdown body in a fenced code block
 - Scripts can use placeholders like `--MCP_INPUT:keyName` and `--MCP_ARG_N` for parameter substitution
+
+## General useful for debug loops:
+- The Claude Code tool is helpful to analyze large logs or do complex file edits.
+- Pipe scripts that output lots of logs into a file for easier reading.
+- Use AppleScript to execute apps such as Claude Code to test the mcp.
+(This requires that the mcp is correctly set up)
+- Whenever you want to ask something to the user, ask Claude Code first instead.
+- Use AppleScript to find the bundle identifier for an app name
+
+- To run any terminal command, use `osascript .cursor/scripts/terminator.scpt`.
+  Call it without arguments to understand syntax.
+  Call it with just your tag and it will return the log.
+
+- read_file, write_file, move_file all need absolute paths!
+
+- To run tests for AXorcist reliable, use `run_tests.sh`.
+
+- To test the stdin feature of `axorc`, you MUST use `axorc/axorc_runner.sh`.
+
+## AXorcist Binary Management
+
+The `axorc/` directory contains:
+- `axorc`: The main AXorcist binary (tracked in git)
+- `AXorcist`: Symlink to `/Users/steipete/Projects/CodeLooper/AXorcist` (DO NOT REMOVE - needed for builds)
+- `axorc_runner.sh`: Wrapper script that tries multiple binary locations
+
+To rebuild the AXorcist binary:
+1. Ensure the `AXorcist` symlink exists (points to CodeLooper project)
+2. Copy the latest binary from CodeLooper: `cp /Users/steipete/Projects/CodeLooper/AXorcist/.build/debug/axorc axorc/axorc`
+3. Also copy to expected location: `cp axorc/axorc axorc/AXorcist/.build/debug/axorc`
+
+- Long-term this project simply ships with a compiled binary of `axorc`.
+  During developent, we have a symlink of the `AXorcist` directory from another folder to simplify development across projects.
+
+The symlink is ESSENTIAL for:
+- Development workflow integration
+- Build process access to source code
+- Testing and debugging
 
 ## Common Development Commands
 

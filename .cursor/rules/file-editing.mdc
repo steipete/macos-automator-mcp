@@ -1,0 +1,167 @@
+---
+description: text edit
+globs: 
+alwaysApply: false
+---
+**Core Philosophy for LLM:**
+*   **Perl is the Workhorse:** Prioritize Perl for its powerful regex (PCRE), in-place editing with backups (`-pi.bak`), multi-line handling (especially `-0777` slurp mode), and range operators (`/START/../END/`).
+*   **`ripgrep` (`rg`) for Extraction (if needed):** Use `rg` if its speed or specific regex features are beneficial for *finding and extracting* a block, which can then be piped to Perl or used to inform a Perl command.
+*   **One-Liners:** Aim for concise, powerful one-liners.
+*   **Backups are Non-Negotiable:** Always include `.bak` with Perl's `-i` or instruct manual `cp` if another tool is (exceptionally) used.
+*   **Regex Quoting:** Single quotes (`'...'`) are the default for Perl code/regex on the command line. If a regex comes from an LLM-generated variable, it needs careful handling.
+*   **Specificity & Non-Greedy:** LLM must generate specific start/end regexes. Non-greedy matching (`.*?`) within blocks is crucial. The `s` flag (dotall) in regex makes `.` match newlines.
+*   **Variable Interpolation:** If the LLM generates Perl code that uses shell variables for regexes or replacement text, it must be aware of how Perl will interpolate these. It's often safer to pass these as arguments or construct the Perl string carefully.
+
+---
+
+**Perl & `ripgrep` One-Liner Guide for LLM-Driven File Editing**
+
+**Placeholders (for LLM to fill):**
+*   `source_file.txt`
+*   `target_file.txt`
+*   `'START_REGEX'`: Perl regex string for the start of a block.
+*   `'END_REGEX'`: Perl regex string for the end of a block.
+*   `'FULL_BLOCK_REGEX_PCRE'`: A complete PCRE regex (often `(?s)START_REGEX.*?END_REGEX`) to match the entire block.
+*   `'REGEX_WITHIN_BLOCK'`: Perl regex for content to change *inside* a block.
+*   `'NEW_TEXT_CONTENT'`: The replacement text (can be multi-line). LLM must ensure newlines are actual newlines or properly escaped for Perl strings.
+*   `'TARGET_INSERTION_MARKER_REGEX'`: Perl regex matching where to insert content in `target_file.txt`.
+
+---
+
+**1. Editing Text *within* a Defined Block (In-Place)**
+
+*   **Goal:** Modify specific text found *between* `START_REGEX` and `END_REGEX`.
+*   **Tool:** Perl
+*   **One-Liner:**
+    ```bash
+    perl -pi.bak -e 'if (/START_REGEX/../END_REGEX/) { s/REGEX_WITHIN_BLOCK/NEW_TEXT_CONTENT/g }' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   `NEW_TEXT_CONTENT` is inserted literally. If it comes from a shell variable, the LLM needs to ensure it's correctly expanded and quoted if it contains special Perl characters or shell metacharacters. E.g., using environment variables: `REPL_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 'if (/START_REGEX/../END_REGEX/) { s/REGEX_WITHIN_BLOCK/$ENV{REPL_VAR}/g }' source_file.txt`
+    *   Ensure `START_REGEX`, `END_REGEX`, and `REGEX_WITHIN_BLOCK` are valid Perl regexes.
+
+---
+
+**2. Replacing an *Entire* Block of Text (In-Place)**
+
+*   **Goal:** Replace the whole block (from `START_REGEX` to `END_REGEX`) with `NEW_TEXT_CONTENT`.
+*   **Tool:** Perl (slurp mode is excellent here)
+*   **One-Liner:**
+    ```bash
+    perl -0777 -pi.bak -e 's/FULL_BLOCK_REGEX_PCRE/NEW_TEXT_CONTENT/sg' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   `-0777`: Slurps the entire file into one string.
+    *   `FULL_BLOCK_REGEX_PCRE`: Should be like `(?s)START_REGEX.*?END_REGEX`. The `(?s)` makes `.` match newlines. The `s` flag on the `s///sg` also ensures `.` matches newlines *within this specific regex*. The `g` flag is for global replacement if the block could appear multiple times.
+    *   `NEW_TEXT_CONTENT`: Can be multi-line. If it's from a shell variable, ensure proper quoting and expansion for the shell, then ensure it's a valid Perl string literal. Example with env var:
+        `NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -0777 -pi.bak -e 's/FULL_BLOCK_REGEX_PCRE/$ENV{NEW_BLOCK_VAR}/sg' source_file.txt`
+
+---
+
+**3. Deleting a Block of Text (In-Place)**
+
+*   **Goal:** Remove everything from `START_REGEX` to `END_REGEX`.
+*   **Tool:** Perl
+*   **Option A (Range Operator - often simplest):**
+    ```bash
+    perl -ni.bak -e 'print unless /START_REGEX/../END_REGEX/' source_file.txt
+    ```
+*   **Option B (Slurp mode - good if block definition is complex or spans tricky boundaries):**
+    ```bash
+    perl -0777 -pi.bak -e 's/FULL_BLOCK_REGEX_PCRE//sg' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   Option A (`-n` and `print unless`): Processes line by line. `START_REGEX` and `END_REGEX` mark the boundaries.
+    *   Option B (`-0777`): Treats file as one string, replaces the matched block with nothing.
+    *   Choose Option A if start/end markers are clear line-based patterns. Choose B if the block's structure is more complex and better captured by a single regex over the whole file.
+
+---
+
+**4. Adding/Inserting a New Block of Text (In-Place)**
+
+*   **Goal:** Insert `NEW_TEXT_CONTENT` after a line matching `TARGET_INSERTION_MARKER_REGEX`.
+*   **Tool:** Perl
+*   **One-Liner (Insert *after* marker):**
+    ```bash
+    perl -pi.bak -e 'if (s/TARGET_INSERTION_MARKER_REGEX/$&\nNEW_TEXT_CONTENT/) {}' source_file.txt
+    ```
+    *   Or, if `NEW_TEXT_CONTENT` might contain `$&` or other special vars:
+    ```bash
+    NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 'if (s/TARGET_INSERTION_MARKER_REGEX/$&\n$ENV{NEW_BLOCK_VAR}/) {}' source_file.txt
+    ```
+*   **One-Liner (Insert *before* marker - more complex to do robustly in one pass without temp vars in pure one-liner):**
+    It's often simpler to replace the marker with the new block *and* the marker:
+    ```bash
+    NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 'if (s/TARGET_INSERTION_MARKER_REGEX/$ENV{NEW_BLOCK_VAR}\n$&/) {}' source_file.txt
+    ```
+*   **LLM Notes:**
+    *   `$&` in the replacement part of `s///` refers to the entire matched string (the marker).
+    *   `NEW_TEXT_CONTENT` is appended after the marker and a newline.
+    *   The `if` and empty `{}` ensure the substitution happens and Perl continues.
+    *   If `TARGET_INSERTION_MARKER_REGEX` should be *replaced* by the new block:
+        `NEW_BLOCK_VAR="$NEW_TEXT_CONTENT" perl -pi.bak -e 's/TARGET_INSERTION_MARKER_REGEX/$ENV{NEW_BLOCK_VAR}/g' source_file.txt`
+
+---
+
+**5. Moving a Block of Text from `source_file.txt` to `target_file.txt`**
+
+*   **Goal:** Extract block from source, insert into target, delete from source.
+*   **Tools:** Perl for all steps. (`rg` could be used for extraction if its specific regex capabilities are needed, then pipe to Perl for insertion).
+*   **One-Liner Sequence (conceptual, hard to make a true single shell one-liner without temp files or complex shell quoting for the block content):**
+
+    This task inherently involves state (the extracted block). True one-liners that pass this state without a temp file are tricky and less readable. A clear sequence is better for LLM reliability.
+
+    **Recommended Approach (using a shell variable to hold the block - LLM must handle quoting for this variable carefully):**
+
+    ```bash
+    # Step 1: Extract block from source_file.txt into a shell variable
+    # Use rg (very fast for extraction) or Perl. Using Perl here for consistency:
+    EXTRACTED_BLOCK=$(perl -0777 -ne 'print $& if /FULL_BLOCK_REGEX_PCRE/sg' source_file.txt)
+
+    # Check if block was extracted
+    if [ -z "$EXTRACTED_BLOCK" ]; then
+      echo "Error: Block not found in source_file.txt or is empty. Aborting move."
+      # exit 1 # LLM could add this
+    else
+      # Step 2: Insert block into target_file.txt (e.g., after TARGET_INSERTION_MARKER_REGEX)
+      # Pass EXTRACTED_BLOCK via an environment variable to avoid quoting hell with Perl -e
+      BLOCK_TO_INSERT="$EXTRACTED_BLOCK" \
+      perl -pi.bak_target -e 's/(TARGET_INSERTION_MARKER_REGEX)/$1\n$ENV{BLOCK_TO_INSERT}/' target_file.txt && \
+      \
+      # Step 3: Delete block from source_file.txt (only if insertion seemed to succeed)
+      perl -0777 -pi.bak_source -e 's/FULL_BLOCK_REGEX_PCRE//sg' source_file.txt && \
+      echo "Block moved successfully."
+    fi
+    ```
+*   **LLM Notes for Move:**
+    *   **Atomicity:** This is NOT atomic. LLM must warn that if a step fails, files can be in an inconsistent state.
+    *   **Shell Variable for Block:** The `EXTRACTED_BLOCK=$(...)` captures the output.
+    *   **Passing to Perl:** Using an environment variable (`BLOCK_TO_INSERT="$EXTRACTED_BLOCK" perl ... $ENV{BLOCK_TO_INSERT}`) is generally the most robust way to pass multi-line, potentially complex strings to a Perl `-e` script from the shell.
+    *   **Insertion Logic:** The example inserts the block *after* the marker and a newline. The LLM can adapt this (e.g., replace marker, insert before).
+    *   **Error Check:** The `if [ -z "$EXTRACTED_BLOCK" ]` is a basic check.
+    *   **Backup Suffixes:** Using distinct backup suffixes like `.bak_target` and `.bak_source` is good practice.
+
+**Simplifying "Move" for a "Stricter" One-Liner (using process substitution if target insertion is simple):**
+
+If inserting into the target is simple (e.g., appending, or simple marker replacement not requiring the original marker), you *could* pipe:
+
+```bash
+# Appending extracted block to target, then deleting from source
+(perl -0777 -ne 'print $& if /FULL_BLOCK_REGEX_PCRE/sg' source_file.txt >> target_file.txt.new && \
+ cp target_file.txt target_file.txt.bak_target && mv target_file.txt.new target_file.txt) && \
+perl -0777 -pi.bak_source -e 's/FULL_BLOCK_REGEX_PCRE//sg' source_file.txt
+```
+This is less flexible for targeted insertion within `target_file.txt` without more complex `perl` in the receiving end. The previous multi-step approach with an intermediate shell variable is often more robust for an LLM to generate correctly for various insertion scenarios.
+
+---
+
+**General "Fuzzy Knowledge" Mitigation for LLM:**
+
+1.  **Request Regex Flavor Explicitly:** "Generate a Perl Compatible Regular Expression (PCRE)..."
+2.  **Emphasize Non-Greedy:** "Ensure the regex for the block content uses non-greedy matching (e.g., `.*?` with the `s` flag)."
+3.  **Ask for Backup Command:** "Always include a backup mechanism, like Perl's `-pi.bak`."
+4.  **Specify Multi-line Handling:**
+    *   "If operating on a whole block as one unit, use Perl's `-0777` slurp mode."
+    *   "If processing line-by-line but needing to act on a range, use Perl's `/START/../END/` range operator."
+5.  **Newline in Replacement:** "When providing `NEW_TEXT_CONTENT` for Perl, ensure newlines are actual newlines if it's a direct string in the `-e` script, or that they are correctly handled if coming from a shell variable."
+6.  **Quoting for LLM-Generated Variables:** If the LLM is told to use a shell variable for `START_REGEX` or `NEW_TEXT_CONTENT`, it must be reminded about shell quoting for the variable assignment and then how Perl will see that variable (e.g., via `$ENV{VAR_NAME}` to avoid Perl trying to interpret it as a Perl variable directly).

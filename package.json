@@ -10,11 +10,13 @@
   "files": [
     "dist/**/*",
     "knowledge_base/**/*",
+    "axorc/axorc_runner.sh",
+    "axorc/axorc",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && (cd axorc/AXorcist && swift build -c release || echo 'Swift build failed, using fallback binary') && mkdir -p dist/axorc && (cp axorc/AXorcist/.build/release/axorc dist/axorc/axorc 2>/dev/null || cp axorc/axorc dist/axorc/axorc) && cp axorc/axorc_runner.sh dist/axorc/axorc_runner.sh && chmod +x dist/axorc/axorc_runner.sh dist/axorc/axorc",
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
