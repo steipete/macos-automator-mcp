@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/steipete-macos-automator-mcp-badge.png)](https://mseep.ai/app/steipete-macos-automator-mcp)
+
 # macOS Automator MCP Server
 
 ![macOS Automator MCP Server](assets/logo.png)
