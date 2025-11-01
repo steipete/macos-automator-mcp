@@ -64,7 +64,7 @@ jobs: # Single top-level jobs key
     - name: Check TypeScript compilation
       run: tsc --noEmit # Ensures type checking passes
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: dist-node-${{ matrix.node-version }}
         path: dist/
@@ -88,7 +88,7 @@ jobs: # Single top-level jobs key
         run: npm run validate
       - name: Upload validation results
         if: always() # Always upload, even if validation fails, to see the report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: kb-validation-report
           path: validation-results/kb-report.md # Ensure this path is where `npm run validate` outputs its report
