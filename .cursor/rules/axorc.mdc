@@ -1,0 +1,138 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# macOS Accessibility (`axorc`) Command-Line Tool
+
+This document outlines the functionality, build process, testing procedures, and technical details of the `axorc` Swift command-line utility, designed for interacting with the macOS Accessibility framework.
+
+## 1. `axorc` Overview
+
+*   **Purpose**: Provides a JSON-based interface to query UI elements and perform actions using the macOS Accessibility API. It's intended to be called by other processes. The core Swift library `AXorcist` handles the accessibility interactions.
+*   **Communication**: `axorc` reads JSON commands (via direct argument, stdin, or file) and writes JSON responses (or errors) to `stdout`. Debug information often goes to `stderr`.
+*   **Core `AXorcist` Library Commands (exposed by `axorc` via `CommandType` enum in `ax/AXorcist/Sources/AXorcist/Core/Models.swift`)**:
+    *   `ping`: Checks if `axorc` is responsive.
+    *   `getFocusedElement`: Retrieves information about the currently focused UI element in a target application.
+    *   `query`: Retrieves information about specific UI element(s) matching locator criteria.
+    *   `getAttributes`: Retrieves specific attributes for element(s) matching locator criteria.
+    *   `describeElement`: Retrieves a comprehensive list of attributes for element(s) matching locator criteria.
+    *   `collectAll`: Retrieves information about all UI elements matching criteria within a scope.
+    *   `performAction`: Executes an action on a specified UI element.
+    *   `extractText`: Extracts textual content from specified UI element(s).
+    *   `batch`: Executes a sequence of sub-commands.
+*   **Key Input Fields (JSON - see `CommandEnvelope` in `ax/AXorcist/Sources/AXorcist/Core/Models.swift`)**:
+    *   `command_id` (string): A unique identifier for the command, echoed in the response.
+    *   `command` (string enum: `CommandType`): e.g., "ping", "getFocusedElement", "query", "getAttributes", "describeElement", "collectAll", "performAction", "extractText", "batch".
+    *   `application` (string, optional): Bundle ID (e.g., "com.apple.TextEdit") or localized name of the target application. If omitted, behavior might depend on the command (e.g., `getFocusedElement` might try the system-wide focused app).
+    *   `locator` (object, optional - see `Locator` in `ax/AXorcist/Sources/AXorcist/Core/Models.swift`): Specifies the target element(s) for commands like `query`, `getAttributes`, `describeElement`, `performAction`, `extractText`, `collectAll`.
+        *   `criteria` (object `[String: String]`): Key-value pairs of attributes to match (e.g., `{"AXRole": "AXWindow", "AXTitle":"My Window"}`).
+        *   `match_all` (boolean, optional): If true, all criteria must match. If false or omitted, any criterion matching is sufficient (behavior might vary by implementation).
+        *   `root_element_path_hint` (array of strings, optional): A pathHint to find a container element from which the locator criteria will be applied.
+        *   `requireAction` (string, optional): Filters results to elements supporting a specific action (e.g., "AXPress").
+        *   `computed_name_contains` (string, optional): Filters elements whose computed name (derived from title, value, etc.) contains the given string.
+    *   `attributes` (array of strings, optional): For commands like `getFocusedElement`, `query`, `getAttributes`, `collectAll`, specifies which attributes to retrieve. Defaults to a common set if omitted.
+    *   `path_hint` (array of strings, optional): A path to navigate the UI tree (e.g., `["window[0]", "button[AXTitle=OK]"]`) to find a target element or a base for the `locator`. (Exact path syntax may evolve).
+    *   `action_name` (string, optional): For `performAction` command, the action to execute (e.g., "AXPress", "AXSetValue").
+    *   `action_value` (any, optional, via `AnyCodable`): For `performAction` with actions like "AXSetValue", this is the value to set (e.g., a string, number, boolean).
+    *   `sub_commands` (array of `CommandEnvelope` objects, optional): For the `batch` command, contains the sequence of commands to execute.
+    *   `max_elements` (int, optional): For `collectAll`, can limit the number of elements returned. Also used as max depth in some search operations.
+    *   `output_format` (string enum `OutputFormat`, optional): For attribute retrieval, can be "smart", "verbose", "text_content", "json_string". From `ax/AXorcist/Sources/AXorcist/Core/Models.swift`.
+    *   `debug_logging` (boolean, optional): If `true`, `axorc` and `AXorcist` include detailed internal debug logs in the response and/or stderr.
+    *   `payload` (object `[String: String]`, optional): Legacy field, primarily for `ping` compatibility to echo back simple data.
+*   **Key Output Fields (JSON - see response structs in `ax/AXorcist/Sources/axorc/axorc.swift` which wrap `AXorcist.HandlerResponse`)**:
+    *   All responses generally include `command_id` (string), `success` (boolean), and `debug_logs` (array of strings, optional).
+    *   `SimpleSuccessResponse` (for `ping`): Contains `status`, `message`, `details`.
+    *   `QueryResponse` (for `getFocusedElement`, `query`, `getAttributes`, `describeElement`, `collectAll`, `performAction`, `extractText`):
+        *   `command` (string): The original command type.
+        *   `data` (object `AXElementForEncoding`, optional): Contains the primary accessibility element data.
+            *   `attributes` (object `[String: AnyCodable]`): Dictionary of element attributes.
+            *   `path` (array of strings, optional): Path to the element.
+        *   `error` (object `ErrorDetail`, optional): Contains an error `message` if `success` is false.
+    *   `BatchOperationResponse` (for `batch`):
+        *   `results` (array of `QueryResponse` objects): One for each sub-command.
+    *   `ErrorResponse` (for input errors, decoding errors, or unhandled command types):
+        *   `error` (object `ErrorDetail`): Contains an error `message`.
+
+## 2. Functionality - How it Works
+
+The `axorc` binary (`ax/AXorcist/Sources/axorc/main.swift`) is the command-line entry point. It parses input, decodes the JSON `CommandEnvelope`, and then calls methods on an instance of the `AXorcist` class (from `ax/AXorcist/Sources/AXorcist/AXorcist.swift`). The `AXorcist` library handles the core accessibility interactions.
+
+*   **`AXorcist` Library**:
+    *   Located in `ax/AXorcist/Sources/AXorcist/`.
+    *   `AXorcist.swift`: Contains the main class and handler methods for each command type (e.g., `handleGetFocusedElement`, `handleQuery`, `handlePerformAction`).
+    *   `Core/Models.swift`: Defines `CommandEnvelope`, `Locator`, `HandlerResponse`, `AXElement` (for data representation), `AnyCodable`, `OutputFormat`, etc.
+    *   `Core/Element.swift`: Defines `AXorcist.AXElement` which is a wrapper around `AXUIElement` and is used internally by `AXorcist` and in `HandlerResponse.data`.
+    *   `Search/ElementSearch.swift`: Contains logic for finding UI elements based on locators, path hints, and criteria (e.g., depth-first search, attribute matching).
+    *   `Core/AccessibilityPermissions.swift`: Handles checking for necessary permissions.
+    *   `Core/ProcessUtils.swift`: Utilities for finding application PIDs.
+    *   Many functions interacting with `AXUIElement` are marked `@MainActor`.
+
+*   **Application Targeting**:
+    *   `AXorcist` uses `ProcessUtils.swift` to find the `pid_t` for a given application bundle ID or name.
+    *   `AXUIElementCreateApplication(pid)` gets the root application `AXUIElement`.
+
+*   **Element Location**:
+    *   Typically handled by methods in `AXorcist.swift` or `Search/ElementSearch.swift`.
+    *   Uses locators (`criteria`, `requireAction`, etc.) and `path_hint`.
+    *   Involves traversing the accessibility tree (e.g., an element's `kAXChildrenAttribute`).
+
+*   **Attribute Retrieval**:
+    *   `AXorcist`'s `getElementAttributes` (internal helper) fetches attributes for an `AXUIElement`.
+    *   Converts `CFTypeRef` values to Swift types, often using `AnyCodable` for the `attributes` dictionary in `AXorcist.AXElement`.
+    *   Handles `AXValue` types (like position/size).
+    *   May generate synthetic attributes like "ComputedName" or "AXActionNames".
+
+*   **Action Performing**:
+    *   `AXorcist` checks if an action is supported (e.g., via `kAXActionNamesAttribute`).
+    *   Uses `AXUIElementPerformAction` or `AXUIElementSetAttributeValue` (for "AXSetValue").
+
+*   **Error Handling**:
+    *   `AXorcist` handler methods return a `HandlerResponse` which includes an optional error string.
+    *   `axorc` wraps this into its JSON error structures.
+
+*   **Threading**:
+    *   Core Accessibility API calls are dispatched to the `@MainActor` by `AXorcist`.
+
+*   **Debugging**:
+    *   The `debug_logging: true` in the input JSON enables verbose logging.
+    *   Logs are collected by `AXorcist` and passed back in `HandlerResponse.debug_logs`.
+    *   `axorc` includes these in its final JSON output's `debug_logs` field and may also print to `stderr` using `fputs`.
+
+## 3. Build Process
+
+*   **Swift Package Manager**: `axorc` is built using SPM from the package in `ax/AXorcist/`.
+    *   `ax/AXorcist/Package.swift` defines the "axorc" executable product and the "AXorcist" library product.
+*   **Output**: The executable is typically found in `ax/AXorcist/.build/debug/axorc` or `ax/AXorcist/.build/release/axorc`.
+
+## 4. Running & Testing
+
+*   **Direct Execution**:
+    ```bash
+    cd /path/to/your/project/ax/AXorcist/
+    swift build # if not already built
+    ./.build/debug/axorc '{ "command_id":"ping1", "command":"ping" }'
+    ```
+*   **Via `terminator.scpt` (Example for consistency)**:
+    It is recommended to use a consistent tag (e.g., "axorc_ops") when using `terminator.scpt` to reuse the same terminal window/tab.
+    ```bash
+    # First command with a new tag (establishes session, cds, runs command)
+    osascript /path/to/.cursor/scripts/terminator.scpt "axorc_ops" "cd /Users/steipete/Projects/macos-automator-mcp/ax/AXorcist/ && ./.build/debug/axorc --debug '{ \"command_id\": \"claude-ping\", \"command\": \"ping\" }'"
+
+    # Subsequent commands with the same tag
+    osascript /path/to/.cursor/scripts/terminator.scpt "axorc_ops" ".build/debug/axorc '{ \"command_id\": \"claude-getfocused\", \"command\": \"getFocusedElement\", \"application\": \"com.anthropic.claudefordesktop\" }'"
+    ```
+*   **Input Methods for `axorc`**:
+    *   Direct argument (last argument on the command line, must be valid JSON).
+    *   `--stdin`: Reads JSON from standard input.
+    *   `--file /path/to/file.json`: Reads JSON from a specified file.
+*   **Permissions**: The process executing `axorc` (e.g., Terminal, or your calling application) **must** have "Accessibility" permissions in "System Settings > Privacy & Security > Accessibility". `AXorcist` calls `AccessibilityPermissions.checkAccessibilityPermissions()` on startup.
+
+## 5. macOS Accessibility (AX) Intricacies
+
+*   **Frameworks**: `ApplicationServices` (for C APIs like `AXUIElement...`), `AppKit` (for `NSRunningApplication`).
+*   **`AXUIElement`**: The core C type representing an accessible UI element.
+*   **Attributes & `CFTypeRef`**: Values are `CFTypeRef`. Handled by `AXorcist.AnyCodable` for JSON serialization.
+*   **Tooling**: **Accessibility Inspector** (Xcode > Open Developer Tool) is vital for inspecting UI elements and their properties.
+
+This document reflects the structure and functionality of the `axorc` tool and its underlying `AXorcist` library.
