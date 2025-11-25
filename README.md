@@ -1,4 +1,4 @@
-# 🤖 macOS Automator MCP Server: Your Friendly Neighborhood RoboScripter™
+# macOS Automator MCP 🤖 - Your Friendly Neighborhood RoboScripter™
 
 ![macOS Automator MCP Server](assets/logo.png)
 
