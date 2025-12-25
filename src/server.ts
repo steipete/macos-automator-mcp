@@ -8,8 +8,9 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
 // import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
 import { Logger } from './logger.js';
-import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas.js';
+import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema, AXQueryInputSchema, type AXQueryInput } from './schemas.js';
 import { ScriptExecutor } from './ScriptExecutor.js';
+import { AXQueryExecutor } from './AXQueryExecutor.js';
 import type { ScriptExecutionError, ExecuteScriptResponse }  from './types.js';
 // import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
@@ -47,6 +48,7 @@ const serverInfoMessage = `MacOS Automator MCP v${pkg.version}, started at ${SER
 
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
+const axQueryExecutor = new AXQueryExecutor();
 
 // Define raw shapes for tool registration (required by newer SDK versions)
 const ExecuteScriptInputShape = {
@@ -69,6 +71,32 @@ const GetScriptingTipsInputShape = {
   list_categories: z.boolean().optional(),
   refresh_database: z.boolean().optional(),
   limit: z.number().int().positive().optional(),
+} as const;
+
+const AXQueryInputShape = {
+  command: z.enum(['query', 'perform']),
+  // Top-level fields for lenient parsing
+  app: z.string().optional(),
+  role: z.string().optional(),
+  match: z.record(z.string()).optional(),
+
+  locator: z.union([
+      z.object({
+          app: z.string(),
+          role: z.string(),
+          match: z.record(z.string()),
+          navigation_path_hint: z.array(z.string()).optional(),
+      }),
+      z.string()
+  ]),
+  return_all_matches: z.boolean().optional(),
+  attributes_to_query: z.array(z.string()).optional(),
+  required_action_name: z.string().optional(),
+  action_to_perform: z.string().optional(),
+  report_execution_time: z.boolean().optional().default(false),
+  limit: z.number().int().positive().optional().default(500),
+  debug_logging: z.boolean().optional().default(false),
+  output_format: z.enum(['smart', 'verbose', 'text_content']).optional().default('smart'),
 } as const;
 
 async function main() {
@@ -393,6 +421,197 @@ async function main() {
           text: content
         }]
       };
+    }
+  );
+
+  // ADD THE NEW accessibility_query TOOL HERE
+  server.tool(
+    'accessibility_query',
+    `Query and interact with the macOS accessibility interface to inspect UI elements of applications. This tool provides a powerful way to explore and manipulate the user interface elements of any application using the native macOS accessibility framework.
+
+This tool exposes the complete macOS accessibility API capabilities, allowing detailed inspection of UI elements and their properties. It's particularly useful for automating interactions with applications that don't have robust AppleScript support or when you need to inspect the UI structure in detail.
+
+**Input Parameters:**
+
+*   \`command\` (enum: 'query' | 'perform', required): The operation to perform.
+    *   \`query\`: Retrieves information about UI elements.
+    *   \`perform\`: Executes an action on a UI element (like clicking a button).
+
+*   \`locator\` (object, required): Specifications to find the target element(s).
+    *   \`app\` (string, required): The application to target, specified by either bundle ID or display name (e.g., "Safari", "com.apple.Safari").
+    *   \`role\` (string, required): The accessibility role of the target element (e.g., "AXButton", "AXStaticText").
+    *   \`match\` (object, required): Key-value pairs of attributes to match. Can be empty (\`{}\`) if not needed.
+    *   \`navigation_path_hint\` (array of strings, optional): Path to navigate within the application hierarchy (e.g., \`["window[1]", "toolbar[1]"]\`).
+
+*   \`return_all_matches\` (boolean, optional): When \`true\`, returns all matching elements rather than just the first match. Default is \`false\`.
+
+*   \`attributes_to_query\` (array of strings, optional): Specific attributes to query for matched elements. If not provided, common attributes will be included. Examples: \`["AXRole", "AXTitle", "AXValue"]\`
+
+*   \`required_action_name\` (string, optional): Filter elements to only those supporting a specific action (e.g., "AXPress" for clickable elements).
+
+*   \`action_to_perform\` (string, optional, required when \`command="perform"\`): The accessibility action to perform on the matched element (e.g., "AXPress" to click a button).
+
+*   \`report_execution_time\` (boolean, optional): If true, the tool will return an additional message containing the formatted script execution time. Defaults to false.
+
+*   \`limit\` (integer, optional): Maximum number of lines to return in the output. Defaults to 500. Output will be truncated if it exceeds this limit.
+
+*   \`max_elements\` (integer, optional): For \`return_all_matches: true\` queries, this specifies the maximum number of UI elements the \`ax\` binary will fully process and return attributes for. If omitted, an internal default (e.g., 200) is used. This helps manage performance when querying UIs with a very large number of matching elements (like numerous text fields on a complex web page). This is different from \`limit\`, which truncates the final text output based on lines.
+
+*   \`debug_logging\` (boolean, optional): If true, enables detailed debug logging from the underlying \`ax\` binary. This diagnostic information will be included in the response, which can be helpful for troubleshooting complex queries or unexpected behavior. Defaults to false.
+
+*   \`output_format\` (enum: 'smart' | 'verbose' | 'text_content', optional, default: 'smart'): Controls the format and verbosity of the attribute output from the \`ax\` binary.
+    *   \`'smart'\`: (Default) Optimized for readability. Omits attributes with empty or placeholder values. Returns key-value pairs.
+    *   \`'verbose'\`: Maximum detail. Includes all attributes, even empty/placeholders. Key-value pairs. Best for debugging element properties.
+    *   \`'text_content'\`: Highly compact for text extraction. Returns only concatenated text values of common textual attributes (e.g., AXValue, AXTitle). No keys are returned. Ideal for quickly getting all text from elements; the \`attributes_to_query\` parameter is ignored in this mode.
+
+**Example Queries (Note: key names have changed to snake_case):**
+
+1.  **Find all text elements in the front Safari window:**
+    \`\`\`json
+    {
+      "command": "query",
+      "return_all_matches": true,
+      "locator": {
+        "app": "Safari",
+        "role": "AXStaticText",
+        "match": {},
+        "navigation_path_hint": ["window[1]"]
+      }
+    }
+    \`\`\`
+
+2.  **Find and click a button with a specific title:**
+    \`\`\`json
+    {
+      "command": "perform",
+      "locator": {
+        "app": "System Settings",
+        "role": "AXButton",
+        "match": {"AXTitle": "General"}
+      },
+      "action_to_perform": "AXPress"
+    }
+    \`\`\`
+
+3.  **Get detailed information about the focused UI element:**
+    \`\`\`json
+    {
+      "command": "query",
+      "locator": {
+        "app": "Mail",
+        "role": "AXTextField",
+        "match": {"AXFocused": "true"}
+      },
+      "attributes_to_query": ["AXRole", "AXTitle", "AXValue", "AXDescription", "AXHelp", "AXPosition", "AXSize"]
+    }
+    \`\`\`
+
+**Note:** Using this tool requires that the application running this server has the necessary Accessibility permissions in macOS System Settings > Privacy & Security > Accessibility.`,
+    AXQueryInputShape,
+    async (args: unknown) => {
+      let inputFromZod: AXQueryInput; 
+      try {
+        inputFromZod = AXQueryInputSchema.parse(args);
+        logger.info('accessibility_query called with raw Zod-parsed input:', inputFromZod);
+
+        // Normalize the input to the canonical structure AXQueryExecutor expects
+        let canonicalInput: AXQueryInput;
+
+        if (typeof inputFromZod.locator === 'string') {
+            logger.debug('Normalizing malformed input (locator is string). Top-level data:', { appLocatorString: inputFromZod.locator, role: inputFromZod.role, match: inputFromZod.match });
+            // Zod superRefine should have already ensured inputFromZod.role is defined.
+            // The top-level inputFromZod.app is ignored here because inputFromZod.locator (the string) is the app.
+            canonicalInput = {
+                // Spread all other fields from inputFromZod first
+                ...inputFromZod,
+                // Then explicitly define the locator object
+                locator: {
+                    app: inputFromZod.locator, // The string locator is the app name
+                    role: inputFromZod.role!,   // Role from top level (assert non-null due to Zod refine)
+                    match: inputFromZod.match || {}, // Match from top level, or default to empty
+                    navigation_path_hint: undefined // No path hint in this malformed case typically
+                },
+                // Nullify the top-level fields that are now part of the canonical locator
+                // to avoid confusion if they were passed, though AXQueryExecutor won't use them.
+                app: undefined,
+                role: undefined,
+                match: undefined
+            };
+        } else {
+            // Well-formed case: locator is an object. Zod superRefine ensures top-level app/role/match are undefined.
+            logger.debug('Input is well-formed (locator is object).');
+            canonicalInput = inputFromZod;
+        }
+
+        // logger.info('accessibility_query using canonical input for executor:', JSON.parse(JSON.stringify(canonicalInput))); // Commented out due to persistent linter issue
+        
+        const result = await axQueryExecutor.execute(canonicalInput);
+        
+        // For cleaner output, especially for multi-element queries, format the response
+        let formattedOutput: string;
+        
+        if (inputFromZod.command === 'query' && inputFromZod.return_all_matches === true) {
+          // For multi-element queries, format the results more readably
+          if ('elements' in result) {
+            formattedOutput = JSON.stringify(result, null, 2);
+          } else {
+            formattedOutput = JSON.stringify(result, null, 2);
+          }
+        } else {
+          // For single element queries or perform actions
+          formattedOutput = JSON.stringify(result, null, 2);
+        }
+        
+        // Apply line limit
+        let finalOutputText = formattedOutput;
+        const lines = finalOutputText.split('\n');
+        if (inputFromZod.limit !== undefined && lines.length > inputFromZod.limit) {
+          finalOutputText = lines.slice(0, inputFromZod.limit).join('\n');
+          const truncationNotice = `\n\n--- Output truncated to ${inputFromZod.limit} lines. Original length was ${lines.length} lines. ---`;
+          finalOutputText += truncationNotice;
+        }
+
+        const responseContent: Array<{ type: 'text'; text: string }> = [{ type: 'text', text: finalOutputText }];
+
+        // Add debug logs if they exist in the result
+        if (result.debug_logs && Array.isArray(result.debug_logs) && result.debug_logs.length > 0) {
+          const debugHeader = "\n\n--- AX Binary Debug Logs ---";
+          const logsString = result.debug_logs.join('\n');
+          responseContent.push({ type: 'text', text: `${debugHeader}\n${logsString}` });
+        }
+
+        if (inputFromZod.report_execution_time) {
+          const ms = result.execution_time_seconds * 1000;
+          let timeMessage = "Script executed in ";
+          if (ms < 1) { // Less than 1 millisecond
+            timeMessage += "<1 millisecond.";
+          } else if (ms < 1000) { // 1ms up to 999ms
+            timeMessage += `${ms.toFixed(0)} milliseconds.`;
+          } else if (ms < 60000) { // 1 second up to 59.999 seconds
+            timeMessage += `${(ms / 1000).toFixed(2)} seconds.`;
+          } else {
+            const totalSeconds = ms / 1000;
+            const minutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = Math.round(totalSeconds % 60);
+            timeMessage += `${minutes} minute(s) and ${remainingSeconds} seconds.`;
+          }
+          responseContent.push({ type: 'text', text: `${timeMessage}` });
+        }
+
+        return { content: responseContent };
+      } catch (error: unknown) {
+        const err = error as Error;
+        logger.error('Error in accessibility_query tool handler', { message: err.message });
+        // If the error object from AXQueryExecutor contains debug_logs, include them
+        let errorMessage = `Failed to execute accessibility query: ${err.message}`;
+        const errorWithLogs = err as (Error & { debug_logs?: string[] }); // Cast here
+        if (errorWithLogs.debug_logs && Array.isArray(errorWithLogs.debug_logs) && errorWithLogs.debug_logs.length > 0) {
+          const debugHeader = "\n\n--- AX Binary Debug Logs (from error) ---";
+          const logsString = errorWithLogs.debug_logs.join('\n');
+          errorMessage += `\n${debugHeader}\n${logsString}`;
+        }
+        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, errorMessage);
+      }
     }
   );
 
