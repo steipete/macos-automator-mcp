@@ -18,8 +18,8 @@ permissions:
   pull-requests: write
 
 jobs: # Single top-level jobs key
-  test: # New Playwright test job
-    name: MCP Inspector Tests (Node ${{ matrix.node-version }})
+  test: # MCP stdio test job
+    name: MCP Stdio Tests (Node ${{ matrix.node-version }})
     runs-on: macos-latest
     strategy:
       matrix:
@@ -28,7 +28,7 @@ jobs: # Single top-level jobs key
       - name: Checkout code
         uses: actions/checkout@v6
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -36,10 +36,8 @@ jobs: # Single top-level jobs key
         run: npm ci
       - name: Build project
         run: npm run build
-      - name: Install Playwright Browsers with OS dependencies
-        run: npx playwright install --with-deps
-      - name: Run MCP Inspector tests
-        run: npm test -- run --no-file-parallelism tests/mcp-inspector.test.ts
+      - name: Run tests
+        run: npm test
 
   build: # Existing build job (preserved from original file)
     name: Build and Lint
@@ -51,7 +49,7 @@ jobs: # Single top-level jobs key
     - name: Checkout code
       uses: actions/checkout@v6
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -64,7 +62,7 @@ jobs: # Single top-level jobs key
     - name: Check TypeScript compilation
       run: tsc --noEmit # Ensures type checking passes
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: dist-node-${{ matrix.node-version }}
         path: dist/
@@ -78,7 +76,7 @@ jobs: # Single top-level jobs key
       - name: Checkout code
         uses: actions/checkout@v6
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20.x' # Using a specific Node version for consistency
           cache: 'npm'
@@ -88,7 +86,7 @@ jobs: # Single top-level jobs key
         run: npm run validate
       - name: Upload validation results
         if: always() # Always upload, even if validation fails, to see the report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: kb-validation-report
           path: validation-results/kb-report.md # Ensure this path is where `npm run validate` outputs its report
@@ -103,7 +101,7 @@ jobs: # Single top-level jobs key
 #   - uses: actions/checkout@v6
 #   
 #   - name: Use Node.js
-#     uses: actions/setup-node@v4
+#     uses: actions/setup-node@v6
 #     with:
 #       node-version: '20.x'
 #       cache: 'npm'
