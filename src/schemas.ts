@@ -22,7 +22,7 @@ export const ExecuteScriptInputSchema = z.object({
   arguments: z.array(z.string()).optional().describe(
     'Optional arguments to pass to the script. For AppleScript, these are passed to the main `run` handler. For JXA, these are passed to the `run` function.',
   ),
-  input_data: z.record(z.unknown()).optional().describe(
+  input_data: z.object({}).catchall(z.unknown()).optional().describe(
     'Optional JSON object to provide named inputs for --MCP_INPUT placeholders in knowledge base scripts.',
   ),
   language: z.enum(['applescript', 'javascript']).optional().describe(

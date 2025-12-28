@@ -15,7 +15,6 @@ import type { ScriptExecutionError, ExecuteScriptResponse }  from './types.js';
 import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
 import { substitutePlaceholders } from './placeholderSubstitutor.js'; // Value import
 import type { SubstitutionResult } from './placeholderSubstitutor.js'; // Type import
-import { z } from 'zod';
 
 // Added imports for robust package.json loading
 import fs from 'node:fs/promises';
@@ -48,29 +47,6 @@ const serverInfoMessage = `MacOS Automator MCP v${pkg.version}, started at ${SER
 const logger = new Logger('macos_automator_server');
 const scriptExecutor = new ScriptExecutor();
 
-// Define raw shapes for tool registration (required by newer SDK versions)
-const ExecuteScriptInputShape = {
-  script_content: z.string().optional(),
-  script_path: z.string().optional(),
-  kb_script_id: z.string().optional(),
-  language: z.enum(['applescript', 'javascript']).optional(),
-  arguments: z.array(z.string()).optional(),
-  input_data: z.record(z.any()).optional(),
-  timeout_seconds: z.number().optional(),
-  include_executed_script_in_output: z.boolean().optional(),
-  include_substitution_logs: z.boolean().optional(),
-  report_execution_time: z.boolean().optional(),
-  output_format_mode: z.enum(['auto', 'human_readable', 'structured_error', 'structured_output_and_error', 'direct']).optional(),
-} as const;
-
-const GetScriptingTipsInputShape = {
-  category: z.string().optional(),
-  search_term: z.string().optional(),
-  list_categories: z.boolean().optional(),
-  refresh_database: z.boolean().optional(),
-  limit: z.number().int().positive().optional(),
-} as const;
-
 async function main() {
   if (!IS_E2E_TESTING) {
     logger.info("[Server Startup] Current working directory", { cwd: process.cwd() });
@@ -99,9 +75,10 @@ async function main() {
     }
   });
 
-  server.tool(
+  server.registerTool(
     'execute_script',
-    `Automate macOS tasks using AppleScript or JXA (JavaScript for Automation) to control applications like Terminal, Chrome, Safari, Finder, etc.
+    {
+      description: `Automate macOS tasks using AppleScript or JXA (JavaScript for Automation) to control applications like Terminal, Chrome, Safari, Finder, etc.
 
 **1. Script Source (Choose one):**
 *   \`kb_script_id\` (string): **Preferred.** Executes a pre-defined script from the knowledge base by its ID. Use \`get_scripting_tips\` to find IDs and inputs. Supports placeholder substitution via \`input_data\` or \`arguments\`. Ex: \`kb_script_id: "safari_get_front_tab_url"\`.
@@ -125,7 +102,8 @@ async function main() {
 *   \`include_substitution_logs\` (boolean, default: false): For \`kb_script_id\`, includes detailed placeholder substitution logs.
 *   \`report_execution_time\` (boolean, optional, default: false): If \`true\`, an additional message with the formatted script execution time will be included in the response. Defaults to false.
 `,
-    ExecuteScriptInputShape,
+      inputSchema: ExecuteScriptInputSchema,
+    },
     async (args: unknown) => {
       const input = ExecuteScriptInputSchema.parse(args);
       let execution_time_seconds: number | undefined;
@@ -341,9 +319,10 @@ async function main() {
   );
 
   // ADD THE NEW TOOL get_scripting_tips HERE
-  server.tool(
+  server.registerTool(
     'get_scripting_tips',
-    `Discover how to automate any app on your Mac with this comprehensive knowledge base of AppleScript/JXA tips and runnable scripts. This tool is essential for discovery and should be the FIRST CHOICE when aiming to automate macOS tasks, especially those involving common applications or system functions, before attempting to write scripts from scratch. It helps identify pre-built, tested solutions, effectively teaching you how to control virtually any aspect of your macOS experience.
+    {
+      description: `Discover how to automate any app on your Mac with this comprehensive knowledge base of AppleScript/JXA tips and runnable scripts. This tool is essential for discovery and should be the FIRST CHOICE when aiming to automate macOS tasks, especially those involving common applications or system functions, before attempting to write scripts from scratch. It helps identify pre-built, tested solutions, effectively teaching you how to control virtually any aspect of your macOS experience.
 
 **Primary Use Cases & Parameters:**
 
@@ -374,7 +353,8 @@ async function main() {
 1. **Always start with search**: Use natural language queries to find solutions (e.g., "send email from Mail app").
 2. **Browse categories when exploring**: Use \`list_categories: true\` to see available automation areas.
 3. **Use specific IDs for execution**: Once you find a script, use its ID with \`execute_script\` tool for precise execution.`,
-    GetScriptingTipsInputShape,
+      inputSchema: GetScriptingTipsInputSchema,
+    },
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);
       
