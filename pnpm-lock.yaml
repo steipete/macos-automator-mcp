@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.25.1
-        version: 1.25.1(hono@4.11.3)(zod@4.2.1)
+        version: 1.25.1(hono@4.11.3)(zod@4.3.6)
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
@@ -19,7 +19,7 @@ importers:
         version: 4.0.3
       zod:
         specifier: ^4.2.1
-        version: 4.2.1
+        version: 4.3.6
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.2
@@ -1349,8 +1349,8 @@ packages:
     peerDependencies:
       zod: ^3.25 || ^4
 
-  zod@4.2.1:
-    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
 snapshots:
 
@@ -1495,7 +1495,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@modelcontextprotocol/sdk@1.25.1(hono@4.11.3)(zod@4.2.1)':
+  '@modelcontextprotocol/sdk@1.25.1(hono@4.11.3)(zod@4.3.6)':
     dependencies:
       '@hono/node-server': 1.19.7(hono@4.11.3)
       ajv: 8.17.1
@@ -1511,8 +1511,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 4.2.1
-      zod-to-json-schema: 3.25.1(zod@4.2.1)
+      zod: 4.3.6
+      zod-to-json-schema: 3.25.1(zod@4.3.6)
     transitivePeerDependencies:
       - hono
       - supports-color
@@ -2575,8 +2575,8 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.25.1(zod@4.2.1):
+  zod-to-json-schema@3.25.1(zod@4.3.6):
     dependencies:
-      zod: 4.2.1
+      zod: 4.3.6
 
-  zod@4.2.1: {}
+  zod@4.3.6: {}
