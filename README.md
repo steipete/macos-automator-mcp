@@ -33,7 +33,9 @@ No more copy-pasting scripts like a caveman - let the robots handle the robot wo
 
 The easiest way to deploy your automation army is via `npx`. No installation needed - just pure robot magic!
 
-Add this to your MCP client's `mcp.json` and watch the automation begin:
+### Claude Desktop / Claude Code
+
+Add this to your MCP client's `mcp.json`:
 
 ```json
 {
@@ -42,12 +44,32 @@ Add this to your MCP client's `mcp.json` and watch the automation begin:
       "command": "npx",
       "args": [
         "-y",
-        "@steipete/macos-automator-mcp@latest"
+        "@steipete/macos-automator-mcp"
       ]
     }
   }
 }
 ```
+
+### VS Code (GitHub Copilot)
+
+Add this to your `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "macos_automator": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@steipete/macos-automator-mcp"
+      ]
+    }
+  }
+}
+```
+
+> **Note:** Don't use `@latest` version tag - some MCP clients (like VS Code) don't support it. The package will automatically use the latest version.
 
 ### 🛠️ Robot Workshop Mode (Local Development)
 
