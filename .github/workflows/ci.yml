@@ -17,6 +17,9 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs: # Single top-level jobs key
   test: # MCP stdio test job
     name: MCP Stdio Tests (Node ${{ matrix.node-version }})
@@ -99,6 +102,7 @@ jobs: # Single top-level jobs key
         with:
           name: kb-validation-report
           path: validation-results/kb-report.md # Ensure this path is where `pnpm run validate` outputs its report
+          if-no-files-found: ignore
           retention-days: 7
 
 # Test macOS specific functionality (optional, as actual execution requires macOS)
