@@ -17,7 +17,7 @@ No more copy-pasting scripts like a caveman - let the robots handle the robot wo
 
 ## 🔧 Robot Requirements (Prerequisites)
 
-- **Node.js** (version >=18.0.0) - Because even robots need a runtime
+- **Node.js** (version >=24.0.0) - Because even robots need a runtime
 - **macOS** - Sorry Windows users, this is an Apple-only party 🍎
 - **⚠️ CRITICAL: Permission to Automate (Your Mac's Trust Issues):**
   - The application running THIS MCP server (e.g., Terminal, your Node.js application) requires explicit user permissions on the macOS machine where the server is running.
@@ -57,7 +57,7 @@ Want to tinker with the robot's brain? Clone the repo and become a robot surgeon
     ```bash
     git clone https://github.com/steipete/macos-automator-mcp.git
     cd macos-automator-mcp
-    npm install # Ensure dependencies are installed
+    pnpm install # Ensure dependencies are installed
     ```
 
 2.  **Configure your MCP client:**
@@ -380,7 +380,7 @@ Set the environment variable:
 `export LOCAL_KB_PATH=/Users/yourname/my-custom-kb`
 
 Or, if you are running the validator script, you can use the `--local-kb-path` argument:
-`npm run validate:kb -- --local-kb-path /Users/yourname/my-custom-kb`
+`pnpm run validate -- --local-kb-path /Users/yourname/my-custom-kb`
 
 **Structure and Overrides:**
 

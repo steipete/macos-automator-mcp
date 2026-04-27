@@ -13,7 +13,7 @@ jobs:
         run: corepack enable pnpm
       - uses: actions/setup-node@v6
         with:
-          node-version: "20.x"
+          node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml

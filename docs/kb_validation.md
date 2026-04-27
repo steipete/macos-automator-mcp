@@ -15,7 +15,7 @@ The knowledge base consists of Markdown files containing AppleScript and JXA scr
 ### Basic Validation
 
 ```bash
-npm run validate
+pnpm run validate
 ```
 
 This command validates the structure and metadata of all knowledge base files without checking script syntax.
@@ -23,7 +23,7 @@ This command validates the structure and metadata of all knowledge base files wi
 ### Syntax Validation
 
 ```bash
-npm run validate:syntax
+pnpm run validate
 ```
 
 This command performs all basic validation checks plus validates the syntax of AppleScript and JXA scripts using the `osascript` command without executing them.
@@ -31,7 +31,7 @@ This command performs all basic validation checks plus validates the syntax of A
 ### Testing Specific Files
 
 ```bash
-npm run validate:test
+pnpm run validate
 ```
 
 This runs validation on a test directory with known valid and invalid scripts for testing purposes.
@@ -57,7 +57,7 @@ When adding new scripts to the knowledge base:
 1. Create a new `.md` file in the appropriate category folder
 2. Include the required frontmatter metadata
 3. Add the script code in a fenced code block with the correct language tag (`applescript` or `javascript`)
-4. Run `npm run validate:syntax` to ensure your script is valid
+4. Run `pnpm run validate` to ensure your script is valid
 5. Fix any reported issues
 
 ## Validation Output

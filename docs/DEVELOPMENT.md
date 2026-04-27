@@ -14,18 +14,18 @@ This guide provides instructions for setting up the development environment, run
 2.  **Install dependencies:**
 
     ```bash
-    npm install
+    pnpm install
     ```
 
 3.  **Build the project:**
 
     ```bash
-    npm run build
+    pnpm run build
     ```
 
 4.  **Run in development mode:**
     ```bash
-    npm run dev
+    pnpm run dev
     ```
 
 ## Running Locally for Development
@@ -45,9 +45,9 @@ This guide provides instructions for setting up the development environment, run
 - **Testing with MCP Client:**
   Ensure the server is running and accessible via the MCP client.
 
-- **Using npm link:**
+- **Using pnpm link:**
   ```bash
-  npm link
+  pnpm link --global
   ```
 
 ## Project Structure Overview
@@ -63,15 +63,12 @@ macos-automator-mcp/
 ├── dist/                 # Compiled JavaScript output
 ├── docs/                 # Documentation and screenshots
 ├── .github/workflows/    # GitHub Actions workflows (CI)
-├── .eslintignore
-├── .eslintrc.cjs
+├── .oxlintrc.json
 ├── .gitignore
-├── .prettierignore
-├── .prettierrc.json
 ├── DEVELOPMENT.md        # This file
 ├── LICENSE
 ├── README.md
-├── package-lock.json
+├── pnpm-lock.yaml
 ├── package.json
 ├── start.sh              # Script to start the server
 └── tsconfig.json         # TypeScript configuration
@@ -113,11 +110,11 @@ Each tip file uses YAML frontmatter and a Markdown body containing the script.
 
 ## Scripts Overview
 
--   `npm run build`: Compiles TypeScript to JavaScript.
--   `npm run dev`: Runs the server in development mode with hot reloading (using tsx).
--   `npm run start`: Starts the compiled server.
--   `npm run lint`: Lints the codebase using ESLint.
--   `npm run format`: Formats the codebase using Prettier.
+-   `pnpm run build`: Compiles TypeScript to JavaScript.
+-   `pnpm run dev`: Runs the server in development mode with hot reloading (using tsx).
+-   `pnpm run start`: Starts the compiled server.
+-   `pnpm run lint`: Lints the codebase using oxlint.
+-   `pnpm run format`: Formats the codebase using oxfmt.
 
 ## General Development Notes
 

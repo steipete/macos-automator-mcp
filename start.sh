@@ -15,8 +15,8 @@ if [ -f "$DIST_SERVER_JS" ]; then
 else
   # echo "INFO: Making sure tsx is available..." >&2 # Silenced
   if ! command -v tsx &> /dev/null && ! [ -f "$PROJECT_ROOT/node_modules/.bin/tsx" ]; then
-    echo "WARN: tsx command not found locally or globally. Attempting to install via npm..." >&2
-    (cd "$PROJECT_ROOT" && npm install tsx --no-save)
+    echo "WARN: tsx command not found locally or globally. Attempting to install via pnpm..." >&2
+    (cd "$PROJECT_ROOT" && corepack enable pnpm && pnpm install --frozen-lockfile)
     if ! [ -f "$PROJECT_ROOT/node_modules/.bin/tsx" ]; then
         echo "ERROR: Failed to install tsx. Please install it manually or build the project." >&2
         exit 1
@@ -35,4 +35,4 @@ else
       # echo "INFO: Running from src/server.ts using global tsx" >&2 # Silenced
       exec tsx "$SRC_SERVER_TS"
   fi
-fi 
+fi
