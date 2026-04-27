@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Get DOM Information'
+title: "Safari: Get DOM Information"
 category: 07_browsers
 id: safari_get_dom_info
 description: >-
@@ -55,7 +55,7 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
   if selector is missing value or selector is "" then
     return "error: CSS selector not provided."
   end if
-  
+
   -- Set default mode if not specified
   if extractionMode is missing value or extractionMode is "" then
     set extractionMode to "json"
@@ -65,36 +65,36 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
       return "error: Invalid extraction mode. Must be 'text', 'html', or 'json'."
     end if
   end if
-  
+
   -- Prepare the list of attributes to extract
   set attributeList to "[]"
   if attributesToGet is not missing value and attributesToGet is not "" then
     -- Convert comma-separated list to JavaScript array
     set attributeList to "[" & my convertToJSStringArray(attributesToGet) & "]"
   end if
-  
+
   -- Build the JavaScript to extract DOM info
   set domExtractionJS to "
     (function() {
       // CSS selector to use
       const selector = '" & selector & "';
-      
+
       // Attributes to extract (if specified)
       const attributesToGet = " & attributeList & ";
-      
+
       // Function to get computed styles in simplified object form
       function getComputedStylesForElement(element) {
         const computedStyle = window.getComputedStyle(element);
         const styles = {};
-        
+
         // Filter for the most useful style properties
         const keyProperties = [
-          'display', 'visibility', 'position', 'width', 'height', 
+          'display', 'visibility', 'position', 'width', 'height',
           'top', 'right', 'bottom', 'left', 'margin', 'padding',
           'color', 'background-color', 'font-size', 'font-family',
           'z-index', 'opacity', 'border', 'overflow'
         ];
-        
+
         keyProperties.forEach(prop => {
           // For shorthand properties like 'margin', try individual sides as well
           if (prop === 'margin' || prop === 'padding' || prop === 'border') {
@@ -105,10 +105,10 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
             styles[prop] = computedStyle.getPropertyValue(prop);
           }
         });
-        
+
         return styles;
       }
-      
+
       // Function to get element metrics/dimensions
       function getElementMetrics(element) {
         const rect = element.getBoundingClientRect();
@@ -129,12 +129,12 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
           )
         };
       }
-      
+
       // Function to get all attributes of an element
       function getElementAttributes(element, specificAttributes = []) {
         const attributes = {};
         const attrs = element.attributes;
-        
+
         if (attrs && attrs.length > 0) {
           // If specific attributes requested, only get those
           if (specificAttributes.length > 0) {
@@ -150,22 +150,22 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
             }
           }
         }
-        
+
         return attributes;
       }
-      
+
       // Function to extract comprehensive info about an element
       function extractElementInfo(element, mode, specificAttributes) {
         // For text mode, just return the text content
         if (mode === 'text') {
           return element.textContent.trim();
         }
-        
+
         // For HTML mode, return the outer HTML
         if (mode === 'html') {
           return element.outerHTML;
         }
-        
+
         // For JSON mode, return detailed information
         return {
           tagName: element.tagName.toLowerCase(),
@@ -176,17 +176,17 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
           styles: getComputedStylesForElement(element),
           metrics: getElementMetrics(element),
           // Include simplified HTML for reference
-          html: element.outerHTML.length > 500 
-            ? element.outerHTML.substring(0, 500) + '...' 
+          html: element.outerHTML.length > 500
+            ? element.outerHTML.substring(0, 500) + '...'
             : element.outerHTML
         };
       }
-      
+
       // Find elements matching the selector
       let elements = [];
       try {
         elements = Array.from(document.querySelectorAll(selector));
-        
+
         // If no elements found in main document, try looking in frames
         if (elements.length === 0 && window.frames.length > 0) {
           for (let i = 0; i < window.frames.length; i++) {
@@ -206,18 +206,18 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
           error: `Invalid selector: ${err.message}`
         });
       }
-      
+
       // Check if we found any elements
       if (elements.length === 0) {
         return JSON.stringify({
           error: `No elements found matching selector: ${selector}`
         });
       }
-      
+
       // Extract information based on mode
       const extractionMode = '" & extractionMode & "';
       const results = elements.map(el => extractElementInfo(el, extractionMode, attributesToGet));
-      
+
       // Format the response based on extraction mode and number of elements
       if (extractionMode === 'text' || extractionMode === 'html') {
         // For text/html modes with single element, return the content directly
@@ -236,23 +236,23 @@ on getDOMInfo(selector, attributesToGet, extractionMode)
       }
     })();
   "
-  
+
   tell application "Safari"
     if not running then
       return "error: Safari is not running."
     end if
-    
+
     try
       if (count of windows) is 0 or (count of tabs of front window) is 0 then
         return "error: No tabs open in Safari."
       end if
-      
+
       set currentTab to current tab of front window
       set pageUrl to URL of currentTab
-      
+
       -- Execute the JavaScript
       set jsResult to do JavaScript domExtractionJS in currentTab
-      
+
       return jsResult
     on error errMsg
       return "error: Failed to extract DOM information - " & errMsg & ". Make sure 'Allow JavaScript from Apple Events' is enabled in Safari's Develop menu."
@@ -265,7 +265,7 @@ on convertToJSStringArray(commaList)
   set AppleScript's text item delimiters to ","
   set theItems to every text item of commaList
   set AppleScript's text item delimiters to ""
-  
+
   set jsArray to ""
   repeat with i from 1 to count of theItems
     set theItem to item i of theItems
@@ -275,7 +275,7 @@ on convertToJSStringArray(commaList)
       if i < count of theItems then set jsArray to jsArray & ", "
     end if
   end repeat
-  
+
   return jsArray
 end convertToJSStringArray
 
@@ -308,18 +308,18 @@ on toLowerCase(sourceText)
   set lowercaseText to ""
   set upperChars to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   set lowerChars to "abcdefghijklmnopqrstuvwxyz"
-  
+
   repeat with i from 1 to length of sourceText
     set currentChar to character i of sourceText
     set charPos to offset of currentChar in upperChars
-    
+
     if charPos > 0 then
       set lowercaseText to lowercaseText & character charPos of lowerChars
     else
       set lowercaseText to lowercaseText & currentChar
     end if
   end repeat
-  
+
   return lowercaseText
 end toLowerCase
 

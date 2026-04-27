@@ -1,5 +1,5 @@
 ---
-title: 'Podcasts: List Subscriptions'
+title: "Podcasts: List Subscriptions"
 category: 10_creative
 id: podcasts_list_subscriptions
 description: Lists all subscribed podcasts in the Podcasts app.
@@ -19,10 +19,10 @@ notes: >-
 tell application "Podcasts"
   try
     activate
-    
+
     -- Give Podcasts app time to launch
     delay 1
-    
+
     tell application "System Events"
       tell process "Podcasts"
         -- Click on "Library" in the sidebar to ensure we see all subscriptions
@@ -30,22 +30,22 @@ tell application "Podcasts"
           click row "Library" of outline 1 of scroll area 1 of splitter group 1 of window 1
           delay 0.5
         end if
-        
+
         -- Navigate to "Shows" within Library
         if exists row "Shows" of table 1 of scroll area 1 of splitter group 1 of window 1 then
           click row "Shows" of table 1 of scroll area 1 of splitter group 1 of window 1
           delay 0.5
-          
+
           -- Get all podcast shows
           if exists scroll area 1 of group 1 of splitter group 1 of window 1 then
             set podcastGrid to scroll area 1 of group 1 of splitter group 1 of window 1
-            
+
             -- Get all UI elements (podcast thumbnails) in the grid
             set podcastElements to UI elements of podcastGrid
-            
+
             -- Filter for elements that are actual podcasts
             set podcastList to {}
-            
+
             repeat with element in podcastElements
               if element is not podcastGrid then -- Skip the scroll area itself
                 if exists static text 1 of element then
@@ -54,7 +54,7 @@ tell application "Podcasts"
                 end if
               end if
             end repeat
-            
+
             -- Generate results
             if (count of podcastList) is 0 then
               return "No podcast subscriptions found. You may need to subscribe to podcasts first."
@@ -62,7 +62,7 @@ tell application "Podcasts"
               set AppleScript's text item delimiters to return
               set resultText to "Your Podcast Subscriptions (" & (count of podcastList) & "):" & return & return & (podcastList as string)
               set AppleScript's text item delimiters to ""
-              
+
               return resultText
             end if
           else
@@ -73,10 +73,11 @@ tell application "Podcasts"
         end if
       end tell
     end tell
-    
+
   on error errMsg number errNum
     return "Error (" & errNum & "): Failed to list podcast subscriptions - " & errMsg
   end try
 end tell
 ```
+
 END_TIP

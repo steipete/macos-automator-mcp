@@ -5,17 +5,20 @@ This guide provides instructions for setting up the development environment, run
 ## Getting Started
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/steipete/macos-automator-mcp.git
     cd macos-automator-mcp
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
 3.  **Build the project:**
+
     ```bash
     npm run build
     ```
@@ -27,23 +30,25 @@ This guide provides instructions for setting up the development environment, run
 
 ## Running Locally for Development
 
--   **Using start.sh:**
-    ```bash
-    ./start.sh
-    ```
+- **Using start.sh:**
 
--   **Direct Execution:**
-    ```bash
-    node dist/server.js
-    ```
+  ```bash
+  ./start.sh
+  ```
 
--   **Testing with MCP Client:**
-    Ensure the server is running and accessible via the MCP client.
+- **Direct Execution:**
 
--   **Using npm link:**
-    ```bash
-    npm link
-    ```
+  ```bash
+  node dist/server.js
+  ```
+
+- **Testing with MCP Client:**
+  Ensure the server is running and accessible via the MCP client.
+
+- **Using npm link:**
+  ```bash
+  npm link
+  ```
 
 ## Project Structure Overview
 
@@ -77,16 +82,18 @@ macos-automator-mcp/
 The server features an extensible knowledge base of AppleScript/JXA tips and runnable scripts, stored as Markdown files in the `knowledge_base/` directory. This allows for easy contribution and maintenance of a rich script library.
 
 ### Directory Structure
--   **`knowledge_base/`**: Root directory.
--   **`knowledge_base/_shared_handlers/`**: Contains reusable AppleScript (`.applescript`) or JXA (`.js`) handlers/subroutines. These are not yet automatically prepended but are loaded and can be referenced in complex script designs.
--   **`knowledge_base/<category_name>/`**: Each subdirectory represents a category of tips (e.g., `finder`, `safari`, `mail`).
--   **`knowledge_base/<category_name>/_category_info.md`**: (Optional) A Markdown file whose frontmatter can contain a `description` for the category, used by `get_scripting_tips`.
--   **`knowledge_base/<category_name>/<tip_file_name>.md`**: Individual Markdown files for each script/tip.
+
+- **`knowledge_base/`**: Root directory.
+- **`knowledge_base/_shared_handlers/`**: Contains reusable AppleScript (`.applescript`) or JXA (`.js`) handlers/subroutines. These are not yet automatically prepended but are loaded and can be referenced in complex script designs.
+- **`knowledge_base/<category_name>/`**: Each subdirectory represents a category of tips (e.g., `finder`, `safari`, `mail`).
+- **`knowledge_base/<category_name>/_category_info.md`**: (Optional) A Markdown file whose frontmatter can contain a `description` for the category, used by `get_scripting_tips`.
+- **`knowledge_base/<category_name>/<tip_file_name>.md`**: Individual Markdown files for each script/tip.
 
 ### Tip File Format (`.md`)
+
 Each tip file uses YAML frontmatter and a Markdown body containing the script.
 
-```yaml
+````yaml
 ---\nid: unique_script_id # Optional but recommended for complex/runnable scripts (e.g., safari_get_all_links)\ntitle: \"Descriptive Title of the Tip/Script\"\ndescription: \"Brief explanation of what the script does.\"\nlanguage: applescript # Or \"javascript\"; defaults to applescript. Overridden by code block language.\nkeywords:\n  - relevant\n  - keyword\n  - tags\nnotes: |\n  Important considerations, requirements (e.g., permissions, app settings),\n  or potential issues with this script.\n  Can be multi-line.\nargumentsPrompt: \"Optional: Describe inputs needed if script is run by ID, e.g., \'Provide the target URL and new tab title.\'\"\nisComplex: false # Optional: Set to true if a long/complex script, influences display in get_scripting_tips\n# usesSharedHandlers: [\"string_utils\"] # Future: For linking to _shared_handlers\n---\n\nMarkdown body explaining the script, its usage, or context.\n\n\`\`\`applescript \n-- Your AppleScript code here\nlog \"Hello from AppleScript!\"\nreturn \"Script executed\"\n\`\`\`\n\nOr for JXA:\n\n\`\`\`javascript\n// Your JXA code here\nconsole.log(\"Hello from JXA!\");\n\"Script executed\"; // Last expression is returned\n\`\`\`\n```
 
 **Key Frontmatter Fields:**
@@ -122,4 +129,5 @@ Each tip file uses YAML frontmatter and a Markdown body containing the script.
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.
+````

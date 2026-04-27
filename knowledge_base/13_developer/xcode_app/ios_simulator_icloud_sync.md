@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Trigger iCloud Sync'
+title: "iOS Simulator: Trigger iCloud Sync"
 category: 13_developer
 id: ios_simulator_icloud_sync
 description: >-
@@ -41,19 +41,19 @@ on triggerICloudSync(deviceIdentifier, bundleID, syncType)
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Default sync type to lightweight if not specified
   if syncType is missing value or syncType is "" then
     set syncType to "lightweight"
   else
     -- Normalize to lowercase
     set syncType to do shell script "echo " & quoted form of syncType & " | tr '[:upper:]' '[:lower:]'"
-    
+
     if syncType is not in {"full", "lightweight"} then
       set syncType to "lightweight"
     end if
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -64,7 +64,7 @@ on triggerICloudSync(deviceIdentifier, bundleID, syncType)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- First check if the user is signed in to iCloud
     set checkiCloudCmd to "xcrun simctl spawn " & quoted form of deviceIdentifier & " defaults read MobileMeAccounts"
     try
@@ -73,14 +73,14 @@ on triggerICloudSync(deviceIdentifier, bundleID, syncType)
     on error
       set isSignedIn to false
     end try
-    
+
     if not isSignedIn then
       return "Error: No iCloud account is signed in on the simulator. Please sign in to iCloud via Settings app first before triggering sync."
     end if
-    
+
     -- Different approaches to trigger iCloud sync
     set syncMethods to {}
-    
+
     -- Method 1: Using the debug menu (for simulators with debug menu enabled)
     set debugMenuMethod to "tell application \"Simulator\"
   activate
@@ -99,21 +99,21 @@ on triggerICloudSync(deviceIdentifier, bundleID, syncType)
     end tell
   end tell
 end tell"
-    
+
     -- Method 2: Using notification posting (works on newer iOS versions)
     set notificationMethods to {}
-    
+
     -- Add general sync notification
     set end of notificationMethods to "xcrun simctl spawn " & quoted form of deviceIdentifier & " notifyutil -p com.apple.cloudd.session.sync"
-    
+
     -- Add backup notification for older versions
     set end of notificationMethods to "xcrun simctl spawn " & quoted form of deviceIdentifier & " notifyutil -p com.apple.ios.StoreKitAgent.syncFinished"
-    
+
     -- If a specific app is targeted, add app-specific notifications
     if bundleID is not missing value and bundleID is not "" then
       set end of notificationMethods to "xcrun simctl spawn " & quoted form of deviceIdentifier & " notifyutil -p com.apple.cloudd.ubiquity." & bundleID & ".sync"
     end if
-    
+
     -- Method 3: For full sync, try resetting cloudkit sync cache
     if syncType is "full" then
       set resetCloudKitCmd to "xcrun simctl spawn " & quoted form of deviceIdentifier & " defaults write com.apple.CloudKit CloudKitDeviceTokenReset -bool true"
@@ -124,7 +124,7 @@ end tell"
         -- Ignore if this fails, will try other methods
       end try
     end if
-    
+
     -- Try UI method first if it's a full sync
     if syncType is "full" then
       set uiSuccess to do shell script "osascript -e " & quoted form of debugMenuMethod
@@ -132,7 +132,7 @@ end tell"
         set end of syncMethods to "Debug menu trigger"
       end if
     end if
-    
+
     -- Try all notification methods regardless
     set notificationStatus to {}
     repeat with notifyCmd in notificationMethods
@@ -144,14 +144,14 @@ end tell"
         set end of notificationStatus to "Failed: " & errMsg
       end try
     end repeat
-    
+
     -- Method 4: If bundleID is provided, try to restart the app which often triggers sync
     if bundleID is not missing value and bundleID is not "" then
       try
         -- Check if the app is installed
         set checkAppCmd to "xcrun simctl get_app_container " & quoted form of deviceIdentifier & " " & quoted form of bundleID & " 2>/dev/null || echo 'not installed'"
         set appContainer to do shell script checkAppCmd
-        
+
         if appContainer is not "not installed" then
           -- Terminate and relaunch the app
           do shell script "xcrun simctl terminate " & quoted form of deviceIdentifier & " " & quoted form of bundleID
@@ -163,7 +163,7 @@ end tell"
         -- Ignore if app manipulation fails
       end try
     end if
-    
+
     -- If no methods succeeded, try a last resort approach
     if (count of syncMethods) is 0 then
       -- Try toggling airplane mode as a last resort (often triggers sync on reconnect)
@@ -178,14 +178,14 @@ end tell"
         -- Ignore if this fails too
       end try
     end if
-    
+
     if (count of syncMethods) > 0 then
       set methodsText to ""
       repeat with methodName in syncMethods
         set methodsText to methodsText & "- " & methodName & "
 "
       end repeat
-      
+
       return "Successfully triggered " & syncType & " iCloud sync on " & deviceIdentifier & " simulator" & (if bundleID is not missing value and bundleID is not "" then " for app " & bundleID else " system-wide") & ".
 
 Sync methods used:

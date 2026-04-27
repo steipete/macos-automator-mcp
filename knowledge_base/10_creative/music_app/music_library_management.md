@@ -1,5 +1,5 @@
 ---
-title: 'Music: Library Management'
+title: "Music: Library Management"
 category: 10_creative
 id: music_library_management
 description: >-
@@ -109,19 +109,19 @@ tell application "Music"
   if not running then
     return "The Music app is not running. Please launch it first."
   end if
-  
+
   set resultText to ""
-  
+
   -- Execute the requested action
   if actionParam is "stats" then
     -- Show library statistics
     try
       -- Get library playlist (main library)
       set mainLibrary to library playlist 1
-      
+
       -- Get track counts
       set totalTracks to count of tracks of mainLibrary
-      
+
       -- Calculate total time
       set totalTimeSeconds to 0
       repeat with aTrack in tracks of mainLibrary
@@ -129,20 +129,20 @@ tell application "Music"
           set totalTimeSeconds to totalTimeSeconds + (duration of aTrack)
         end try
       end repeat
-      
+
       -- Convert total time to days, hours, minutes
       set totalTimeDays to totalTimeSeconds / 86400 -- 86400 seconds in a day
       set totalTimeHours to (totalTimeSeconds mod 86400) / 3600
       set totalTimeMinutes to (totalTimeSeconds mod 3600) / 60
-      
+
       -- Round to 1 decimal place
       set totalTimeDays to round (totalTimeDays * 10) / 10
       set totalTimeHours to round (totalTimeHours * 10) / 10
       set totalTimeMinutes to round (totalTimeMinutes * 10) / 10
-      
+
       -- Count playlists
       set totalPlaylists to count of user playlists
-      
+
       -- Get genre count
       set allGenres to {}
       repeat with aTrack in tracks of mainLibrary
@@ -153,49 +153,49 @@ tell application "Music"
           end if
         end try
       end repeat
-      
+
       set genreCount to count of allGenres
-      
+
       -- Build the result
       set resultText to "Apple Music Library Statistics:" & return & return
       set resultText to resultText & "Total Tracks: " & totalTracks & return
       set resultText to resultText & "Total Time: " & totalTimeDays & " days, " & totalTimeHours & " hours, " & totalTimeMinutes & " minutes" & return
       set resultText to resultText & "Total Playlists: " & totalPlaylists & return
       set resultText to resultText & "Total Genres: " & genreCount & return
-      
+
       -- Show recently added tracks
       try
         set recentTracks to (get tracks of mainLibrary where date added > ((current date) - (7 * days)))
         set recentCount to count of recentTracks
-        
+
         set resultText to resultText & return & "Tracks Added in the Last Week: " & recentCount & return
-        
+
         if recentCount > 0 then
           set maxRecentToShow to 5
           if recentCount < maxRecentToShow then
             set maxRecentToShow to recentCount
           end if
-          
+
           set resultText to resultText & "Recent Additions:" & return
-          
+
           repeat with i from 1 to maxRecentToShow
             set recentTrack to item i of recentTracks
             set trackName to name of recentTrack
             set artistName to artist of recentTrack
-            
+
             set resultText to resultText & "- " & trackName & " by " & artistName & return
           end repeat
-          
+
           if recentCount > maxRecentToShow then
             set resultText to resultText & "... and " & (recentCount - maxRecentToShow) & " more" & return
           end if
         end if
       end try
-      
+
     on error errMsg number errNum
       set resultText to "Error getting library statistics (" & errNum & "): " & errMsg
     end try
-    
+
   else if actionParam is "rate_current" then
     -- Rate the currently playing track
     try
@@ -205,36 +205,36 @@ tell application "Music"
       else
         -- Get the current track
         set currentTrack to current track
-        
+
         -- Convert 1-5 star rating to 0-100 scale (20 points per star)
         set ratingNumber to ratingParam as number
         set ratingValue to ratingNumber * 20
-        
+
         -- Set the rating
         set rating of currentTrack to ratingValue
-        
+
         -- Get track info for confirmation
         set trackName to name of currentTrack
         set artistName to artist of currentTrack
         set oldRatingValue to rating of currentTrack
-        
+
         -- Verify the rating was set correctly
         if oldRatingValue is ratingValue then
           set resultText to "Rating updated successfully." & return
         else
           set resultText to "Rating may not have updated correctly." & return
         end if
-        
+
         set resultText to resultText & "Rated '" & trackName & "' by " & artistName & " with " & ratingNumber & " stars."
       end if
     on error errMsg number errNum
       set resultText to "Error setting track rating (" & errNum & "): " & errMsg
-      
+
       if errNum is -1728 then
         set resultText to "Cannot set rating for this track. It may be an Apple Music track rather than a library track."
       end if
     end try
-    
+
   else if actionParam is "update_genre" then
     -- Update genre of current track
     try
@@ -244,29 +244,29 @@ tell application "Music"
       else
         -- Get the current track
         set currentTrack to current track
-        
+
         -- Save old genre for reporting
         set oldGenre to genre of currentTrack
-        
+
         -- Update the genre
         set genre of currentTrack to genreParam
-        
+
         -- Get track info for confirmation
         set trackName to name of currentTrack
         set artistName to artist of currentTrack
-        
+
         set resultText to "Updated genre for '" & trackName & "' by " & artistName & return
         set resultText to resultText & "Old genre: " & oldGenre & return
         set resultText to resultText & "New genre: " & genreParam
       end if
     on error errMsg number errNum
       set resultText to "Error updating track genre (" & errNum & "): " & errMsg
-      
+
       if errNum is -1728 then
         set resultText to "Cannot update genre for this track. It may be an Apple Music track rather than a library track."
       end if
     end try
-    
+
   else if actionParam is "add_file" then
     -- Add file to library
     try
@@ -276,40 +276,40 @@ tell application "Music"
       else
         set filePath to filePathParam
       end if
-      
+
       -- Add the file to the library
       add filePath
-      
+
       set resultText to "File added to library: " & filePathParam & return
       set resultText to resultText & "Note: The file may still be processing. Check the Music app for the added track."
-      
+
     on error errMsg number errNum
       set resultText to "Error adding file to library (" & errNum & "): " & errMsg
     end try
-    
+
   else if actionParam is "top_rated" then
     -- Show top rated tracks
     try
       -- Get library playlist (main library)
       set mainLibrary to library playlist 1
-      
+
       -- Get tracks with rating of 4 or 5 stars (80-100)
       set highRatedTracks to (get tracks of mainLibrary where rating > 79)
       set trackCount to count of highRatedTracks
-      
+
       if trackCount is 0 then
         set resultText to "No highly rated tracks found in your library."
       else
         set resultText to "Top Rated Tracks (4-5 stars):" & return & return
-        
+
         -- Sort by rating (highest first)
         set sortedTracks to {}
-        
+
         -- Copy to a list we can modify
         repeat with aTrack in highRatedTracks
           set end of sortedTracks to aTrack
         end repeat
-        
+
         -- Sort the list (bubble sort - not efficient but works for this)
         set n to count of sortedTracks
         repeat with i from 1 to n
@@ -321,27 +321,27 @@ tell application "Music"
             end if
           end repeat
         end repeat
-        
+
         -- Show top 20 tracks
         set maxTracksToShow to 20
         if trackCount < maxTracksToShow then
           set maxTracksToShow to trackCount
         end if
-        
+
         repeat with i from 1 to maxTracksToShow
           set aTrack to item i of sortedTracks
-          
+
           set trackName to name of aTrack
           set artistName to artist of aTrack
           set albumName to album of aTrack
           set trackRating to rating of aTrack
           set starRating to trackRating / 20
-          
+
           set resultText to resultText & i & ". " & trackName & " by " & artistName & return
           set resultText to resultText & "   Album: " & albumName & return
           set resultText to resultText & "   Rating: " & starRating & " stars" & return & return
         end repeat
-        
+
         if trackCount > maxTracksToShow then
           set resultText to resultText & "... and " & (trackCount - maxTracksToShow) & " more highly rated tracks"
         end if
@@ -350,7 +350,7 @@ tell application "Music"
       set resultText to "Error getting top rated tracks (" & errNum & "): " & errMsg
     end try
   end if
-  
+
   return resultText
 end tell
 ```

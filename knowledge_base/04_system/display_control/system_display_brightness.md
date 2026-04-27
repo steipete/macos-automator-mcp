@@ -22,7 +22,7 @@ notes: >-
 tell application "System Events"
   -- Increase brightness (simulate F2 key)
   key code 144
-  
+
   -- Decrease brightness (simulate F1 key)
   key code 145
 end tell
@@ -33,7 +33,7 @@ on setBrightness(brightnessLevel)
   set brightnessLevel to brightnessLevel as number
   if brightnessLevel < 0 then set brightnessLevel to 0
   if brightnessLevel > 100 then set brightnessLevel to 100
-  
+
   do shell script "brightness " & brightnessLevel / 100
 end setBrightness
 
@@ -75,6 +75,7 @@ The script demonstrates multiple approaches to control display brightness:
    - Incrementally increase or decrease brightness by 10%
 
 For Method 2 and 3, you need to install the brightness command-line tool:
+
 ```bash
 brew install brightness
 ```
@@ -88,12 +89,12 @@ on fadeBrightness(targetPercent, durationSeconds)
   if targetPercent < 0 then set targetPercent to 0
   if targetPercent > 100 then set targetPercent to 100
   set targetBrightness to targetPercent / 100
-  
+
   set currentBrightness to (do shell script "brightness -l | grep brightness | awk '{print $4}'") as number
   set steps to 10
   set brightnessStep to (targetBrightness - currentBrightness) / steps
   set delayTime to durationSeconds / steps
-  
+
   repeat with i from 1 to steps
     set newBrightness to currentBrightness + (brightnessStep * i)
     if newBrightness < 0 then set newBrightness to 0

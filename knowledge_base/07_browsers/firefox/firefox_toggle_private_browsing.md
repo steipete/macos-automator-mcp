@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Toggle Private Browsing'
+title: "Firefox: Toggle Private Browsing"
 category: 07_browsers
 id: firefox_toggle_private_browsing
 description: >-
@@ -28,30 +28,30 @@ on run
   tell application "System Events"
     set firefoxRunning to (exists process "Firefox")
   end tell
-  
+
   if not firefoxRunning then
     tell application "Firefox"
       activate
       delay 1 -- Allow Firefox to launch
     end tell
   end if
-  
+
   tell application "Firefox"
     activate
     delay 0.5 -- Ensure Firefox is active
   end tell
-  
+
   -- Use menu selection to open a new private window
   tell application "System Events"
     tell process "Firefox"
       set frontmost to true
-      
+
       -- Open File menu
       tell menu bar 1
         tell menu bar item "File"
           click
           delay 0.3
-          
+
           -- Click "New Private Window"
           tell menu 1
             set privateWindowMenuItem to menu item "New Private Window"
@@ -77,14 +77,14 @@ on run
     activate
     delay 0.5 -- Ensure Firefox is active
   end tell
-  
+
   tell application "System Events"
     tell process "Firefox"
       -- Use keyboard shortcut for private browsing (Shift+Command+P)
       keystroke "p" using {shift down, command down}
     end tell
   end tell
-  
+
   return "Toggled Firefox private browsing window"
 end run
 ```
@@ -99,7 +99,7 @@ on run
   tell application "System Events"
     set firefoxRunning to (exists process "Firefox")
   end tell
-  
+
   if not firefoxRunning then
     tell application "Firefox"
       activate
@@ -111,7 +111,7 @@ on run
       delay 0.5 -- Ensure Firefox is active
     end tell
   end if
-  
+
   -- Try to detect if a private browsing window exists
   set privateWindowExists to false
   tell application "System Events"
@@ -125,7 +125,7 @@ on run
       end repeat
     end tell
   end tell
-  
+
   if privateWindowExists then
     -- If private window exists, try to close it
     tell application "System Events"

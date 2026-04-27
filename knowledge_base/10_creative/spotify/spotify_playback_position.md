@@ -1,5 +1,5 @@
 ---
-title: 'Spotify: Playback Position Control'
+title: "Spotify: Playback Position Control"
 category: 10_creative
 id: spotify_playback_position
 description: >-
@@ -75,22 +75,22 @@ tell application "Spotify"
   if not running then
     return "Spotify is not running. Please launch it first."
   end if
-  
+
   try
     -- Check if a track is available
     if player state is stopped then
       return "No track is currently playing or paused in Spotify."
     end if
-    
+
     -- Get the track details for reference
     set trackName to name of current track
     set artistName to artist of current track
     set trackDurationMs to duration of current track -- in milliseconds
     set trackDurationSec to trackDurationMs / 1000 -- convert to seconds
-    
+
     -- Get current position before making changes
     set originalPosition to player position -- in seconds
-    
+
     -- Execute the requested action
     if actionParam is "set_position" then
       -- Validate position is within track bounds
@@ -99,54 +99,54 @@ tell application "Spotify"
       else if valueNumber > trackDurationSec then
         set valueNumber to trackDurationSec
       end if
-      
+
       -- Set the position
       set player position to valueNumber
-      
+
     else if actionParam is "forward" then
       -- Calculate new position and ensure it's within bounds
       set newPosition to originalPosition + valueNumber
       if newPosition > trackDurationSec then
         set newPosition to trackDurationSec
       end if
-      
+
       -- Set the new position
       set player position to newPosition
-      
+
     else if actionParam is "backward" then
       -- Calculate new position and ensure it's within bounds
       set newPosition to originalPosition - valueNumber
       if newPosition < 0 then
         set newPosition to 0
       end if
-      
+
       -- Set the new position
       set player position to newPosition
     end if
-    
+
     -- Get the current position after any changes
     delay 0.1 -- Brief delay to ensure position update
     set currentPosition to player position
-    
+
     -- Format times for display
     set formattedPosition to my formatTime(currentPosition)
     set formattedDuration to my formatTime(trackDurationSec)
     set formattedRemaining to my formatTime(trackDurationSec - currentPosition)
-    
+
     -- Calculate progress percentage
     set progressPercent to (currentPosition / trackDurationSec) * 100
     set progressPercentRounded to round progressPercent
-    
+
     -- Create a visual progress bar
     set progressBar to my createProgressBar(progressPercentRounded)
-    
+
     -- Build the result message
     set resultMessage to "Track: " & trackName & "\nArtist: " & artistName & "\n\n"
-    
+
     -- Add action info if an action was performed
     if actionParam is not "get_position" then
       set resultMessage to resultMessage & "Action: " & actionParam
-      
+
       if actionParam is "set_position" then
         set resultMessage to resultMessage & " to " & valueNumber & " seconds\n"
       else if actionParam is "forward" then
@@ -154,20 +154,20 @@ tell application "Spotify"
       else if actionParam is "backward" then
         set resultMessage to resultMessage & " " & valueNumber & " seconds\n"
       end if
-      
+
       set resultMessage to resultMessage & "\n"
     end if
-    
+
     -- Add position information
     set resultMessage to resultMessage & "Position: " & formattedPosition & " / " & formattedDuration & " (" & formattedRemaining & " remaining)\n"
     set resultMessage to resultMessage & "Progress: " & progressPercentRounded & "%\n" & progressBar
-    
+
     -- Add player state info
     set playerStateText to player state as text
     set resultMessage to resultMessage & "\n\nPlayer State: " & playerStateText
-    
+
     return resultMessage
-    
+
   on error errMsg number errNum
     return "Error controlling playback position (" & errNum & "): " & errMsg
   end try
@@ -178,13 +178,13 @@ on formatTime(timeInSeconds)
   set totalSeconds to round timeInSeconds
   set minutes to totalSeconds div 60
   set seconds to totalSeconds mod 60
-  
+
   if seconds < 10 then
     set secondsText to "0" & seconds
   else
     set secondsText to seconds as text
   end if
-  
+
   return minutes & ":" & secondsText
 end formatTime
 
@@ -192,13 +192,13 @@ end formatTime
 on createProgressBar(percentComplete)
   set barLength to 20 -- Characters in the progress bar
   set completedSegments to round ((percentComplete / 100) * barLength)
-  
+
   if completedSegments > barLength then
     set completedSegments to barLength
   end if
-  
+
   set remainingSegments to barLength - completedSegments
-  
+
   set progressBar to "[" & text 1 thru completedSegments of "####################" & text 1 thru remainingSegments of "                    " & "]"
   return progressBar
 end createProgressBar

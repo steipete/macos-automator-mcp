@@ -37,7 +37,7 @@ on run
 		-- Default values for interactive mode
 		set defaultSource to ""
 		set defaultDestination to ""
-		
+
 		return moveFiles(defaultSource, defaultDestination)
 	on error errMsg
 		return "Error: " & errMsg
@@ -49,16 +49,16 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set theSource to "--MCP_INPUT:source"
 	set theDestination to "--MCP_INPUT:destination"
-	
+
 	-- Validate parameters
 	if theSource is "" then
 		return "Error: Source path is required for move operation."
 	end if
-	
+
 	if theDestination is "" then
 		return "Error: Destination path is required for move operation."
 	end if
-	
+
 	return moveFiles(theSource, theDestination)
 end processMCPParameters
 
@@ -66,18 +66,18 @@ end processMCPParameters
 on moveFiles(sourcePath, destPath)
 	-- Check if source exists
 	set sourceExists to do shell script "[ -e " & quoted form of sourcePath & " ] && echo 'exists' || echo 'not exists'"
-	
+
 	if sourceExists is "not exists" then
 		return "Error: Source path does not exist: " & sourcePath
 	end if
-	
+
 	-- Check if source is a file or directory
 	set sourceType to do shell script "[ -d " & quoted form of sourcePath & " ] && echo 'directory' || echo 'file'"
-	
+
 	-- Execute the move command
 	try
 		do shell script "mv " & quoted form of sourcePath & " " & quoted form of destPath
-		
+
 		if sourceType is "directory" then
 			return "Successfully moved directory from " & sourcePath & " to " & destPath
 		else
@@ -97,6 +97,7 @@ end moveFiles
 ## Example Usage
 
 ### Move a file to a different directory
+
 ```json
 {
   "source": "/Users/username/Downloads/document.pdf",
@@ -105,6 +106,7 @@ end moveFiles
 ```
 
 ### Rename a file in the same directory
+
 ```json
 {
   "source": "/Users/username/Desktop/old_name.txt",
@@ -113,6 +115,7 @@ end moveFiles
 ```
 
 ### Move a directory
+
 ```json
 {
   "source": "/Users/username/Projects/old_project",
@@ -121,6 +124,7 @@ end moveFiles
 ```
 
 ### Move with spaces in path
+
 ```json
 {
   "source": "/Users/username/My Documents/Important File.doc",

@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Execute JavaScript in Active Tab and Get Result'
+title: "Chrome: Execute JavaScript in Active Tab and Get Result"
 category: 07_browsers
 id: chrome_execute_js_get_result
 description: >-
@@ -34,7 +34,7 @@ on executeJsInChrome(javascriptCode)
     if not running then return "error: Google Chrome is not running."
     if (count of windows) is 0 then return "error: No Chrome windows open."
     if (count of tabs of front window) is 0 then return "error: No active tab in front Chrome window."
-    
+
     activate
     delay 0.2
     try
@@ -52,4 +52,5 @@ end executeJsInChrome
 
 return my executeJsInChrome("--MCP_INPUT:jsCode")
 ```
-END_TIP 
+
+END_TIP

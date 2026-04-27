@@ -41,7 +41,7 @@ on run
 		set defaultTerminals to {"Terminal.app", "iTerm2", "Ghostty"}
 		set defaultTargets to {}
 		set defaultExecuteCommands to true
-		
+
 		return broadcastCommand(defaultText, defaultTerminals, defaultTargets, defaultExecuteCommands)
 	on error errMsg
 		return "Error: " & errMsg
@@ -55,16 +55,16 @@ on processMCPParameters(inputParams)
 	set theTerminals to "--MCP_INPUT:terminals"
 	set theTargets to "--MCP_INPUT:targets"
 	set executeCommands to "--MCP_INPUT:executeCommands"
-	
+
 	-- Default values
 	if theTerminals is "" then
 		set theTerminals to {"Terminal.app", "iTerm2", "Ghostty"}
 	end if
-	
+
 	if theTargets is "" then
 		set theTargets to {}
 	end if
-	
+
 	if executeCommands is "" then
 		set executeCommands to true
 	else
@@ -74,12 +74,12 @@ on processMCPParameters(inputParams)
 			set executeCommands to true
 		end try
 	end if
-	
+
 	-- Validate input
 	if theText is "" then
 		return "Error: No text or command provided to broadcast."
 	end if
-	
+
 	return broadcastCommand(theText, theTerminals, theTargets, executeCommands)
 end processMCPParameters
 
@@ -88,10 +88,10 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 	set successCount to 0
 	set failCount to 0
 	set resultMessage to ""
-	
+
 	-- Check which terminals are running
 	set runningTerminals to {}
-	
+
 	tell application "System Events"
 		if "Terminal" is in (name of processes) and "Terminal.app" is in terminals then
 			set end of runningTerminals to "Terminal.app"
@@ -103,17 +103,17 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 			set end of runningTerminals to "Ghostty"
 		end if
 	end tell
-	
+
 	if length of runningTerminals is 0 then
 		return "Error: None of the specified terminal applications are running."
 	end if
-	
+
 	-- Process Terminal.app
 	if "Terminal.app" is in runningTerminals then
 		try
 			tell application "Terminal"
 				activate
-				
+
 				-- Determine target windows/tabs
 				if length of targets is 0 then
 					-- Target all windows and tabs
@@ -121,18 +121,18 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 						set currentWindow to window i
 						repeat with j from 1 to count of tabs of currentWindow
 							set currentTab to tab j of currentWindow
-							
+
 							-- Send the text
 							tell currentTab
 								set selected of currentTab to true
 								delay 0.3
-								
+
 								tell application "System Events" to tell process "Terminal"
 									keystroke textToSend
 									if shouldExecute then keystroke return
 								end tell
 							end tell
-							
+
 							set successCount to successCount + 1
 							delay 0.3
 						end repeat
@@ -149,13 +149,13 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 			set failCount to failCount + 1
 		end try
 	end if
-	
+
 	-- Process iTerm2
 	if "iTerm2" is in runningTerminals then
 		try
 			tell application "iTerm2"
 				activate
-				
+
 				-- Determine target windows/tabs/sessions
 				if length of targets is 0 then
 					-- Target all windows, tabs, and sessions
@@ -168,7 +168,7 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 											-- Select the session
 											select
 											delay 0.3
-											
+
 											-- Send the text
 											if shouldExecute then
 												write text textToSend
@@ -178,7 +178,7 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 													keystroke textToSend
 												end tell
 											end if
-											
+
 											set successCount to successCount + 1
 										end tell
 									end repeat
@@ -198,20 +198,20 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 			set failCount to failCount + 1
 		end try
 	end if
-	
+
 	-- Process Ghostty
 	if "Ghostty" is in runningTerminals then
 		try
 			tell application "Ghostty"
 				activate
-				
+
 				-- Ghostty has limited AppleScript support, use UI automation
 				tell application "System Events" to tell process "Ghostty"
 					-- Send to the active window
 					keystroke textToSend
 					if shouldExecute then keystroke return
 				end tell
-				
+
 				set successCount to successCount + 1
 			end tell
 		on error errMsg
@@ -219,16 +219,16 @@ on broadcastCommand(textToSend, terminals, targets, shouldExecute)
 			set failCount to failCount + 1
 		end try
 	end if
-	
+
 	-- Build result message
 	if successCount > 0 then
 		set resultMessage to resultMessage & "Broadcast successful to " & successCount & " terminal" & (if successCount = 1 then "" else "s") & ". "
 	end if
-	
+
 	if failCount > 0 then
 		set resultMessage to resultMessage & "Failed to reach " & failCount & " terminal" & (if failCount = 1 then "" else "s") & "."
 	end if
-	
+
 	return resultMessage
 end broadcastCommand
 
@@ -236,32 +236,32 @@ end broadcastCommand
 on processTerminalTargets(targets, textToSend, shouldExecute)
 	set successCount to 0
 	set failCount to 0
-	
+
 	repeat with targetSpec in targets
 		if targetSpec starts with "Terminal.app:" then
 			set targetParts to my splitString(targetSpec, ":")
-			
+
 			if (count of targetParts) ≥ 3 then
 				try
 					set windowIndex to item 2 of targetParts as integer
 					set tabIndex to item 3 of targetParts as integer
-					
+
 					tell application "Terminal"
 						if windowIndex > 0 and windowIndex ≤ (count of windows) and ¬
 							tabIndex > 0 and tabIndex ≤ (count of tabs of window windowIndex) then
 							set currentTab to tab tabIndex of window windowIndex
-							
+
 							-- Send the text
 							tell currentTab
 								set selected of currentTab to true
 								delay 0.3
-								
+
 								tell application "System Events" to tell process "Terminal"
 									keystroke textToSend
 									if shouldExecute then keystroke return
 								end tell
 							end tell
-							
+
 							set successCount to successCount + 1
 						else
 							set failCount to failCount + 1
@@ -273,7 +273,7 @@ on processTerminalTargets(targets, textToSend, shouldExecute)
 			end if
 		end if
 	end repeat
-	
+
 	return {successCount, failCount}
 end processTerminalTargets
 
@@ -281,17 +281,17 @@ end processTerminalTargets
 on processITermTargets(targets, textToSend, shouldExecute)
 	set successCount to 0
 	set failCount to 0
-	
+
 	repeat with targetSpec in targets
 		if targetSpec starts with "iTerm2:" then
 			set targetParts to my splitString(targetSpec, ":")
-			
+
 			if (count of targetParts) ≥ 4 then
 				try
 					set windowIndex to item 2 of targetParts as integer
 					set tabIndex to item 3 of targetParts as integer
 					set sessionIndex to item 4 of targetParts as integer
-					
+
 					tell application "iTerm2"
 						tell window windowIndex
 							tell tab tabIndex
@@ -299,7 +299,7 @@ on processITermTargets(targets, textToSend, shouldExecute)
 									-- Select the session
 									select
 									delay 0.3
-									
+
 									-- Send the text
 									if shouldExecute then
 										write text textToSend
@@ -309,7 +309,7 @@ on processITermTargets(targets, textToSend, shouldExecute)
 											keystroke textToSend
 										end tell
 									end if
-									
+
 									set successCount to successCount + 1
 								end tell
 							end tell
@@ -321,7 +321,7 @@ on processITermTargets(targets, textToSend, shouldExecute)
 			end if
 		end if
 	end repeat
-	
+
 	return {successCount, failCount}
 end processITermTargets
 
@@ -345,6 +345,7 @@ end splitString
 ## Example Usage
 
 ### Broadcast to all terminals
+
 ```json
 {
   "text": "git status",
@@ -353,6 +354,7 @@ end splitString
 ```
 
 ### Broadcast to specific terminals only
+
 ```json
 {
   "text": "npm install",
@@ -362,6 +364,7 @@ end splitString
 ```
 
 ### Target specific windows/tabs
+
 ```json
 {
   "text": "echo 'Hello World'",
@@ -371,6 +374,7 @@ end splitString
 ```
 
 ### Echo without executing
+
 ```json
 {
   "text": "sudo rm -rf /",
@@ -382,10 +386,8 @@ end splitString
 
 - **Terminal.app**: `Terminal.app:window:tab`
   - Example: `Terminal.app:1:2` for window 1, tab 2
-  
 - **iTerm2**: `iTerm2:window:tab:session`
   - Example: `iTerm2:1:2:3` for window 1, tab 2, session 3
-  
 - **Ghostty**: Currently only supports active window
 
 ## Use Cases

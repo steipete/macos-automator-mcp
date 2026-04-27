@@ -52,7 +52,7 @@ on toggleNightShift()
   try
     -- Check if Night Shift is active
     set nightShiftStatus to do shell script "defaults read com.apple.CoreBrightness CBDisplaySuppressBlueLight_Enabled"
-    
+
     -- Toggle Night Shift based on current status
     if nightShiftStatus is "1" then
       do shell script "nightlight off" -- Requires 'nightlight' CLI tool
@@ -104,7 +104,7 @@ on setSystemVolume(volumeLevel)
   -- Volume level should be between 0 and 100
   if volumeLevel < 0 then set volumeLevel to 0
   if volumeLevel > 100 then set volumeLevel to 100
-  
+
   set volume output volume volumeLevel
   return "Volume set to " & volumeLevel & "%"
 end setSystemVolume
@@ -125,10 +125,10 @@ on setScreenBrightness(brightnessLevel)
   -- Brightness level should be between 0 and 100
   if brightnessLevel < 0 then set brightnessLevel to 0
   if brightnessLevel > 100 then set brightnessLevel to 100
-  
+
   -- Convert percentage to decimal for brightness command
   set brightnessDecimal to brightnessLevel / 100
-  
+
   try
     do shell script "brightness " & brightnessDecimal -- Requires brightness CLI tool
     return "Screen brightness set to " & brightnessLevel & "%"
@@ -143,16 +143,16 @@ on setScreenBrightness(brightnessLevel)
             reveal anchor "displaysDisplayTab" of pane "com.apple.preference.displays"
           end tell
           delay 1
-          
+
           -- Adjust brightness slider
           set brightnessSlider to slider 1 of group 1 of tab group 1 of window 1
           tell brightnessSlider
             set value to brightnessLevel / 100
           end tell
-          
+
           -- Close System Preferences
           tell application "System Preferences" to quit
-          
+
           return "Screen brightness set to " & brightnessLevel & "%"
         on error
           tell application "System Preferences" to quit
@@ -213,7 +213,7 @@ on setDoNotDisturb(enableDND)
       else
         do shell script "defaults -currentHost write ~/Library/Preferences/ByHost/com.apple.notificationcenterui doNotDisturb -boolean false"
       end if
-      
+
       do shell script "killall NotificationCenter"
       return "Do Not Disturb " & (if enableDND then "enabled" else "disabled")
     on error errMsg
@@ -244,10 +244,10 @@ on setKeyRepeatRate(repeatRate)
   try
     do shell script "defaults write NSGlobalDomain KeyRepeat -int " & repeatRate
     do shell script "defaults write NSGlobalDomain InitialKeyRepeat -int " & (repeatRate * 10)
-    
+
     -- Restart required services
     do shell script "killall SystemUIServer"
-    
+
     return "Keyboard repeat rate set to " & repeatRate
   on error errMsg
     return "Error setting keyboard repeat rate: " & errMsg
@@ -259,11 +259,11 @@ on setMouseTrackingSpeed(trackingSpeed)
   -- trackingSpeed should be between 0.0 (slowest) and 3.0 (fastest)
   if trackingSpeed < 0.0 then set trackingSpeed to 0.0
   if trackingSpeed > 3.0 then set trackingSpeed to 3.0
-  
+
   try
     do shell script "defaults write -g com.apple.mouse.scaling " & trackingSpeed
     do shell script "killall SystemUIServer"
-    
+
     return "Mouse tracking speed set to " & trackingSpeed
   on error errMsg
     return "Error setting mouse tracking speed: " & errMsg
@@ -275,7 +275,7 @@ on setDockAutoHide(enableAutoHide)
   try
     do shell script "defaults write com.apple.dock autohide -bool " & enableAutoHide
     do shell script "killall Dock"
-    
+
     return "Dock auto-hide " & (if enableAutoHide then "enabled" else "disabled")
   on error errMsg
     return "Error configuring Dock auto-hide: " & errMsg
@@ -288,7 +288,7 @@ on setDockPosition(position)
   try
     do shell script "defaults write com.apple.dock orientation -string " & position
     do shell script "killall Dock"
-    
+
     return "Dock position set to " & position
   on error errMsg
     return "Error setting Dock position: " & errMsg
@@ -300,7 +300,7 @@ on setHotCorner(corner, action)
   -- corner: "top-left", "top-right", "bottom-left", "bottom-right"
   -- action: "mission-control", "application-windows", "desktop", "dashboard",
   --         "notification-center", "launchpad", "sleep", "screen-saver", "disable"
-  
+
   -- Convert corner to wvous ID
   set cornerID to ""
   if corner is "top-left" then
@@ -314,7 +314,7 @@ on setHotCorner(corner, action)
   else
     return "Invalid corner specified"
   end if
-  
+
   -- Convert action to code
   set actionCode to 0 -- Disabled
   if action is "mission-control" then
@@ -336,11 +336,11 @@ on setHotCorner(corner, action)
   else if action is not "disable" then
     return "Invalid action specified"
   end if
-  
+
   try
     do shell script "defaults write com.apple.dock " & cornerID & " -int " & actionCode
     do shell script "killall Dock"
-    
+
     return "Hot corner " & corner & " set to " & action
   on error errMsg
     return "Error setting hot corner: " & errMsg
@@ -350,26 +350,26 @@ end setHotCorner
 -- Show Settings Menu Dialog
 on showSettingsMenu()
   set settingsOptions to {"Dark Mode", "Night Shift", "Screen Resolution", "System Volume", "Screen Brightness", "Wi-Fi", "Bluetooth", "Do Not Disturb", "Dock Settings", "Hot Corners", "Keyboard Settings", "Mouse Settings", "Cancel"}
-  
+
   set selectedOption to choose from list settingsOptions with prompt "Select System Setting to Control:" default items {"Dark Mode"}
-  
+
   if selectedOption is false then
     return "Settings control cancelled"
   end if
-  
+
   set choice to item 1 of selectedOption
-  
+
   if choice is "Dark Mode" then
     -- Dark Mode Toggle
     set modeOptions to {"Toggle Dark Mode", "Enable Dark Mode", "Disable Dark Mode"}
     set modeChoice to choose from list modeOptions with prompt "Dark Mode Options:" default items {"Toggle Dark Mode"}
-    
+
     if modeChoice is false then
       return "Dark Mode control cancelled"
     end if
-    
+
     set modeAction to item 1 of modeChoice
-    
+
     if modeAction is "Toggle Dark Mode" then
       return toggleDarkMode()
     else if modeAction is "Enable Dark Mode" then
@@ -377,25 +377,25 @@ on showSettingsMenu()
     else if modeAction is "Disable Dark Mode" then
       return setDarkMode(false)
     end if
-    
+
   else if choice is "Night Shift" then
     -- Night Shift Toggle
     return toggleNightShift()
-    
+
   else if choice is "Screen Resolution" then
     -- Screen Resolution Control
     set resInfo to getCurrentScreenResolution()
     set resPrompt to display dialog "Set screen resolution (width x height):" default answer "1920 1080" buttons {"Cancel", "Set Resolution"} default button "Set Resolution"
-    
+
     if button returned of resPrompt is "Cancel" then
       return "Resolution change cancelled"
     end if
-    
+
     set resValues to text returned of resPrompt
     set AppleScript's text item delimiters to " "
     set resComponents to text items of resValues
     set AppleScript's text item delimiters to ""
-    
+
     if (count of resComponents) >= 2 then
       set resWidth to item 1 of resComponents as number
       set resHeight to item 2 of resComponents as number
@@ -403,13 +403,13 @@ on showSettingsMenu()
     else
       return "Invalid resolution format"
     end if
-    
+
   else if choice is "System Volume" then
     -- Volume Control
     set volumePrompt to display dialog "Set system volume (0-100):" default answer "50" buttons {"Cancel", "Mute", "Unmute", "Set Volume"} default button "Set Volume"
-    
+
     set buttonClicked to button returned of volumePrompt
-    
+
     if buttonClicked is "Cancel" then
       return "Volume change cancelled"
     else if buttonClicked is "Mute" then
@@ -420,150 +420,150 @@ on showSettingsMenu()
       set volumeValue to text returned of volumePrompt
       return setSystemVolume(volumeValue as number)
     end if
-    
+
   else if choice is "Screen Brightness" then
     -- Brightness Control
     set brightnessPrompt to display dialog "Set screen brightness (0-100):" default answer "75" buttons {"Cancel", "Set Brightness"} default button "Set Brightness"
-    
+
     if button returned of brightnessPrompt is "Cancel" then
       return "Brightness change cancelled"
     end if
-    
+
     set brightnessValue to text returned of brightnessPrompt
     return setScreenBrightness(brightnessValue as number)
-    
+
   else if choice is "Wi-Fi" then
     -- Wi-Fi Control
     set wifiOptions to {"Enable Wi-Fi", "Disable Wi-Fi"}
     set wifiChoice to choose from list wifiOptions with prompt "Wi-Fi Options:" default items {"Enable Wi-Fi"}
-    
+
     if wifiChoice is false then
       return "Wi-Fi control cancelled"
     end if
-    
+
     set wifiAction to item 1 of wifiChoice
-    
+
     if wifiAction is "Enable Wi-Fi" then
       return setWiFiState(true)
     else if wifiAction is "Disable Wi-Fi" then
       return setWiFiState(false)
     end if
-    
+
   else if choice is "Bluetooth" then
     -- Bluetooth Control
     set bluetoothOptions to {"Enable Bluetooth", "Disable Bluetooth"}
     set bluetoothChoice to choose from list bluetoothOptions with prompt "Bluetooth Options:" default items {"Enable Bluetooth"}
-    
+
     if bluetoothChoice is false then
       return "Bluetooth control cancelled"
     end if
-    
+
     set bluetoothAction to item 1 of bluetoothChoice
-    
+
     if bluetoothAction is "Enable Bluetooth" then
       return setBluetoothState(true)
     else if bluetoothAction is "Disable Bluetooth" then
       return setBluetoothState(false)
     end if
-    
+
   else if choice is "Do Not Disturb" then
     -- Do Not Disturb Control
     set dndOptions to {"Enable Do Not Disturb", "Disable Do Not Disturb"}
     set dndChoice to choose from list dndOptions with prompt "Do Not Disturb Options:" default items {"Enable Do Not Disturb"}
-    
+
     if dndChoice is false then
       return "Do Not Disturb control cancelled"
     end if
-    
+
     set dndAction to item 1 of dndChoice
-    
+
     if dndAction is "Enable Do Not Disturb" then
       return setDoNotDisturb(true)
     else if dndAction is "Disable Do Not Disturb" then
       return setDoNotDisturb(false)
     end if
-    
+
   else if choice is "Dock Settings" then
     -- Dock Settings
     set dockOptions to {"Set Dock Position", "Toggle Auto-Hide"}
     set dockChoice to choose from list dockOptions with prompt "Dock Settings:" default items {"Set Dock Position"}
-    
+
     if dockChoice is false then
       return "Dock settings cancelled"
     end if
-    
+
     set dockAction to item 1 of dockChoice
-    
+
     if dockAction is "Set Dock Position" then
       set posOptions to {"left", "bottom", "right"}
       set posChoice to choose from list posOptions with prompt "Select Dock Position:" default items {"bottom"}
-      
+
       if posChoice is false then
         return "Dock position change cancelled"
       end if
-      
+
       return setDockPosition(item 1 of posChoice)
-      
+
     else if dockAction is "Toggle Auto-Hide" then
       set autoHideOptions to {"Enable Auto-Hide", "Disable Auto-Hide"}
       set autoHideChoice to choose from list autoHideOptions with prompt "Dock Auto-Hide:" default items {"Enable Auto-Hide"}
-      
+
       if autoHideChoice is false then
         return "Dock auto-hide change cancelled"
       end if
-      
+
       if (item 1 of autoHideChoice) is "Enable Auto-Hide" then
         return setDockAutoHide(true)
       else
         return setDockAutoHide(false)
       end if
     end if
-    
+
   else if choice is "Hot Corners" then
     -- Hot Corners Settings
     set cornerOptions to {"top-left", "top-right", "bottom-left", "bottom-right"}
     set cornerChoice to choose from list cornerOptions with prompt "Select Hot Corner to Configure:" default items {"bottom-right"}
-    
+
     if cornerChoice is false then
       return "Hot corner configuration cancelled"
     end if
-    
+
     set selectedCorner to item 1 of cornerChoice
-    
+
     set actionOptions to {"mission-control", "application-windows", "desktop", "dashboard", "notification-center", "launchpad", "sleep", "screen-saver", "disable"}
     set actionChoice to choose from list actionOptions with prompt "Select Action for " & selectedCorner & " Corner:" default items {"disable"}
-    
+
     if actionChoice is false then
       return "Hot corner action selection cancelled"
     end if
-    
+
     set selectedAction to item 1 of actionChoice
     return setHotCorner(selectedCorner, selectedAction)
-    
+
   else if choice is "Keyboard Settings" then
     -- Keyboard Settings
     set keyboardPrompt to display dialog "Set keyboard repeat rate (2=fast, 6=normal, 120=slow):" default answer "6" buttons {"Cancel", "Set Repeat Rate"} default button "Set Repeat Rate"
-    
+
     if button returned of keyboardPrompt is "Cancel" then
       return "Keyboard settings cancelled"
     end if
-    
+
     set repeatValue to text returned of keyboardPrompt
     return setKeyRepeatRate(repeatValue as number)
-    
+
   else if choice is "Mouse Settings" then
     -- Mouse Settings
     set mousePrompt to display dialog "Set mouse tracking speed (0.0-3.0):" default answer "1.5" buttons {"Cancel", "Set Tracking Speed"} default button "Set Tracking Speed"
-    
+
     if button returned of mousePrompt is "Cancel" then
       return "Mouse settings cancelled"
     end if
-    
+
     set speedValue to text returned of mousePrompt
     return setMouseTrackingSpeed(speedValue as number)
-    
+
   end if
-  
+
   return "Settings operation completed"
 end showSettingsMenu
 

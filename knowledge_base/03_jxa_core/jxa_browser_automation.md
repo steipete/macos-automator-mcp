@@ -1,5 +1,5 @@
 ---
-title: 'JXA: Browser Automation'
+title: "JXA: Browser Automation"
 category: 03_jxa_core
 id: jxa_browser_automation
 description: >-

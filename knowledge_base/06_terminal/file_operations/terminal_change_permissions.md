@@ -37,7 +37,7 @@ on run
 		-- Default values for interactive mode
 		set defaultSource to ""
 		set defaultPermissions to ""
-		
+
 		return changePermissions(defaultSource, defaultPermissions)
 	on error errMsg
 		return "Error: " & errMsg
@@ -49,16 +49,16 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set theSource to "--MCP_INPUT:source"
 	set thePermissions to "--MCP_INPUT:permissions"
-	
+
 	-- Validate parameters
 	if theSource is "" then
 		return "Error: Source path is required for permission change."
 	end if
-	
+
 	if thePermissions is "" then
 		return "Error: Permissions value is required."
 	end if
-	
+
 	return changePermissions(theSource, thePermissions)
 end processMCPParameters
 
@@ -66,16 +66,16 @@ end processMCPParameters
 on changePermissions(filePath, permissions)
 	-- Check if source exists
 	set sourceExists to do shell script "[ -e " & quoted form of filePath & " ] && echo 'exists' || echo 'not exists'"
-	
+
 	if sourceExists is "not exists" then
 		return "Error: Path does not exist: " & filePath
 	end if
-	
+
 	-- Validate permissions format
 	if permissions is "" then
 		return "Error: Permissions must be specified (e.g., 755, 644, etc.)."
 	end if
-	
+
 	-- Basic validation of permission format
 	try
 		set permValue to permissions as integer
@@ -85,24 +85,24 @@ on changePermissions(filePath, permissions)
 	on error
 		return "Error: Invalid permission format. Use octal notation (e.g., 755, 644)."
 	end try
-	
+
 	-- Execute chmod command
 	try
 		do shell script "chmod " & permissions & " " & quoted form of filePath
-		
+
 		-- Check if it's a directory and user wants to apply recursively
 		set isDir to do shell script "[ -d " & quoted form of filePath & " ] && echo 'yes' || echo 'no'"
-		
+
 		if isDir is "yes" then
 			set recursiveResponse to display dialog "Do you want to apply these permissions recursively to all files and subdirectories?" ¬
 				buttons {"No", "Yes"} default button "No"
-			
+
 			if button returned of recursiveResponse is "Yes" then
 				do shell script "chmod -R " & permissions & " " & quoted form of filePath
 				return "Successfully changed permissions recursively to " & permissions & " for: " & filePath
 			end if
 		end if
-		
+
 		return "Successfully changed permissions to " & permissions & " for: " & filePath
 	on error errMsg
 		return "Error changing permissions: " & errMsg
@@ -118,6 +118,7 @@ end changePermissions
 ## Example Usage
 
 ### Make a script executable
+
 ```json
 {
   "source": "/Users/username/Scripts/myscript.sh",
@@ -126,6 +127,7 @@ end changePermissions
 ```
 
 ### Set read-only permissions
+
 ```json
 {
   "source": "/Users/username/Documents/important.txt",
@@ -134,6 +136,7 @@ end changePermissions
 ```
 
 ### Set directory permissions
+
 ```json
 {
   "source": "/Users/username/Projects/myproject",
@@ -142,6 +145,7 @@ end changePermissions
 ```
 
 ### Restrict file access
+
 ```json
 {
   "source": "/Users/username/.ssh/id_rsa",
@@ -152,6 +156,7 @@ end changePermissions
 ## Common Permission Values
 
 ### For Files
+
 - `644`: Read/write for owner, read for others
 - `600`: Read/write for owner only
 - `755`: Executable by all, writable by owner
@@ -159,6 +164,7 @@ end changePermissions
 - `444`: Read-only for everyone
 
 ### For Directories
+
 - `755`: Standard directory permissions
 - `700`: Private directory
 - `775`: Group writable directory
@@ -167,16 +173,19 @@ end changePermissions
 ## Permission Notation
 
 Each digit represents permissions for:
+
 1. Owner (user)
 2. Group
 3. Others
 
 Permission values:
+
 - `4`: Read (r)
 - `2`: Write (w)
 - `1`: Execute (x)
 
 Combine values for multiple permissions:
+
 - `7` = 4+2+1 (read, write, execute)
 - `6` = 4+2 (read, write)
 - `5` = 4+1 (read, execute)

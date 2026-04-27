@@ -1,5 +1,5 @@
 ---
-title: 'Spotify: Keyboard Shortcut Control'
+title: "Spotify: Keyboard Shortcut Control"
 category: 10_creative
 id: spotify_keyboard_control
 description: >-
@@ -71,16 +71,16 @@ tell application "Spotify"
   if not running then
     return "Spotify is not running. Please launch it first."
   end if
-  
+
   -- Make sure Spotify is active before sending keyboard shortcuts
   activate
   delay 0.5 -- Give time for Spotify to come to foreground
-  
+
   -- Get the keyboard shortcut for the chosen action
   set chosenShortcut to item 1 of (get value of keyboardShortcuts's item actionParam)
   set shortcutKey to key of chosenShortcut
   set shortcutModifiers to using of chosenShortcut
-  
+
   -- Send the keyboard shortcut to Spotify
   tell application "System Events"
     tell process "Spotify"
@@ -88,16 +88,16 @@ tell application "Spotify"
       keystroke shortcutKey using shortcutModifiers
     end tell
   end tell
-  
+
   -- Get current Spotify state for feedback
   delay 0.5 -- Allow time for action to complete
-  
+
   set stateInfo to ""
-  
+
   -- Get player state
   set playerState to player state as text
   set stateInfo to stateInfo & "Player State: " & playerState & "\n"
-  
+
   -- Get track info if available
   if playerState is "playing" or playerState is "paused" then
     try
@@ -109,7 +109,7 @@ tell application "Spotify"
       set stateInfo to stateInfo & "Track info unavailable\n"
     end try
   end if
-  
+
   -- Get volume
   try
     set volumeLevel to sound volume
@@ -117,7 +117,7 @@ tell application "Spotify"
   on error
     set stateInfo to stateInfo & "Volume info unavailable\n"
   end try
-  
+
   -- Return completed action with state info
   return "Action '" & actionParam & "' sent to Spotify via keyboard shortcut.\n\nCurrent Status:\n" & stateInfo
 end tell

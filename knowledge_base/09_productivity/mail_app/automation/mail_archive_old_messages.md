@@ -42,7 +42,7 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set archiveDays to "--MCP_INPUT:archiveDays"
 	set archiveDestination to "--MCP_INPUT:archiveDestination"
-	
+
 	if archiveDays is "" then
 		set archiveDays to 30
 	else
@@ -52,11 +52,11 @@ on processMCPParameters(inputParams)
 			set archiveDays to 30
 		end try
 	end if
-	
+
 	if archiveDestination is "" then
 		set archiveDestination to missing value
 	end if
-	
+
 	return archiveOldMessages(archiveDays, archiveDestination)
 end processMCPParameters
 
@@ -65,11 +65,11 @@ on archiveOldMessages(days, destination)
 	if days is missing value then
 		set days to 30
 	end if
-	
+
 	if destination is missing value then
 		set destination to "Archive/" & (year of (current date)) as string
 	end if
-	
+
 	tell application "Mail"
 		try
 			-- Create archive folder if needed
@@ -79,10 +79,10 @@ on archiveOldMessages(days, destination)
 				make new mailbox with properties {name:destination}
 				set targetMailbox to mailbox destination
 			end try
-			
+
 			set cutoffDate to (current date) - (days * days)
 			set archivedCount to 0
-			
+
 			-- Process each mailbox except the Archive
 			set mailboxesToProcess to {}
 			set allMailboxes to every mailbox
@@ -91,7 +91,7 @@ on archiveOldMessages(days, destination)
 					set end of mailboxesToProcess to mb
 				end if
 			end repeat
-			
+
 			-- Archive old messages
 			repeat with mb in mailboxesToProcess
 				set oldMessages to (messages of mb whose date received < cutoffDate)
@@ -104,7 +104,7 @@ on archiveOldMessages(days, destination)
 					end try
 				end repeat
 			end repeat
-			
+
 			return {success:true, message:"Archived " & archivedCount & " messages older than " & days & " days to " & destination}
 		on error errMsg
 			return {success:false, error:"Error archiving messages: " & errMsg}
@@ -121,6 +121,7 @@ end archiveOldMessages
 ## Example Usage
 
 ### Archive messages older than 30 days
+
 ```json
 {
   "archiveDays": 30,
@@ -129,6 +130,7 @@ end archiveOldMessages
 ```
 
 ### Archive messages older than 90 days to specific folder
+
 ```json
 {
   "archiveDays": 90,
@@ -137,6 +139,7 @@ end archiveOldMessages
 ```
 
 ### Archive year-old messages
+
 ```json
 {
   "archiveDays": 365,
@@ -145,6 +148,7 @@ end archiveOldMessages
 ```
 
 ### Archive to yearly folder
+
 ```json
 {
   "archiveDays": 60,
@@ -162,6 +166,7 @@ end archiveOldMessages
 ## Return Value
 
 Returns an object with:
+
 - `success`: Boolean indicating operation success
 - `message`: Description of what was done, including count of archived messages
 - `error`: Error message if operation failed

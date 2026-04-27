@@ -4,7 +4,7 @@ title: Create Area in Things
 description: Use AppleScript to create a new area in Things app
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, area, organization'
+tags: "things, productivity, task management, area, organization"
 keywords:
   - areas
   - categories
@@ -42,7 +42,7 @@ The script uses Things' AppleScript support to create an area with customizable 
 -- Create an area in Things with optional properties
 on createThingsArea(areaName, tagNames)
     set areaProperties to {name:areaName}
-    
+
     -- Add tags if provided
     if tagNames is not equal to "" then
         set AppleScript's text item delimiters to ","
@@ -50,7 +50,7 @@ on createThingsArea(areaName, tagNames)
         set AppleScript's text item delimiters to ""
         set areaProperties to areaProperties & {tags:tagList}
     end if
-    
+
     tell application "Things3"
         try
             -- Check if area already exists

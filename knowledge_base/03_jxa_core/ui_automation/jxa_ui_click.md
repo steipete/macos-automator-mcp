@@ -27,46 +27,46 @@ The function can be used to click on buttons, checkboxes, menu items, and other 
 ```javascript
 // Click on a UI element
 function clickElement(appName, target, wait) {
-    try {
-        // Activate the application
-        const app = Application(appName);
-        app.activate();
-        delay(wait);
-        
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Find the target element based on provided criteria
-        const element = findUIElement(process, target);
-        
-        if (!element) {
-            return {
-                success: false,
-                error: "Target element not found"
-            };
-        }
-        
-        // Perform the click action
-        element.click();
-        
-        return {
-            success: true,
-            message: `Clicked element in ${appName}`
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error clicking element: ${error.message}`
-        };
+  try {
+    // Activate the application
+    const app = Application(appName);
+    app.activate();
+    delay(wait);
+
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
     }
+
+    // Find the target element based on provided criteria
+    const element = findUIElement(process, target);
+
+    if (!element) {
+      return {
+        success: false,
+        error: "Target element not found",
+      };
+    }
+
+    // Perform the click action
+    element.click();
+
+    return {
+      success: true,
+      message: `Clicked element in ${appName}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error clicking element: ${error.message}`,
+    };
+  }
 }
 ```
 

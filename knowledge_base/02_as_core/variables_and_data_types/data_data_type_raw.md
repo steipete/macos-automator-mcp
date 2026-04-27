@@ -74,7 +74,7 @@ return resultSummary
 Understanding data types in AppleScript:
 
 1. **Syntax and Format:**
-   - Data appears in the format `«data TYPE####»` 
+   - Data appears in the format `«data TYPE####»`
    - `TYPE` is a four-character type code (like TEXT, PICT, PDF)
    - `####` is the hex representation of the binary data
    - The guillemet symbols « » (Option+\\ and Option+Shift+\\) enclose data literals

@@ -1,5 +1,5 @@
 ---
-title: 'Core: List Data Type'
+title: "Core: List Data Type"
 category: 02_as_core
 id: core_datatype_list
 description: >-
@@ -45,4 +45,5 @@ end repeat
 
 return "Count: " & listCount & "\\nFirst: " & firstItem & "\\nLast: " & lastItem & "\\nNested: " & nestedValue & "\\nHas Apple: " & hasApple & "\\nIterated: " & output
 ```
-END_TIP 
+
+END_TIP

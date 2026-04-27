@@ -1,8 +1,8 @@
 ---
-title: 'Terminal: Manage Window and Tab Titles'
+title: "Terminal: Manage Window and Tab Titles"
 id: terminal_manage_titles
 category: 06_terminal
-description: 'Sets, gets, or resets custom titles for Terminal.app windows and tabs.'
+description: "Sets, gets, or resets custom titles for Terminal.app windows and tabs."
 keywords:
   - Terminal.app
   - window
@@ -21,12 +21,14 @@ isComplex: false
 This script allows you to manage the titles of Terminal.app windows and tabs, providing control over how your terminal sessions are labeled and identified.
 
 **Features:**
+
 - Set custom titles for Terminal.app windows or tabs
 - Get the current title of a window or tab
 - Reset titles to their default values (typically displaying current directory and command)
 - Works with the frontmost window/tab by default
 
 **Usage Examples:**
+
 - Label terminal windows based on their purpose (e.g., "Backend Server", "Database", "Logs")
 - Create consistent naming schemes for your terminal environment
 - Restore default dynamic titles when custom titles are no longer needed
@@ -36,12 +38,12 @@ on runWithInput(inputData, legacyArguments)
     set defaultAction to "get"
     set defaultTitle to ""
     set defaultTarget to "window"
-    
+
     -- Parse input parameters
     set action to defaultAction
     set newTitle to defaultTitle
     set target to defaultTarget
-    
+
     if inputData is not missing value then
         if inputData contains {action:""} then
             set action to action of inputData
@@ -56,33 +58,33 @@ on runWithInput(inputData, legacyArguments)
             --MCP_INPUT:target
         end if
     end if
-    
+
     -- Normalize action and target to lowercase
     set action to my toLower(action)
     set target to my toLower(target)
-    
+
     -- Validate parameters
     if action is not in {"set", "get", "reset"} then
         return "Error: Invalid action. Use 'set', 'get', or 'reset'."
     end if
-    
+
     if target is not in {"window", "tab"} then
         return "Error: Invalid target. Use 'window' or 'tab'."
     end if
-    
+
     if action is "set" and newTitle is "" then
         return "Error: For 'set' action, a title must be provided."
     end if
-    
+
     tell application "Terminal"
         if not (exists window 1) then
             return "Error: No Terminal windows are open."
         end if
-        
+
         -- Get references to the frontmost window and its selected tab
         set frontWindow to window 1
         set currentTab to selected tab of frontWindow
-        
+
         -- Perform the requested action
         if action is "set" then
             if target is "window" then
@@ -94,7 +96,7 @@ on runWithInput(inputData, legacyArguments)
                 set custom title of currentTab to newTitle
                 return "Tab title set to: " & newTitle
             end if
-            
+
         else if action is "get" then
             if target is "window" then
                 -- Get the window title (custom or default)
@@ -115,7 +117,7 @@ on runWithInput(inputData, legacyArguments)
                     return "Current tab title (custom): " & currentTitle
                 end if
             end if
-            
+
         else if action is "reset" then
             if target is "window" then
                 -- Reset window title to default
@@ -175,6 +177,7 @@ Terminal.app's title management system allows for both custom static titles and 
 #### 2. Multi-Window Workflow Organization
 
 When working with multiple terminal windows:
+
 - Set clear titles to distinguish between different parts of your workflow
 - Create a consistent naming scheme for improved productivity
 - Make it easier to find the right terminal when using Exposé or Mission Control
@@ -205,6 +208,7 @@ Terminal.app's preferences also allow you to configure title behavior:
 ### Example Usage Patterns
 
 1. **Project Setup**:
+
    ```json
    {
      "action": "set",
@@ -214,6 +218,7 @@ Terminal.app's preferences also allow you to configure title behavior:
    ```
 
 2. **Get Current Title**:
+
    ```json
    {
      "action": "get",

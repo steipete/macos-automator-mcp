@@ -1,8 +1,8 @@
 ---
-title: 'Core: Property Reference Form'
+title: "Core: Property Reference Form"
 category: 02_as_core
 id: core_reference_property
-description: 'Accessing the properties of objects (e.g., name of file, URL of document).'
+description: "Accessing the properties of objects (e.g., name of file, URL of document)."
 keywords:
   - reference form
   - property
@@ -42,7 +42,7 @@ tell application "Finder"
   try
     set appPath to (path to application "TextEdit")
     set appFile to file (POSIX path of appPath) -- More direct way to get Finder item for app
-    
+
     set appName to name of appFile
     set appKind to kind of appFile
     set appSize to size of appFile
@@ -81,4 +81,5 @@ return "Record fruit: " & fruitName & ¬
   "\nFile Info: " & fileInfo & ¬
   "\nSafari Doc URL: " & safariDocURL
 ```
-END_TIP 
+
+END_TIP

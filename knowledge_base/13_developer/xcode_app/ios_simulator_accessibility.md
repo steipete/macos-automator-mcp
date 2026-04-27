@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Configure Accessibility Features'
+title: "iOS Simulator: Configure Accessibility Features"
 category: 13_developer
 id: ios_simulator_accessibility
 description: >-
@@ -40,15 +40,15 @@ on configureSimulatorAccessibility(feature, action, deviceIdentifier)
   if feature is missing value or feature is "" then
     return "error: Accessibility feature not provided. Available features: 'voiceover', 'invert-colors', 'reduce-motion', 'bold-text', 'increase-contrast', 'reduce-transparency', 'zoom'."
   end if
-  
+
   if action is missing value or action is "" then
     return "error: Action not provided. Available actions: 'enable', 'disable'."
   end if
-  
+
   -- Normalize to lowercase
   set feature to do shell script "echo " & quoted form of feature & " | tr '[:upper:]' '[:lower:]'"
   set action to do shell script "echo " & quoted form of action & " | tr '[:upper:]' '[:lower:]'"
-  
+
   -- Map feature names to their settings keys
   set featureMap to {¬
     {"voiceover", "com.apple.Accessibility.VoiceOverTouchEnabled"}, ¬
@@ -59,7 +59,7 @@ on configureSimulatorAccessibility(feature, action, deviceIdentifier)
     {"reduce-transparency", "com.apple.Accessibility.ReduceTransparency"}, ¬
     {"zoom", "com.apple.Accessibility.zoom"} ¬
   }
-  
+
   -- Find the setting key for the requested feature
   set settingKey to ""
   repeat with featurePair in featureMap
@@ -68,21 +68,21 @@ on configureSimulatorAccessibility(feature, action, deviceIdentifier)
       exit repeat
     end if
   end repeat
-  
+
   if settingKey is "" then
     return "error: Unrecognized accessibility feature '" & feature & "'. Available features: 'voiceover', 'invert-colors', 'reduce-motion', 'bold-text', 'increase-contrast', 'reduce-transparency', 'zoom'."
   end if
-  
+
   -- Validate action
   if action is not in {"enable", "disable"} then
     return "error: Invalid action. Available actions: 'enable', 'disable'."
   end if
-  
+
   -- Default to booted device if not specified
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -93,20 +93,20 @@ on configureSimulatorAccessibility(feature, action, deviceIdentifier)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- Convert action to boolean value
     set boolValue to (action is "enable")
-    
+
     -- Build the command to change the accessibility setting
     set accessibilityCmd to "xcrun simctl spawn " & quoted form of deviceIdentifier & " defaults write com.apple.Accessibility " & settingKey & " -bool " & boolValue
-    
+
     try
       do shell script accessibilityCmd
       set accessibilityChanged to true
     on error errMsg
       return "Error changing accessibility setting: " & errMsg
     end try
-    
+
     -- Special handling for VoiceOver which may require additional notifications
     if feature is "voiceover" and accessibilityChanged then
       -- Notify system about the VoiceOver state change
@@ -115,10 +115,10 @@ on configureSimulatorAccessibility(feature, action, deviceIdentifier)
         do shell script notifyCmd
       end try
     end if
-    
+
     -- For some features like bold text, a restart is required
     set requiresRestart to (feature is in {"bold-text"})
-    
+
     if accessibilityChanged then
       set featureDisplayName to ""
       if feature is "voiceover" then
@@ -138,16 +138,16 @@ on configureSimulatorAccessibility(feature, action, deviceIdentifier)
       else
         set featureDisplayName to feature
       end if
-      
+
       set resultMessage to "Successfully " & action & "d " & featureDisplayName & " accessibility feature on " & deviceIdentifier & " simulator."
-      
+
       if requiresRestart then
         set resultMessage to resultMessage & "
 
 Note: The simulator needs to be restarted for this change to take effect. You can restart it with:
 xcrun simctl shutdown " & deviceIdentifier & " && xcrun simctl boot " & deviceIdentifier
       end if
-      
+
       if feature is "voiceover" and action is "enable" then
         set resultMessage to resultMessage & "
 
@@ -159,7 +159,7 @@ VoiceOver Gestures:
 
 To disable VoiceOver in simulator UI: Settings > Accessibility > VoiceOver"
       end if
-      
+
       return resultMessage
     else
       return "Failed to " & action & " " & feature & " accessibility feature on " & deviceIdentifier & " simulator."

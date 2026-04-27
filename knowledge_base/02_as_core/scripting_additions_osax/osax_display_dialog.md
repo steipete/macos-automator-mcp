@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: display dialog Command'
+title: "StandardAdditions: display dialog Command"
 category: 02_as_core
 id: osax_display_dialog
 description: >-
@@ -60,16 +60,16 @@ set message to "Proceed with caution?"
 set customButtons to {"Cancel", "No", "Yes"}
 try
   set choiceResult to display dialog message with title "Confirmation" buttons customButtons default button "Yes" cancel button "Cancel" giving up after 10
-  
+
   set userChoice to button returned of choiceResult
   if userChoice is "Yes" then
     set finalDecision to "Proceeding!"
   else if userChoice is "No" then
     set finalDecision to "Holding back."
-  else -- Cancel or timeout (if not caught by giving up) 
+  else -- Cancel or timeout (if not caught by giving up)
     set finalDecision to "Cancelled or timed out."
   end if
-  
+
 on error errMsg number errNum
   if errNum = -1712 then -- "gave up" error from timeout
     set finalDecision to "Dialog timed out."
@@ -82,4 +82,5 @@ end try
 
 return "User Name: " & userName & "\nFinal Decision: " & finalDecision
 ```
-END_TIP 
+
+END_TIP

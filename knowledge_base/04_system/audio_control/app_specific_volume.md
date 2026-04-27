@@ -1,5 +1,5 @@
 ---
-title: 'System: App-Specific Volume Control'
+title: "System: App-Specific Volume Control"
 category: 04_system
 id: app_specific_volume
 description: >-
@@ -122,24 +122,24 @@ if appNameParam is "Music" or appNameParam is "iTunes" then
   if application "Music" is not running and application "iTunes" is running then
     set appName to "iTunes"
   end if
-  
+
   tell application appName
     if actionParam is "get" then
       -- Get current volume
       set currentVolume to sound volume
       return "Current volume for " & appName & ": " & currentVolume & "%"
-      
+
     else if actionParam is "set" then
       -- Set volume
       set sound volume to volumeLevel
       return "Set " & appName & " volume to " & volumeLevel & "%"
-      
+
     else if actionParam is "mute" then
       -- Mute by setting volume to 0
       set oldVolume to sound volume
       set sound volume to 0
       return "Muted " & appName & " (previous volume was " & oldVolume & "%)"
-      
+
     else if actionParam is "unmute" then
       -- Unmute if volume is 0
       if sound volume is 0 then
@@ -151,7 +151,7 @@ if appNameParam is "Music" or appNameParam is "iTunes" then
       end if
     end if
   end tell
-  
+
 else if appNameParam is "Spotify" then
   -- Handle Spotify (which has built-in volume control)
   tell application "Spotify"
@@ -159,18 +159,18 @@ else if appNameParam is "Spotify" then
       -- Get current volume
       set currentVolume to sound volume
       return "Current volume for Spotify: " & currentVolume & "%"
-      
+
     else if actionParam is "set" then
       -- Set volume
       set sound volume to volumeLevel
       return "Set Spotify volume to " & volumeLevel & "%"
-      
+
     else if actionParam is "mute" then
       -- Mute by setting volume to 0
       set oldVolume to sound volume
       set sound volume to 0
       return "Muted Spotify (previous volume was " & oldVolume & "%)"
-      
+
     else if actionParam is "unmute" then
       -- Unmute if volume is 0
       if sound volume is 0 then
@@ -182,24 +182,24 @@ else if appNameParam is "Spotify" then
       end if
     end if
   end tell
-  
+
 else if appNameParam contains "Safari" or appNameParam contains "Chrome" or appNameParam contains "Firefox" or appNameParam contains "Edge" then
   -- Handle web browsers (can use JavaScript to control volume of media elements)
-  
+
   -- Determine which browser we're working with
   set browserName to appNameParam
   set browserApp to appNameParam
-  
+
   if actionParam is "get" then
     -- We can't reliably get the volume of media elements across tabs
-    return "Getting browser media volume is not supported directly." & return & return & 
-      "Browser media volume control requires the active tab to have playing media." & return & 
+    return "Getting browser media volume is not supported directly." & return & return &
+      "Browser media volume control requires the active tab to have playing media." & return &
       "Consider using a browser extension for better control of media volume."
-    
+
   else
     -- For set, mute, unmute - try to use JavaScript to control media elements
     set jsCommand to ""
-    
+
     if actionParam is "set" then
       set jsCommand to "document.querySelectorAll('audio, video').forEach(function(el) { el.volume = " & (volumeLevel / 100) & "; });"
     else if actionParam is "mute" then
@@ -207,7 +207,7 @@ else if appNameParam contains "Safari" or appNameParam contains "Chrome" or appN
     else if actionParam is "unmute" then
       set jsCommand to "document.querySelectorAll('audio, video').forEach(function(el) { el.muted = false; });"
     end if
-    
+
     -- Try to execute JavaScript in the browser
     if browserName contains "Safari" then
       tell application "Safari"
@@ -215,7 +215,7 @@ else if appNameParam contains "Safari" or appNameParam contains "Chrome" or appN
           do JavaScript jsCommand
         end tell
       end tell
-      
+
       if actionParam is "set" then
         return "Attempted to set media volume to " & volumeLevel & "% in Safari's active tab."
       else if actionParam is "mute" then
@@ -223,14 +223,14 @@ else if appNameParam contains "Safari" or appNameParam contains "Chrome" or appN
       else if actionParam is "unmute" then
         return "Attempted to unmute media in Safari's active tab."
       end if
-      
+
     else if browserName contains "Chrome" then
       tell application "Google Chrome"
         tell active tab of front window
           execute javascript jsCommand
         end tell
       end tell
-      
+
       if actionParam is "set" then
         return "Attempted to set media volume to " & volumeLevel & "% in Chrome's active tab."
       else if actionParam is "mute" then
@@ -238,16 +238,16 @@ else if appNameParam contains "Safari" or appNameParam contains "Chrome" or appN
       else if actionParam is "unmute" then
         return "Attempted to unmute media in Chrome's active tab."
       end if
-      
+
     else
       -- For other browsers, we don't have a reliable way to execute JS
-      return "JavaScript volume control is only supported for Safari and Chrome." & return & return & 
-        "Consider using one of these third-party utilities:" & return & 
-        "- Background Music: https://github.com/kyleneideck/BackgroundMusic" & return & 
+      return "JavaScript volume control is only supported for Safari and Chrome." & return & return &
+        "Consider using one of these third-party utilities:" & return &
+        "- Background Music: https://github.com/kyleneideck/BackgroundMusic" & return &
         "- Sound Control: https://staticz.com/soundcontrol/"
     end if
   end if
-  
+
 else if soundControlInstalled then
   -- If Sound Control is installed, use it
   if actionParam is "get" then
@@ -258,22 +258,22 @@ else if soundControlInstalled then
           if id of anApp contains appNameParam then
             set appVolume to volume of anApp
             set appMuted to muted of anApp
-            
+
             set resultText to "Current volume for '" & appNameParam & "' (via Sound Control): " & (appVolume * 100) & "%"
             if appMuted then
               set resultText to resultText & " (muted)"
             end if
-            
+
             return resultText
           end if
         end repeat
       end tell
-      
+
       return "Could not find '" & appNameParam & "' in Sound Control's audio apps."
     on error errMsg
       return "Error getting volume via Sound Control: " & errMsg
     end try
-    
+
   else if actionParam is "set" then
     try
       tell application "Sound Control"
@@ -285,12 +285,12 @@ else if soundControlInstalled then
           end if
         end repeat
       end tell
-      
+
       return "Could not find '" & appNameParam & "' in Sound Control's audio apps."
     on error errMsg
       return "Error setting volume via Sound Control: " & errMsg
     end try
-    
+
   else if actionParam is "mute" then
     try
       tell application "Sound Control"
@@ -302,12 +302,12 @@ else if soundControlInstalled then
           end if
         end repeat
       end tell
-      
+
       return "Could not find '" & appNameParam & "' in Sound Control's audio apps."
     on error errMsg
       return "Error muting via Sound Control: " & errMsg
     end try
-    
+
   else if actionParam is "unmute" then
     try
       tell application "Sound Control"
@@ -319,29 +319,29 @@ else if soundControlInstalled then
           end if
         end repeat
       end tell
-      
+
       return "Could not find '" & appNameParam & "' in Sound Control's audio apps."
     on error errMsg
       return "Error unmuting via Sound Control: " & errMsg
     end try
   end if
-  
+
 else if backgroundMusicInstalled then
   -- If Background Music is installed, provide information
   -- (Background Music doesn't have AppleScript support, but the user should know it's available)
-  return "Background Music is installed, but it doesn't support AppleScript control." & return & return & 
+  return "Background Music is installed, but it doesn't support AppleScript control." & return & return &
     "You can control app-specific volume through the Background Music menu bar icon."
-  
+
 else
   -- No app-specific volume control available
   set resultText to "App-specific volume control for '" & appNameParam & "' is not directly available." & return & return
-  
+
   set resultText to resultText & "For app-specific volume control, you can install one of these utilities:" & return
   set resultText to resultText & "1. Background Music (free): https://github.com/kyleneideck/BackgroundMusic" & return
   set resultText to resultText & "2. Sound Control (paid): https://staticz.com/soundcontrol/" & return & return
-  
+
   set resultText to resultText & "These utilities allow you to control the volume of individual applications independently from your system volume."
-  
+
   return resultText
 end if
 ```

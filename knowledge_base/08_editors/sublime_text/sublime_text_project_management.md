@@ -1,7 +1,7 @@
 ---
 id: sublime_text_project_management
 title: Manage Sublime Text projects
-description: 'Create, open, or switch between Sublime Text projects'
+description: "Create, open, or switch between Sublime Text projects"
 language: applescript
 author: Claude
 keywords:
@@ -16,7 +16,7 @@ usage_examples:
   - Switch between open projects
 parameters:
   - name: action
-    description: 'The action to perform (''create'', ''open'', or ''switch'')'
+    description: "The action to perform ('create', 'open', or 'switch')"
     required: true
   - name: projectPath
     description: >-
@@ -34,22 +34,22 @@ This script provides functionality for managing Sublime Text projects. It can cr
 on run {input, parameters}
     set action to "--MCP_INPUT:action"
     set projectPath to "--MCP_INPUT:projectPath"
-    
+
     -- Validate action
     if action is not "create" and action is not "open" and action is not "switch" then
         return "Error: Invalid action. Use 'create', 'open', or 'switch'."
     end if
-    
+
     -- Check if Sublime Text is running
     tell application "System Events"
         set isRunning to (exists process "Sublime Text")
     end tell
-    
+
     if not isRunning and action is not "open" then
         tell application "Sublime Text" to activate
         delay 1 -- Give time for Sublime Text to start
     end if
-    
+
     if action is "create" then
         return my createProject(projectPath)
     else if action is "open" then
@@ -79,31 +79,31 @@ on createProject(folderPath)
             end if
         end tell
     end if
-    
+
     -- Activate Sublime Text
     tell application "Sublime Text" to activate
     delay 0.5
-    
+
     -- Create a new project using the command palette
     tell application "System Events"
         tell process "Sublime Text"
             -- Open command palette
             keystroke "p" using {command down, shift down}
             delay 0.3
-            
+
             -- Type "Project: Save As" command
             keystroke "Project: Save As"
             delay 0.3
-            
+
             -- Execute the command
             keystroke return
             delay 0.5
-            
+
             -- A save dialog should appear. Instead of trying to navigate it,
             -- we'll provide instructions for the user
         end tell
     end tell
-    
+
     return "Project creation dialog opened. Please enter a name for your project and save it in your desired location."
 end createProject
 
@@ -114,18 +114,18 @@ on openProject(projectPath)
         -- Open the quick switch project dialog
         return my switchProject()
     end if
-    
+
     -- Check if the path ends with .sublime-project
     if projectPath does not end with ".sublime-project" then
         set projectPath to projectPath & ".sublime-project"
     end if
-    
+
     -- Ensure the path is properly quoted to handle spaces and special characters
     set quotedPath to quoted form of projectPath
-    
+
     -- Open the project
     do shell script "open -a 'Sublime Text' " & quotedPath
-    
+
     return "Opened Sublime Text project at: " & projectPath
 end openProject
 
@@ -134,14 +134,14 @@ on switchProject()
     -- Activate Sublime Text
     tell application "Sublime Text" to activate
     delay 0.5
-    
+
     -- Open the quick switch project dialog (Ctrl+Cmd+P)
     tell application "System Events"
         tell process "Sublime Text"
             keystroke "p" using {control down, command down}
         end tell
     end tell
-    
+
     return "Project quick-switch dialog opened. Use arrow keys to select a project and press Return to open."
 end switchProject
 ```

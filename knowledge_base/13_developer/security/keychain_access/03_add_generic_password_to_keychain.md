@@ -1,5 +1,5 @@
 ---
-title: 'Keychain Access: Add Generic Password'
+title: "Keychain Access: Add Generic Password"
 category: 13_developer
 id: keychain_add_generic_password
 description: >-
@@ -44,29 +44,29 @@ on addGenericPasswordToKeychain(serviceName, accountName, passwordValue, comment
   if passwordValue is missing value or passwordValue is "" then
     return "error: Password value is required."
   end if
-  
+
   try
     -- Build the base command for adding a generic password
     set passwordCmd to "security add-generic-password"
-    
+
     -- Add required parameters
     set passwordCmd to passwordCmd & " -s " & quoted form of serviceName
     set passwordCmd to passwordCmd & " -a " & quoted form of accountName
-    
+
     -- Add optional parameters if provided
     if commentText is not missing value and commentText is not "" then
       set passwordCmd to passwordCmd & " -j " & quoted form of commentText
     end if
-    
+
     -- Add the password securely using stdin
     -- This prevents the password from appearing in process listings or logs
     set passwordCmd to passwordCmd & " -w"
-    
+
     -- Execute the command with the password provided via stdin
     do shell script passwordCmd & " << EOF
 " & passwordValue & "
 EOF"
-    
+
     -- Return success message
     return "Successfully added password for service '" & serviceName & "' and account '" & accountName & "' to the keychain."
   on error errMsg
@@ -83,18 +83,21 @@ return my addGenericPasswordToKeychain("--MCP_INPUT:serviceName", "--MCP_INPUT:a
 ```
 
 This script:
+
 1. Takes a service name, account name, password, and optional comment as input
 2. Constructs a secure command to add the password to the keychain
 3. Passes the password securely to avoid exposing it in process listings
 4. Returns a success message or error details if the operation fails
 
 Security best practices:
+
 - The password is passed via stdin, not as a command-line argument
 - The script validates required inputs before attempting to add the password
 - Error handling specifically catches the common case of trying to add a duplicate item
 - User authentication will be required to add items to the keychain (macOS security feature)
 
 Common use cases:
+
 - Storing API keys for automated scripts
 - Saving database connection credentials
 - Managing application passwords

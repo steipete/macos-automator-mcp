@@ -14,7 +14,7 @@ keywords:
   - system settings
   - ui scripting
 language: applescript
-version: '1.0'
+version: "1.0"
 validated: true
 ---
 
@@ -28,36 +28,36 @@ Modern macOS appearance settings like Dark Mode, accent colors, highlight colors
 tell application "System Settings"
   activate
   delay 1 -- Give time for the app to fully load
-  
+
   -- Navigate to Appearance settings
   tell application "System Events"
     tell process "System Settings"
       -- Click on Appearance in the sidebar
       click button "Appearance" of scroll area 1 of group 1 of window 1
-      
+
       -- Wait for the panel to load
       delay 0.5
-      
+
       -- Here we toggle between "Light" and "Dark" using the radio buttons
       -- Find the radio buttons in the appearance section
       set appearanceOptions to radio buttons of radio group 1 of group 1 of scroll area 1 of group 1 of window 1
-      
+
       -- Get the radio button names (could be "Light", "Dark", "Auto")
       set optionNames to name of appearanceOptions
-      
+
       -- Toggle to Dark Mode
       click radio button "Dark" of radio group 1 of group 1 of scroll area 1 of group 1 of window 1
-      
+
       -- Or toggle to Light Mode
       -- click radio button "Light" of radio group 1 of group 1 of scroll area 1 of group 1 of window 1
-      
+
       -- Or set to Auto
       -- click radio button "Auto" of radio group 1 of group 1 of scroll area 1 of group 1 of window 1
-      
+
       delay 0.5 -- Wait for the setting to apply
     end tell
   end tell
-  
+
   quit
 end tell
 ```
@@ -82,34 +82,34 @@ end if
 tell application "System Settings"
   activate
   delay 1
-  
+
   tell application "System Events"
     tell process "System Settings"
       -- Navigate to Appearance settings
       click button "Appearance" of scroll area 1 of group 1 of window 1
       delay 0.5
-      
+
       -- Set accent color (options may include: Blue, Purple, Pink, Red, Orange, Yellow, Green, Graphite)
       -- Find the accent colors popup button
       set accentPopup to pop up button 1 of group 1 of scroll area 1 of group 1 of window 1
       click accentPopup
       delay 0.3
-      
+
       -- Select a color from the menu
       click menu item "Blue" of menu 1 of accentPopup
-      
+
       -- Set highlight color
       set highlightPopup to pop up button 2 of group 1 of scroll area 1 of group 1 of window 1
       click highlightPopup
       delay 0.3
-      
+
       -- Select a highlight color
       click menu item "Blue" of menu 1 of highlightPopup
-      
+
       delay 0.5
     end tell
   end tell
-  
+
   quit
 end tell
 ```
@@ -120,23 +120,23 @@ end tell
 tell application "System Settings"
   activate
   delay 1
-  
+
   tell application "System Events"
     tell process "System Settings"
       -- Navigate to Appearance settings
       click button "Appearance" of scroll area 1 of group 1 of window 1
       delay 0.5
-      
+
       -- Find the radio buttons for scroll bar appearance in the second radio group
       set scrollBarOptions to radio buttons of radio group 2 of group 1 of scroll area 1 of group 1 of window 1
-      
+
       -- Options are typically: "Automatically based on mouse or trackpad", "When scrolling", "Always"
       click radio button "Always" of radio group 2 of group 1 of scroll area 1 of group 1 of window 1
-      
+
       delay 0.5
     end tell
   end tell
-  
+
   quit
 end tell
 ```
@@ -148,7 +148,7 @@ try
   tell application "System Settings"
     activate
     delay 1
-    
+
     tell application "System Events"
       tell process "System Settings"
         -- Navigate to Appearance settings
@@ -156,7 +156,7 @@ try
         -- Rest of the code...
       end tell
     end tell
-    
+
     quit
   end tell
 on error errorMessage

@@ -1,5 +1,5 @@
 ---
-title: 'System Settings: Open Specific Pane'
+title: "System Settings: Open Specific Pane"
 category: 04_system
 id: system_settings_open_pane
 description: >-
@@ -24,19 +24,19 @@ on run {paneName}
     if paneName is "" or paneName is missing value then
       set paneName to "--MCP_INPUT:paneName"
     end if
-    
+
     -- Determine if we're using the new System Settings or older System Preferences
     set osVersion to system version of (system info)
     set majorVersion to word 1 of osVersion
-    
+
     if majorVersion ? 13 then
       -- macOS Ventura (13) or later - use System Settings
       tell application "System Settings"
         activate
-        
+
         -- Wait for System Settings to launch
         delay 1
-        
+
         tell application "System Events"
           tell process "System Settings"
             -- Search for the settings pane
@@ -44,7 +44,7 @@ on run {paneName}
             delay 0.5
             keystroke paneName
             delay 1
-            
+
             -- Click the first matching result
             if exists row 1 of table 1 of scroll area 1 of group 1 of window 1 then
               click row 1 of table 1 of scroll area 1 of group 1 of window 1
@@ -59,7 +59,7 @@ on run {paneName}
       -- macOS Monterey (12) or earlier - use System Preferences
       tell application "System Preferences"
         activate
-        
+
         -- Try to open the pane directly
         try
           reveal pane id paneName
@@ -72,7 +72,7 @@ on run {paneName}
               delay 0.5
               keystroke paneName
               delay 1
-              
+
               -- Try to click the first search result
               if exists row 1 of table 1 of scroll area 1 of window 1 then
                 click row 1 of table 1 of scroll area 1 of window 1
@@ -85,10 +85,11 @@ on run {paneName}
         end try
       end tell
     end if
-    
+
   on error errMsg number errNum
     return "Error (" & errNum & "): Failed to open settings pane - " & errMsg
   end try
 end run
 ```
+
 END_TIP

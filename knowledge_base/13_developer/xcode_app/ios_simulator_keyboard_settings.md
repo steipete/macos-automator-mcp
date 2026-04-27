@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Configure Keyboard Settings'
+title: "iOS Simulator: Configure Keyboard Settings"
 category: 13_developer
 id: ios_simulator_keyboard_settings
 description: Configures hardware keyboard settings for iOS Simulator.
@@ -37,27 +37,27 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
   if enableHardwareKeyboard is missing value or enableHardwareKeyboard is "" then
     return "error: Keyboard setting not provided. Specify 'true' to enable hardware keyboard or 'false' to disable it."
   end if
-  
+
   -- Normalize hardware keyboard setting
   if enableHardwareKeyboard is "true" or enableHardwareKeyboard is "yes" or enableHardwareKeyboard is "1" then
     set enableHardwareKeyboard to true
   else
     set enableHardwareKeyboard to false
   end if
-  
+
   -- Default to all devices if not specified
   set isSpecificDevice to false
   if deviceIdentifier is not missing value and deviceIdentifier is not "" and deviceIdentifier is not "all" then
     set isSpecificDevice to true
   end if
-  
+
   -- Default show keyboard to false if not specified
   if showKeyboard is missing value or showKeyboard is "" then
     set showKeyboard to false
   else if showKeyboard is "true" then
     set showKeyboard to true
   end if
-  
+
   try
     -- If specific device is provided, validate it exists
     if isSpecificDevice then
@@ -67,7 +67,7 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
       on error
         return "error: Device '" & deviceIdentifier & "' not found. Check available devices with 'xcrun simctl list devices'."
       end try
-      
+
       -- Get the device UUID if name was provided
       if deviceIdentifier does not contain "-" then
         set getUUIDCmd to "xcrun simctl list devices | grep '" & deviceIdentifier & "' | head -1 | sed -E 's/.*\\(([A-Z0-9-]+)\\).*/\\1/'"
@@ -83,7 +83,7 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
         set deviceUUID to deviceIdentifier
       end if
     end if
-    
+
     -- Close simulator before changing settings
     tell application "System Events"
       if exists process "Simulator" then
@@ -91,7 +91,7 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
         delay 2
       end if
     end tell
-    
+
     -- Set the hardware keyboard preference
     if isSpecificDevice then
       -- For a specific device
@@ -100,21 +100,21 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
       -- For all devices
       set keyboardSettingCmd to "defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool " & enableHardwareKeyboard
     end if
-    
+
     do shell script keyboardSettingCmd
-    
+
     -- Additional keyboard settings
     if enableHardwareKeyboard is false then
       -- When disabling hardware keyboard, you might also want to touch interactions to remain visible
       do shell script "defaults write com.apple.iphonesimulator ShowSingleTouches -bool true"
     end if
-    
+
     -- Launch simulator if requested to show keyboard
     set keyboardStateText to ""
     if showKeyboard then
       tell application "Simulator" to activate
       delay 2
-      
+
       -- Try to show the keyboard if requested
       tell application "System Events"
         tell process "Simulator"
@@ -122,7 +122,7 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
           -- First go to home screen using Command+Shift+H
           keystroke "h" using {command down, shift down}
           delay 1
-          
+
           -- Swipe down to show search (Option+Command+drag down)
           key down option
           key down command
@@ -136,19 +136,19 @@ on configureSimulatorKeyboardSettings(enableHardwareKeyboard, deviceIdentifier, 
           key up command
           key up option
           delay 1
-          
+
           -- Click in the search field
           click at {200, 100}
           delay 1
-          
+
           set keyboardStateText to "
 
-The simulator has been launched with the search field active. 
+The simulator has been launched with the search field active.
 The on-screen keyboard " & (if enableHardwareKeyboard then "may not" else "should") & " be visible."
         end tell
       end tell
     end if
-    
+
     -- Result message
     set targetText to ""
     if isSpecificDevice then
@@ -156,7 +156,7 @@ The on-screen keyboard " & (if enableHardwareKeyboard then "may not" else "shoul
     else
       set targetText to "all simulator devices"
     end if
-    
+
     return "Successfully " & (if enableHardwareKeyboard then "enabled" else "disabled") & " hardware keyboard for " & targetText & ".
 
 " & (if enableHardwareKeyboard then "Your Mac's keyboard will be used for text input in the simulator." else "The simulator will show the on-screen iOS keyboard for text input.") & "

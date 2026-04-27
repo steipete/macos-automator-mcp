@@ -1,5 +1,5 @@
 ---
-title: 'Music: Get Current Track Information'
+title: "Music: Get Current Track Information"
 category: 10_creative
 id: music_current_track_info
 description: >-
@@ -31,13 +31,13 @@ tell application "Music" -- or "iTunes"
   if not running then
     return "Music app is not running."
   end if
-  
+
   try
     set currentTr to current track
     if currentTr is missing value then
       return "No current track selected or playing."
     end if
-    
+
     set trackName to name of currentTr
     set trackArtist to artist of currentTr
     set trackAlbum to album of currentTr
@@ -48,7 +48,7 @@ tell application "Music" -- or "iTunes"
     set trackYear to year of currentTr
     set trackPlayedCount to played count of currentTr
     set trackGenre to genre of currentTr
-    
+
     set trackInfo to "Track: " & trackName & ¬
       "\nArtist: " & trackArtist & ¬
       "\nAlbum: " & trackAlbum & ¬
@@ -58,12 +58,13 @@ tell application "Music" -- or "iTunes"
       "\nYear: " & trackYear & ¬
       "\nPlayed Count: " & trackPlayedCount & ¬
       "\nGenre: " & trackGenre
-      
+
     return trackInfo
-    
+
   on error errMsg number errNum
     return "Error retrieving track info (" & errNum & "): " & errMsg
   end try
 end tell
 ```
-END_TIP 
+
+END_TIP

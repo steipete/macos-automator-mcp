@@ -4,7 +4,7 @@ title: Compare Files with Kaleidoscope
 description: Use AppleScript to open and compare files in Kaleidoscope
 author: steipete
 language: applescript
-tags: 'kaleidoscope, diff, compare, files'
+tags: "kaleidoscope, diff, compare, files"
 keywords:
   - kaleidoscope
   - file comparison
@@ -40,13 +40,13 @@ on compareFilesWithKaleidoscope(file1Path, file2Path, comparisonLabel)
     set encodedFile1 to encodeURLComponent(file1Path)
     set encodedFile2 to encodeURLComponent(file2Path)
     set encodedLabel to encodeURLComponent(comparisonLabel)
-    
+
     set kaleidoscopeURL to "kaleidoscope://compare?" & encodedFile1 & "&" & encodedFile2
-    
+
     if comparisonLabel is not equal to "" then
         set kaleidoscopeURL to kaleidoscopeURL & "&label=" & encodedLabel
     end if
-    
+
     open location kaleidoscopeURL
 end compareFilesWithKaleidoscope
 
@@ -54,7 +54,7 @@ end compareFilesWithKaleidoscope
 on encodeURLComponent(input)
     set theChars to the characters of input
     set encodedString to ""
-    
+
     repeat with c in theChars
         set theChar to c as string
         if theChar is " " then
@@ -67,7 +67,7 @@ on encodeURLComponent(input)
             set encodedString to encodedString & theChar
         end if
     end repeat
-    
+
     return encodedString
 end encodeURLComponent
 

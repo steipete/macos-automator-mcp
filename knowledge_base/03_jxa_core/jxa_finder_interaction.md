@@ -1,5 +1,5 @@
 ---
-title: 'JXA: Interacting with Finder'
+title: "JXA: Interacting with Finder"
 category: 03_jxa_core
 id: jxa_finder_interaction
 description: >-
@@ -26,7 +26,7 @@ Finder.includeStandardAdditions = true; // For displayDialog
 Finder.activate();
 
 // Get names of items on the Desktop
-var desktopPath = Finder.desktop.url().replace(/^file:\/\//, ''); // Get POSIX path
+var desktopPath = Finder.desktop.url().replace(/^file:\/\//, ""); // Get POSIX path
 var desktopItems = Finder.desktop.items(); // Returns an object specifier, not an array directly
 var itemNames = [];
 for (var i = 0; i < desktopItems.length; i++) {
@@ -37,9 +37,9 @@ for (var i = 0; i < desktopItems.length; i++) {
 var newFolderName = "JXA Test Folder";
 try {
   var newFolder = Finder.make({
-    new: 'folder',
+    new: "folder",
     at: Finder.desktop,
-    withProperties: { name: newFolderName }
+    withProperties: { name: newFolderName },
   });
   var creationMessage = "Folder '" + newFolderName + "' created.";
 } catch (e) {
@@ -47,9 +47,14 @@ try {
 }
 
 Finder.displayDialog(
-  "Desktop Items (" + itemNames.length + "):\\n" + itemNames.slice(0, 5).join("\\n") + (itemNames.length > 5 ? "\\n..." : "") +
-  "\\n\\n" + creationMessage
+  "Desktop Items (" +
+    itemNames.length +
+    "):\\n" +
+    itemNames.slice(0, 5).join("\\n") +
+    (itemNames.length > 5 ? "\\n..." : "") +
+    "\\n\\n" +
+    creationMessage,
 );
 
-"Finder interaction complete.";
-``` 
+("Finder interaction complete.");
+```

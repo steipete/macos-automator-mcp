@@ -11,7 +11,7 @@ on killProcessOnPort(targetPort)
     -- Find the process ID for the port
     set lsofCommand to "lsof -nP -iTCP:" & targetPort & " -sTCP:LISTEN | awk 'NR==2 {print $2}'"
     set processIDString to do shell script lsofCommand
-    
+
     if processIDString is "" then
       return "No process found listening on port " & targetPort & "."
     else

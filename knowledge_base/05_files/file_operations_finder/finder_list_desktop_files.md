@@ -1,5 +1,5 @@
 ---
-title: 'Finder: List Names of Files on Desktop'
+title: "Finder: List Names of Files on Desktop"
 category: 05_files
 id: finder_list_desktop_files
 description: >-
@@ -32,4 +32,5 @@ tell application "Finder"
   end try
 end tell
 ```
-END_TIP 
+
+END_TIP

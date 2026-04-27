@@ -1,5 +1,5 @@
 ---
-title: 'Paths: Get Path to Standard Folders'
+title: "Paths: Get Path to Standard Folders"
 category: 05_files
 id: paths_get_standard_folders
 description: >-
@@ -46,4 +46,5 @@ end try
 
 return "User Desktop: " & desktopPOSIX & "\\nLocal App Support: " & appSupportLocalPOSIX & "\\nFront App: " & frontAppPOSIX
 ```
-END_TIP 
+
+END_TIP

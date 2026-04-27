@@ -1,5 +1,5 @@
 ---
-title: 'Terminal: Open and Close Windows'
+title: "Terminal: Open and Close Windows"
 id: terminal_open_close_window
 category: 06_terminal
 description: >-
@@ -24,11 +24,13 @@ isComplex: false
 This script manages Terminal.app windows, allowing you to open new windows and close existing ones.
 
 **Features:**
+
 - Open a new Terminal.app window (optionally executing a command)
 - Close the frontmost window, a specific window by number, or all windows
 - Control Terminal.app without closing the entire application
 
 **Usage Examples:**
+
 - Open a new Terminal window and execute a command
 - Close only the frontmost Terminal window
 - Close all Terminal windows at once
@@ -38,12 +40,12 @@ on runWithInput(inputData, legacyArguments)
     set defaultCommand to ""
     set defaultAction to "open"
     set defaultTargetWindow to "front"
-    
+
     -- Parse input parameters
     set command to defaultCommand
     set action to defaultAction
     set targetWindow to defaultTargetWindow
-    
+
     if inputData is not missing value then
         if inputData contains {command:""} then
             set command to command of inputData
@@ -55,12 +57,12 @@ on runWithInput(inputData, legacyArguments)
             set targetWindow to targetWindow of inputData
         end if
     end if
-    
+
     -- MCP placeholders for input
     set command to "--MCP_INPUT:command" -- optional command to run
     set action to "--MCP_INPUT:action" -- open or close (defaults to "open" if omitted)
     set targetWindow to "--MCP_INPUT:targetWindow" -- all, front, or a number
-    
+
     -- Handle different actions
     if action is "open" then
         return openTerminalWindow(command)
@@ -75,15 +77,15 @@ on openTerminalWindow(command)
     tell application "Terminal"
         -- Activate Terminal application
         activate
-        
+
         -- Create a new window
         set newWindow to do script ""
-        
+
         -- Run the command if provided
         if command is not "" then
             do script command in newWindow
         end if
-        
+
         return "New Terminal window opened" & (if command is not "" then " and executed: " & command else "")
     end tell
 end openTerminalWindow
@@ -95,7 +97,7 @@ on closeTerminalWindow(targetWindow)
             -- Close all windows
             close every window
             return "Closed all Terminal windows"
-            
+
         else if targetWindow is "front" or targetWindow is "" then
             -- Close the frontmost window
             if (count of windows) > 0 then
@@ -104,7 +106,7 @@ on closeTerminalWindow(targetWindow)
             else
                 return "No Terminal windows to close"
             end if
-            
+
         else
             -- Try to close a specific window by number
             try

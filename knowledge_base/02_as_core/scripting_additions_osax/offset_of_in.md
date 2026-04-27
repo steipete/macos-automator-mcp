@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: offset of...in Command'
+title: "StandardAdditions: offset of...in Command"
 category: 02_as_core
 id: osax_offset_of_in
 description: Finds the position of a substring within a string or an item within a list.
@@ -28,24 +28,24 @@ set searchTerm to "script" -- --MCP_INPUT:searchTerm
 try
   -- Find first occurrence (case-sensitive by default)
   set firstPos to offset of searchTerm in sampleText
-  
+
   -- Find with starting position specified
   set secondPos to offset of searchTerm in sampleText from character (firstPos + 1)
-  
+
   -- Find with case insensitivity
   considering case
     set caseSensitivePos to offset of searchTerm in sampleText
   end considering
-  
+
   ignoring case
     set caseInsensitivePos to offset of searchTerm in sampleText
   end ignoring
-  
+
   -- Example 2: Finding an item in a list
   set fruitList to {"apple", "banana", "cherry", "dates", "elderberry"}
   set listItem to "cherry"
   set itemPosition to offset of listItem in fruitList
-  
+
   -- Build result string
   set resultText to "Search results for '" & searchTerm & "':\n" & ¬
     "- First position: " & firstPos & "\n" & ¬
@@ -53,7 +53,7 @@ try
     "- Case-sensitive position: " & caseSensitivePos & "\n" & ¬
     "- Case-insensitive position: " & caseInsensitivePos & "\n\n" & ¬
     "Position of '" & listItem & "' in fruit list: " & itemPosition
-    
+
   return resultText
 on error errMsg
   return "Error: " & errMsg
@@ -61,6 +61,7 @@ end try
 ```
 
 This command is useful for:
+
 1. Finding where text appears in a document
 2. Checking if a string contains a specific substring
 3. Locating an item in a list

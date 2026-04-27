@@ -1,5 +1,5 @@
 ---
-title: 'Core: Index Reference Form'
+title: "Core: Index Reference Form"
 category: 02_as_core
 id: core_reference_index
 description: >-
@@ -77,4 +77,5 @@ return "First fruit: " & firstFruit & ¬
   -- "\nFinder item name: " & itemName & ¬
   "\nOut of bounds error: " & anError
 ```
-END_TIP 
+
+END_TIP

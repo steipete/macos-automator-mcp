@@ -4,7 +4,7 @@ title: Automated Review System for Things
 description: Script to automate daily and weekly reviews in Things
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, review, gtd, automation'
+tags: "things, productivity, task management, review, gtd, automation"
 keywords:
   - gtd
   - daily-review
@@ -49,7 +49,7 @@ on runDailyReview()
         -- First, check if there's already a daily review to-do for today
         set todayDate to current date
         set todayString to short date string of todayDate
-        
+
         set reviewToDos to to dos of list "Today" where name contains "Daily Review"
         if (count of reviewToDos) > 0 then
             set existingReview to item 1 of reviewToDos
@@ -59,14 +59,14 @@ on runDailyReview()
                 return "Updated existing daily review for " & todayString
             end if
         end if
-        
+
         -- Create new daily review to-do
         set reviewProperties to {name:"Daily Review - " & todayString, notes:generateDailyReviewNotes(), tags:{"Review"}}
         set newReview to make new to do with properties reviewProperties
-        
+
         -- Move to Today list
         set list of newReview to list "Today"
-        
+
         -- Return summary
         return "Created daily review for " & todayString
     end tell
@@ -83,7 +83,7 @@ Generated: " & (current date as string) & "
         -- List today's tasks
         set todayToDos to to dos of list "Today" where name does not contain "Daily Review"
         set todayCount to count of todayToDos
-        
+
         -- Count completions
         set completedCount to 0
         repeat with t in todayToDos
@@ -91,18 +91,18 @@ Generated: " & (current date as string) & "
                 set completedCount to completedCount + 1
             end if
         end repeat
-        
+
         set reviewNotes to reviewNotes & "- Total: " & todayCount & " tasks
 - Completed: " & completedCount & " tasks
 - Remaining: " & (todayCount - completedCount) & " tasks
 
 ## Tasks Requiring Attention
 "
-        
+
         -- Find overdue tasks
         set overdueToDos to to dos where due date < current date and status is open
         set overdueCount to count of overdueToDos
-        
+
         if overdueCount > 0 then
             set reviewNotes to reviewNotes & "### Overdue Tasks (" & overdueCount & ")
 "
@@ -110,11 +110,11 @@ Generated: " & (current date as string) & "
                 set taskName to name of t
                 set taskDue to due date of t as string
                 set taskProject to "none"
-                
+
                 if project of t is not missing value then
                     set taskProject to name of project of t
                 end if
-                
+
                 set reviewNotes to reviewNotes & "- " & taskName & " (Due: " & taskDue & ", Project: " & taskProject & ")
 "
             end repeat
@@ -123,19 +123,19 @@ Generated: " & (current date as string) & "
 None! 🎉
 "
         end if
-        
+
         -- Find tasks in inbox
         set inboxToDos to to dos of list "Inbox"
         set inboxCount to count of inboxToDos
-        
+
         set reviewNotes to reviewNotes & "
 ### Inbox Items (" & inboxCount & ")
 " & (if inboxCount > 5 then "Consider processing these items!" else "")
-        
+
         if inboxCount > 0 then
             set maxToShow to 5
             set shownCount to 0
-            
+
             repeat with t in inboxToDos
                 if shownCount < maxToShow then
                     set reviewNotes to reviewNotes & "- " & name of t & "
@@ -143,13 +143,13 @@ None! 🎉
                     set shownCount to shownCount + 1
                 end if
             end repeat
-            
+
             if inboxCount > maxToShow then
                 set reviewNotes to reviewNotes & "- ...and " & (inboxCount - maxToShow) & " more items
 "
             end if
         end if
-        
+
         -- Add review checklist
         set reviewNotes to reviewNotes & "
 ## Daily Review Checklist
@@ -162,7 +162,7 @@ None! 🎉
 
 ## Notes
 "
-        
+
         return reviewNotes
     end tell
 end generateDailyReviewNotes
@@ -174,7 +174,7 @@ on runWeeklyReview()
         set currentDate to current date
         set weekOfYear to week of currentDate
         set yearNumber to year of currentDate
-        
+
         -- Check if there's already a weekly review for this week
         set reviewToDos to to dos where name contains "Weekly Review - Week " & weekOfYear
         if (count of reviewToDos) > 0 then
@@ -185,11 +185,11 @@ on runWeeklyReview()
                 return "Updated existing weekly review for Week " & weekOfYear
             end if
         end if
-        
+
         -- Create new weekly review to-do
         set reviewProperties to {name:"Weekly Review - Week " & weekOfYear & " (" & yearNumber & ")", notes:generateWeeklyReviewNotes(weekOfYear, yearNumber), tags:{"Review", "Weekly"}}
         set newReview to make new to do with properties reviewProperties
-        
+
         -- Set to weekend
         set theDate to current date
         -- Set to upcoming Friday
@@ -198,7 +198,7 @@ on runWeeklyReview()
         end repeat
         set list of newReview to list "Anytime"
         set due date of newReview to theDate
-        
+
         -- Return summary
         return "Created weekly review for Week " & weekOfYear
     end tell
@@ -216,7 +216,7 @@ Generated: " & (current date as string) & "
         set allProjects to projects
         set activeProjects to 0
         set completedProjects to 0
-        
+
         -- Track project status
         repeat with p in allProjects
             if status of p is open then
@@ -225,13 +225,13 @@ Generated: " & (current date as string) & "
                 set completedProjects to completedProjects + 1
             end if
         end repeat
-        
+
         set reviewNotes to reviewNotes & "- Active Projects: " & activeProjects & "
 - Completed Projects: " & completedProjects & "
 
 ### Active Projects
 "
-        
+
         -- List active projects with task counts
         repeat with p in allProjects
             if status of p is open then
@@ -239,42 +239,42 @@ Generated: " & (current date as string) & "
                 set projectToDos to to dos of p
                 set totalTasks to count of projectToDos
                 set completedTasks to 0
-                
+
                 repeat with t in projectToDos
                     if status of t is completed then
                         set completedTasks to completedTasks + 1
                     end if
                 end repeat
-                
+
                 set progress to 0
                 if totalTasks > 0 then
                     set progress to (completedTasks / totalTasks) * 100
                 end if
-                
+
                 set reviewNotes to reviewNotes & "- " & projectName & " (" & round progress & "% complete, " & completedTasks & "/" & totalTasks & " tasks)
 "
             end if
         end repeat
-        
+
         -- Upcoming tasks
         set reviewNotes to reviewNotes & "
 ## Upcoming Deadlines
 "
-        
+
         -- Get date for next two weeks
         set twoWeeksFromNow to current date
         set day of twoWeeksFromNow to day of twoWeeksFromNow + 14
-        
+
         -- Find tasks due in the next two weeks
         set upcomingToDos to to dos where due date ≤ twoWeeksFromNow and due date ≥ current date and status is open
-        
+
         if (count of upcomingToDos) > 0 then
             -- Sort by due date
             set sortedToDos to {}
             repeat with t in upcomingToDos
                 set end of sortedToDos to {theToDo:t, dueDate:due date of t}
             end repeat
-            
+
             -- Simple bubble sort by due date
             set n to count of sortedToDos
             repeat with i from 1 to n - 1
@@ -286,18 +286,18 @@ Generated: " & (current date as string) & "
                     end if
                 end repeat
             end repeat
-            
+
             -- List sorted tasks
             repeat with taskInfo in sortedToDos
                 set t to theToDo of taskInfo
                 set taskName to name of t
                 set taskDue to due date of t as string
                 set taskProject to "none"
-                
+
                 if project of t is not missing value then
                     set taskProject to name of project of t
                 end if
-                
+
                 set reviewNotes to reviewNotes & "- " & taskName & " (Due: " & taskDue & ", Project: " & taskProject & ")
 "
             end repeat
@@ -305,26 +305,26 @@ Generated: " & (current date as string) & "
             set reviewNotes to reviewNotes & "No upcoming deadlines in the next two weeks.
 "
         end if
-        
+
         -- Stuck projects
         set reviewNotes to reviewNotes & "
 ## Stalled Projects
 "
-        
+
         set stalledCount to 0
-        
+
         repeat with p in allProjects
             if status of p is open then
                 set projectToDos to to dos of p
                 set hasOpenTasks to false
-                
+
                 repeat with t in projectToDos
                     if status of t is open then
                         set hasOpenTasks to true
                         exit repeat
                     end if
                 end repeat
-                
+
                 if not hasOpenTasks and (count of projectToDos) > 0 then
                     set stalledCount to stalledCount + 1
                     set reviewNotes to reviewNotes & "- " & name of p & " (No active to-dos)
@@ -332,12 +332,12 @@ Generated: " & (current date as string) & "
                 end if
             end if
         end repeat
-        
+
         if stalledCount is 0 then
             set reviewNotes to reviewNotes & "No stalled projects found.
 "
         end if
-        
+
         -- Add review checklist
         set reviewNotes to reviewNotes & "
 ## Weekly Review Checklist
@@ -358,7 +358,7 @@ Generated: " & (current date as string) & "
 ### What to focus on next week?
 
 "
-        
+
         return reviewNotes
     end tell
 end generateWeeklyReviewNotes
@@ -369,7 +369,7 @@ on generateProductivityReport(startDateStr, endDateStr)
         -- Parse dates
         set startDate to date startDateStr
         set endDate to date endDateStr
-        
+
         -- Prepare report
         set reportNotes to "# Productivity Report
 Period: " & startDateStr & " to " & endDateStr & "
@@ -377,16 +377,16 @@ Generated: " & (current date as string) & "
 
 ## Task Completion Summary
 "
-        
+
         -- Find completed tasks in date range
         set completedToDos to completed to dos where completion date ≥ startDate and completion date ≤ endDate
         set completedCount to count of completedToDos
-        
+
         -- Group by day
         set dateMap to {}
         repeat with t in completedToDos
             set completionDate to short date string of (completion date of t)
-            
+
             -- Check if date exists in map
             set dateExists to false
             set dateIndex to 0
@@ -397,7 +397,7 @@ Generated: " & (current date as string) & "
                     exit repeat
                 end if
             end repeat
-            
+
             if dateExists then
                 -- Increment count for this date
                 set item 2 of item dateIndex of dateMap to (item 2 of item dateIndex of dateMap) + 1
@@ -406,13 +406,13 @@ Generated: " & (current date as string) & "
                 set end of dateMap to {completionDate, 1}
             end if
         end repeat
-        
+
         -- Sort dates
         set sortedDates to {}
         repeat with dateEntry in dateMap
             set end of sortedDates to dateEntry
         end repeat
-        
+
         -- Simple bubble sort by date
         set n to count of sortedDates
         repeat with i from 1 to n - 1
@@ -424,13 +424,13 @@ Generated: " & (current date as string) & "
                 end if
             end repeat
         end repeat
-        
+
         -- Add total completion count
         set reportNotes to reportNotes & "Total tasks completed: " & completedCount & "
 
 ## Daily Breakdown
 "
-        
+
         -- Graph and list daily completions
         set maxCompletions to 0
         repeat with dateEntry in sortedDates
@@ -439,38 +439,38 @@ Generated: " & (current date as string) & "
                 set maxCompletions to count
             end if
         end repeat
-        
+
         repeat with dateEntry in sortedDates
             set dateStr to item 1 of dateEntry
             set count to item 2 of dateEntry
-            
+
             -- Create simple bar graph
             set graphWidth to 20
             set barWidth to 0
             if maxCompletions > 0 then
                 set barWidth to round ((count / maxCompletions) * graphWidth)
             end if
-            
+
             set bar to ""
             repeat with i from 1 to barWidth
                 set bar to bar & "█"
             end repeat
-            
+
             set reportNotes to reportNotes & dateStr & ": " & count & " " & bar & "
 "
         end repeat
-        
+
         -- Project breakdown
         set reportNotes to reportNotes & "
 ## Project Breakdown
 "
-        
+
         -- Count completions by project
         set projectMap to {}
         repeat with t in completedToDos
             if project of t is not missing value then
                 set projectName to name of project of t
-                
+
                 -- Check if project exists in map
                 set projectExists to false
                 set projectIndex to 0
@@ -481,7 +481,7 @@ Generated: " & (current date as string) & "
                         exit repeat
                     end if
                 end repeat
-                
+
                 if projectExists then
                     -- Increment count for this project
                     set item 2 of item projectIndex of projectMap to (item 2 of item projectIndex of projectMap) + 1
@@ -500,7 +500,7 @@ Generated: " & (current date as string) & "
                         exit repeat
                     end if
                 end repeat
-                
+
                 if projectExists then
                     -- Increment count for No Project
                     set item 2 of item projectIndex of projectMap to (item 2 of item projectIndex of projectMap) + 1
@@ -510,13 +510,13 @@ Generated: " & (current date as string) & "
                 end if
             end if
         end repeat
-        
+
         -- Sort projects by completion count (descending)
         set sortedProjects to {}
         repeat with projectEntry in projectMap
             set end of sortedProjects to projectEntry
         end repeat
-        
+
         -- Simple bubble sort by count
         set n to count of sortedProjects
         repeat with i from 1 to n - 1
@@ -528,29 +528,29 @@ Generated: " & (current date as string) & "
                 end if
             end repeat
         end repeat
-        
+
         -- List projects and counts
         repeat with projectEntry in sortedProjects
             set projectName to item 1 of projectEntry
             set count to item 2 of projectEntry
             set percentage to round ((count / completedCount) * 100)
-            
+
             set reportNotes to reportNotes & "- " & projectName & ": " & count & " tasks (" & percentage & "%)
 "
         end repeat
-        
+
         -- Tag analysis
         set reportNotes to reportNotes & "
 ## Tag Analysis
 "
-        
+
         -- Count completions by tag
         set tagMap to {}
         repeat with t in completedToDos
             if (count of tags of t) > 0 then
                 repeat with aTag in tags of t
                     set tagName to name of aTag
-                    
+
                     -- Check if tag exists in map
                     set tagExists to false
                     set tagIndex to 0
@@ -561,7 +561,7 @@ Generated: " & (current date as string) & "
                             exit repeat
                         end if
                     end repeat
-                    
+
                     if tagExists then
                         -- Increment count for this tag
                         set item 2 of item tagIndex of tagMap to (item 2 of item tagIndex of tagMap) + 1
@@ -581,7 +581,7 @@ Generated: " & (current date as string) & "
                         exit repeat
                     end if
                 end repeat
-                
+
                 if tagExists then
                     -- Increment count for Untagged
                     set item 2 of item tagIndex of tagMap to (item 2 of item tagIndex of tagMap) + 1
@@ -591,13 +591,13 @@ Generated: " & (current date as string) & "
                 end if
             end if
         end repeat
-        
+
         -- Sort tags by count
         set sortedTags to {}
         repeat with tagEntry in tagMap
             set end of sortedTags to tagEntry
         end repeat
-        
+
         -- Simple bubble sort by count
         set n to count of sortedTags
         repeat with i from 1 to n - 1
@@ -609,31 +609,31 @@ Generated: " & (current date as string) & "
                 end if
             end repeat
         end repeat
-        
+
         -- List top tags
         set maxTagsToShow to 10
         set tagsToShow to min of maxTagsToShow and (count of sortedTags)
-        
+
         repeat with i from 1 to tagsToShow
             set tagEntry to item i of sortedTags
             set tagName to item 1 of tagEntry
             set count to item 2 of tagEntry
             set percentage to round ((count / completedCount) * 100)
-            
+
             set reportNotes to reportNotes & "- " & tagName & ": " & count & " tasks (" & percentage & "%)
 "
         end repeat
-        
+
         if (count of sortedTags) > maxTagsToShow then
             set reportNotes to reportNotes & "- ... and " & ((count of sortedTags) - maxTagsToShow) & " more tags
 "
         end if
-        
+
         -- Create to-do with the report
         set reportTitle to "Productivity Report: " & startDateStr & " to " & endDateStr
         set reportProperties to {name:reportTitle, notes:reportNotes, tags:{"Report", "Productivity"}}
         set reportToDo to make new to do with properties reportProperties
-        
+
         return reportNotes
     end tell
 end generateProductivityReport
@@ -644,17 +644,17 @@ on cleanupCompletedTasks(daysToKeep)
         -- Calculate cutoff date
         set cutoffDate to current date
         set day of cutoffDate to day of cutoffDate - daysToKeep
-        
+
         -- Find old completed tasks
         set oldTasks to completed to dos where completion date < cutoffDate
         set taskCount to count of oldTasks
-        
+
         -- Prepare list of tasks to archive
         set taskNames to {}
         repeat with t in oldTasks
             set end of taskNames to name of t
         end repeat
-        
+
         -- Create archive note
         set archiveNotes to "# Tasks Archived on " & (current date as string) & "
 "
@@ -662,18 +662,18 @@ on cleanupCompletedTasks(daysToKeep)
             set archiveNotes to archiveNotes & "- " & taskName & "
 "
         end repeat
-        
+
         -- Create archive note in logbook
         if taskCount > 0 then
             set archiveTitle to "Archived " & taskCount & " tasks older than " & daysToKeep & " days"
             set archiveProperties to {name:archiveTitle, notes:archiveNotes, status:completed, tags:{"Archive"}}
             make new to do with properties archiveProperties
-            
+
             -- Clean up tasks (actually delete)
             repeat with t in oldTasks
                 delete t
             end repeat
-            
+
             return "Archived " & taskCount & " tasks completed before " & (cutoffDate as string)
         else
             return "No tasks found to archive"
@@ -684,7 +684,7 @@ end cleanupCompletedTasks
 -- Example call based on which function to run
 on run argv
     set functionName to item 1 of argv
-    
+
     if functionName is "daily-review" then
         return runDailyReview()
     else if functionName is "weekly-review" then

@@ -1,8 +1,8 @@
 ---
-title: 'Spotify: Search and Play'
+title: "Spotify: Search and Play"
 category: 10_creative
 id: spotify_search_and_play
-description: 'Search for tracks, albums, or artists in Spotify and play the results.'
+description: "Search for tracks, albums, or artists in Spotify and play the results."
 keywords:
   - Spotify
   - search
@@ -64,34 +64,34 @@ tell application "Spotify"
   if not running then
     return "Spotify is not running. Please launch it first."
   end if
-  
+
   try
     -- Construct search URI
     set encodedQuery to my encodeText(searchQuery)
     set spotifyURI to "spotify:search:" & encodedQuery
-    
+
     -- Open search
     activate
     open location spotifyURI
-    
+
     -- Provide feedback on what's happening
     set resultText to "Searching Spotify for " & searchType & ": \"" & searchQuery & "\""
     set resultText to resultText & "\n\nNote: Due to limitations in Spotify's AppleScript support, search results are shown in the Spotify app."
     set resultText to resultText & "\n\nSearch URI: " & spotifyURI
-    
+
     -- If the user wants to search tracks and immediate play the top result,
     -- this is a more direct approach using the play command:
     -- if searchType is "track" then
     --   play track "spotify:search:" & encodedQuery
-    --   
+    --
     --   -- Try to get current track info after a short delay
     --   delay 2
     --   set trackInfo to "\n\nNow playing: " & name of current track & " by " & artist of current track
     --   set resultText to resultText & trackInfo
     -- end if
-    
+
     return resultText
-    
+
   on error errMsg number errNum
     return "Error performing search (" & errNum & "): " & errMsg
   end try

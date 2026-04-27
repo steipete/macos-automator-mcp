@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Inspect Element by Selector'
+title: "Chrome: Inspect Element by Selector"
 category: 07_browsers
 id: chrome_inspect_element
 description: >-
@@ -44,7 +44,7 @@ on inspectElementInChrome(elementSelector, selectorType)
   if elementSelector is missing value or elementSelector is "" then
     return "error: No element selector provided. Please provide a CSS selector or XPath expression."
   end if
-  
+
   -- If selectorType not provided, try to auto-detect based on selector format
   if selectorType is missing value or selectorType is "" then
     -- XPath expressions often start with // or contain [@ ]
@@ -60,31 +60,31 @@ on inspectElementInChrome(elementSelector, selectorType)
       return "error: Invalid selectorType. Use 'css' or 'xpath'."
     end if
   end if
-  
+
   -- Make sure Chrome is running
   tell application "Google Chrome"
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure keyboard shortcuts work
     activate
-    
+
     -- Generate JavaScript to select the element, get its path, and store it in sessionStorage
     set jsScript to "
       (function() {
         let element;
         let selectorType = '" & selectorType & "';
         let selector = '" & my escapeJSString(elementSelector) & "';
-        
+
         try {
           if (selectorType === 'css') {
             element = document.querySelector(selector);
@@ -92,14 +92,14 @@ on inspectElementInChrome(elementSelector, selectorType)
             const result = document.evaluate(selector, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
             element = result.singleNodeValue;
           }
-          
+
           if (!element) {
             return 'error: No element found with the provided ' + selectorType + ' selector.';
           }
-          
+
           // Store a reference to the element in sessionStorage
           window._lastInspectedElement = element;
-          
+
           // Function to get element path
           function getElementPath(el) {
             let path = '';
@@ -122,10 +122,10 @@ on inspectElementInChrome(elementSelector, selectorType)
             }
             return path.substring(3);
           }
-          
+
           // Get path for display
           const elementPath = getElementPath(element);
-          
+
           // Create a script to find the element in DevTools
           const inspectScript = `
             (function() {
@@ -139,35 +139,35 @@ on inspectElementInChrome(elementSelector, selectorType)
               }
             })();
           `;
-          
+
           // Store the inspect script in sessionStorage for execution after DevTools opens
           sessionStorage.setItem('_mcpInspectScript', inspectScript);
-          
+
           return 'Element found: ' + elementPath;
         } catch (err) {
           return 'error: ' + err.message;
         }
       })();
     "
-    
+
     -- Execute the first script to find the element and store the reference
     set findResult to execute active tab of front window javascript jsScript
-    
+
     -- If the element wasn't found, return the error
     if findResult starts with "error:" then
       return findResult
     end if
   end tell
-  
+
   -- Open DevTools with Elements panel
   tell application "System Events"
     tell process "Google Chrome"
       set frontmost to true
       delay 0.3
-      
+
       -- First check if DevTools is already open by looking for its window
       set devToolsOpen to false
-      
+
       -- Try to locate DevTools window by looking for characteristic elements
       -- This is approximate since there's no definitive way to detect if DevTools is open
       repeat with w in windows
@@ -176,19 +176,19 @@ on inspectElementInChrome(elementSelector, selectorType)
           exit repeat
         end if
       end repeat
-      
+
       -- Open DevTools if not already open (Option+Command+I / key code 34 is 'i')
       if not devToolsOpen then
         key code 34 using {command down, option down}
         delay 0.7  -- Give DevTools more time to open
       end if
-      
+
       -- Ensure Elements panel is active (Option+Command+C / key code 8 is 'c')
       key code 8 using {command down, option down}
       delay 0.5
     end tell
   end tell
-  
+
   -- Now execute the stored inspection script
   tell application "Google Chrome"
     set inspectScript to "
@@ -202,9 +202,9 @@ on inspectElementInChrome(elementSelector, selectorType)
         }
       })();
     "
-    
+
     set inspectResult to execute active tab of front window javascript inspectScript
-    
+
     if inspectResult starts with "error:" then
       return "Element found but failed to inspect: " & inspectResult
     else
@@ -218,18 +218,18 @@ on toLowerCase(inputString)
   set upperChars to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   set lowerChars to "abcdefghijklmnopqrstuvwxyz"
   set outputString to ""
-  
+
   repeat with i from 1 to length of inputString
     set currentChar to character i of inputString
     set charIndex to offset of currentChar in upperChars
-    
+
     if charIndex > 0 then
       set outputString to outputString & character charIndex of lowerChars
     else
       set outputString to outputString & currentChar
     end if
   end repeat
-  
+
   return outputString
 end toLowerCase
 
@@ -249,4 +249,5 @@ end escapeJSString
 
 return my inspectElementInChrome("--MCP_INPUT:selector", "--MCP_INPUT:selectorType")
 ```
+
 END_TIP

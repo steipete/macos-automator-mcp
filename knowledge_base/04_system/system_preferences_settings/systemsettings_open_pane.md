@@ -1,5 +1,5 @@
 ---
-title: 'System Settings: Open Specific Preference Pane'
+title: "System Settings: Open Specific Preference Pane"
 category: 04_system
 id: systemsettings_open_pane
 description: >-
@@ -56,7 +56,7 @@ on openPreferencePane(thePaneID, thePaneName)
         end try
       end try
     end if
-    
+
     if thePaneName is not missing value and thePaneName is not "" then
       try
         -- This is more for older System Preferences
@@ -80,7 +80,7 @@ on openPreferencePane(thePaneID, thePaneName)
         end try
       end try
     end if
-    
+
     if (thePaneID is missing value or thePaneID is "") and (thePaneName is missing value or thePaneName is "") then
       return "System Settings opened. No specific pane requested."
     else
@@ -90,4 +90,4 @@ on openPreferencePane(thePaneID, thePaneName)
 end openPreferencePane
 
 return my openPreferencePane("--MCP_INPUT:paneID", "--MCP_INPUT:paneName")
-``` 
+```

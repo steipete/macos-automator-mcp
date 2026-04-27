@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: File Read/Write Operations'
+title: "StandardAdditions: File Read/Write Operations"
 category: 02_as_core
 id: osax_file_read_write
 description: >-
@@ -63,7 +63,7 @@ try
       end try
     end if
   end try
-  
+
   -- 2. READ FROM THE FILE
   try
     set fileRef to open for access file testFilePath -- Read by default
@@ -83,7 +83,7 @@ try
       end try
     end if
   end try
-  
+
   -- 3. APPEND TO THE FILE (Write starting at EOF)
   set appendData to "\nThis is appended data."
   try
@@ -103,7 +103,7 @@ try
       end try
     end if
   end try
-  
+
   -- 4. READ AGAIN TO VERIFY APPEND
   set appendedContent to ""
   try
@@ -121,7 +121,7 @@ try
       end try
     end if
   end try
-  
+
 catch generalError
   return "A general error occurred: " & generalError
 end try
@@ -131,4 +131,5 @@ return "Write Status: " & writeStatus & "\nEOF Status: " & eofStatus & "\nInitia
 -- To clean up the test file:
 -- tell application "Finder" to delete file testFilePath
 ```
-END_TIP 
+
+END_TIP

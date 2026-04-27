@@ -40,7 +40,7 @@ on run
 		-- Default values for interactive mode
 		set defaultSource to ""
 		set defaultDestination to ""
-		
+
 		return extractArchive(defaultSource, defaultDestination)
 	on error errMsg
 		return "Error: " & errMsg
@@ -52,12 +52,12 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set theSource to "--MCP_INPUT:source"
 	set theDestination to "--MCP_INPUT:destination"
-	
+
 	-- Validate parameters
 	if theSource is "" then
 		return "Error: Source archive path is required for extraction."
 	end if
-	
+
 	return extractArchive(theSource, theDestination)
 end processMCPParameters
 
@@ -65,26 +65,26 @@ end processMCPParameters
 on extractArchive(archivePath, extractDir)
 	-- Check if source exists
 	set sourceExists to do shell script "[ -e " & quoted form of archivePath & " ] && echo 'exists' || echo 'not exists'"
-	
+
 	if sourceExists is "not exists" then
 		return "Error: Archive file does not exist: " & archivePath
 	end if
-	
+
 	-- Determine archive type based on extension
 	set archiveExtension to my getFileExtension(archivePath)
 	set archiveExtension to my toLower(archiveExtension)
-	
+
 	-- Set default extract directory if not provided
 	if extractDir is "" then
 		set extractDir to do shell script "dirname " & quoted form of archivePath
 	end if
-	
+
 	-- Create the extract directory if it doesn't exist
 	do shell script "mkdir -p " & quoted form of extractDir
-	
+
 	-- Construct and execute the appropriate extract command based on file type
 	set extractCommand to ""
-	
+
 	if archiveExtension is "zip" then
 		set extractCommand to "unzip -o " & quoted form of archivePath & " -d " & quoted form of extractDir
 	else if archiveExtension is in {"tar", "tgz", "gz", "bz2", "xz"} then
@@ -108,7 +108,7 @@ on extractArchive(archivePath, extractDir)
 	else
 		return "Error: Unsupported archive format: " & archiveExtension & ". Supported formats are: zip, tar, tgz, gz, bz2, xz, rar, 7z."
 	end if
-	
+
 	-- Execute extraction command
 	try
 		do shell script extractCommand
@@ -121,7 +121,7 @@ end extractArchive
 -- Helper function to get file extension
 on getFileExtension(filePath)
 	set fileName to do shell script "basename " & quoted form of filePath
-	
+
 	-- Check for double extensions like .tar.gz
 	if fileName ends with ".tar.gz" then
 		return "tar.gz"
@@ -130,7 +130,7 @@ on getFileExtension(filePath)
 	else if fileName ends with ".tar.xz" then
 		return "tar.xz"
 	end if
-	
+
 	-- Regular extension
 	if fileName contains "." then
 		set AppleScript's text item delimiters to "."
@@ -168,6 +168,7 @@ end toLower
 ## Example Usage
 
 ### Extract ZIP file
+
 ```json
 {
   "source": "/Users/username/Downloads/archive.zip"
@@ -175,6 +176,7 @@ end toLower
 ```
 
 ### Extract to specific directory
+
 ```json
 {
   "source": "/Users/username/Downloads/project.tar.gz",
@@ -183,6 +185,7 @@ end toLower
 ```
 
 ### Extract RAR archive
+
 ```json
 {
   "source": "/Users/username/Downloads/files.rar",
@@ -191,6 +194,7 @@ end toLower
 ```
 
 ### Extract with spaces in path
+
 ```json
 {
   "source": "/Users/username/My Downloads/Important Archive.zip",

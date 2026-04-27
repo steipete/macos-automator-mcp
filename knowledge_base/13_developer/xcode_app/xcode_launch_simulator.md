@@ -1,5 +1,5 @@
 ---
-title: 'Xcode: Launch and Control iOS Simulator'
+title: "Xcode: Launch and Control iOS Simulator"
 category: 13_developer
 id: xcode_launch_simulator
 description: Launches the iOS Simulator and controls it through menu commands.
@@ -39,7 +39,7 @@ on launchAndControlSimulator(deviceType, menuCommand)
       end if
     end tell
   end try
-  
+
   -- Launch Simulator if it's not running
   if not isSimulatorRunning then
     tell application "Simulator"
@@ -52,9 +52,9 @@ on launchAndControlSimulator(deviceType, menuCommand)
       delay 1
     end tell
   end if
-  
+
   set resultMessage to "Simulator launched"
-  
+
   -- If a device type is specified, select it
   if deviceType is not missing value and deviceType is not "" then
     try
@@ -64,7 +64,7 @@ on launchAndControlSimulator(deviceType, menuCommand)
             tell menu bar item "Device"
               tell menu "Device"
                 set foundDevice to false
-                
+
                 -- Try to find the device directly in the menu
                 try
                   click menu item deviceType
@@ -89,7 +89,7 @@ on launchAndControlSimulator(deviceType, menuCommand)
                     end try
                   end repeat
                 end try
-                
+
                 if not foundDevice then
                   set resultMessage to resultMessage & ", but device '" & deviceType & "' not found"
                 end if
@@ -102,7 +102,7 @@ on launchAndControlSimulator(deviceType, menuCommand)
       set resultMessage to resultMessage & ", error selecting device: " & errMsg
     end try
   end if
-  
+
   -- If a menu command is specified, execute it
   if menuCommand is not missing value and menuCommand is not "" then
     try
@@ -151,7 +151,7 @@ on launchAndControlSimulator(deviceType, menuCommand)
       set resultMessage to resultMessage & ", error executing command: " & errMsg
     end try
   end if
-  
+
   return resultMessage
 end launchAndControlSimulator
 

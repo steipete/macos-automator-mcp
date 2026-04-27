@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Execute JavaScript in Console'
+title: "Chrome: Execute JavaScript in Console"
 category: 07_browsers
 id: chrome_execute_js_console
 description: >-
@@ -47,36 +47,36 @@ on executeJSInChromeConsole(javascriptCode, awaitPromises)
   if javascriptCode is missing value or javascriptCode is "" then
     return "error: No JavaScript code provided."
   end if
-  
+
   -- Default awaitPromises to false if not provided
   if awaitPromises is missing value then
     set awaitPromises to false
   end if
-  
+
   -- Make sure Chrome is running
   tell application "Google Chrome"
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure keyboard shortcuts work
     activate
   end tell
-  
+
   -- First, ensure DevTools is open and console is visible
   tell application "System Events"
     tell process "Google Chrome"
       set frontmost to true
       delay 0.3
-      
+
       -- Check if DevTools is already open (approximate detection)
       set devToolsOpen to false
       repeat with w in windows
@@ -85,73 +85,73 @@ on executeJSInChromeConsole(javascriptCode, awaitPromises)
           exit repeat
         end if
       end repeat
-      
+
       -- Open DevTools if not already open
       if not devToolsOpen then
         key code 34 using {command down, option down} -- Option+Command+I
         delay 0.7
       end if
-      
+
       -- Switch to Console panel
       key code 38 using {command down, option down} -- Option+Command+J
       delay 0.5
     end tell
   end tell
-  
+
   -- Prepare the JavaScript code for execution
   -- By using a unique ID, we can identify our execution result
   set uniqueID to "mcpExecute_" & (random number from 100000 to 999999) as string
-  
+
   -- Wrap the provided code to capture its result and handle errors
   set wrappedCode to "
     (function() {
       try {
         // Make sure we're in a DevTools context
         if (typeof console === 'undefined') {
-          return { 
-            error: true, 
-            message: 'Console not available. DevTools API may not be accessible.' 
+          return {
+            error: true,
+            message: 'Console not available. DevTools API may not be accessible.'
           };
         }
-        
+
         // Clear console for cleaner output
         console.clear();
-        
+
         // Define a function to execute user code and handle promise results
         const executeUserCode = async () => {
           try {
             // Execute user code and capture result
             let result = (function() { " & javascriptCode & " })();
-            
+
             " & (if awaitPromises then "
             // Handle promises if awaitPromises is true
             if (result instanceof Promise) {
               result = await result;
             }
             " else "") & "
-            
+
             // Handle special case for undefined
             if (result === undefined) {
               return { result: null, type: 'undefined' };
             }
-            
+
             // Convert result to serialized object with type info
-            return { 
-              result: result, 
+            return {
+              result: result,
               type: typeof result,
               isArray: Array.isArray(result),
               isObject: (typeof result === 'object' && result !== null)
             };
           } catch (e) {
-            return { 
-              error: true, 
+            return {
+              error: true,
               message: e.message,
               stack: e.stack,
-              name: e.name 
+              name: e.name
             };
           }
         };
-        
+
         // Custom handling based on whether we need to await promises
         " & (if awaitPromises then "
         // Execute code asynchronously and store result for retrieval
@@ -160,51 +160,51 @@ on executeJSInChromeConsole(javascriptCode, awaitPromises)
           window.sessionStorage.setItem('" & uniqueID & "', JSON.stringify(result));
           console.log('%cCode execution completed (" & uniqueID & ")', 'color:green;font-weight:bold');
         }).catch(err => {
-          window.sessionStorage.setItem('" & uniqueID & "', JSON.stringify({ 
-            error: true, 
+          window.sessionStorage.setItem('" & uniqueID & "', JSON.stringify({
+            error: true,
             message: err.message,
             stack: err.stack,
-            name: err.name 
+            name: err.name
           }));
           console.error('Execution error:', err);
         });
-        
-        return { 
-          status: 'executing', 
+
+        return {
+          status: 'executing',
           message: 'Code execution started. Awaiting promise resolution.',
           executionId: '" & uniqueID & "'
         };
         " else "
         // Execute code synchronously
         const result = executeUserCode();
-        
+
         // Store result in sessionStorage for reliability
         window.sessionStorage.setItem('" & uniqueID & "', JSON.stringify(result));
-        
+
         return result;
         ") & "
       } catch (e) {
-        return { 
-          error: true, 
+        return {
+          error: true,
           message: e.message,
           stack: e.stack,
-          name: e.name 
+          name: e.name
         };
       }
     })();
   "
-  
+
   tell application "Google Chrome"
     try
       -- Execute our wrapped code
       set initialResult to execute active tab of front window javascript wrappedCode
-      
+
       -- Handle async execution (when awaiting promises)
       if awaitPromises then
         -- Check if we have a pending execution to retrieve
         if initialResult is not missing value and initialResult contains "executing" then
           set executionId to uniqueID
-          
+
           -- Function to retrieve the result
           set getResultCode to "
             (function() {
@@ -218,21 +218,21 @@ on executeJSInChromeConsole(javascriptCode, awaitPromises)
               }
             })();
           "
-          
+
           -- Poll for the result with timeout
           set maxAttempts to 30 -- 15 seconds max wait time
           set attemptCounter to 0
-          
+
           repeat
             delay 0.5
             set attemptCounter to attemptCounter + 1
             set resultCheck to execute active tab of front window javascript getResultCode
-            
+
             -- If we got a result back that's not 'pending', we're done
             if resultCheck is not missing value and resultCheck does not contain "pending" then
               return resultCheck
             end if
-            
+
             -- Timeout check
             if attemptCounter ≥ maxAttempts then
               return "{\"error\": true, \"message\": \"Execution timed out waiting for promise resolution.\"}"
@@ -274,4 +274,5 @@ end escapeJSString
 
 return my executeJSInChromeConsole("--MCP_INPUT:jsCode", "--MCP_INPUT:awaitPromises")
 ```
+
 END_TIP

@@ -47,16 +47,16 @@ function processMCPParameters(argv) {
   const outputPath = argv[1] || "";
   const format = argv[2] || "";
   const quality = argv[3] || "medium";
-  
+
   // Validate required parameters
   if (!inputPath) {
-    return JSON.stringify({success: false, error: "Input path is required"});
+    return JSON.stringify({ success: false, error: "Input path is required" });
   }
-  
+
   if (!format) {
-    return JSON.stringify({success: false, error: "Target format is required"});
+    return JSON.stringify({ success: false, error: "Target format is required" });
   }
-  
+
   // If output path not specified, create one in the same directory
   let finalOutputPath = outputPath;
   if (!finalOutputPath) {
@@ -65,7 +65,7 @@ function processMCPParameters(argv) {
     const filename = inputFile.lastPathComponent.stringByDeletingPathExtension;
     finalOutputPath = `${directory}/${filename}.${format}`;
   }
-  
+
   // Perform the conversion
   return convertVideo(inputPath, finalOutputPath, format, quality);
 }
@@ -74,49 +74,50 @@ function processMCPParameters(argv) {
 function performVideoConversion() {
   const app = Application.currentApplication();
   app.includeStandardAdditions = true;
-  
+
   try {
     // Select input file
     const inputFile = app.chooseFile({
       withPrompt: "Select a video file to convert:",
-      ofType: ["public.movie"]
+      ofType: ["public.movie"],
     });
     const inputPath = inputFile.toString();
-    
+
     // Select output format
     const formats = ["mp4", "mov", "m4v"];
     const selectedFormat = app.chooseFromList(formats, {
       withPrompt: "Convert to which format?",
-      defaultItems: ["mp4"]
+      defaultItems: ["mp4"],
     });
-    
+
     if (!selectedFormat || selectedFormat.length === 0) {
       return "Conversion cancelled.";
     }
     const format = selectedFormat[0];
-    
+
     // Select quality
     const qualityLevels = ["low", "medium", "high", "maximum"];
     const selectedQuality = app.chooseFromList(qualityLevels, {
       withPrompt: "Select quality level:",
-      defaultItems: ["medium"]
+      defaultItems: ["medium"],
     });
-    
+
     if (!selectedQuality || selectedQuality.length === 0) {
       return "Conversion cancelled.";
     }
     const quality = selectedQuality[0];
-    
+
     // Set output location
     const inputNSString = $.NSString.alloc.initWithUTF8String(inputPath);
-    const defaultName = inputNSString.lastPathComponent.stringByDeletingPathExtension.js + "." + format;
-    
+    const defaultName =
+      inputNSString.lastPathComponent.stringByDeletingPathExtension.js + "." + format;
+
     const outputFile = app.chooseFileName({
       withPrompt: "Save converted video as:",
-      defaultName: defaultName
+      defaultName: defaultName,
     });
     const outputPath = outputFile.toString();
-    
+
     // Perform conversion
     return convertVideo(inputPath, outputPath, format, quality);
   } catch (error) {
@@ -130,43 +131,43 @@ function convertVideo(inputPath, outputPath, format, quality) {
     // Create an AVAsset from the input file
     const inputURL = $.NSURL.fileURLWithPath(inputPath);
     const asset = $.AVURLAsset.alloc.initWithURLOptions(inputURL, null);
-    
+
     // Determine export preset based on quality
     const preset = getPresetForQuality(quality);
-    
+
     // Check if the preset is compatible with the asset
     const compatiblePresets = $.AVAssetExportSession.exportPresetsCompatibleWithAsset(asset);
     let presetAvailable = false;
-    
+
     for (let i = 0; i < compatiblePresets.count; i++) {
       if (compatiblePresets.objectAtIndex(i).js === preset) {
         presetAvailable = true;
         break;
       }
     }
-    
+
     if (!presetAvailable) {
       return "Error: Quality preset '" + quality + "' is not compatible with this video file.";
     }
-    
+
     // Create export session
     const exportSession = $.AVAssetExportSession.alloc.initWithAssetPresetName(asset, preset);
-    
+
     // Set output URL and file type
     exportSession.outputURL = $.NSURL.fileURLWithPath(outputPath);
     exportSession.outputFileType = getOutputFileType(format);
-    
+
     // Set up completion handler using a dispatch group
     const dispatchGroup = $.NSDispatchGroup.alloc.init;
     dispatchGroup.enter;
-    
+
     let exportError = null;
     let exportCompleted = false;
-    
+
     // Export the video
-    exportSession.exportAsynchronouslyWithCompletionHandler(function() {
+    exportSession.exportAsynchronouslyWithCompletionHandler(function () {
       const status = exportSession.status;
-      
+
       if (status === $.AVAssetExportSessionStatusCompleted) {
         exportCompleted = true;
       } else if (status === $.AVAssetExportSessionStatusFailed) {
@@ -174,28 +175,29 @@ function convertVideo(inputPath, outputPath, format, quality) {
       } else if (status === $.AVAssetExportSessionStatusCancelled) {
         exportError = "Export was cancelled";
       }
-      
+
       dispatchGroup.leave;
     });
-    
+
     // Wait for completion (with timeout)
     const timeout = 60 * 60; // 1 hour in seconds
-    const result = dispatchGroup.waitTimeout($.dispatch_time($.DISPATCH_TIME_NOW, timeout * 1000000000));
-    
+    const result = dispatchGroup.waitTimeout(
+      $.dispatch_time($.DISPATCH_TIME_NOW, timeout * 1000000000),
+    );
+
     if (result !== 0) {
       return "Error: Conversion timed out after " + timeout + " seconds";
     }
-    
+
     if (exportError) {
       return "Error during conversion: " + exportError;
     }
-    
+
     if (exportCompleted) {
       return "Video converted to " + format + " format at " + outputPath;
     }
-    
+
     return "Error: Unknown export status";
-    
   } catch (error) {
     return "Error converting video: " + error.message;
   }
@@ -247,12 +249,7 @@ When using with MCP, you can provide these parameters as arguments:
 
 ```json
 {
-  "args": [
-    "/Users/username/Movies/video.mov",
-    "",
-    "mp4",
-    "medium"
-  ]
+  "args": ["/Users/username/Movies/video.mov", "", "mp4", "medium"]
 }
 ```
 

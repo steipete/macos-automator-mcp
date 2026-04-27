@@ -1,5 +1,5 @@
 ---
-title: 'JXA System Functions Control'
+title: "JXA System Functions Control"
 category: 03_jxa_core
 id: jxa_system_functions_control
 description: Controlling system-wide functionality like screen saver and menu bar using JXA
@@ -24,7 +24,7 @@ You need to grant accessibility permissions to your script's host application (S
 
 ```javascript
 // Basic System Events setup
-const systemEvents = Application('System Events');
+const systemEvents = Application("System Events");
 
 // Include standard additions for additional functionality
 const app = Application.currentApplication();
@@ -37,16 +37,16 @@ app.includeStandardAdditions = true;
 function controlSystem() {
   // Start the screen saver
   systemEvents.startScreenSaver();
-  
+
   // Toggle menu bar visibility (macOS Dock preferences)
   const menuHidden = systemEvents.dockPreferences.autohideMenuBar();
   systemEvents.dockPreferences.autohideMenuBar = !menuHidden;
-  
+
   // Get current date and time from system
   const app = Application.currentApplication();
   app.includeStandardAdditions = true;
   const now = app.currentDate();
-  
+
   app.displayDialog("Current time: " + now.toString());
 }
 ```
@@ -102,13 +102,13 @@ With additional privileges, you can control displays and sleep settings:
 
 ```javascript
 // Put display to sleep (using shell command)
-app.doShellScript('pmset displaysleepnow');
+app.doShellScript("pmset displaysleepnow");
 
 // Put system to sleep
-app.doShellScript('pmset sleepnow');
+app.doShellScript("pmset sleepnow");
 
 // Prevent sleep temporarily
-app.doShellScript('caffeinate -d -t 3600'); // Prevent sleep for 1 hour
+app.doShellScript("caffeinate -d -t 3600"); // Prevent sleep for 1 hour
 ```
 
 ### System Information
@@ -118,7 +118,7 @@ app.doShellScript('caffeinate -d -t 3600'); // Prevent sleep for 1 hour
 const now = app.currentDate();
 
 // Get system version (using shell command)
-const osVersion = app.doShellScript('sw_vers -productVersion');
+const osVersion = app.doShellScript("sw_vers -productVersion");
 
 // Get computer name
 const computerName = systemEvents.properties().computerName;

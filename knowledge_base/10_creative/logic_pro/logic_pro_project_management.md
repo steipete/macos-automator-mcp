@@ -1,5 +1,5 @@
 ---
-title: 'Logic Pro: Project Management'
+title: "Logic Pro: Project Management"
 category: 10_creative
 id: logic_pro_project_management
 description: >-
@@ -108,10 +108,10 @@ tell application "Logic Pro"
   -- Activate Logic Pro
   activate
   delay 0.5 -- Give time for Logic Pro to come to foreground
-  
+
   -- Initialize result
   set resultText to ""
-  
+
   if actionParam is "new" then
     -- Create a new project
     tell application "System Events"
@@ -119,7 +119,7 @@ tell application "Logic Pro"
         -- Use Command+N to create a new project
         keystroke "n" using {command down}
         delay 1
-        
+
         -- Check if template chooser appears
         try
           -- Look for dialog with template options
@@ -133,7 +133,7 @@ tell application "Logic Pro"
                 -- Try to select template by typing search text
                 keystroke templateParam
                 delay 0.5
-                
+
                 -- Hit return to select
                 keystroke return
                 delay 1
@@ -154,47 +154,47 @@ tell application "Logic Pro"
         end try
       end tell
     end tell
-    
+
     -- Check if we need to handle a save dialog for the new project
     my handlePossibleSaveDialog("")
-    
+
     set resultText to "New Logic Pro project created."
     if templateParam is not "" then
       set resultText to resultText & " Attempted to use template: " & templateParam
     end if
-    
+
   else if actionParam is "open" then
     -- Open an existing project
-    
+
     -- Check if file exists
     tell application "System Events"
       if not (exists POSIX file filePathParam) then
         return "Error: File not found at path: " & filePathParam
       end if
     end tell
-    
+
     -- Get and check file extension
     set fileExtension to ""
     set lastDotPos to offset of "." in filePathParam from -1 -- Search from end of string
     if lastDotPos > 0 then
       set fileExtension to text (-(lastDotPos - 1)) thru -1 of filePathParam
     end if
-    
+
     if fileExtension is not ".logicx" then
       return "Error: File does not appear to be a Logic Pro project. Expected extension .logicx, got: " & fileExtension
     end if
-    
+
     -- Try to open the project
     try
       -- Open the file
       open filePathParam
       delay 2
-      
+
       set resultText to "Opened Logic Pro project: " & filePathParam
     on error errMsg
       set resultText to "Error opening Logic Pro project: " & errMsg
     end try
-    
+
   else if actionParam is "save" then
     -- Save the current project
     tell application "System Events"
@@ -204,12 +204,12 @@ tell application "Logic Pro"
         delay 1
       end tell
     end tell
-    
+
     -- Handle possible save dialog if this is a new unsaved project
     my handlePossibleSaveDialog("")
-    
+
     set resultText to "Saved current Logic Pro project."
-    
+
   else if actionParam is "save_as" then
     -- Save the project with a new name/location
     tell application "System Events"
@@ -219,30 +219,30 @@ tell application "Logic Pro"
         delay 1
       end tell
     end tell
-    
+
     -- Handle save dialog
     my handlePossibleSaveDialog(filePathParam)
-    
+
     set resultText to "Saved Logic Pro project as: " & filePathParam
-    
+
   else if actionParam is "backup" then
     -- Create a backup of the current project
-    
+
     -- First, determine the current project's path
     -- This is challenging with Logic Pro's limited AppleScript support
     -- We'll try to use Save As and then cancel to get the current path
-    
+
     set currentProjectPath to ""
     tell application "System Events"
       tell process "Logic Pro"
         -- Use Command+Shift+S for Save As dialog to see current path
         keystroke "s" using {command down, shift down}
         delay 1
-        
+
         -- Try to get current path from dialog
         try
           set saveDialog to window 1 whose subrole is "AXStandardWindow" and role is "AXSheet"
-          
+
           -- Try to get text from name field
           try
             set nameField to text field 1 of saveDialog
@@ -250,11 +250,11 @@ tell application "Logic Pro"
           on error
             set currentProjectName to "LogicProject" -- Default name if we can't detect
           end try
-          
+
           -- Now that we have the info, cancel the dialog
           keystroke escape
           delay 0.5
-          
+
         on error
           -- If we can't detect dialog, just cancel anyway
           keystroke escape
@@ -262,7 +262,7 @@ tell application "Logic Pro"
         end try
       end tell
     end tell
-    
+
     -- Now create a backup by saving as a new file
     -- Generate a timestamped name for the backup
     set currentDate to current date
@@ -271,18 +271,18 @@ tell application "Logic Pro"
       my padNumber(day of currentDate) & "_" & ¬
       my padNumber(hours of currentDate) & "-" & ¬
       my padNumber(minutes of currentDate)
-    
+
     if currentProjectName is "" then
       set currentProjectName to "LogicProject"
     end if
-    
+
     -- Remove .logicx extension if present
     if currentProjectName ends with ".logicx" then
       set currentProjectName to text 1 thru -8 of currentProjectName
     end if
-    
+
     set backupName to currentProjectName & "_Backup_" & timestamp & ".logicx"
-    
+
     -- Determine backup folder path
     set backupFolder to ""
     if filePathParam is "" then
@@ -290,21 +290,21 @@ tell application "Logic Pro"
       set backupFolder to (path to desktop folder as text)
     else
       set backupFolder to filePathParam
-      
+
       -- Ensure path ends with a slash
       if backupFolder does not end with "/" then
         set backupFolder to backupFolder & "/"
       end if
     end if
-    
+
     -- Convert to POSIX path if needed
     if backupFolder does not start with "/" then
       set backupFolder to POSIX path of backupFolder
     end if
-    
+
     -- Full backup path
     set backupPath to backupFolder & backupName
-    
+
     -- Now save as the backup
     tell application "System Events"
       tell process "Logic Pro"
@@ -313,10 +313,10 @@ tell application "Logic Pro"
         delay 1
       end tell
     end tell
-    
+
     -- Handle save dialog
     my handlePossibleSaveDialog(backupPath)
-    
+
     -- After saving backup, save original again
     tell application "System Events"
       tell process "Logic Pro"
@@ -325,9 +325,9 @@ tell application "Logic Pro"
         delay 1
       end tell
     end tell
-    
+
     set resultText to "Created backup of Logic Pro project at: " & backupPath
-    
+
   else if actionParam is "close" then
     -- Close the current project
     tell application "System Events"
@@ -335,15 +335,15 @@ tell application "Logic Pro"
         -- Use Command+W to close
         keystroke "w" using {command down}
         delay 1
-        
+
         -- Handle possible save dialog
         try
           set saveDialog to window 1 whose role is "AXSheet"
-          
+
           -- Click "Save" button to save changes
           click button "Save" of saveDialog
           delay 1
-          
+
           -- Handle possible save dialog if this is a new unsaved project
           my handlePossibleSaveDialog("")
         on error
@@ -351,10 +351,10 @@ tell application "Logic Pro"
         end try
       end tell
     end tell
-    
+
     set resultText to "Closed current Logic Pro project."
   end if
-  
+
   -- Return result
   return resultText
 end tell
@@ -367,22 +367,22 @@ on handlePossibleSaveDialog(targetPath)
         -- Check if save dialog is present
         try
           set saveDialog to window 1 whose subrole is "AXStandardWindow" and role is "AXSheet"
-          
+
           -- Save dialog detected
-          
+
           if targetPath is not "" then
             -- Fill in the name field if we have a target path
-            
+
             -- Extract file name from path
             set lastSlashPos to offset of "/" in targetPath from -1 -- Search from end of string
             set fileName to text (-(lastSlashPos - 1)) thru -1 of targetPath
-            
+
             -- Enter the file name
             keystroke "a" using {command down} -- Select all
             delay 0.2
             keystroke fileName -- Type the new name
             delay 0.2
-            
+
             -- If we have a directory path, try to navigate to it
             if lastSlashPos > 0 then
               -- Try to expand the folder selection dropdown
@@ -391,14 +391,14 @@ on handlePossibleSaveDialog(targetPath)
                 -- This is best-effort and may need adjustment
                 click pop up button 1 of saveDialog
                 delay 0.5
-                
+
                 -- Navigate to specified folder using "Other..."
                 keystroke "o" -- Type 'o' to select "Other..."
                 delay 0.5
-                
+
                 -- In the folder selection dialog
                 set folderPath to text 1 thru (-lastSlashPos - 1) of targetPath
-                
+
                 -- Enter the folder path
                 keystroke "g" using {command down, shift down} -- Command+Shift+G for "Go to Folder"
                 delay 0.5
@@ -413,11 +413,11 @@ on handlePossibleSaveDialog(targetPath)
               end try
             end if
           end if
-          
+
           -- Click Save button
           click button "Save" of saveDialog
           delay 1
-          
+
           -- Handle possible overwrite confirmation
           try
             delay 0.5

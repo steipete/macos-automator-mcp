@@ -2,7 +2,7 @@
 title: System Window Arrangement
 category: 04_system
 id: system_window_arrangement
-description: 'Controls window positions, sizes, and arrangements for multiple applications'
+description: "Controls window positions, sizes, and arrangements for multiple applications"
 keywords:
   - window
   - arrange
@@ -43,17 +43,17 @@ on centerWindow(appName)
     set screenWidth to word 3 of (do shell script "system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2,$3,$4}'")
     set screenHeight to word 4 of (do shell script "system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2,$3,$4}'")
   end tell
-  
+
   tell application "System Events"
     tell process appName
       try
         set frontWindow to first window
         set windowWidth to item 3 of (get size of frontWindow)
         set windowHeight to item 4 of (get size of frontWindow)
-        
+
         set newX to (screenWidth - windowWidth) / 2
         set newY to (screenHeight - windowHeight) / 2
-        
+
         set position of frontWindow to {newX, newY}
       on error errMsg
         log "Error centering window for " & appName & ": " & errMsg
@@ -71,14 +71,14 @@ on arrangeWindowsSideBySide(leftAppName, rightAppName)
     set screenWidth to word 3 of (do shell script "system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2,$3,$4}'")
     set screenHeight to word 4 of (do shell script "system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2,$3,$4}'")
   end tell
-  
+
   -- First make sure both apps are running and visible
   tell application leftAppName to activate
   tell application rightAppName to activate
-  
+
   -- Position left app
   positionWindow(leftAppName, 0, 0, screenWidth / 2, screenHeight)
-  
+
   -- Position right app
   positionWindow(rightAppName, screenWidth / 2, 0, screenWidth / 2, screenHeight)
 end arrangeWindowsSideBySide
@@ -92,26 +92,26 @@ on setupWorkspace()
     set screenWidth to word 3 of (do shell script "system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2,$3,$4}'")
     set screenHeight to word 4 of (do shell script "system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2,$3,$4}'")
   end tell
-  
+
   -- Launch applications
   tell application "Safari" to activate
   tell application "Mail" to activate
   tell application "Calendar" to activate
   tell application "Notes" to activate
-  
+
   -- Arrange windows (example layout dividing screen into quadrants)
   -- Top left: Safari
   positionWindow("Safari", 0, 0, screenWidth / 2, screenHeight / 2)
-  
+
   -- Top right: Mail
   positionWindow("Mail", screenWidth / 2, 0, screenWidth / 2, screenHeight / 2)
-  
+
   -- Bottom left: Calendar
   positionWindow("Calendar", 0, screenHeight / 2, screenWidth / 2, screenHeight / 2)
-  
+
   -- Bottom right: Notes
   positionWindow("Notes", screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight / 2)
-  
+
   -- Bring Safari to the front as the primary app
   tell application "Safari" to activate
 end setupWorkspace
@@ -128,6 +128,7 @@ This script provides utilities for managing window arrangements:
 4. Create a complete workspace setup with multiple applications
 
 You can customize the `setupWorkspace` handler to create your preferred window arrangement, including:
+
 - Different applications
 - Different layouts (beyond the simple quadrants shown)
 - Multiple displays

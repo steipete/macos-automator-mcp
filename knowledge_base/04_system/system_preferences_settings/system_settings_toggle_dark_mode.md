@@ -1,5 +1,5 @@
 ---
-title: 'System Settings: Toggle Dark Mode'
+title: "System Settings: Toggle Dark Mode"
 category: 04_system
 id: system_settings_toggle_dark_mode
 description: Toggles between light and dark mode in macOS.
@@ -19,10 +19,10 @@ try
     tell appearance preferences
       -- Get current dark mode state
       set currentMode to dark mode
-      
+
       -- Toggle dark mode
       set dark mode to not dark mode
-      
+
       -- Report the change
       if dark mode then
         return "Dark mode enabled"
@@ -35,4 +35,5 @@ on error errMsg number errNum
   return "Error (" & errNum & "): Failed to toggle dark mode - " & errMsg & "\\n\\nNote: This script requires Accessibility permissions for System Events."
 end try
 ```
+
 END_TIP

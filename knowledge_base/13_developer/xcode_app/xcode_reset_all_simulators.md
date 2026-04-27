@@ -1,8 +1,8 @@
 ---
-title: 'Xcode: Reset All Simulators'
+title: "Xcode: Reset All Simulators"
 category: 13_developer
 id: xcode_reset_all_simulators
-description: 'Resets all iOS, iPadOS, watchOS, and tvOS simulators to clean state.'
+description: "Resets all iOS, iPadOS, watchOS, and tvOS simulators to clean state."
 keywords:
   - Xcode
   - simulator
@@ -38,7 +38,7 @@ on resetAllSimulators(shutdownAfterReset)
   else if shutdownAfterReset is "false" then
     set shutdownAfterReset to false
   end if
-  
+
   -- Quit Simulator if it's running
   set isSimulatorRunning to false
   try
@@ -47,7 +47,7 @@ on resetAllSimulators(shutdownAfterReset)
         set isSimulatorRunning to true
       end if
     end tell
-    
+
     if isSimulatorRunning then
       tell application "Simulator" to quit
       delay 2 -- Wait for Simulator to quit properly
@@ -55,7 +55,7 @@ on resetAllSimulators(shutdownAfterReset)
   on error errMsg
     return "Error checking if Simulator is running: " & errMsg
   end try
-  
+
   -- Reset all simulators using xcrun simctl
   try
     set resetOutput to do shell script "xcrun simctl erase all"
@@ -64,7 +64,7 @@ on resetAllSimulators(shutdownAfterReset)
     set resetOutput to errMsg
     set resetSuccessful to false
   end try
-  
+
   -- Optionally shut down the CoreSimulator service
   set shutdownResults to "CoreSimulator service not shut down (per user request)"
   if shutdownAfterReset then
@@ -75,7 +75,7 @@ on resetAllSimulators(shutdownAfterReset)
       set shutdownResults to "Error shutting down CoreSimulator service: " & errMsg
     end try
   end if
-  
+
   -- Return results
   if resetSuccessful then
     set resultText to "Successfully reset all simulators.
@@ -90,7 +90,7 @@ Any installed apps and user data have been removed."
     set resultText to "Failed to reset simulators.
 Error: " & resetOutput
   end if
-  
+
   return resultText
 end resetAllSimulators
 

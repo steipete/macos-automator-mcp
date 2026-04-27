@@ -4,7 +4,7 @@ title: Get To-Dos from Things
 description: Use AppleScript to retrieve to-dos from Things app with filtering options
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, to-do, filters'
+tags: "things, productivity, task management, to-do, filters"
 keywords:
   - filtering
   - query
@@ -52,16 +52,16 @@ on getThingsToDos(listName, tagFilter, projectName, statusFilter)
     tell application "Things3"
         -- Start with an empty filter
         set theFilter to {}
-        
+
         -- Build filter based on parameters
         if tagFilter is not equal to "" then
             set theFilter to theFilter & {tag names contains tagFilter}
         end if
-        
+
         if projectName is not equal to "" then
             set theFilter to theFilter & {project is projectName}
         end if
-        
+
         if statusFilter is not equal to "" then
             if statusFilter is "completed" then
                 set theFilter to theFilter & {status is completed}
@@ -71,7 +71,7 @@ on getThingsToDos(listName, tagFilter, projectName, statusFilter)
                 set theFilter to theFilter & {status is open}
             end if
         end if
-        
+
         -- Get to-dos with applied filters
         if listName is not equal to "" then
             -- Get from a specific list with filters
@@ -88,29 +88,29 @@ on getThingsToDos(listName, tagFilter, projectName, statusFilter)
                 set theToDos to to dos
             end if
         end if
-        
+
         -- Build result as a list of records
         set todoList to {}
         repeat with t in theToDos
             set todoProperties to {id:id of t, name:name of t, status:status of t}
-            
+
             -- Add optional properties if they exist
             if notes of t is not "" then
                 set todoProperties to todoProperties & {notes:notes of t}
             end if
-            
+
             if due date of t is not missing value then
                 set todoProperties to todoProperties & {due_date:due date of t}
             end if
-            
+
             if project of t is not missing value then
                 set todoProperties to todoProperties & {project:name of project of t}
             end if
-            
+
             if area of t is not missing value then
                 set todoProperties to todoProperties & {area:name of area of t}
             end if
-            
+
             if (count of tags of t) > 0 then
                 set tagNames to {}
                 repeat with aTag in tags of t
@@ -118,10 +118,10 @@ on getThingsToDos(listName, tagFilter, projectName, statusFilter)
                 end repeat
                 set todoProperties to todoProperties & {tags:tagNames}
             end if
-            
+
             set end of todoList to todoProperties
         end repeat
-        
+
         return todoList
     end tell
 end getThingsToDos

@@ -42,20 +42,20 @@ on initializeMailAutomation()
     display dialog "Error: Cannot access Apple Mail application. Make sure it's installed." buttons {"OK"} default button "OK" with icon stop
     return false
   end try
-  
+
   -- Create template folder if it doesn't exist
   try
     set templateFolderPath to do shell script "echo " & quoted form of templateFolder
     do shell script "mkdir -p " & quoted form of templateFolderPath
   end try
-  
+
   -- Initialize log file
   if logEnabled then
     set fullLogPath to do shell script "echo " & quoted form of logFile
     do shell script "touch " & quoted form of fullLogPath
     logMessage("Mail automation initialized")
   end if
-  
+
   return true
 end initializeMailAutomation
 ```
@@ -82,12 +82,12 @@ on getMailAccounts()
   tell application "Mail"
     set accountList to {}
     set allAccounts to accounts
-    
+
     repeat with anAccount in allAccounts
       set accountName to name of anAccount
       set end of accountList to accountName
     end repeat
-    
+
     return accountList
   end tell
 end getMailAccounts
@@ -97,12 +97,12 @@ on getMailSignatures()
   tell application "Mail"
     set signatureList to {}
     set allSignatures to signatures
-    
+
     repeat with aSignature in allSignatures
       set signatureName to name of aSignature
       set end of signatureList to signatureName
     end repeat
-    
+
     return signatureList
   end tell
 end getMailSignatures
@@ -111,14 +111,14 @@ end getMailSignatures
 on getMailFolders(accountName)
   tell application "Mail"
     set folderList to {}
-    
+
     if accountName is "" then
       -- Get folders from all accounts
       set allAccounts to accounts
       repeat with anAccount in allAccounts
         set accName to name of anAccount
         set mailboxes of anAccount to mailboxes of anAccount -- Refresh mailboxes
-        
+
         set accountFolders to mail folders of anAccount
         repeat with aFolder in accountFolders
           set folderName to name of aFolder
@@ -130,7 +130,7 @@ on getMailFolders(accountName)
       try
         set targetAccount to account accountName
         set mailboxes of targetAccount to mailboxes of targetAccount -- Refresh mailboxes
-        
+
         set accountFolders to mail folders of targetAccount
         repeat with aFolder in accountFolders
           set folderName to name of aFolder
@@ -140,7 +140,7 @@ on getMailFolders(accountName)
         -- Account not found
       end try
     end if
-    
+
     return folderList
   end tell
 end getMailFolders
@@ -155,9 +155,9 @@ on parseEmailAddresses(emailString)
   set AppleScript's text item delimiters to ","
   set emailItems to text items of emailString
   set AppleScript's text item delimiters to ""
-  
+
   set emailList to {}
-  
+
   repeat with anEmail in emailItems
     -- Trim whitespace
     set trimmedEmail to do shell script "echo " & quoted form of anEmail & " | xargs"
@@ -165,7 +165,7 @@ on parseEmailAddresses(emailString)
       set end of emailList to trimmedEmail
     end if
   end repeat
-  
+
   return emailList
 end parseEmailAddresses
 
@@ -193,29 +193,29 @@ on showMailMenu()
   if not initializeMailAutomation() then
     return "Failed to initialize Mail Automation"
   end if
-  
+
   set menuOptions to {"New Email", "Search/Organize Emails", "Manage Templates", "Save Draft as Template", "Cancel"}
-  
+
   set selectedOption to choose from list menuOptions with prompt "Mail Automation:" default items {"New Email"}
-  
+
   if selectedOption is false then
     return "Mail automation cancelled"
   end if
-  
+
   set menuChoice to item 1 of selectedOption
-  
+
   if menuChoice is "New Email" then
     return showNewEmailDialog()
-    
+
   else if menuChoice is "Search/Organize Emails" then
     return showSearchOrganizeDialog()
-    
+
   else if menuChoice is "Manage Templates" then
     return showTemplateDialog()
-    
+
   else if menuChoice is "Save Draft as Template" then
     return showSaveDraftDialog()
-    
+
   else
     return "Mail automation cancelled"
   end if

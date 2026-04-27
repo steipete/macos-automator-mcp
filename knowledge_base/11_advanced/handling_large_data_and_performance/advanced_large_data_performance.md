@@ -1,5 +1,5 @@
 ---
-title: 'Advanced: Handling Large Data & Performance Tips'
+title: "Advanced: Handling Large Data & Performance Tips"
 category: 11_advanced
 id: advanced_large_data_performance
 description: >-
@@ -47,9 +47,9 @@ on getFinderItemNames(folderAlias)
       return "User cancelled folder selection."
     end try
   end if
-  
+
   set results to ""
-  
+
   -- Potentially SLOW for very large folders:
   set startTimeSlow to current date
   set itemNamesSlow to {}
@@ -65,7 +65,7 @@ on getFinderItemNames(folderAlias)
       set results to results & "Error in slow method: " & errMsg & "\n"
     end try
   end tell
-  
+
   -- Generally FASTER for very large folders:
   set startTimeFast to current date
   set itemNamesFast to {}
@@ -78,14 +78,14 @@ on getFinderItemNames(folderAlias)
       set results to results & "Error in fast method: " & errMsg & "\n"
     end try
   end tell
-  
+
   if (count of itemNamesSlow) > 0 and (count of itemNamesSlow) < 20 then
     set results to results & "Slow names: " & itemNamesSlow & "\n"
   end if
   if (count of itemNamesFast) > 0 and (count of itemNamesFast) < 20 then
     set results to results & "Fast names: " & itemNamesFast & "\n"
   end if
-  
+
   return results
 end getFinderItemNames
 
@@ -107,4 +107,5 @@ end if
 return my getFinderItemNames(mcpFolderAlias)
 *)
 ```
-END_TIP 
+
+END_TIP

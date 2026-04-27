@@ -36,7 +36,7 @@ This script provides a comprehensive interface for controlling Parallels Desktop
 #!/usr/bin/osascript
 (*
     Parallels Desktop VM Controller
-    
+
     This script demonstrates how to interact with Parallels Desktop on macOS.
     It provides functionality to:
     - List all available virtual machines
@@ -44,7 +44,7 @@ This script provides a comprehensive interface for controlling Parallels Desktop
     - Stop/shutdown a virtual machine
     - Suspend a virtual machine
     - Check virtual machine status
-    
+
     Requirements:
     - Parallels Desktop installed
     - Appropriate permissions for automation
@@ -54,16 +54,16 @@ This script provides a comprehensive interface for controlling Parallels Desktop
 on run
     try
         log "Starting Parallels Desktop Controller..."
-        
+
         -- Check if Parallels Desktop is installed
         if not applicationIsInstalled("Parallels Desktop") then
             display dialog "Parallels Desktop is not installed on this system." buttons {"OK"} default button "OK" with icon stop
             return
         end if
-        
+
         -- Demonstrate functionality through interactive menu
         showMainMenu()
-        
+
     on error errMsg number errNum
         log "Error in main handler: " & errMsg & " (" & errNum & ")"
         display dialog "An error occurred: " & errMsg buttons {"OK"} default button "OK" with icon stop
@@ -83,28 +83,28 @@ end applicationIsInstalled
 -- Main menu for interactive operation
 on showMainMenu()
     set continueRunning to true
-    
+
     repeat while continueRunning
         set userChoice to button returned of (display dialog "Parallels Desktop Controller" & return & return & "Select an operation:" buttons {"List VMs", "VM Operations", "Quit"} default button 1)
-        
+
         if userChoice is "List VMs" then
             set vmList to listVirtualMachines()
             set vmDisplay to ""
-            
+
             repeat with i from 1 to count of vmList
                 set thisVM to item i of vmList
                 set vmDisplay to vmDisplay & i & ". " & (name of thisVM) & " - " & (state of thisVM) & return
             end repeat
-            
+
             if vmDisplay is "" then
                 set vmDisplay to "No virtual machines found."
             end if
-            
+
             display dialog "Virtual Machines:" & return & return & vmDisplay buttons {"OK"} default button "OK"
-            
+
         else if userChoice is "VM Operations" then
             set vmList to listVirtualMachines()
-            
+
             if (count of vmList) is 0 then
                 display dialog "No virtual machines available." buttons {"OK"} default button "OK"
             else
@@ -112,15 +112,15 @@ on showMainMenu()
                 repeat with vm in vmList
                     set end of vmNames to (name of vm) & " (" & (state of vm) & ")"
                 end repeat
-                
+
                 set selectedVM to choose from list vmNames with prompt "Select a Virtual Machine:" default items (item 1 of vmNames)
-                
+
                 if selectedVM is not false then
                     set vmName to extractVMName(item 1 of selectedVM)
                     vmOperationsMenu(vmName)
                 end if
             end if
-            
+
         else if userChoice is "Quit" then
             set continueRunning to false
         end if
@@ -138,7 +138,7 @@ end extractVMName
 -- Menu for operations on a specific VM
 on vmOperationsMenu(vmName)
     set continueVMOps to true
-    
+
     repeat while continueVMOps
         -- Get current status
         set vmStatus to ""
@@ -150,12 +150,12 @@ on vmOperationsMenu(vmName)
         on error
             set vmStatus to "unknown"
         end try
-        
+
         -- Show appropriate options based on current state
         set allButtons to {"Start", "Stop", "Suspend", "Refresh Status", "Back"}
         set enabledButtons to {}
         set defaultButton to "Refresh Status"
-        
+
         if vmStatus is "running" then
             set enabledButtons to {"Stop", "Suspend", "Refresh Status", "Back"}
             set defaultButton to "Stop"
@@ -166,14 +166,14 @@ on vmOperationsMenu(vmName)
             set enabledButtons to {"Start", "Refresh Status", "Back"}
             set defaultButton to "Refresh Status"
         end if
-        
+
         set userChoice to button returned of (display dialog "VM: " & vmName & return & "Status: " & vmStatus buttons enabledButtons default button defaultButton)
-        
+
         if userChoice is "Start" then
             startVM(vmName)
         else if userChoice is "Stop" then
             set stopType to button returned of (display dialog "How do you want to stop the VM?" buttons {"Shut Down", "Power Off", "Cancel"} default button 1)
-            
+
             if stopType is "Shut Down" then
                 shutdownVM(vmName)
             else if stopType is "Power Off" then
@@ -204,7 +204,7 @@ on startVM(vmName)
     try
         tell application "Parallels Desktop"
             set targetVM to virtual machine vmName
-            
+
             -- Only start if not already running
             if state of targetVM is not running then
                 display dialog "Starting virtual machine '" & vmName & "'..." buttons {"OK"} default button "OK"
@@ -224,7 +224,7 @@ on stopVM(vmName)
     try
         tell application "Parallels Desktop"
             set targetVM to virtual machine vmName
-            
+
             -- Only stop if running
             if state of targetVM is running then
                 display dialog "Powering off virtual machine '" & vmName & "'..." buttons {"OK"} default button "OK"
@@ -244,11 +244,11 @@ on shutdownVM(vmName)
     try
         tell application "Parallels Desktop"
             set targetVM to virtual machine vmName
-            
+
             -- Only shutdown if running
             if state of targetVM is running then
                 display dialog "Shutting down virtual machine '" & vmName & "'..." buttons {"OK"} default button "OK"
-                
+
                 -- Try to shutdown gracefully
                 try
                     -- First try to use Parallels' API
@@ -283,7 +283,7 @@ on suspendVM(vmName)
     try
         tell application "Parallels Desktop"
             set targetVM to virtual machine vmName
-            
+
             -- Only suspend if running
             if state of targetVM is running then
                 display dialog "Suspending virtual machine '" & vmName & "'..." buttons {"OK"} default button "OK"
@@ -303,20 +303,20 @@ on advancedVMOperations(vmName)
     try
         tell application "Parallels Desktop"
             set targetVM to virtual machine vmName
-            
+
             -- Examples of advanced operations:
-            
+
             -- 1. Get VM configuration properties
             set vmCPU to cpu count of configuration of targetVM
             set vmMemory to memory size of configuration of targetVM
-            
+
             -- 2. Take a screenshot of the VM
             -- set screenshotPath to (path to desktop folder as text) & "vm_screenshot.png"
             -- execute command "screencapture -x " & screenshotPath in targetVM
-            
+
             -- 3. Get VM network information
             -- set vmIPAddress to execute command "ipconfig getifaddr en0" in targetVM
-            
+
             return "VM Configuration:" & return & "CPU: " & vmCPU & " cores" & return & "Memory: " & vmMemory & " MB"
         end tell
     on error errMsg

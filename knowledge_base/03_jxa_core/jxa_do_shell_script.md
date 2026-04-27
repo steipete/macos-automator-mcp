@@ -1,5 +1,5 @@
 ---
-title: 'JXA: Running Shell Scripts'
+title: "JXA: Running Shell Scripts"
 category: 03_jxa_core
 id: jxa_do_shell_script
 description: Shows how to execute shell commands from JXA using `app.doShellScript()`.
@@ -23,7 +23,7 @@ app.includeStandardAdditions = true;
 
 var whoAmI = app.doShellScript("whoami");
 var desktopPath = Path("~/Desktop").toString(); // Expands ~
-var fileList = app.doShellScript("ls -la " +desktopPath); // Note: no 'quoted form of' in JXA directly for Path objects to shell. Better to build command carefully.
+var fileList = app.doShellScript("ls -la " + desktopPath); // Note: no 'quoted form of' in JXA directly for Path objects to shell. Better to build command carefully.
 
 // For paths with spaces, it's safer to quote them within the shell command string
 var folderWithSpaces = "My Folder With Spaces";
@@ -34,17 +34,22 @@ var desktopFolder = Path("~/Desktop/" + folderWithSpaces);
 var command = "ls -l " + quotedForm(desktopFolder.toString());
 var listFolderWithSpaces = app.doShellScript(command);
 
-
 function quotedForm(s) {
-    return "'" + s.replace(/'/g, "'\\''") + "'";
+  return "'" + s.replace(/'/g, "'\\''") + "'";
 }
 
-
 app.displayDialog(
-  "User: " + whoAmI +
-  "\\n\\nDesktop List (first 100 chars):\\n" + fileList.substring(0, 100) + "..." +
-  "\\n\\nList of '" + folderWithSpaces + "':\\n" + listFolderWithSpaces.substring(0,100) + "..."
+  "User: " +
+    whoAmI +
+    "\\n\\nDesktop List (first 100 chars):\\n" +
+    fileList.substring(0, 100) +
+    "..." +
+    "\\n\\nList of '" +
+    folderWithSpaces +
+    "':\\n" +
+    listFolderWithSpaces.substring(0, 100) +
+    "...",
 );
 
-"Shell scripts executed.";
-``` 
+("Shell scripts executed.");
+```

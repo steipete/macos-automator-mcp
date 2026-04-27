@@ -1,5 +1,5 @@
 ---
-title: 'JXA Chrome Operations'
+title: "JXA Chrome Operations"
 category: 03_jxa_core
 id: jxa_chrome_operations
 description: Control Google Chrome windows and tabs using JavaScript for Automation
@@ -28,22 +28,22 @@ Google Chrome must have Automation permissions enabled in System Settings → Pr
 ```javascript
 function chromeOperations() {
   // Get the Chrome application object
-  const chrome = Application('Google Chrome');
-  
+  const chrome = Application("Google Chrome");
+
   // Activate Chrome
   chrome.activate();
-  
+
   // Open a URL in a new tab
-  chrome.windows[0].tabs.push(chrome.Tab({url: 'https://google.com'}));
-  
+  chrome.windows[0].tabs.push(chrome.Tab({ url: "https://google.com" }));
+
   // Current tab in first window
   const currentTab = chrome.windows[0].activeTab;
-  
+
   // Execute JavaScript in the current tab (this requires Chrome's JXA support)
   // Note: This may not work in all Chrome versions as scripting support can vary
   try {
-    const result = currentTab.execute({javascript: 'document.title'});
-    
+    const result = currentTab.execute({ javascript: "document.title" });
+
     // Display information using system dialog
     const app = Application.currentApplication();
     app.includeStandardAdditions = true;
@@ -51,26 +51,26 @@ function chromeOperations() {
   } catch (error) {
     // Chrome's JavaScript execution support via JXA is limited
     // Alternative: Use System Events for Chrome UI automation
-    
+
     const app = Application.currentApplication();
     app.includeStandardAdditions = true;
     app.displayDialog("Note: Direct JavaScript execution in Chrome may not be supported.");
   }
-  
+
   // List all tabs in all Chrome windows
   let allTabs = "All Chrome tabs:\n";
   for (let i = 0; i < chrome.windows.length; i++) {
-    allTabs += `\nWindow ${i+1}:\n`;
+    allTabs += `\nWindow ${i + 1}:\n`;
     const tabs = chrome.windows[i].tabs;
     for (let j = 0; j < tabs.length; j++) {
-      allTabs += `  ${j+1}. ${tabs[j].title()} - ${tabs[j].url()}\n`;
+      allTabs += `  ${j + 1}. ${tabs[j].title()} - ${tabs[j].url()}\n`;
     }
   }
-  
+
   const app = Application.currentApplication();
   app.includeStandardAdditions = true;
   app.displayDialog(allTabs);
-  
+
   return "Chrome operations completed.";
 }
 ```

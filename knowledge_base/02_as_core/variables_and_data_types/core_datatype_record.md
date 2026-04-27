@@ -1,5 +1,5 @@
 ---
-title: 'Core: Record Data Type'
+title: "Core: Record Data Type"
 category: 02_as_core
 id: core_datatype_record
 description: >-
@@ -42,4 +42,5 @@ end try
 
 return "Name: " & personName & ", Age: " & personAge & ", City: " & city of myRecord & ", Occupation: " & occupation of myRecord & ", Has Occupation: " & hasOccupation
 ```
-END_TIP 
+
+END_TIP

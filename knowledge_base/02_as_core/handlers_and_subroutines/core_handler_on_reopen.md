@@ -1,5 +1,5 @@
 ---
-title: 'Core: Stay-Open Applet Handler ''on reopen'''
+title: "Core: Stay-Open Applet Handler 'on reopen'"
 category: 02_as_core
 id: core_handler_on_reopen
 description: >-
@@ -77,4 +77,5 @@ end displayReopenStatus
 -- 3. Click the applet's icon in the Dock, or double-click it in Finder. Observe the updated dialog.
 -- 4. Repeat step 3.
 ```
-END_TIP 
+
+END_TIP

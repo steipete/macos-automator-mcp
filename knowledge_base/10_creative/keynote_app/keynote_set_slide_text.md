@@ -1,5 +1,5 @@
 ---
-title: 'Keynote: Set Title and Body Text of Current Slide'
+title: "Keynote: Set Title and Body Text of Current Slide"
 category: 10_creative
 id: keynote_set_slide_text
 description: >-
@@ -44,14 +44,14 @@ on setKeynoteSlideText(theTitle, theBody)
     if not running then return "error: Keynote is not running."
     if (count of documents) is 0 then return "error: No Keynote presentation is open."
     activate
-    
+
     try
       tell front document
         set currentSlide to current slide
         if currentSlide is missing value then
           return "error: No slide is currently selected or available."
         end if
-        
+
         -- Setting title (assuming the first text item is the title placeholder)
         if theTitle is not missing value and theTitle is not "" then
           try
@@ -62,7 +62,7 @@ on setKeynoteSlideText(theTitle, theBody)
             return "error: Could not set title text. " & titleErr
           end try
         end if
-        
+
         -- Setting body (assuming the second text item is the body placeholder)
         -- This is a common convention but might not always hold true for all master slides.
         if theBody is not missing value and theBody is not "" then
@@ -82,7 +82,7 @@ on setKeynoteSlideText(theTitle, theBody)
             return "error: Could not set body text. " & bodyErr
           end try
         end if
-        
+
       end tell
       return "Slide text set (if placeholders were found and settable). Title: '" & theTitle & "', Body: '" & theBody & "'"
     on error errMsg
@@ -93,4 +93,5 @@ end setKeynoteSlideText
 
 return my setKeynoteSlideText("--MCP_INPUT:titleText", "--MCP_INPUT:bodyText")
 ```
-END_TIP 
+
+END_TIP

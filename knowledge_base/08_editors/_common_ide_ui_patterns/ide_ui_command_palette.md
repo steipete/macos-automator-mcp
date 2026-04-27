@@ -1,5 +1,5 @@
 ---
-title: 'Common IDE UI: Open Command Palette & Run Command'
+title: "Common IDE UI: Open Command Palette & Run Command"
 category: 08_editors
 id: ide_ui_command_palette
 description: >-
@@ -52,4 +52,5 @@ end runPaletteCommand
 
 return my runPaletteCommand("--MCP_INPUT:targetAppName", "--MCP_INPUT:commandName")
 ```
-END_TIP 
+
+END_TIP

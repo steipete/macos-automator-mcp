@@ -1,5 +1,5 @@
 ---
-title: 'System Clipboard: Get File Paths (if any)'
+title: "System Clipboard: Get File Paths (if any)"
 category: 04_system
 id: system_clipboard_get_file_paths
 description: >-
@@ -21,7 +21,7 @@ notes: >-
 tell application "System Events"
   try
     set theClipboardContent to the clipboard
-    
+
     -- Check if clipboard content is a list (often indicates files)
     if class of theClipboardContent is list then
       set filePaths to {}
@@ -76,4 +76,5 @@ tell application "System Events"
   end try
 end tell
 ```
-END_TIP 
+
+END_TIP

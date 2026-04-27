@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Get URL of Front Tab'
+title: "Safari: Get URL of Front Tab"
 category: 07_browsers
 id: safari_get_front_tab_url
 description: >-
@@ -35,4 +35,5 @@ tell application "Safari"
   end try
 end tell
 ```
+
 END_TIP

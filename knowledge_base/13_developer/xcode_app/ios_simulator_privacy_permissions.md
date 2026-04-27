@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Manage App Privacy Permissions'
+title: "iOS Simulator: Manage App Privacy Permissions"
 category: 13_developer
 id: ios_simulator_privacy_permissions
 description: Manages privacy permissions for an app in the iOS Simulator.
@@ -47,32 +47,32 @@ on manageAppPrivacyPermissions(bundleID, permissionType, action, deviceIdentifie
   if bundleID is missing value or bundleID is "" then
     return "error: Bundle ID not provided. Specify the app's bundle identifier."
   end if
-  
+
   if permissionType is missing value or permissionType is "" then
     return "error: Permission type not provided. Available types: photos, camera, location, contacts, calendar, microphone, media-library, reminders, motion, speech-recognition, all"
   end if
-  
+
   if action is missing value or action is "" then
     return "error: Action not provided. Available actions: grant, revoke, reset"
   end if
-  
+
   -- Convert to lowercase for consistent comparison
   set permissionType to do shell script "echo " & quoted form of permissionType & " | tr '[:upper:]' '[:lower:]'"
   set action to do shell script "echo " & quoted form of action & " | tr '[:upper:]' '[:lower:]'"
-  
+
   -- Default to booted device if not specified
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Validate action
   if action is not in {"grant", "revoke", "reset"} then
     return "error: Invalid action. Must be 'grant', 'revoke', or 'reset'."
   end if
-  
+
   -- Validate permission type
   set validPermissions to {"photos", "camera", "location", "contacts", "calendar", "microphone", "media-library", "reminders", "motion", "speech-recognition", "all"}
-  
+
   -- Allow common variations and typos
   if permissionType is "photo" then set permissionType to "photos"
   if permissionType is "contact" then set permissionType to "contacts"
@@ -80,11 +80,11 @@ on manageAppPrivacyPermissions(bundleID, permissionType, action, deviceIdentifie
   if permissionType is "media" then set permissionType to "media-library"
   if permissionType is "reminder" then set permissionType to "reminders"
   if permissionType is "speech" then set permissionType to "speech-recognition"
-  
+
   if permissionType is not in validPermissions then
     return "error: Invalid permission type. Available types: photos, camera, location, contacts, calendar, microphone, media-library, reminders, motion, speech-recognition, all"
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -95,17 +95,17 @@ on manageAppPrivacyPermissions(bundleID, permissionType, action, deviceIdentifie
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- Execute the privacy permission command
     set privacyCmd to "xcrun simctl privacy " & quoted form of deviceIdentifier & " " & action & " " & permissionType & " " & quoted form of bundleID
-    
+
     try
       do shell script privacyCmd
       set permissionUpdated to true
     on error errMsg
       return "Error managing privacy permission: " & errMsg
     end try
-    
+
     if permissionUpdated then
       set actionVerb to ""
       if action is "grant" then
@@ -115,14 +115,14 @@ on manageAppPrivacyPermissions(bundleID, permissionType, action, deviceIdentifie
       else if action is "reset" then
         set actionVerb to "reset"
       end if
-      
+
       set permissionName to ""
       if permissionType is "all" then
         set permissionName to "all privacy permissions"
       else
         set permissionName to permissionType & " permission"
       end if
-      
+
       return "Successfully " & actionVerb & " " & permissionName & " for " & bundleID & " on " & deviceIdentifier & " simulator.
 
 Command executed:

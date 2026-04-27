@@ -1,5 +1,5 @@
 ---
-title: 'JXA Basics: Display Dialog and Get Input'
+title: "JXA Basics: Display Dialog and Get Input"
 category: 03_jxa_core
 id: jxa_display_dialog_input
 description: Shows how to use 'displayDialog' in JXA to show messages and get user input.
@@ -34,22 +34,23 @@ try {
   if (dialogResult.buttonReturned === "OK") {
     var userName = dialogResult.textReturned;
     if (userName === "") {
-      "User did not enter a name.";
+      ("User did not enter a name.");
     } else {
       "Hello, " + userName + "!";
     }
   } else {
-    "User cancelled the dialog.";
+    ("User cancelled the dialog.");
   }
 } catch (e) {
   // This catch block will capture errors if displayDialog itself fails,
   // but not user cancellation if cancelButton is defined (that's handled by buttonReturned).
   // If no cancelButton is specified, user cancel raises error -128.
   if (e.errorNumber === -128) {
-     "User cancelled (error -128)."
+    ("User cancelled (error -128).");
   } else {
-     "Error: " + e.message;
+    "Error: " + e.message;
   }
 }
 ```
-END_TIP 
+
+END_TIP

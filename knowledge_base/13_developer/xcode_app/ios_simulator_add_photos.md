@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Add Photos to Library'
+title: "iOS Simulator: Add Photos to Library"
 category: 13_developer
 id: ios_simulator_add_photos
 description: Adds photos and videos to an iOS Simulator's Photo Library.
@@ -38,19 +38,19 @@ on addPhotosToSimulatorLibrary(mediaPath, deviceIdentifier, recursive)
   if mediaPath is missing value or mediaPath is "" then
     return "error: Media path not provided. Specify a path to an image/video file or a directory containing media files."
   end if
-  
+
   -- Default to booted device if not specified
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Default recursive to false if not specified
   if recursive is missing value or recursive is "" then
     set recursive to false
   else if recursive is "true" then
     set recursive to true
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -61,24 +61,24 @@ on addPhotosToSimulatorLibrary(mediaPath, deviceIdentifier, recursive)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- Check if the media path exists
     set checkPathCmd to "test -e " & quoted form of mediaPath & " && echo 'exists' || echo 'not found'"
     set pathExistsResult to do shell script checkPathCmd
-    
+
     if pathExistsResult is "not found" then
       return "error: Media path not found: " & mediaPath
     end if
-    
+
     -- Determine if it's a file or directory
     set fileTypeCmd to "test -d " & quoted form of mediaPath & " && echo 'directory' || echo 'file'"
     set fileType to do shell script fileTypeCmd
-    
+
     -- Variable to track successful and failed additions
     set successCount to 0
     set failureCount to 0
     set filesList to {}
-    
+
     if fileType is "file" then
       -- Add a single file
       set filesList to {mediaPath}
@@ -88,12 +88,12 @@ on addPhotosToSimulatorLibrary(mediaPath, deviceIdentifier, recursive)
       if not recursive then
         set findCmd to findCmd & " -maxdepth 1"
       end if
-      
+
       -- Look for common media file extensions
       set findCmd to findCmd & " -type f \\( -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.png\" -o -iname \"*.gif\" -o -iname \"*.heic\" -o -iname \"*.mp4\" -o -iname \"*.mov\" -o -iname \"*.m4v\" \\) -print"
-      
+
       set findOutput to do shell script findCmd
-      
+
       if findOutput is not "" then
         -- Convert multiline output to AppleScript list
         set AppleScript's text item delimiters to return
@@ -103,7 +103,7 @@ on addPhotosToSimulatorLibrary(mediaPath, deviceIdentifier, recursive)
         return "No media files found in " & mediaPath
       end if
     end if
-    
+
     -- Process each file
     set processedList to ""
     repeat with mediaFile in filesList
@@ -111,7 +111,7 @@ on addPhotosToSimulatorLibrary(mediaPath, deviceIdentifier, recursive)
         set addMediaCmd to "xcrun simctl addmedia " & quoted form of deviceIdentifier & " " & quoted form of mediaFile
         do shell script addMediaCmd
         set successCount to successCount + 1
-        
+
         -- Add to list of processed files (only include the filename to keep output manageable)
         set fileName to do shell script "basename " & quoted form of mediaFile
         set processedList to processedList & "- " & fileName & " ✓" & return
@@ -121,12 +121,12 @@ on addPhotosToSimulatorLibrary(mediaPath, deviceIdentifier, recursive)
         set processedList to processedList & "- " & fileName & " ✗ (" & errMsg & ")" & return
       end try
     end repeat
-    
+
     -- Check if any files were processed
     if (count of filesList) is 0 then
       return "No media files were found to add to the simulator."
     end if
-    
+
     -- Return result
     return "Added media to " & deviceIdentifier & " simulator.
 Successfully added: " & successCount & " files

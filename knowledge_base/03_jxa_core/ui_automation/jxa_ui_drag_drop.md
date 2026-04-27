@@ -29,88 +29,88 @@ The function can be used to drag files, folders, text selections, and other drag
 ```javascript
 // Drag and drop operation
 function dragAndDrop(appName, source, destination) {
-    try {
-        if (!source || !destination) {
-            return {
-                success: false,
-                error: "Source and destination targets are required"
-            };
-        }
-        
-        // Activate the application
-        const app = Application(appName);
-        app.activate();
-        delay(0.5);
-        
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Find the source and destination elements
-        const sourceElement = findUIElement(process, source);
-        if (!sourceElement) {
-            return {
-                success: false,
-                error: "Source element not found"
-            };
-        }
-        
-        const destElement = findUIElement(process, destination);
-        if (!destElement) {
-            return {
-                success: false,
-                error: "Destination element not found"
-            };
-        }
-        
-        // Get the positions of the elements
-        const sourcePosition = sourceElement.position();
-        const destPosition = destElement.position();
-        
-        // Get the size of the elements
-        const sourceSize = sourceElement.size();
-        
-        // Calculate the center points
-        const sourceX = sourcePosition[0] + (sourceSize[0] / 2);
-        const sourceY = sourcePosition[1] + (sourceSize[1] / 2);
-        const destX = destPosition[0] + (destElement.size()[0] / 2);
-        const destY = destPosition[1] + (destElement.size()[1] / 2);
-        
-        // Perform the drag and drop
-        systemEvents.mouseMove({x: sourceX, y: sourceY});
-        delay(0.2);
-        systemEvents.mouseDown();
-        delay(0.3);
-        
-        // Move to destination in steps
-        const steps = 5;
-        for (let i = 1; i <= steps; i++) {
-            const x = sourceX + ((destX - sourceX) * (i / steps));
-            const y = sourceY + ((destY - sourceY) * (i / steps));
-            systemEvents.mouseMove({x: x, y: y});
-            delay(0.1);
-        }
-        
-        delay(0.2);
-        systemEvents.mouseUp();
-        
-        return {
-            success: true,
-            message: "Drag and drop operation completed"
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error performing drag and drop: ${error.message}`
-        };
+  try {
+    if (!source || !destination) {
+      return {
+        success: false,
+        error: "Source and destination targets are required",
+      };
     }
+
+    // Activate the application
+    const app = Application(appName);
+    app.activate();
+    delay(0.5);
+
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
+    }
+
+    // Find the source and destination elements
+    const sourceElement = findUIElement(process, source);
+    if (!sourceElement) {
+      return {
+        success: false,
+        error: "Source element not found",
+      };
+    }
+
+    const destElement = findUIElement(process, destination);
+    if (!destElement) {
+      return {
+        success: false,
+        error: "Destination element not found",
+      };
+    }
+
+    // Get the positions of the elements
+    const sourcePosition = sourceElement.position();
+    const destPosition = destElement.position();
+
+    // Get the size of the elements
+    const sourceSize = sourceElement.size();
+
+    // Calculate the center points
+    const sourceX = sourcePosition[0] + sourceSize[0] / 2;
+    const sourceY = sourcePosition[1] + sourceSize[1] / 2;
+    const destX = destPosition[0] + destElement.size()[0] / 2;
+    const destY = destPosition[1] + destElement.size()[1] / 2;
+
+    // Perform the drag and drop
+    systemEvents.mouseMove({ x: sourceX, y: sourceY });
+    delay(0.2);
+    systemEvents.mouseDown();
+    delay(0.3);
+
+    // Move to destination in steps
+    const steps = 5;
+    for (let i = 1; i <= steps; i++) {
+      const x = sourceX + (destX - sourceX) * (i / steps);
+      const y = sourceY + (destY - sourceY) * (i / steps);
+      systemEvents.mouseMove({ x: x, y: y });
+      delay(0.1);
+    }
+
+    delay(0.2);
+    systemEvents.mouseUp();
+
+    return {
+      success: true,
+      message: "Drag and drop operation completed",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error performing drag and drop: ${error.message}`,
+    };
+  }
 }
 ```
 

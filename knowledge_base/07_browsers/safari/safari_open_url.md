@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Open URL'
+title: "Safari: Open URL"
 category: 07_browsers
 id: safari_open_url
 description: >-
@@ -33,12 +33,12 @@ on openUrlInSafari(theUrl)
   if theUrl is missing value or theUrl is "" then
     return "error: URL not provided."
   end if
-  
+
   -- Check if URL has a proper prefix
   if theUrl does not start with "http://" and theUrl does not start with "https://" then
     set theUrl to "https://" & theUrl
   end if
-  
+
   tell application "Safari"
     activate
     try

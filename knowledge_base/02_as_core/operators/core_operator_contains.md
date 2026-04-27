@@ -1,5 +1,5 @@
 ---
-title: 'Core: ''contains'' Operator'
+title: "Core: 'contains' Operator"
 category: 02_as_core
 id: core_operator_contains
 description: >-
@@ -39,5 +39,6 @@ set aContainsC to recordA contains recordC -- false
 
 return "String: " & hasHello & ", List: " & hasBanana & ", Record: " & aContainsB
 ```
-**Note:** When checking if a list contains a record, or vice-versa, AppleScript compares based on the structure and values. For checking if a record contains a specific *key*, you usually try to access the property in a `try` block.
-END_TIP 
+
+**Note:** When checking if a list contains a record, or vice-versa, AppleScript compares based on the structure and values. For checking if a record contains a specific _key_, you usually try to access the property in a `try` block.
+END_TIP

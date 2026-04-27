@@ -27,7 +27,7 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Import required frameworks
-ObjC.import('AppKit');
+ObjC.import("AppKit");
 ```
 
 ## Get File Paths from Clipboard
@@ -39,52 +39,53 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Use Objective-C bridge
-ObjC.import('AppKit');
+ObjC.import("AppKit");
 
 function getFilePathsFromClipboard() {
-    const pasteboard = $.NSPasteboard.generalPasteboard;
-    
-    // Check if clipboard contains file URLs
-    if (pasteboard.containsObjectsWithClassesOptions(
-            [$.NSURL.class], 
-            $.NSDictionary.dictionaryWithObject_forKey(
-                $.NSNumber.numberWithInt(1), 
-                $.NSPasteboardURLReadingFileURLsOnlyKey
-            )
-        )) {
-        
-        // Get the file URLs
-        const fileURLs = pasteboard.readObjectsForClasses_options(
-            [$.NSURL.class],
-            $.NSDictionary.dictionaryWithObject_forKey(
-                $.NSNumber.numberWithInt(1), 
-                $.NSPasteboardURLReadingFileURLsOnlyKey
-            )
-        );
-        
-        if (fileURLs && fileURLs.count > 0) {
-            // Convert NSArray to JavaScript array of paths
-            const paths = [];
-            for (let i = 0; i < fileURLs.count; i++) {
-                paths.push(ObjC.unwrap(fileURLs.objectAtIndex(i).path));
-            }
-            
-            console.log(`Found ${paths.length} files in clipboard`);
-            return paths;
-        }
+  const pasteboard = $.NSPasteboard.generalPasteboard;
+
+  // Check if clipboard contains file URLs
+  if (
+    pasteboard.containsObjectsWithClassesOptions(
+      [$.NSURL.class],
+      $.NSDictionary.dictionaryWithObject_forKey(
+        $.NSNumber.numberWithInt(1),
+        $.NSPasteboardURLReadingFileURLsOnlyKey,
+      ),
+    )
+  ) {
+    // Get the file URLs
+    const fileURLs = pasteboard.readObjectsForClasses_options(
+      [$.NSURL.class],
+      $.NSDictionary.dictionaryWithObject_forKey(
+        $.NSNumber.numberWithInt(1),
+        $.NSPasteboardURLReadingFileURLsOnlyKey,
+      ),
+    );
+
+    if (fileURLs && fileURLs.count > 0) {
+      // Convert NSArray to JavaScript array of paths
+      const paths = [];
+      for (let i = 0; i < fileURLs.count; i++) {
+        paths.push(ObjC.unwrap(fileURLs.objectAtIndex(i).path));
+      }
+
+      console.log(`Found ${paths.length} files in clipboard`);
+      return paths;
     }
-    
-    console.log("No file paths found in clipboard");
-    return [];
+  }
+
+  console.log("No file paths found in clipboard");
+  return [];
 }
 
 // Use the function
 const filePaths = getFilePathsFromClipboard();
 if (filePaths.length > 0) {
-    // Process the files
-    filePaths.forEach((path, index) => {
-        console.log(`File ${index + 1}: ${path}`);
-    });
+  // Process the files
+  filePaths.forEach((path, index) => {
+    console.log(`File ${index + 1}: ${path}`);
+  });
 }
 ```
 
@@ -97,44 +98,41 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Use Objective-C bridge
-ObjC.import('AppKit');
-ObjC.import('Foundation');
+ObjC.import("AppKit");
+ObjC.import("Foundation");
 
 function setFilePathsToClipboard(filePaths) {
-    if (!filePaths || filePaths.length === 0) {
-        console.log("No file paths provided");
-        return false;
-    }
-    
-    // Convert paths to NSURLs
-    const fileURLs = $.NSMutableArray.alloc.init;
-    
-    filePaths.forEach(path => {
-        const url = $.NSURL.fileURLWithPath(path);
-        fileURLs.addObject(url);
-    });
-    
-    // Set to pasteboard
-    const pasteboard = $.NSPasteboard.generalPasteboard;
-    pasteboard.clearContents;
-    
-    // Write the file URLs to the pasteboard
-    const result = pasteboard.writeObjectsForTypes(fileURLs, [$.NSPasteboardTypeFileURL]);
-    
-    if (result) {
-        console.log(`${filePaths.length} file paths set to clipboard successfully`);
-        return true;
-    }
-    
-    console.log("Failed to set file paths to clipboard");
+  if (!filePaths || filePaths.length === 0) {
+    console.log("No file paths provided");
     return false;
+  }
+
+  // Convert paths to NSURLs
+  const fileURLs = $.NSMutableArray.alloc.init;
+
+  filePaths.forEach((path) => {
+    const url = $.NSURL.fileURLWithPath(path);
+    fileURLs.addObject(url);
+  });
+
+  // Set to pasteboard
+  const pasteboard = $.NSPasteboard.generalPasteboard;
+  pasteboard.clearContents;
+
+  // Write the file URLs to the pasteboard
+  const result = pasteboard.writeObjectsForTypes(fileURLs, [$.NSPasteboardTypeFileURL]);
+
+  if (result) {
+    console.log(`${filePaths.length} file paths set to clipboard successfully`);
+    return true;
+  }
+
+  console.log("Failed to set file paths to clipboard");
+  return false;
 }
 
 // Example usage
-const paths = [
-    "/Users/username/Documents/example.txt",
-    "/Users/username/Pictures/image.jpg"
-];
+const paths = ["/Users/username/Documents/example.txt", "/Users/username/Pictures/image.jpg"];
 setFilePathsToClipboard(paths);
 ```
 

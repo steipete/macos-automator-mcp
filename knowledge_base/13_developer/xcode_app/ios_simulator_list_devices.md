@@ -1,8 +1,8 @@
 ---
-title: 'iOS Simulator: List Available Devices'
+title: "iOS Simulator: List Available Devices"
 category: 13_developer
 id: ios_simulator_list_devices
-description: 'Lists all available iOS, iPadOS, watchOS, and tvOS simulator devices.'
+description: "Lists all available iOS, iPadOS, watchOS, and tvOS simulator devices."
 keywords:
   - iOS Simulator
   - Xcode
@@ -41,15 +41,15 @@ on listIOSSimulatorDevices(deviceFilter, onlyBootedDevices)
   else if onlyBootedDevices is "true" then
     set onlyBootedDevices to true
   end if
-  
+
   -- Get the list of devices from xcrun simctl
   try
     set deviceListRaw to do shell script "xcrun simctl list devices --json"
-    
+
     -- Parse the JSON manually by extracting device info sections
     set deviceListFormatted to ""
     set deviceLinesCount to 0
-    
+
     -- First make a readable text list format
     set deviceListCommand to "xcrun simctl list devices"
     if onlyBootedDevices then
@@ -58,17 +58,17 @@ on listIOSSimulatorDevices(deviceFilter, onlyBootedDevices)
     if deviceFilter is not missing value and deviceFilter is not "" then
       set deviceListCommand to deviceListCommand & " | grep -i '" & deviceFilter & "'"
     end if
-    
+
     set deviceListText to do shell script deviceListCommand
-    
+
     -- Process the output line by line to make it more readable
     set AppleScript's text item delimiters to return
     set deviceLines to text items of deviceListText
     set AppleScript's text item delimiters to ""
-    
+
     set currentRuntime to ""
     set deviceCount to 0
-    
+
     repeat with deviceLine in deviceLines
       set trimmedLine to trim(deviceLine)
       if trimmedLine starts with "--" then
@@ -83,25 +83,25 @@ on listIOSSimulatorDevices(deviceFilter, onlyBootedDevices)
         -- This is a device line
         set deviceCount to deviceCount + 1
         set deviceLinesCount to deviceLinesCount + 1
-        
+
         -- Extract device name, state and UDID
         set deviceName to ""
         set deviceState to ""
         set deviceUDID to ""
-        
+
         -- Try to parse the line
         try
           -- Typical line format: "iPhone 14 (AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE) (Booted)"
           set nameEndPos to offset of " (" in trimmedLine
           if nameEndPos > 0 then
             set deviceName to text 1 thru (nameEndPos - 1) of trimmedLine
-            
+
             -- Extract UDID - look for text between first set of parentheses
             set uidStartPos to nameEndPos + 2
             set uidEndPos to offset of ")" in (text uidStartPos thru -1 of trimmedLine)
             if uidEndPos > 0 then
               set deviceUDID to text uidStartPos thru (uidStartPos + uidEndPos - 2) of trimmedLine
-              
+
               -- Check if there is a state in parentheses
               set stateStartPos to uidStartPos + uidEndPos + 1
               if stateStartPos < length of trimmedLine then
@@ -117,7 +117,7 @@ on listIOSSimulatorDevices(deviceFilter, onlyBootedDevices)
             end if
           end if
         end try
-        
+
         -- Add formatted device info to the list
         set deviceListFormatted to deviceListFormatted & "  " & deviceCount & ". " & deviceName
         if deviceState is not "" then
@@ -126,10 +126,10 @@ on listIOSSimulatorDevices(deviceFilter, onlyBootedDevices)
         set deviceListFormatted to deviceListFormatted & return & "     UDID: " & deviceUDID & return
       end if
     end repeat
-    
+
     -- Add summary count
     set deviceListFormatted to deviceListFormatted & return & "-------------------------------" & return & "Total Devices: " & deviceLinesCount
-    
+
     -- If no devices found, provide a message
     if deviceLinesCount = 0 then
       if deviceFilter is not missing value and deviceFilter is not "" then
@@ -140,7 +140,7 @@ on listIOSSimulatorDevices(deviceFilter, onlyBootedDevices)
         set deviceListFormatted to "No simulator devices found. You may need to install simulator runtimes in Xcode."
       end if
     end if
-    
+
     return deviceListFormatted
   on error errMsg number errNum
     return "error (" & errNum & ") listing iOS simulator devices: " & errMsg
@@ -151,15 +151,15 @@ end listIOSSimulatorDevices
 on trim(inputString)
   set whitespace to {" ", tab, return, linefeed}
   set outputString to inputString
-  
+
   repeat while outputString starts with any item of whitespace
     set outputString to text 2 thru -1 of outputString
   end repeat
-  
+
   repeat while outputString ends with any item of whitespace
     set outputString to text 1 thru -2 of outputString
   end repeat
-  
+
   return outputString
 end trim
 

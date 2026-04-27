@@ -4,7 +4,7 @@ title: Create To-Do in Things
 description: Use AppleScript to create a new to-do in Things app
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, to-do'
+tags: "things, productivity, task management, to-do"
 keywords:
   - tasks
   - action items
@@ -42,27 +42,27 @@ The script uses Things' AppleScript support to create a to-do with customizable 
 -- Create a to-do in Things with various properties
 on createThingsToDo(todoName, todoNotes, todoDueDate, projectName, areaName, tagNames)
     set todoProperties to {name:todoName}
-    
+
     -- Add optional properties if provided
     if todoNotes is not equal to "" then
         set todoProperties to todoProperties & {notes:todoNotes}
     end if
-    
+
     -- Parse due date if provided
     if todoDueDate is not equal to "" then
         set todoProperties to todoProperties & {due date:date todoDueDate}
     end if
-    
+
     -- Add to project if specified
     if projectName is not equal to "" then
         set todoProperties to todoProperties & {project:projectName}
     end if
-    
+
     -- Add to area if specified
     if areaName is not equal to "" then
         set todoProperties to todoProperties & {area:areaName}
     end if
-    
+
     -- Add tags if provided
     if tagNames is not equal to "" then
         set AppleScript's text item delimiters to ","
@@ -70,7 +70,7 @@ on createThingsToDo(todoName, todoNotes, todoDueDate, projectName, areaName, tag
         set AppleScript's text item delimiters to ""
         set todoProperties to todoProperties & {tags:tagList}
     end if
-    
+
     tell application "Things3"
         set newToDo to make new to do with properties todoProperties
         return id of newToDo

@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: beep Command'
+title: "StandardAdditions: beep Command"
 category: 02_as_core
 id: osax_beep
 description: Plays the system alert sound. Can specify the number of beeps.
@@ -11,7 +11,7 @@ keywords:
   - notification
   - osax
 language: applescript
-notes: '`beep` is a simple way to provide audible feedback.'
+notes: "`beep` is a simple way to provide audible feedback."
 ---
 
 Plays the default system alert sound.
@@ -33,4 +33,5 @@ end try
 
 return beepResult & " (The 'beep' command itself doesn't return a value. Commented out single beep to avoid double beeping on run if uncommented.)"
 ```
-END_TIP 
+
+END_TIP

@@ -1,5 +1,5 @@
 ---
-title: 'Terminal: Send Control Character'
+title: "Terminal: Send Control Character"
 id: terminal_send_control_character
 category: 06_terminal
 description: >-
@@ -24,11 +24,13 @@ isComplex: false
 This script sends a control character to the active process in the frontmost `Terminal.app` window. It achieves this by using `System Events` to simulate the necessary keystrokes.
 
 **Supported `controlChar` inputs:**
+
 - A single uppercase letter from "A" to "Z" (e.g., "C" for Ctrl-C).
 - "ESC" for the Escape key.
 - "]" for Ctrl-] (Group Separator, ASCII 29).
 
 **Important Notes:**
+
 - `Terminal.app` must be running and have an active window.
 - The script will target the frontmost window of `Terminal.app`.
 - This relies on UI Scripting (`System Events`), so `Terminal.app` (or the application running this MCP server) may need Accessibility permissions.
@@ -45,7 +47,7 @@ on runWithInput(inputData, legacyArguments)
     if charToSend is "" then
         return "Error: controlChar was empty."
     end if
-    
+
     -- MCP placeholder for input
     set charToSend to "--MCP_INPUT:controlChar" -- The control character to send (A-Z for Ctrl-A to Ctrl-Z, or ESC, or ])
 
@@ -72,17 +74,17 @@ on runWithInput(inputData, legacyArguments)
     tell application "System Events"
         tell application process "Terminal"
             set frontmost to true
-            delay 0.2 
+            delay 0.2
 
             try
                 if (length of upperChar is 1) and (upperChar is greater than or equal to "A") and (upperChar is less than or equal to "Z") then
                     keystroke (lower of upperChar) using control down
                     return "Sent Ctrl-" & upperChar & " to Terminal.app"
                 else if upperChar is "ESC" then
-                    key code 53 
+                    key code 53
                     return "Sent ESC to Terminal.app"
                 else if upperChar is "]" then
-                    keystroke "]" using control down 
+                    keystroke "]" using control down
                     return "Sent Ctrl-] to Terminal.app"
                 else
                     return "Error: Unsupported controlChar value: '" & charToSend & "'. Supported: A-Z, ESC, ]."
@@ -94,4 +96,5 @@ on runWithInput(inputData, legacyArguments)
     end tell
 end runWithInput
 ```
---- 
+
+---

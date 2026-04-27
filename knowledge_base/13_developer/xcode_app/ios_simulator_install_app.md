@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Install App'
+title: "iOS Simulator: Install App"
 category: 13_developer
 id: ios_simulator_install_app
 description: Installs an app on an iOS simulator device and optionally launches it.
@@ -44,36 +44,36 @@ on installAppOnSimulator(appPath, deviceIdentifier, launchAfterInstall)
   if appPath is missing value or appPath is "" then
     return "error: App path not provided. Specify a path to a .app bundle built for simulator."
   end if
-  
+
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Default to launching after install unless explicitly set to false
   if launchAfterInstall is missing value or launchAfterInstall is "" then
     set launchAfterInstall to true
   else if launchAfterInstall is "false" then
     set launchAfterInstall to false
   end if
-  
+
   try
     -- Ensure the app exists
     set checkAppCmd to "test -d " & quoted form of appPath & " && echo 'exists' || echo 'not found'"
     set appExistsResult to do shell script checkAppCmd
-    
+
     if appExistsResult is "not found" then
       return "error: App not found at path: " & appPath
     end if
-    
+
     -- Check if the app path ends with .app
     if not (appPath ends with ".app") then
       return "error: The provided path does not appear to be an app bundle (should end with .app): " & appPath
     end if
-    
+
     -- Extract the bundle identifier from the app's Info.plist
     set bundleIdCmd to "defaults read " & quoted form of appPath & "/Info CFBundleIdentifier"
     set bundleId to do shell script bundleIdCmd
-    
+
     -- Check if the device exists or is booted
     if deviceIdentifier is not "booted" then
       set checkDeviceCmd to "xcrun simctl list devices | grep '" & deviceIdentifier & "'"
@@ -83,7 +83,7 @@ on installAppOnSimulator(appPath, deviceIdentifier, launchAfterInstall)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- Install the app
     set installCmd to "xcrun simctl install " & quoted form of deviceIdentifier & " " & quoted form of appPath
     try
@@ -92,7 +92,7 @@ on installAppOnSimulator(appPath, deviceIdentifier, launchAfterInstall)
     on error errMsg
       return "error: Failed to install app: " & errMsg
     end try
-    
+
     -- Launch the app if requested
     set launchResult to ""
     if launchAfterInstall and installSuccessful then
@@ -106,7 +106,7 @@ App launched successfully. " & launchOutput
 App installed but launch failed: " & errMsg
       end try
     end if
-    
+
     return "Successfully installed app '" & bundleId & "' on " & deviceIdentifier & " simulator device." & launchResult & "
 
 App path: " & appPath & "

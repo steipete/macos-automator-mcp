@@ -1,7 +1,7 @@
 ---
 id: jetbrains_open_project
 title: Open project in JetBrains IDE
-description: 'Opens a project in a specific JetBrains IDE (IntelliJ, WebStorm, etc.)'
+description: "Opens a project in a specific JetBrains IDE (IntelliJ, WebStorm, etc.)"
 language: applescript
 author: Claude
 keywords:
@@ -34,12 +34,12 @@ This script opens a specific project in a JetBrains IDE (IntelliJ IDEA, WebStorm
 on run {input, parameters}
     set ideName to "--MCP_INPUT:ideName"
     set projectPath to "--MCP_INPUT:projectPath"
-    
+
     if ideName is "" or ideName is missing value then
         display dialog "Please specify a JetBrains IDE name (e.g., 'IntelliJ IDEA', 'WebStorm', 'PyCharm')." buttons {"OK"} default button "OK" with icon stop
         return
     end if
-    
+
     if projectPath is "" or projectPath is missing value then
         tell application "Finder"
             if exists Finder window 1 then
@@ -51,7 +51,7 @@ on run {input, parameters}
             end if
         end tell
     end if
-    
+
     -- Check if the IDE is running
     set isRunning to false
     try
@@ -59,7 +59,7 @@ on run {input, parameters}
             set isRunning to (count of (every process whose name is ideName)) > 0
         end tell
     end try
-    
+
     -- Generate the correct shell command based on IDE
     set shellCommand to ""
     if ideName contains "IntelliJ" then
@@ -82,10 +82,10 @@ on run {input, parameters}
         -- Generic fallback
         set shellCommand to "open -a \"" & ideName & "\" \"" & projectPath & "\""
     end if
-    
+
     -- Execute the command
     do shell script shellCommand
-    
+
     return "Opened project " & projectPath & " in " & ideName
 end run
 ```

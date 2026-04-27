@@ -34,14 +34,14 @@ This script provides a comprehensive interface for controlling VMware Fusion vir
 #!/usr/bin/osascript
 (*
     VMware Fusion Controller
-    
+
     This script demonstrates how to interact with VMware Fusion on macOS.
     It provides functionality to:
     - List all available virtual machines
     - Start a specific virtual machine
     - Stop/suspend a virtual machine
     - Check virtual machine status
-    
+
     Requirements:
     - VMware Fusion installed
     - Appropriate permissions for automation
@@ -56,29 +56,29 @@ property vmLibraryLocation : (path to home folder as text) & "Virtual Machines:"
 on run
     try
         log "Starting VMware Fusion Controller..."
-        
+
         -- Check if VMware Fusion is installed
         if not applicationIsInstalled(appName) then
             display dialog "VMware Fusion is not installed on this system." buttons {"OK"} default button "OK" with icon stop
             return
         end if
-        
+
         -- List available VMs
         log "Listing available virtual machines..."
         set vmList to listVirtualMachines()
-        
+
         if (count of vmList) is 0 then
             display dialog "No virtual machines found." buttons {"OK"} default button "OK"
             return
         end if
-        
+
         -- Display list of VMs and let user select one
         set selectedVM to chooseVM(vmList)
         if selectedVM is false then return
-        
+
         -- Main control interface for the selected VM
         controlVM(selectedVM)
-        
+
     on error errMsg number errNum
         log "Error in main handler: " & errMsg & " (" & errNum & ")"
         display dialog "An error occurred: " & errMsg buttons {"OK"} default button "OK" with icon stop
@@ -98,7 +98,7 @@ end applicationIsInstalled
 -- Lists available virtual machines
 on listVirtualMachines()
     set vmList to {}
-    
+
     try
         -- Method 1: Through VMware Fusion application if supported
         tell application appName
@@ -111,16 +111,16 @@ on listVirtualMachines()
                 log "Could not get VM list through application directly. Using file system instead."
             end try
         end tell
-        
+
         -- Method 2: Use file system to find .vmwarevm bundles
         set vmFolders to {}
-        
+
         -- Try to find VMs in standard location
         try
             set vmFolders to paragraphs of (do shell script "find \"" & POSIX path of vmLibraryLocation & "\" -name \"*.vmwarevm\" -type d -maxdepth 2")
         on error
             log "Could not search standard VM location. Trying home directory..."
-            
+
             -- Try to find VMs in user's home directory
             try
                 set homeFolder to POSIX path of (path to home folder)
@@ -129,7 +129,7 @@ on listVirtualMachines()
                 log "Could not find VMs in home directory."
             end try
         end try
-        
+
         -- Process found VM folders
         repeat with vmPath in vmFolders
             if vmPath is not "" then
@@ -140,14 +140,14 @@ on listVirtualMachines()
                 set AppleScript's text item delimiters to ".vmwarevm"
                 set vmName to text item 1 of vmName
                 set AppleScript's text item delimiters to ""
-                
+
                 -- Add to our list with both name and path
                 set end of vmList to {name:vmName, path:vmPath}
             end if
         end repeat
-        
+
         return vmList
-        
+
     on error errMsg number errNum
         log "Error listing VMs: " & errMsg & " (" & errNum & ")"
         return {}
@@ -170,14 +170,14 @@ on chooseVM(vmList)
                 end try
             end if
         end repeat
-        
+
         set selectedVM to choose from list vmNames with prompt "Select a Virtual Machine:" default items (item 1 of vmNames)
-        
+
         if selectedVM is false then
             return false
         else
             set selectedVMName to item 1 of selectedVM
-            
+
             repeat with vm in vmList
                 if class of vm is record then
                     if vm's name is selectedVMName then
@@ -194,11 +194,11 @@ on chooseVM(vmList)
                 end if
             end repeat
         end if
-        
+
         -- If we get here, something went wrong
         display dialog "Could not find the selected VM in the list." buttons {"OK"} default button "OK" with icon stop
         return false
-        
+
     on error errMsg number errNum
         log "Error choosing VM: " & errMsg & " (" & errNum & ")"
         return false
@@ -210,7 +210,7 @@ on controlVM(vm)
     try
         set vmName to ""
         set vmPath to ""
-        
+
         -- Determine VM details based on the type
         if class of vm is record then
             set vmName to vm's name
@@ -223,22 +223,22 @@ on controlVM(vm)
                 set vmName to "Unknown VM"
             end try
         end if
-        
+
         set vmStatus to getVMStatus(vm)
-        
+
         -- Main control loop
         repeat
             set statusText to "Current Status: " & vmStatus
             set actionButton to "Start VM"
-            
+
             if vmStatus contains "running" then
                 set actionButton to "Stop VM"
             else if vmStatus contains "suspended" then
                 set actionButton to "Resume VM"
             end if
-            
+
             set userChoice to button returned of (display dialog "VM: " & vmName & return & statusText buttons {"Refresh Status", actionButton, "Cancel"} default button 2)
-            
+
             if userChoice is "Refresh Status" then
                 set vmStatus to getVMStatus(vm)
             else if userChoice is "Start VM" then
@@ -247,7 +247,7 @@ on controlVM(vm)
                 set vmStatus to getVMStatus(vm)
             else if userChoice is "Stop VM" then
                 set stopOptions to button returned of (display dialog "How do you want to stop the VM?" buttons {"Shut Down", "Suspend", "Power Off", "Cancel"} default button 1)
-                
+
                 if stopOptions is "Shut Down" then
                     shutdownVM(vm)
                 else if stopOptions is "Suspend" then
@@ -255,7 +255,7 @@ on controlVM(vm)
                 else if stopOptions is "Power Off" then
                     powerOffVM(vm)
                 end if
-                
+
                 delay 2
                 set vmStatus to getVMStatus(vm)
             else if userChoice is "Resume VM" then
@@ -267,7 +267,7 @@ on controlVM(vm)
                 exit repeat
             end if
         end repeat
-        
+
     on error errMsg number errNum
         log "Error controlling VM: " & errMsg & " (" & errNum & ")"
         display dialog "An error occurred while controlling the VM: " & errMsg buttons {"OK"} default button "OK" with icon stop
@@ -288,12 +288,12 @@ on getVMStatus(vm)
                 end try
             end tell
         end if
-        
+
         -- Use UI scripting as fallback
         tell application appName
             activate
             delay 1
-            
+
             -- Try to find if this VM is mentioned in window title
             set vmName to ""
             if class of vm is record then
@@ -305,7 +305,7 @@ on getVMStatus(vm)
                     set vmName to "Unknown"
                 end try
             end if
-            
+
             -- Look for running status in window titles
             try
                 tell application "System Events"
@@ -326,11 +326,11 @@ on getVMStatus(vm)
             on error
                 log "Error checking window titles"
             end try
-            
+
             -- If we get here, either VM is not running or we couldn't determine status
             return "powered off or unavailable"
         end tell
-        
+
     on error errMsg number errNum
         log "Error getting VM status: " & errMsg & " (" & errNum & ")"
         return "error checking status"
@@ -351,19 +351,19 @@ on startVM(vm)
                 end try
             end tell
         end if
-        
+
         -- Use UI scripting as fallback
         tell application appName
             activate
             delay 1
-            
+
             if class of vm is record then
                 -- Try to open VM from file
                 try
                     set vmPath to vm's path
                     do shell script "open \"" & vmPath & "\""
                     delay 2
-                    
+
                     -- Click the "Start Up" button if needed
                     tell application "System Events"
                         repeat 5 times -- try a few times
@@ -378,18 +378,18 @@ on startVM(vm)
                             delay 1
                         end repeat
                     end tell
-                    
+
                     return true
                 on error errMsg
                     log "Error starting VM from file: " & errMsg
                 end try
             end if
-            
+
             -- Additional approaches could be added here
-            
+
             return false
         end tell
-        
+
     on error errMsg number errNum
         log "Error starting VM: " & errMsg & " (" & errNum & ")"
         display dialog "Error starting VM: " & errMsg buttons {"OK"} default button "OK" with icon stop
@@ -411,32 +411,32 @@ on shutdownVM(vm)
                 end try
             end tell
         end if
-        
+
         -- Use UI scripting as fallback
         tell application appName
             activate
             delay 1
-            
+
             tell application "System Events"
                 try
                     -- Try to use menu items
                     click menu item "Shut Down Guest" of menu "Virtual Machine" of menu bar 1 of process appProcessName
-                    
+
                     -- Handle confirmation dialog if it appears
                     delay 1
                     if exists button "Shut Down" of sheet 1 of window 1 of process appProcessName then
                         click button "Shut Down" of sheet 1 of window 1 of process appProcessName
                     end if
-                    
+
                     return true
                 on error errMsg
                     log "UI scripting error for shutdown: " & errMsg
                 end try
             end tell
-            
+
             return false
         end tell
-        
+
     on error errMsg number errNum
         log "Error shutting down VM: " & errMsg & " (" & errNum & ")"
         display dialog "Error shutting down VM: " & errMsg buttons {"OK"} default button "OK" with icon stop
@@ -458,12 +458,12 @@ on suspendVM(vm)
                 end try
             end tell
         end if
-        
+
         -- Use UI scripting as fallback
         tell application appName
             activate
             delay 1
-            
+
             tell application "System Events"
                 try
                     -- Try to use menu items
@@ -473,10 +473,10 @@ on suspendVM(vm)
                     log "UI scripting error for suspend: " & errMsg
                 end try
             end tell
-            
+
             return false
         end tell
-        
+
     on error errMsg number errNum
         log "Error suspending VM: " & errMsg & " (" & errNum & ")"
         display dialog "Error suspending VM: " & errMsg buttons {"OK"} default button "OK" with icon stop
@@ -498,32 +498,32 @@ on powerOffVM(vm)
                 end try
             end tell
         end if
-        
+
         -- Use UI scripting as fallback
         tell application appName
             activate
             delay 1
-            
+
             tell application "System Events"
                 try
                     -- Try to use menu items
                     click menu item "Power Off" of menu "Virtual Machine" of menu bar 1 of process appProcessName
-                    
+
                     -- Handle confirmation dialog if it appears
                     delay 1
                     if exists button "Power Off" of sheet 1 of window 1 of process appProcessName then
                         click button "Power Off" of sheet 1 of window 1 of process appProcessName
                     end if
-                    
+
                     return true
                 on error errMsg
                     log "UI scripting error for power off: " & errMsg
                 end try
             end tell
-            
+
             return false
         end tell
-        
+
     on error errMsg number errNum
         log "Error powering off VM: " & errMsg & " (" & errNum & ")"
         display dialog "Error powering off VM: " & errMsg buttons {"OK"} default button "OK" with icon stop

@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Open URL'
+title: "Firefox: Open URL"
 category: 07_browsers
 id: firefox_open_url
 description: Opens Firefox and loads a specified URL.
@@ -22,4 +22,5 @@ tell application "Firefox"
   OpenURL "--MCP_INPUT:url"
 end tell
 ```
+
 END_TIP

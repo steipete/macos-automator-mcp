@@ -1,5 +1,5 @@
 ---
-title: 'JXA UI Elements Control'
+title: "JXA UI Elements Control"
 category: 03_jxa_core
 id: jxa_ui_elements_control
 description: Interacting with buttons, fields, and other UI elements using JXA
@@ -25,7 +25,7 @@ You need to grant accessibility permissions to your script's host application (S
 
 ```javascript
 // Basic System Events setup
-const systemEvents = Application('System Events');
+const systemEvents = Application("System Events");
 
 // Activate app before accessing UI elements
 function activateApp(appName) {
@@ -41,24 +41,24 @@ function activateApp(appName) {
 ```javascript
 function controlUIElements() {
   // Activate System Preferences
-  activateApp('System Preferences');
-  
-  const sysPref = systemEvents.processes.byName('System Preferences');
-  
+  activateApp("System Preferences");
+
+  const sysPref = systemEvents.processes.byName("System Preferences");
+
   // Click a button by its accessibility description
   const buttons = sysPref.windows[0].buttons();
   for (let i = 0; i < buttons.length; i++) {
-    if (buttons[i].description() === 'Search') {
+    if (buttons[i].description() === "Search") {
       buttons[i].click();
       break;
     }
   }
-  
+
   // Type in a search field
   delay(0.5);
-  systemEvents.keystroke('display');
+  systemEvents.keystroke("display");
   delay(1);
-  
+
   // Press Escape to clear search
   systemEvents.keyCode(53);
 }
@@ -115,13 +115,15 @@ const checkboxes = process.windows[0].checkboxes();
 
 ```javascript
 // Find a button by its name
-const saveButton = process.windows[0].buttons.byName('Save');
+const saveButton = process.windows[0].buttons.byName("Save");
 
 // Find a text field by its value
-const nameField = process.windows[0].textFields.whose({value: 'John'})[0];
+const nameField = process.windows[0].textFields.whose({ value: "John" })[0];
 
 // Find a checkbox by its description
-const agreeCheckbox = process.windows[0].checkboxes.whose({description: 'I agree to the terms'})[0];
+const agreeCheckbox = process.windows[0].checkboxes.whose({
+  description: "I agree to the terms",
+})[0];
 ```
 
 ### Work with UI Element Properties
@@ -135,7 +137,7 @@ const position = button.position();
 const size = button.size();
 
 // Set element properties
-textField.value = 'New value';
+textField.value = "New value";
 checkbox.value = 1; // Check a checkbox
 ```
 
@@ -146,10 +148,10 @@ checkbox.value = 1; // Check a checkbox
 button.click();
 
 // Double-click an item
-item.click({clickCount: 2});
+item.click({ clickCount: 2 });
 
 // Right-click an item
-item.click({buttonNumber: 2});
+item.click({ buttonNumber: 2 });
 
 // Set focus to a text field
 textField.focused = true;

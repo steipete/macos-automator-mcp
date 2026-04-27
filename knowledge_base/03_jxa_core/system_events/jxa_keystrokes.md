@@ -1,5 +1,5 @@
 ---
-title: 'JXA Keyboard Input'
+title: "JXA Keyboard Input"
 category: 03_jxa_core
 id: jxa_keystrokes
 description: Sending keystrokes and key combinations to applications using JXA
@@ -24,7 +24,7 @@ You need to grant accessibility permissions to your script's host application (S
 
 ```javascript
 // Basic System Events setup
-const systemEvents = Application('System Events');
+const systemEvents = Application("System Events");
 
 // Activate app before sending input
 function activateApp(appName) {
@@ -40,20 +40,20 @@ function activateApp(appName) {
 ```javascript
 function sendKeystrokes() {
   // Activate TextEdit
-  activateApp('TextEdit');
-  
+  activateApp("TextEdit");
+
   // Type text
-  systemEvents.keystroke('Hello from JXA!');
-  
+  systemEvents.keystroke("Hello from JXA!");
+
   // Press Enter/Return (keycode 36)
   systemEvents.keyCode(36);
-  
+
   // Special key combinations
-  systemEvents.keystroke('a', {using: 'command down'}); // Select all (Cmd+A)
-  systemEvents.keystroke('c', {using: 'command down'}); // Copy (Cmd+C)
-  
+  systemEvents.keystroke("a", { using: "command down" }); // Select all (Cmd+A)
+  systemEvents.keystroke("c", { using: "command down" }); // Copy (Cmd+C)
+
   // Multiple modifier keys
-  systemEvents.keystroke(' ', {using: ['option down', 'command down']}); // Opt+Cmd+Space
+  systemEvents.keystroke(" ", { using: ["option down", "command down"] }); // Opt+Cmd+Space
 }
 ```
 
@@ -74,7 +74,7 @@ The script demonstrates the following keyboarding techniques:
 The basic method for typing text is:
 
 ```javascript
-systemEvents.keystroke('Text to type');
+systemEvents.keystroke("Text to type");
 ```
 
 ### Keyboard Shortcuts
@@ -83,13 +83,13 @@ To use keyboard shortcuts with modifier keys:
 
 ```javascript
 // Single modifier key
-systemEvents.keystroke('a', {using: 'command down'}); // Cmd+A (Select All)
-systemEvents.keystroke('s', {using: 'command down'}); // Cmd+S (Save)
-systemEvents.keystroke('z', {using: 'command down'}); // Cmd+Z (Undo)
+systemEvents.keystroke("a", { using: "command down" }); // Cmd+A (Select All)
+systemEvents.keystroke("s", { using: "command down" }); // Cmd+S (Save)
+systemEvents.keystroke("z", { using: "command down" }); // Cmd+Z (Undo)
 
 // Multiple modifier keys
-systemEvents.keystroke('s', {using: ['command down', 'shift down']}); // Cmd+Shift+S (Save As)
-systemEvents.keystroke('z', {using: ['command down', 'shift down']}); // Cmd+Shift+Z (Redo)
+systemEvents.keystroke("s", { using: ["command down", "shift down"] }); // Cmd+Shift+S (Save As)
+systemEvents.keystroke("z", { using: ["command down", "shift down"] }); // Cmd+Shift+Z (Redo)
 ```
 
 ### Common Key Codes
@@ -97,23 +97,23 @@ systemEvents.keystroke('z', {using: ['command down', 'shift down']}); // Cmd+Shi
 For special keys that don't have a character representation, use `keyCode()`:
 
 ```javascript
-systemEvents.keyCode(36);  // Return/Enter
-systemEvents.keyCode(53);  // Escape
+systemEvents.keyCode(36); // Return/Enter
+systemEvents.keyCode(53); // Escape
 systemEvents.keyCode(123); // Left arrow
 systemEvents.keyCode(124); // Right arrow
 systemEvents.keyCode(125); // Down arrow
 systemEvents.keyCode(126); // Up arrow
-systemEvents.keyCode(48);  // Tab
-systemEvents.keyCode(49);  // Space
-systemEvents.keyCode(51);  // Delete (Backward)
+systemEvents.keyCode(48); // Tab
+systemEvents.keyCode(49); // Space
+systemEvents.keyCode(51); // Delete (Backward)
 systemEvents.keyCode(117); // Delete (Forward)
-systemEvents.keyCode(76);  // Enter (Numpad)
+systemEvents.keyCode(76); // Enter (Numpad)
 ```
 
 You can also use key codes with modifier keys:
 
 ```javascript
-systemEvents.keyCode(123, {using: 'option down'}); // Option+Left Arrow (Move by word)
+systemEvents.keyCode(123, { using: "option down" }); // Option+Left Arrow (Move by word)
 ```
 
 ## Important Considerations

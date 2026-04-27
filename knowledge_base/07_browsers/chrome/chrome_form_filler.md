@@ -36,157 +36,158 @@ The script runs in JXA (JavaScript for Automation) and accepts parameters to cus
 // Fills web forms with provided data in Chrome
 
 function run(argv) {
-    // Default parameters when run without arguments
-    if (argv.length === 0) {
-        // Launch interactive mode with UI
-        return runInteractiveMode();
-    }
-    
-    return "Please use with MCP parameters";
+  // Default parameters when run without arguments
+  if (argv.length === 0) {
+    // Launch interactive mode with UI
+    return runInteractiveMode();
+  }
+
+  return "Please use with MCP parameters";
 }
 
 // Main handler for MCP input parameters
 function processMCPParameters(params) {
-    try {
-        // Extract parameters
-        const url = params.url || "";                      // URL to open
-        const formData = params.formData || {};            // Data to fill in form
-        const selectors = params.selectors || {};          // Custom selectors
-        const submit = params.submit === true;             // Whether to auto-submit
-        const waitTime = params.waitTime || 5;             // Wait time in seconds after page load
-        const fillDelay = params.fillDelay || 0.1;         // Delay between filling fields (seconds)
-        
-        // Validate required parameters
-        if (!url) {
-            return {
-                success: false,
-                error: "URL is required"
-            };
-        }
-        
-        if (Object.keys(formData).length === 0) {
-            return {
-                success: false,
-                error: "Form data is required"
-            };
-        }
-        
-        // Fill the form
-        return fillForm(url, formData, selectors, submit, waitTime, fillDelay);
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error processing parameters: ${error.message}`
-        };
+  try {
+    // Extract parameters
+    const url = params.url || ""; // URL to open
+    const formData = params.formData || {}; // Data to fill in form
+    const selectors = params.selectors || {}; // Custom selectors
+    const submit = params.submit === true; // Whether to auto-submit
+    const waitTime = params.waitTime || 5; // Wait time in seconds after page load
+    const fillDelay = params.fillDelay || 0.1; // Delay between filling fields (seconds)
+
+    // Validate required parameters
+    if (!url) {
+      return {
+        success: false,
+        error: "URL is required",
+      };
     }
+
+    if (Object.keys(formData).length === 0) {
+      return {
+        success: false,
+        error: "Form data is required",
+      };
+    }
+
+    // Fill the form
+    return fillForm(url, formData, selectors, submit, waitTime, fillDelay);
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error processing parameters: ${error.message}`,
+    };
+  }
 }
 
 // Function to run interactive mode with dialog interfaces
 function runInteractiveMode() {
-    try {
-        const app = Application.currentApplication();
-        app.includeStandardAdditions = true;
-        
-        // Enter URL
-        const url = app.displayDialog("Enter the website URL:", {
-            defaultAnswer: "https://",
-            withIcon: "note",
-            buttons: ["Cancel", "Next"],
-            defaultButton: "Next"
-        }).textReturned;
-        
-        if (!url || !url.startsWith("http")) {
-            return "Invalid URL. Please enter a URL starting with http:// or https://";
-        }
-        
-        // Gather form data through dialogs
-        let formData = {};
-        let continueAdding = true;
-        
-        while (continueAdding) {
-            const fieldName = app.displayDialog("Enter field name/label (or Cancel to finish):", {
-                defaultAnswer: "",
-                withIcon: "note",
-                buttons: ["Finish", "Add Field"],
-                defaultButton: "Add Field"
-            });
-            
-            if (fieldName.buttonReturned === "Finish") {
-                continueAdding = false;
-                continue;
-            }
-            
-            const fieldValue = app.displayDialog(`Enter value for "${fieldName.textReturned}":`, {
-                defaultAnswer: "",
-                withIcon: "note",
-                buttons: ["Cancel", "Add"],
-                defaultButton: "Add"
-            });
-            
-            formData[fieldName.textReturned] = fieldValue.textReturned;
-        }
-        
-        // Ask about submission
-        const shouldSubmit = app.displayDialog("Would you like to automatically submit the form?", {
-            withIcon: "note",
-            buttons: ["No", "Yes"],
-            defaultButton: "No"
-        }).buttonReturned === "Yes";
-        
-        // Fill the form
-        return fillForm(url, formData, {}, shouldSubmit, 5, 0.5);
-    } catch (error) {
-        if (error.errorNumber === -128) {
-            return "Cancelled by user";
-        }
-        return `Error in interactive mode: ${error.message}`;
+  try {
+    const app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+
+    // Enter URL
+    const url = app.displayDialog("Enter the website URL:", {
+      defaultAnswer: "https://",
+      withIcon: "note",
+      buttons: ["Cancel", "Next"],
+      defaultButton: "Next",
+    }).textReturned;
+
+    if (!url || !url.startsWith("http")) {
+      return "Invalid URL. Please enter a URL starting with http:// or https://";
     }
+
+    // Gather form data through dialogs
+    let formData = {};
+    let continueAdding = true;
+
+    while (continueAdding) {
+      const fieldName = app.displayDialog("Enter field name/label (or Cancel to finish):", {
+        defaultAnswer: "",
+        withIcon: "note",
+        buttons: ["Finish", "Add Field"],
+        defaultButton: "Add Field",
+      });
+
+      if (fieldName.buttonReturned === "Finish") {
+        continueAdding = false;
+        continue;
+      }
+
+      const fieldValue = app.displayDialog(`Enter value for "${fieldName.textReturned}":`, {
+        defaultAnswer: "",
+        withIcon: "note",
+        buttons: ["Cancel", "Add"],
+        defaultButton: "Add",
+      });
+
+      formData[fieldName.textReturned] = fieldValue.textReturned;
+    }
+
+    // Ask about submission
+    const shouldSubmit =
+      app.displayDialog("Would you like to automatically submit the form?", {
+        withIcon: "note",
+        buttons: ["No", "Yes"],
+        defaultButton: "No",
+      }).buttonReturned === "Yes";
+
+    // Fill the form
+    return fillForm(url, formData, {}, shouldSubmit, 5, 0.5);
+  } catch (error) {
+    if (error.errorNumber === -128) {
+      return "Cancelled by user";
+    }
+    return `Error in interactive mode: ${error.message}`;
+  }
 }
 
 // Main function to fill a form
 function fillForm(url, formData, selectors, submit, waitTime, fillDelay) {
-    try {
-        const chrome = Application("Google Chrome");
-        chrome.includeStandardAdditions = true;
-        
-        // Activate Chrome
-        chrome.activate();
-        
-        // Open URL in a new tab
-        chrome.windows[0].makeNewTab({with: url});
-        delay(1); // Short delay to ensure tab opens
-        const tabCount = chrome.windows[0].tabs.length;
-        chrome.windows[0].activeTabIndex = tabCount;
-        
-        // Wait for page to load
-        delay(waitTime);
-        
-        // Get the JavaScript to execute
-        const jsScript = buildFormFillScript(formData, selectors, submit, fillDelay);
-        
-        // Execute the JavaScript in Chrome
-        const result = chrome.windows[0].activeTab.execute({javascript: jsScript});
-        
-        return {
-            success: true,
-            message: "Form filled successfully",
-            result: result
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error filling form: ${error.message}`
-        };
-    }
+  try {
+    const chrome = Application("Google Chrome");
+    chrome.includeStandardAdditions = true;
+
+    // Activate Chrome
+    chrome.activate();
+
+    // Open URL in a new tab
+    chrome.windows[0].makeNewTab({ with: url });
+    delay(1); // Short delay to ensure tab opens
+    const tabCount = chrome.windows[0].tabs.length;
+    chrome.windows[0].activeTabIndex = tabCount;
+
+    // Wait for page to load
+    delay(waitTime);
+
+    // Get the JavaScript to execute
+    const jsScript = buildFormFillScript(formData, selectors, submit, fillDelay);
+
+    // Execute the JavaScript in Chrome
+    const result = chrome.windows[0].activeTab.execute({ javascript: jsScript });
+
+    return {
+      success: true,
+      message: "Form filled successfully",
+      result: result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error filling form: ${error.message}`,
+    };
+  }
 }
 
 // Create the JavaScript to run in the browser context
 function buildFormFillScript(formData, selectors, submit, fillDelay) {
-    const customSelectors = JSON.stringify(selectors);
-    const formDataJson = JSON.stringify(formData);
-    const delayMs = fillDelay * 1000;
-    
-    return `
+  const customSelectors = JSON.stringify(selectors);
+  const formDataJson = JSON.stringify(formData);
+  const delayMs = fillDelay * 1000;
+
+  return `
     (function() {
         // Form fill function
         const formData = ${formDataJson};
@@ -414,9 +415,9 @@ function buildFormFillScript(formData, selectors, submit, fillDelay) {
 
 // Utility function to create a delay
 function delay(seconds) {
-    const app = Application.currentApplication();
-    app.includeStandardAdditions = true;
-    app.delay(seconds);
+  const app = Application.currentApplication();
+  app.includeStandardAdditions = true;
+  app.delay(seconds);
 }
 ```
 

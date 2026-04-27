@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Rotate Device'
+title: "iOS Simulator: Rotate Device"
 category: 13_developer
 id: ios_simulator_rotate_device
 description: Rotates iOS Simulator device to specific orientation.
@@ -36,10 +36,10 @@ on rotateSimulatorDevice(orientation, deviceIdentifier)
   if orientation is missing value or orientation is "" then
     return "error: Orientation not provided. Available orientations: 'portrait', 'landscape-left', 'landscape-right', 'portrait-upsidedown'."
   end if
-  
+
   -- Normalize to lowercase and handle some common variations
   set orientation to do shell script "echo " & quoted form of orientation & " | tr '[:upper:]' '[:lower:]'"
-  
+
   -- Map variations to standard names
   if orientation contains "portrait" and orientation contains "upside" or orientation contains "down" then
     set orientation to "portrait-upsidedown"
@@ -52,17 +52,17 @@ on rotateSimulatorDevice(orientation, deviceIdentifier)
   else if orientation contains "portrait" then
     set orientation to "portrait"
   end if
-  
+
   -- Validate orientation
   if orientation is not in {"portrait", "landscape-left", "landscape-right", "portrait-upsidedown"} then
     return "error: Invalid orientation. Available orientations: 'portrait', 'landscape-left', 'landscape-right', 'portrait-upsidedown'."
   end if
-  
+
   -- Default to booted device if not specified
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -73,7 +73,7 @@ on rotateSimulatorDevice(orientation, deviceIdentifier)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- Try using simctl orientation command first (newer Xcode versions)
     set rotationSuccess to false
     try
@@ -84,22 +84,22 @@ on rotateSimulatorDevice(orientation, deviceIdentifier)
       -- Command might not exist in older versions, we'll fall back to UI automation
       set rotationSuccess to false
     end try
-    
+
     -- If direct command failed, try UI automation approach
     if not rotationSuccess then
       tell application "Simulator" to activate
       delay 0.5
-      
+
       tell application "System Events"
         tell process "Simulator"
           -- Navigate to Device menu
           click menu item "Device" of menu bar 1
           delay 0.2
-          
+
           -- Click Rotate menu
           click menu item "Rotate" of menu "Device" of menu bar 1
           delay 0.2
-          
+
           -- Select appropriate rotation submenu item
           set menuItem to ""
           if orientation is "portrait" then
@@ -111,14 +111,14 @@ on rotateSimulatorDevice(orientation, deviceIdentifier)
           else if orientation is "portrait-upsidedown" then
             set menuItem to "Portrait (Upside Down)"
           end if
-          
+
           -- Select the menu item
           click menu item menuItem of menu "Rotate" of menu "Device" of menu bar 1
           set rotationSuccess to true
         end tell
       end tell
     end if
-    
+
     if rotationSuccess then
       set orientationText to ""
       if orientation is "portrait" then
@@ -130,7 +130,7 @@ on rotateSimulatorDevice(orientation, deviceIdentifier)
       else if orientation is "portrait-upsidedown" then
         set orientationText to "portrait upside down"
       end if
-      
+
       return "Successfully rotated " & deviceIdentifier & " simulator to " & orientationText & " orientation.
 
 This simulates the user rotating the physical device, which triggers:

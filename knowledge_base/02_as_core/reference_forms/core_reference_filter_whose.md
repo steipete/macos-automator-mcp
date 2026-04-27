@@ -1,5 +1,5 @@
 ---
-title: 'Core: Filter Reference Form (''whose'' / ''where'')'
+title: "Core: Filter Reference Form ('whose' / 'where')"
 category: 02_as_core
 id: core_reference_filter_whose
 description: >-
@@ -44,4 +44,5 @@ tell application "System Events"
 end tell
 *)
 ```
-END_TIP 
+
+END_TIP

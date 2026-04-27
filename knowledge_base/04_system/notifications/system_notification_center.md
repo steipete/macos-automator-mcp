@@ -42,11 +42,11 @@ end tell
 on scheduleNotifications()
   -- First notification immediately
   display notification "First notification" with title "Sequence Started"
-  
+
   -- Second notification after 5 seconds
   delay 5
   display notification "Second notification (after 5s)" with title "Sequence Continued"
-  
+
   -- Third notification after another 5 seconds
   delay 5
   display notification "Final notification (after 10s)" with title "Sequence Completed" sound name "Glass"
@@ -64,47 +64,47 @@ function createAdvancedNotification() {
   // Basic notification
   app = Application.currentApplication();
   app.includeStandardAdditions = true;
-  
+
   // Simple notification
   app.displayNotification("This is a JXA notification", {
     withTitle: "JXA Notification",
     subtitle: "More control with JXA",
-    soundName: "Glass"
+    soundName: "Glass",
   });
-  
+
   // More advanced options using specific bundleIdentifier
   let notification = {
     title: "Calendar Event",
     subtitle: "Meeting with Team",
     message: "Conference Room B at 2pm",
     soundName: "Basso",
-    appIcon: "/Applications/Calendar.app/Contents/Resources/App.icns"
+    appIcon: "/Applications/Calendar.app/Contents/Resources/App.icns",
   };
-  
+
   // You can use Objective-C bridge for even more control
-  ObjC.import('Foundation');
-  ObjC.import('AppKit');
-  
+  ObjC.import("Foundation");
+  ObjC.import("AppKit");
+
   // Create a user notification
   let center = $.NSUserNotificationCenter.defaultUserNotificationCenter;
   let notification = $.NSUserNotification.alloc.init;
-  
+
   notification.title = "Advanced Notification";
   notification.subtitle = "Using Objective-C Bridge";
   notification.informativeText = "This notification has more options";
   notification.soundName = "NSUserNotificationDefaultSoundName";
-  
+
   // Add a custom action button (works in older macOS versions)
   notification.hasActionButton = true;
   notification.actionButtonTitle = "View";
-  
+
   // Set delivery date for scheduled notification
   let deliveryDate = $.NSDate.dateWithTimeIntervalSinceNow(10); // 10 seconds from now
   notification.deliveryDate = deliveryDate;
-  
+
   // Send the notification
   center.scheduleNotification(notification);
-  
+
   return "Advanced notification scheduled";
 }
 
@@ -122,13 +122,13 @@ To create a notification with a custom icon and action buttons (for older macOS 
 on notifyWithCustomIcon()
   set iconPath to "/Applications/Safari.app/Contents/Resources/AppIcon.icns"
   set bundleID to "com.apple.Safari"
-  
+
   do shell script "osascript -e 'display notification \"Visit website now\" with title \"Safari Reminder\" subtitle \"Important Site Update\" sound name \"Basso\"'"
-  
+
   -- Note: The following approach would work in earlier macOS versions with the terminal-notifier utility
   -- This is included as a reference but requires terminal-notifier to be installed
   -- do shell script "terminal-notifier -message 'Visit website now' -title 'Safari Reminder' -subtitle 'Important Site Update' -appIcon " & quoted form of iconPath & " -sound Basso -sender " & bundleID
-  
+
   return "Custom icon notification sent"
 end notifyWithCustomIcon
 
@@ -137,7 +137,7 @@ end notifyWithCustomIcon
 on listenForNotificationResponse()
   -- This would typically be implemented using JXA with Objective-C bridge
   -- The actual implementation requires setting up a delegate for NSUserNotificationCenter
-  
+
   return "Notification response listener would be set up here"
 end listenForNotificationResponse
 

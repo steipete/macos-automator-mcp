@@ -5,7 +5,7 @@ description: >-
   Script to manage VirtualBuddy macOS virtual machines - list, start, stop, and
   check status of VMs.
 language: applescript
-compatibility: 'macOS Sonoma, Ventura, Monterey'
+compatibility: "macOS Sonoma, Ventura, Monterey"
 author: Claude
 tags:
   - virtualbuddy
@@ -285,16 +285,16 @@ on run
             display dialog "VirtualBuddy is not installed on this system." buttons {"OK"} default button "OK" with icon stop
             return
         end if
-        
+
         -- Main menu for the script
         set actionChoice to choose from list {"List VMs", "Start VM", "Stop VM", "Check VM Status", "Quit"} with prompt "Select an action:" default items {"List VMs"}
-        
+
         if actionChoice is false then
             return
         end if
-        
+
         set selectedAction to item 1 of actionChoice
-        
+
         if selectedAction is "List VMs" then
             listVirtualMachines()
         else if selectedAction is "Start VM" then
@@ -324,7 +324,7 @@ on run
         else if selectedAction is "Quit" then
             return
         end if
-        
+
     on error errMsg number errNum
         logError("Error in main handler", errMsg, errNum)
     end try
@@ -352,11 +352,11 @@ end applicationIsInstalled
 on listVirtualMachines()
     try
         set vmList to {}
-        
+
         -- Launch VirtualBuddy if it's not already running
         tell application "VirtualBuddy" to activate
         delay 1 -- Give the app time to initialize
-        
+
         tell application "System Events"
             tell process "VirtualBuddy"
                 -- Get VM names from table view in main window
@@ -369,7 +369,7 @@ on listVirtualMachines()
                 end if
             end tell
         end tell
-        
+
         if vmList is {} then
             display dialog "No virtual machines found." buttons {"OK"} default button "OK" with icon note
         else
@@ -377,12 +377,12 @@ on listVirtualMachines()
             repeat with i from 1 to count of vmList
                 set formattedList to formattedList & "• " & item i of vmList & return
             end repeat
-            
+
             display dialog formattedList buttons {"OK"} default button "OK" with icon note
         end if
-        
+
         return vmList
-        
+
     on error errMsg number errNum
         logError("Error listing VMs", errMsg, errNum)
         return {}
@@ -394,13 +394,13 @@ on startVirtualMachine(vmName)
     try
         tell application "VirtualBuddy" to activate
         delay 1
-        
+
         -- Check if VM is already running
         if isVirtualMachineRunning(vmName) then
             display dialog "VM \"" & vmName & "\" is already running." buttons {"OK"} default button "OK" with icon note
             return
         end if
-        
+
         tell application "System Events"
             tell process "VirtualBuddy"
                 -- Find and select the VM in the list
@@ -413,7 +413,7 @@ on startVirtualMachine(vmName)
                         end if
                     end repeat
                 end if
-                
+
                 -- Click the "Start" button
                 if exists button "Start" of window 1 then
                     click button "Start" of window 1
@@ -429,7 +429,7 @@ on startVirtualMachine(vmName)
                 end if
             end tell
         end tell
-        
+
     on error errMsg number errNum
         logError("Error starting VM: " & vmName, errMsg, errNum)
     end try
@@ -440,13 +440,13 @@ on stopVirtualMachine(vmName)
     try
         tell application "VirtualBuddy" to activate
         delay 1
-        
+
         -- Check if VM is running
         if not isVirtualMachineRunning(vmName) then
             display dialog "VM \"" & vmName & "\" is not running." buttons {"OK"} default button "OK" with icon note
             return
         end if
-        
+
         tell application "System Events"
             tell process "VirtualBuddy"
                 -- Find and select the VM in the list
@@ -459,7 +459,7 @@ on stopVirtualMachine(vmName)
                         end if
                     end repeat
                 end if
-                
+
                 -- Try to find the Stop button (might be labeled "Shut Down" or have an icon)
                 if exists button "Stop" of window 1 then
                     click button "Stop" of window 1
@@ -474,7 +474,7 @@ on stopVirtualMachine(vmName)
                         return
                     end try
                 end if
-                
+
                 -- Handle confirmation dialog if it appears
                 delay 1
                 if exists sheet 1 of window 1 then
@@ -484,11 +484,11 @@ on stopVirtualMachine(vmName)
                         click button "Force Shut Down" of sheet 1 of window 1
                     end if
                 end if
-                
+
                 display dialog "Stopping VM \"" & vmName & "\"..." buttons {"OK"} default button "OK" with icon note
             end tell
         end tell
-        
+
     on error errMsg number errNum
         logError("Error stopping VM: " & vmName, errMsg, errNum)
     end try
@@ -499,15 +499,15 @@ on checkVirtualMachineStatus(vmName)
     try
         tell application "VirtualBuddy" to activate
         delay 1
-        
+
         set isRunning to isVirtualMachineRunning(vmName)
-        
+
         if isRunning then
             display dialog "VM \"" & vmName & "\" is currently running." buttons {"OK"} default button "OK" with icon note
         else
             display dialog "VM \"" & vmName & "\" is currently stopped." buttons {"OK"} default button "OK" with icon note
         end if
-        
+
     on error errMsg number errNum
         logError("Error checking VM status: " & vmName, errMsg, errNum)
     end try
@@ -518,9 +518,9 @@ on isVirtualMachineRunning(vmName)
     try
         tell application "VirtualBuddy" to activate
         delay 1
-        
+
         set isRunning to false
-        
+
         tell application "System Events"
             tell process "VirtualBuddy"
                 -- Find the VM in the list
@@ -554,9 +554,9 @@ on isVirtualMachineRunning(vmName)
                 end if
             end tell
         end tell
-        
+
         return isRunning
-        
+
     on error errMsg number errNum
         logError("Error checking if VM is running: " & vmName, errMsg, errNum)
         return false

@@ -2,8 +2,23 @@
   "name": "@steipete/macos-automator-mcp",
   "version": "0.4.1",
   "description": "MCP Server to execute AppleScript and JXA on macOS.",
-  "type": "module",
-  "main": "dist/server.js",
+  "keywords": [
+    "applescript",
+    "automation",
+    "jxa",
+    "macos",
+    "mcp"
+  ],
+  "homepage": "https://github.com/steipete/macos-automator-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/steipete/macos-automator-mcp/issues"
+  },
+  "license": "MIT",
+  "author": "steipete",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steipete/macos-automator-mcp.git"
+  },
   "bin": {
     "macos-automator-mcp": "dist/server.js"
   },
@@ -13,48 +28,32 @@
     "README.md",
     "LICENSE"
   ],
+  "type": "module",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\" \"*.md\"",
+    "lint": "pnpm format:check && oxlint --deny-warnings src tests scripts",
+    "format": "oxfmt --write .",
     "validate": "tsx scripts/validate-kb.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsgo --noEmit",
+    "format:check": "oxfmt --check ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/steipete/macos-automator-mcp.git"
-  },
-  "keywords": [
-    "mcp",
-    "applescript",
-    "jxa",
-    "macos",
-    "automation"
-  ],
-  "author": "steipete",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/steipete/macos-automator-mcp/issues"
-  },
-  "homepage": "https://github.com/steipete/macos-automator-mcp#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.25.1",
-    "fuse.js": "^7.1.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "fuse.js": "^7.3.0",
     "gray-matter": "^4.0.3",
-    "zod": "^4.2.1"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "@types/node": "^25.0.3",
-    "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.7.4",
+    "@types/node": "^25.6.0",
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.50.1",
-    "vitest": "^4.0.16"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   },
   "engines": {
     "node": ">=18.0.0"

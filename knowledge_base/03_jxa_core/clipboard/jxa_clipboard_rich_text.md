@@ -28,7 +28,7 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Use Objective-C bridge
-ObjC.import('AppKit');
+ObjC.import("AppKit");
 ```
 
 ## Set Rich Text to Clipboard
@@ -40,10 +40,10 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Use Objective-C bridge
-ObjC.import('AppKit');
+ObjC.import("AppKit");
 
 // Create a mutable attributed string
-const string = $.NSMutableAttributedString.alloc.initWithString('Hello, World!');
+const string = $.NSMutableAttributedString.alloc.initWithString("Hello, World!");
 
 // Apply some styling
 const range = $.NSMakeRange(0, 5); // Range for "Hello"
@@ -71,37 +71,37 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Use Objective-C bridge
-ObjC.import('AppKit');
+ObjC.import("AppKit");
 
 function getRichTextFromClipboard() {
-    const pasteboard = $.NSPasteboard.generalPasteboard;
-    
-    // Check if clipboard contains RTF
-    if (pasteboard.dataForType($.NSPasteboardTypeRTF)) {
-        // Get the RTF data
-        const rtfData = pasteboard.dataForType($.NSPasteboardTypeRTF);
-        
-        // Create an attributed string from the RTF data
-        const attributedString = $.NSAttributedString.alloc.initWithRTF_documentAttributes(
-            rtfData, 
-            $.NSMutableDictionary.alloc.init
-        );
-        
-        if (attributedString) {
-            // Extract the plain text
-            const plainText = ObjC.unwrap(attributedString.string);
-            console.log(`Rich text found in clipboard: "${plainText}"`);
-            
-            // Return both the plain text and the attributed string
-            return {
-                plainText: plainText,
-                attributedString: attributedString
-            };
-        }
+  const pasteboard = $.NSPasteboard.generalPasteboard;
+
+  // Check if clipboard contains RTF
+  if (pasteboard.dataForType($.NSPasteboardTypeRTF)) {
+    // Get the RTF data
+    const rtfData = pasteboard.dataForType($.NSPasteboardTypeRTF);
+
+    // Create an attributed string from the RTF data
+    const attributedString = $.NSAttributedString.alloc.initWithRTF_documentAttributes(
+      rtfData,
+      $.NSMutableDictionary.alloc.init,
+    );
+
+    if (attributedString) {
+      // Extract the plain text
+      const plainText = ObjC.unwrap(attributedString.string);
+      console.log(`Rich text found in clipboard: "${plainText}"`);
+
+      // Return both the plain text and the attributed string
+      return {
+        plainText: plainText,
+        attributedString: attributedString,
+      };
     }
-    
-    console.log("No rich text found in clipboard");
-    return null;
+  }
+
+  console.log("No rich text found in clipboard");
+  return null;
 }
 
 // Use the function
@@ -117,37 +117,49 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Use Objective-C bridge
-ObjC.import('AppKit');
+ObjC.import("AppKit");
 
 function createStyledText() {
-    // Create a mutable attributed string
-    const string = $.NSMutableAttributedString.alloc.initWithString('Formatting Example:\n\n');
-    
-    // Add bold text
-    const boldText = $.NSMutableAttributedString.alloc.initWithString('Bold text. ');
-    const boldFont = $.NSFont.boldSystemFontOfSize(14);
-    boldText.addAttributeValueRange($.NSFontAttributeName, boldFont, $.NSMakeRange(0, boldText.length));
-    string.appendAttributedString(boldText);
-    
-    // Add italic text
-    const italicText = $.NSMutableAttributedString.alloc.initWithString('Italic text. ');
-    const italicFont = $.NSFont.fontWithName_size('Helvetica-Oblique', 14);
-    italicText.addAttributeValueRange($.NSFontAttributeName, italicFont, $.NSMakeRange(0, italicText.length));
-    string.appendAttributedString(italicText);
-    
-    // Add colored text
-    const coloredText = $.NSMutableAttributedString.alloc.initWithString('Colored text.');
-    const blueColor = $.NSColor.blueColor;
-    coloredText.addAttributeValueRange($.NSForegroundColorAttributeName, blueColor, $.NSMakeRange(0, coloredText.length));
-    string.appendAttributedString(coloredText);
-    
-    // Set to pasteboard
-    const pasteboard = $.NSPasteboard.generalPasteboard;
-    pasteboard.clearContents;
-    pasteboard.writeObjectsForTypes([string], [$.NSPasteboardTypeRTF]);
-    
-    console.log("Styled text set to clipboard");
-    return string;
+  // Create a mutable attributed string
+  const string = $.NSMutableAttributedString.alloc.initWithString("Formatting Example:\n\n");
+
+  // Add bold text
+  const boldText = $.NSMutableAttributedString.alloc.initWithString("Bold text. ");
+  const boldFont = $.NSFont.boldSystemFontOfSize(14);
+  boldText.addAttributeValueRange(
+    $.NSFontAttributeName,
+    boldFont,
+    $.NSMakeRange(0, boldText.length),
+  );
+  string.appendAttributedString(boldText);
+
+  // Add italic text
+  const italicText = $.NSMutableAttributedString.alloc.initWithString("Italic text. ");
+  const italicFont = $.NSFont.fontWithName_size("Helvetica-Oblique", 14);
+  italicText.addAttributeValueRange(
+    $.NSFontAttributeName,
+    italicFont,
+    $.NSMakeRange(0, italicText.length),
+  );
+  string.appendAttributedString(italicText);
+
+  // Add colored text
+  const coloredText = $.NSMutableAttributedString.alloc.initWithString("Colored text.");
+  const blueColor = $.NSColor.blueColor;
+  coloredText.addAttributeValueRange(
+    $.NSForegroundColorAttributeName,
+    blueColor,
+    $.NSMakeRange(0, coloredText.length),
+  );
+  string.appendAttributedString(coloredText);
+
+  // Set to pasteboard
+  const pasteboard = $.NSPasteboard.generalPasteboard;
+  pasteboard.clearContents;
+  pasteboard.writeObjectsForTypes([string], [$.NSPasteboardTypeRTF]);
+
+  console.log("Styled text set to clipboard");
+  return string;
 }
 
 // Create and set styled text to clipboard

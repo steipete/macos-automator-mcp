@@ -1,5 +1,5 @@
 ---
-title: 'Reminders: Create New Reminder'
+title: "Reminders: Create New Reminder"
 id: reminders_create_reminder
 category: 09_productivity
 description: >-
@@ -69,7 +69,7 @@ on runWithInput(inputData, legacyArguments)
     end if
 
     set reminderProps to {name:rName}
-    
+
     if rDueDateStr is not missing value and rDueDateStr is not "" then
         try
             set reminderProps to reminderProps & {due date:(date rDueDateStr)}
@@ -77,7 +77,7 @@ on runWithInput(inputData, legacyArguments)
             log "Warning: Invalid due date format ('" & rDueDateStr & "') for reminder. Due date not set. Error: " & errMsg
         end try
     end if
-    
+
     if rPriorityNum is not missing value and rPriorityNum is not "" then
         try
             set numericPriority to rPriorityNum as integer
@@ -90,11 +90,11 @@ on runWithInput(inputData, legacyArguments)
             log "Warning: Priority '" & rPriorityNum & "' was not a valid number. Priority not set."
         end try
     end if
-    
+
     if rBody is not missing value and rBody is not "" then
         set reminderProps to reminderProps & {body:rBody}
     end if
-    
+
     tell application "Reminders"
         activate
         try
@@ -106,11 +106,11 @@ on runWithInput(inputData, legacyArguments)
                     log "Warning: Reminder list '" & rListName & "' not found. Using default list."
                 end if
             end if
-            
+
             if targetList is missing value then
                 set targetList to default list
             end if
-            
+
             tell targetList
                 make new reminder with properties reminderProps
             end tell
@@ -126,4 +126,5 @@ end runWithInput
 -- my runWithInput({reminderName:"Test From Script Editor", priorityNum:5, dueDateString:"tomorrow 5pm"}, missing value)
 return my runWithInput(inputData, legacyArguments)
 ```
---- 
+
+---

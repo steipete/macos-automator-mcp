@@ -1,5 +1,5 @@
 ---
-title: 'Electron Editors: Open DevTools & Inject JavaScript'
+title: "Electron Editors: Open DevTools & Inject JavaScript"
 category: 08_editors
 id: electron_editors_devtools_js_inject
 description: >-
@@ -52,16 +52,16 @@ on injectJSViaDevTools(appName, jsCode)
     tell application "System Events"
       tell process appName -- Ensures keystrokes go to the target app
         set frontmost to true
-        
+
         -- Open Developer Tools (Option+Command+I)
         key code 34 using {command down, option down} -- Key code for 'I'
         delay 1.0 -- Wait for DevTools to open (console usually gets focus)
-        
+
         -- Keystroke the JavaScript. Note: complex characters might not type correctly.
         keystroke jsCode
         delay 0.2
         key code 36 -- Return (Enter key) to execute
-        
+
         -- Optional: Close DevTools again
         -- delay 0.5
         -- key code 34 using {command down, option down}
@@ -75,4 +75,5 @@ end injectJSViaDevTools
 
 return my injectJSViaDevTools("--MCP_INPUT:targetAppName", "--MCP_INPUT:jsCodeToRun")
 ```
+
 END_TIP

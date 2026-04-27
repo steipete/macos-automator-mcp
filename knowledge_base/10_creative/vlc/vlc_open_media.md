@@ -1,5 +1,5 @@
 ---
-title: 'VLC: Open Media File or URL'
+title: "VLC: Open Media File or URL"
 category: 10_creative
 id: vlc_open_media
 description: Open a local media file or streaming URL in VLC Media Player.
@@ -95,15 +95,15 @@ if not isURL then
         set mediaURL to "file://" & mediaPathParam
       end try
     end if
-    
+
     -- For local files, check if they exist (not applicable for URLs)
     try
       -- Extract POSIX path from URL for file existence check
       set posixPath to text 8 thru -1 of mediaURL
-      
+
       -- Use do shell script to check if file exists
       do shell script "[ -f " & quoted form of posixPath & " ] && echo 'yes' || echo 'no'"
-      
+
       if result is "no" then
         return "Error: File not found at path: " & mediaPathParam
       end if
@@ -120,40 +120,40 @@ tell application "VLC"
   -- Launch VLC if it's not running
   if not running then
     activate
-    
+
     -- Short delay to let VLC launch
     delay 1
   end if
-  
+
   try
     -- Open the media file or URL
     OpenURL mediaURL
-    
+
     -- Start playback
     play
-    
+
     -- If a start time was specified, jump to that position
     if startTimeNumber > 0 then
       -- Wait briefly for the media to load
       delay 0.5
-      
+
       -- Set the position
       set current time to startTimeNumber
     end if
-    
+
     -- Set fullscreen mode if requested
     if fullscreenParam is "yes" then
       -- Wait briefly before toggling fullscreen
       delay 0.5
       fullscreen
     end if
-    
+
     -- Wait briefly for media to start playing
     delay 1
-    
+
     -- Get information about what's playing
     set mediaInfo to ""
-    
+
     -- Check if playback actually started
     if playing then
       -- Try to get media info
@@ -161,21 +161,21 @@ tell application "VLC"
         set mediaName to name of current item
         set mediaDuration to duration
         set mediaPosition to current time
-        
+
         -- Format duration for display
         set formattedDuration to my formatTime(mediaDuration)
-        
+
         -- Build info message
         set mediaInfo to "Now playing in VLC:" & return
         set mediaInfo to mediaInfo & "Media: " & mediaName & return
         set mediaInfo to mediaInfo & "Duration: " & formattedDuration
-        
+
         -- Add start position info if applicable
         if startTimeNumber > 0 then
           set formattedStartTime to my formatTime(startTimeNumber)
           set mediaInfo to mediaInfo & return & "Starting at position: " & formattedStartTime
         end if
-        
+
         -- Add fullscreen info if applicable
         if fullscreenParam is "yes" then
           set mediaInfo to mediaInfo & return & "Mode: Fullscreen"
@@ -188,9 +188,9 @@ tell application "VLC"
       -- Playback didn't start
       set mediaInfo to "Media loaded in VLC but playback didn't start: " & mediaPathParam
     end if
-    
+
     return mediaInfo
-    
+
   on error errMsg number errNum
     return "Error opening media (" & errNum & "): " & errMsg
   end try
@@ -201,25 +201,25 @@ on formatTime(seconds)
   set hours to seconds div 3600
   set mins to (seconds mod 3600) div 60
   set secs to seconds mod 60
-  
+
   if hours > 0 then
     set hoursText to hours as text
     if hours < 10 then set hoursText to "0" & hoursText
-    
+
     set minsText to mins as text
     if mins < 10 then set minsText to "0" & minsText
-    
+
     set secsText to round secs as text
     if secs < 10 then set secsText to "0" & secsText
-    
+
     return hoursText & ":" & minsText & ":" & secsText
   else
     set minsText to mins as text
     if mins < 10 then set minsText to "0" & minsText
-    
+
     set secsText to round secs as text
     if secs < 10 then set secsText to "0" & secsText
-    
+
     return minsText & ":" & secsText
   end if
 end formatTime

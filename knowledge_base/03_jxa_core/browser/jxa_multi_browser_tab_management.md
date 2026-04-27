@@ -1,5 +1,5 @@
 ---
-title: 'JXA Multi-browser Tab Management'
+title: "JXA Multi-browser Tab Management"
 category: 03_jxa_core
 id: jxa_multi_browser_tab_management
 description: Manage tabs across multiple browsers using JavaScript for Automation
@@ -29,21 +29,21 @@ Both Safari and Google Chrome must have Automation permissions enabled in System
 function manageBrowserTabs() {
   const app = Application.currentApplication();
   app.includeStandardAdditions = true;
-  
+
   // Function to get tab info from both browsers
   function getBrowserTabsInfo() {
     let info = "";
-    
+
     // Check Safari
     try {
-      const safari = Application('Safari');
+      const safari = Application("Safari");
       if (safari.running()) {
         info += "SAFARI TABS:\n";
         for (let i = 0; i < safari.windows.length; i++) {
           const tabs = safari.windows[i].tabs;
-          info += `Window ${i+1}: ${tabs.length} tabs\n`;
+          info += `Window ${i + 1}: ${tabs.length} tabs\n`;
           for (let j = 0; j < tabs.length; j++) {
-            info += `  ${j+1}. ${tabs[j].name()}\n`;
+            info += `  ${j + 1}. ${tabs[j].name()}\n`;
           }
         }
       } else {
@@ -52,17 +52,17 @@ function manageBrowserTabs() {
     } catch (e) {
       info += "Error accessing Safari: " + e + "\n";
     }
-    
+
     // Check Chrome
     try {
-      const chrome = Application('Google Chrome');
+      const chrome = Application("Google Chrome");
       if (chrome.running()) {
         info += "\nCHROME TABS:\n";
         for (let i = 0; i < chrome.windows.length; i++) {
           const tabs = chrome.windows[i].tabs;
-          info += `Window ${i+1}: ${tabs.length} tabs\n`;
+          info += `Window ${i + 1}: ${tabs.length} tabs\n`;
           for (let j = 0; j < tabs.length; j++) {
-            info += `  ${j+1}. ${tabs[j].title()}\n`;
+            info += `  ${j + 1}. ${tabs[j].title()}\n`;
           }
         }
       } else {
@@ -71,25 +71,25 @@ function manageBrowserTabs() {
     } catch (e) {
       info += "Error accessing Chrome: " + e + "\n";
     }
-    
+
     return info;
   }
-  
+
   // Get initial tab information
   const tabInfo = getBrowserTabsInfo();
   app.displayDialog(tabInfo);
-  
+
   // Bonus: Open the same URL in both browsers
   const url = app.displayDialog("Enter a URL to open in both browsers:", {
     defaultAnswer: "https://apple.com",
     buttons: ["Cancel", "Open"],
-    defaultButton: "Open"
+    defaultButton: "Open",
   }).textReturned;
-  
+
   if (url) {
     // Open in Safari
     try {
-      const safari = Application('Safari');
+      const safari = Application("Safari");
       safari.activate();
       if (safari.windows.length === 0) {
         safari.Document().make();
@@ -98,10 +98,10 @@ function manageBrowserTabs() {
     } catch (e) {
       app.displayDialog("Error opening in Safari: " + e);
     }
-    
+
     // Open in Chrome
     try {
-      const chrome = Application('Google Chrome');
+      const chrome = Application("Google Chrome");
       chrome.activate();
       if (chrome.windows.length === 0) {
         chrome.Window().make();
@@ -111,7 +111,7 @@ function manageBrowserTabs() {
       app.displayDialog("Error opening in Chrome: " + e);
     }
   }
-  
+
   return "Browser tab management completed.";
 }
 ```

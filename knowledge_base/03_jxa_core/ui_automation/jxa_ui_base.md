@@ -27,117 +27,117 @@ This base script is designed to be used with various UI automation actions.
 // Core functionality for UI automation
 
 function run(argv) {
-    // When run directly with no arguments, show a basic example
-    if (argv.length === 0) {
-        return demonstrateUIAutomation();
-    }
-    
-    return "Please use with MCP parameters";
+  // When run directly with no arguments, show a basic example
+  if (argv.length === 0) {
+    return demonstrateUIAutomation();
+  }
+
+  return "Please use with MCP parameters";
 }
 
 // Handler for MCP input parameters
 function processMCPParameters(params) {
-    try {
-        // Extract parameters
-        const action = params.action || "";
-        const appName = params.appName || "";
-        const target = params.target || {};
-        const wait = params.wait !== undefined ? params.wait : 1;
-        
-        // Validate required parameters
-        if (!action) {
-            return {
-                success: false,
-                error: "Action parameter is required"
-            };
-        }
-        
-        if (!appName) {
-            return {
-                success: false,
-                error: "Application name is required"
-            };
-        }
-        
-        // Perform the requested action
-        switch (action) {
-            case "click":
-                return clickElement(appName, target, wait);
-            case "getValue":
-                return getElementValue(appName, target, wait);
-            case "setValue":
-                return setElementValue(appName, target, params.value, wait);
-            case "getWindowInfo":
-                return getWindowInformation(appName);
-            case "getUIHierarchy":
-                return getUIElementHierarchy(appName, target);
-            case "performMenuAction":
-                return performMenuAction(appName, params.menuItems);
-            case "waitForElement":
-                return waitForElement(appName, target, params.timeout || 10);
-            case "scrollElement":
-                return scrollElement(appName, target, params.direction, params.amount);
-            case "dragAndDrop":
-                return dragAndDrop(appName, target, params.destination);
-            default:
-                return {
-                    success: false,
-                    error: `Unknown action: ${action}`
-                };
-        }
-    } catch (error) {
+  try {
+    // Extract parameters
+    const action = params.action || "";
+    const appName = params.appName || "";
+    const target = params.target || {};
+    const wait = params.wait !== undefined ? params.wait : 1;
+
+    // Validate required parameters
+    if (!action) {
+      return {
+        success: false,
+        error: "Action parameter is required",
+      };
+    }
+
+    if (!appName) {
+      return {
+        success: false,
+        error: "Application name is required",
+      };
+    }
+
+    // Perform the requested action
+    switch (action) {
+      case "click":
+        return clickElement(appName, target, wait);
+      case "getValue":
+        return getElementValue(appName, target, wait);
+      case "setValue":
+        return setElementValue(appName, target, params.value, wait);
+      case "getWindowInfo":
+        return getWindowInformation(appName);
+      case "getUIHierarchy":
+        return getUIElementHierarchy(appName, target);
+      case "performMenuAction":
+        return performMenuAction(appName, params.menuItems);
+      case "waitForElement":
+        return waitForElement(appName, target, params.timeout || 10);
+      case "scrollElement":
+        return scrollElement(appName, target, params.direction, params.amount);
+      case "dragAndDrop":
+        return dragAndDrop(appName, target, params.destination);
+      default:
         return {
-            success: false,
-            error: `Error processing parameters: ${error.message}`
+          success: false,
+          error: `Unknown action: ${action}`,
         };
     }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error processing parameters: ${error.message}`,
+    };
+  }
 }
 
 // Basic UI automation demonstration
 function demonstrateUIAutomation() {
-    try {
-        const app = Application.currentApplication();
-        app.includeStandardAdditions = true;
-        
-        // Show example dialog
-        const exampleApps = ["Finder", "Safari", "Mail", "System Settings", "Calendar"];
-        const selectedApp = app.chooseFromList(exampleApps, {
-            withPrompt: "Select an application to demonstrate UI automation:",
-            defaultItems: ["Finder"]
-        });
-        
-        if (!selectedApp) return "Demonstration cancelled";
-        const appName = selectedApp[0];
-        
-        // Activate the selected application
-        Application(appName).activate();
-        delay(0.5);
-        
-        // Get window information for the app
-        const windowInfo = getWindowInformation(appName);
-        
-        // Show some UI hierarchy for the application
-        const hierarchyInfo = getUIElementHierarchy(appName, {});
-        
-        return {
-            success: true,
-            message: `Demonstrated UI automation with ${appName}`,
-            windowInfo: windowInfo,
-            hierarchySample: hierarchyInfo.slice(0, 3) // Just show first few items to avoid overwhelming
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error in demonstration: ${error.message}`
-        };
-    }
+  try {
+    const app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+
+    // Show example dialog
+    const exampleApps = ["Finder", "Safari", "Mail", "System Settings", "Calendar"];
+    const selectedApp = app.chooseFromList(exampleApps, {
+      withPrompt: "Select an application to demonstrate UI automation:",
+      defaultItems: ["Finder"],
+    });
+
+    if (!selectedApp) return "Demonstration cancelled";
+    const appName = selectedApp[0];
+
+    // Activate the selected application
+    Application(appName).activate();
+    delay(0.5);
+
+    // Get window information for the app
+    const windowInfo = getWindowInformation(appName);
+
+    // Show some UI hierarchy for the application
+    const hierarchyInfo = getUIElementHierarchy(appName, {});
+
+    return {
+      success: true,
+      message: `Demonstrated UI automation with ${appName}`,
+      windowInfo: windowInfo,
+      hierarchySample: hierarchyInfo.slice(0, 3), // Just show first few items to avoid overwhelming
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error in demonstration: ${error.message}`,
+    };
+  }
 }
 
 // Utility function to create a delay
 function delay(seconds) {
-    const app = Application.currentApplication();
-    app.includeStandardAdditions = true;
-    app.delay(seconds);
+  const app = Application.currentApplication();
+  app.includeStandardAdditions = true;
+  app.delay(seconds);
 }
 ```
 

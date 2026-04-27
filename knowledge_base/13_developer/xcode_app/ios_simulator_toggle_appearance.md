@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Toggle Dark/Light Mode'
+title: "iOS Simulator: Toggle Dark/Light Mode"
 category: 13_developer
 id: ios_simulator_toggle_appearance
 description: Toggles between Dark and Light appearance modes in iOS Simulator.
@@ -36,7 +36,7 @@ on toggleSimulatorAppearance(appearanceMode, deviceIdentifier)
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Default to toggle if appearance mode not specified
   if appearanceMode is missing value or appearanceMode is "" then
     set appearanceMode to "toggle"
@@ -44,12 +44,12 @@ on toggleSimulatorAppearance(appearanceMode, deviceIdentifier)
     -- Normalize to lowercase
     set appearanceMode to do shell script "echo " & quoted form of appearanceMode & " | tr '[:upper:]' '[:lower:]'"
   end if
-  
+
   -- Check appearance mode is valid
   if appearanceMode is not in {"dark", "light", "toggle"} then
     return "error: Invalid appearance mode. Must be 'dark', 'light', or 'toggle'."
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -60,7 +60,7 @@ on toggleSimulatorAppearance(appearanceMode, deviceIdentifier)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- If toggle is requested, we need to determine current appearance first
     if appearanceMode is "toggle" then
       -- Try to determine current appearance via UI scripting as a fallback
@@ -71,14 +71,14 @@ on toggleSimulatorAppearance(appearanceMode, deviceIdentifier)
             -- Try clicking on Hardware menu
             click menu item "Features" of menu bar 1
             delay 0.2
-            
+
             -- Check if Toggle Appearance menu item has a checkmark
             set toggle_item to menu item "Toggle Appearance" of menu "Features" of menu bar 1
-            
+
             -- Click to hide the menu
             key code 53 -- Escape key
             delay 0.2
-            
+
             -- Set the appearance based on best guess from menu state
             if value of attribute "AXMenuItemMarkChar" of toggle_item is missing value then
               -- No checkmark, assume light mode
@@ -94,10 +94,10 @@ on toggleSimulatorAppearance(appearanceMode, deviceIdentifier)
         set appearanceMode to "dark"
       end try
     end if
-    
+
     -- Set the appearance using simctl ui command
     set appearanceCmd to "xcrun simctl ui " & quoted form of deviceIdentifier & " appearance " & appearanceMode
-    
+
     try
       do shell script appearanceCmd
       set appearanceChanged to true
@@ -117,7 +117,7 @@ on toggleSimulatorAppearance(appearanceMode, deviceIdentifier)
         return "Error changing appearance mode: " & errMsg
       end try
     end try
-    
+
     if appearanceChanged then
       return "Successfully changed appearance to " & appearanceMode & " mode on " & deviceIdentifier & " simulator.
 

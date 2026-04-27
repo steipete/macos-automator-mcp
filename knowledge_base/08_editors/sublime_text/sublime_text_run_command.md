@@ -12,7 +12,7 @@ keywords:
   - code commands
 usage_examples:
   - Open the command palette in Sublime Text
-  - 'Execute specific commands like ''Save All'', ''Format File'', etc.'
+  - "Execute specific commands like 'Save All', 'Format File', etc."
 parameters:
   - name: command
     description: >-
@@ -24,7 +24,7 @@ parameters:
       If 'true', opens the command palette and enters the command; if 'false',
       executes the command directly as keyboard shortcut
     required: false
-    default: 'true'
+    default: "true"
 category: 08_editors
 ---
 
@@ -36,45 +36,45 @@ This script executes commands in Sublime Text, either by using the command palet
 on run {input, parameters}
     set command to "--MCP_INPUT:command"
     set useCommandPalette to "--MCP_INPUT:useCommandPalette"
-    
+
     -- Default to using command palette if parameter not specified
     if useCommandPalette is "" or useCommandPalette is missing value then
         set useCommandPalette to "true"
     end if
-    
+
     -- Convert string parameter to boolean
     set useCommandPaletteFlag to (useCommandPalette is "true")
-    
+
     -- Check if Sublime Text is running
     tell application "System Events"
         set isRunning to (exists process "Sublime Text")
     end tell
-    
+
     if not isRunning then
         tell application "Sublime Text" to activate
         delay 1 -- Give time for Sublime Text to start
     end if
-    
+
     -- Activate Sublime Text
     tell application "Sublime Text"
         activate
         delay 0.5 -- Give time for Sublime Text to come to front
     end tell
-    
+
     -- Execute the command
     tell application "System Events"
         tell process "Sublime Text"
             set frontmost to true
-            
+
             if useCommandPaletteFlag then
                 -- Open the command palette (Command+Shift+P)
                 keystroke "p" using {command down, shift down}
                 delay 0.3 -- Wait for command palette to open
-                
+
                 -- Type the command
                 keystroke command
                 delay 0.3 -- Wait for command to be entered
-                
+
                 -- Press Return to execute
                 keystroke return
             else
@@ -83,7 +83,7 @@ on run {input, parameters}
             end if
         end tell
     end tell
-    
+
     return "Executed command '" & command & "' in Sublime Text"
 end run
 
@@ -100,20 +100,20 @@ on executeShortcut(shortcutString)
         "alt" to option down, ¬
         "shift" to shift down ¬
     }
-    
+
     -- Default, no modifiers
     set modifiers to {}
     set keyToPress to shortcutString
-    
+
     -- If the shortcut contains "+" symbol, it has modifiers
     if shortcutString contains "+" then
         set shortcutParts to my splitString(shortcutString, "+")
         set keyToPress to last item of shortcutParts
-        
+
         -- Remove the last item (the key) to get only modifiers
         set end of shortcutParts to ""
         set shortcutParts to items 1 thru ((count of shortcutParts) - 1) of shortcutParts
-        
+
         -- Convert string modifiers to modifier keys
         repeat with modName in shortcutParts
             set trimmedModName to trimString(modName)
@@ -124,7 +124,7 @@ on executeShortcut(shortcutString)
             end if
         end repeat
     end if
-    
+
     -- Execute the keystroke with modifiers
     tell application "System Events"
         keystroke keyToPress using modifiers
@@ -151,7 +151,7 @@ on trimString(theString)
                 exit repeat
             end if
         end repeat
-        
+
         repeat with charIndex from (count characters of trimmed) to 1 by -1
             set currentChar to character charIndex of trimmed
             if currentChar is not space and currentChar is not tab then

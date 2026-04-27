@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Open URL'
+title: "iOS Simulator: Open URL"
 category: 13_developer
 id: ios_simulator_open_url
 description: Opens a URL in iOS Simulator's Safari or in an app with a custom URL scheme.
@@ -35,12 +35,12 @@ on openURLInSimulator(url, deviceIdentifier)
   if url is missing value or url is "" then
     return "error: URL not provided. Specify a URL to open in the simulator."
   end if
-  
+
   -- Default to booted device if not specified
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Ensure URL is properly formatted
   if not (url starts with "http://" or url starts with "https://" or url contains "://") then
     -- If it's a plain domain, add https:// prefix
@@ -52,18 +52,18 @@ on openURLInSimulator(url, deviceIdentifier)
       set url to "https://www.google.com/search?q=" & searchQueryEncoded
     end if
   end if
-  
+
   try
     -- Check if the simulator is running
     set checkSimulatorCmd to "pgrep -q Simulator && echo 'running' || echo 'not running'"
     set simulatorStatus to do shell script checkSimulatorCmd
-    
+
     if simulatorStatus is "not running" then
       -- Launch Simulator
       tell application "Simulator" to activate
       delay 3
     end if
-    
+
     -- Check if the device is booted
     if deviceIdentifier is "booted" then
       set checkBootedCmd to "xcrun simctl list devices | grep '(Booted)'"
@@ -80,17 +80,17 @@ on openURLInSimulator(url, deviceIdentifier)
         return "error: Device '" & deviceIdentifier & "' not found or not booted. Please boot the device first."
       end try
     end if
-    
+
     -- Open the URL in the simulator
     set openURLCmd to "xcrun simctl openurl " & quoted form of deviceIdentifier & " " & quoted form of url
     do shell script openURLCmd
-    
+
     -- Determine what kind of URL it is for better messaging
     set urlType to "web page"
     if not (url starts with "http://" or url starts with "https://") then
       set urlType to "app using custom URL scheme"
     end if
-    
+
     return "Successfully opened " & urlType & " in simulator:
 URL: " & url & "
 Device: " & deviceIdentifier

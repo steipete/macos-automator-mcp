@@ -47,21 +47,21 @@ on processMCPParameters(inputParams)
 	set outputPath to "--MCP_INPUT:outputPath"
 	set format to "--MCP_INPUT:format"
 	set quality to "--MCP_INPUT:quality"
-	
+
 	-- Default quality if not specified
 	if quality is equal to "" then
 		set quality to "medium"
 	end if
-	
+
 	-- Validate required parameters
 	if inputPath is equal to "" then
 		return "Error: Input path is required"
 	end if
-	
+
 	if format is equal to "" then
 		return "Error: Target format is required"
 	end if
-	
+
 	-- If output path not specified, create one in the same directory
 	if outputPath is equal to "" then
 		set inputInfo to my getFileInfo(inputPath)
@@ -70,7 +70,7 @@ on processMCPParameters(inputParams)
 		set baseName to my getBaseName(fileName)
 		set outputPath to containingFolder & baseName & "." & format
 	end if
-	
+
 	-- Perform the conversion
 	return convertImage(inputPath, outputPath, format, quality)
 end processMCPParameters
@@ -78,18 +78,18 @@ end processMCPParameters
 -- Interactive image conversion
 on performImageConversion()
 	set imageFormats to {"jpeg", "png", "tiff", "gif", "bmp", "webp", "heic"}
-	
+
 	-- Select input file
 	set inputFile to choose file with prompt "Select an image file to convert:" of type {"public.image"}
 	set inputPath to POSIX path of inputFile
-	
+
 	-- Select output format
 	set selectedFormat to choose from list imageFormats with prompt "Convert to which format?"
 	if selectedFormat is false then
 		return "Conversion cancelled."
 	end if
 	set format to item 1 of selectedFormat
-	
+
 	-- Select quality
 	set qualityLevels to {"low", "medium", "high", "maximum"}
 	set selectedQuality to choose from list qualityLevels with prompt "Select quality level:" default items {"medium"}
@@ -97,12 +97,12 @@ on performImageConversion()
 		return "Conversion cancelled."
 	end if
 	set quality to item 1 of selectedQuality
-	
+
 	-- Set output location
 	set defaultName to my getBaseName(my getFileName(inputPath)) & "." & format
 	set outputFile to choose file name with prompt "Save converted image as:" default name defaultName
 	set outputPath to POSIX path of outputFile
-	
+
 	-- Perform conversion
 	return convertImage(inputPath, outputPath, format, quality)
 end performImageConversion
@@ -131,7 +131,7 @@ on convertImage(inputPath, outputPath, format, quality)
 				set qualityParam to "--setProperty formatOptions best"
 			end if
 		end if
-		
+
 		-- Handle different image conversion methods based on format
 		if format is in {"jpeg", "jpg", "png", "tiff", "gif"} then
 			-- Use sips for standard formats
@@ -150,7 +150,7 @@ on convertImage(inputPath, outputPath, format, quality)
 				else if quality is "maximum" then
 					set qualityNum to "100"
 				end if
-				
+
 				set cmd to "cwebp -q " & qualityNum & " " & quoted form of inputPath & " -o " & quoted form of outputPath
 				do shell script cmd
 				return "Image converted to WebP format at " & outputPath
@@ -263,6 +263,7 @@ When using with MCP, you can provide these parameters:
 - **maximum**: Best quality, largest files
 
 The quality setting impacts different formats differently:
+
 - JPEG: Affects compression ratio (0.5 to 1.0)
 - PNG: Affects compression level
 - WebP: Affects quality level (50 to 100)

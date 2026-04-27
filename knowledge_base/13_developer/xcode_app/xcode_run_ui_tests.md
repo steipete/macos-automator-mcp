@@ -1,5 +1,5 @@
 ---
-title: 'Xcode: Run UI Tests'
+title: "Xcode: Run UI Tests"
 category: 13_developer
 id: xcode_run_ui_tests
 description: Runs UI tests for an open Xcode project using XCTest UI testing framework.
@@ -39,61 +39,61 @@ on runXcodeUITests(waitTime)
       set waitTime to 120
     end try
   end if
-  
+
   tell application "Xcode"
     activate
     delay 1
   end tell
-  
+
   set testResult to "UI Test result unknown"
-  
+
   try
     tell application "System Events"
       tell process "Xcode"
         -- First make sure the Navigator is visible (Command+0)
         keystroke "0" using {command down}
         delay 1
-        
+
         -- Switch to Test Navigator (Command+6)
         keystroke "6" using {command down}
         delay 1
-        
+
         -- Look for the Test Navigator
         try
           -- Find the navigator outline with UI tests
           set uiTestTargets to UI elements of outline 1 of scroll area 1 of group 1 of splitter group 1 of window 1 whose name contains "UITests"
-          
+
           if (count of uiTestTargets) > 0 then
             -- Find the first UI test target and right-click it
             set uiTestTarget to item 1 of uiTestTargets
             click uiTestTarget using {button:2}
             delay 0.5
-            
+
             -- Select "Run X Tests" from context menu
             click menu item "Run" of menu 1
-            
+
             -- Wait for tests to complete
             set startTime to current date
             set timeoutDate to startTime + waitTime
-            
+
             -- Wait for tests to complete
             repeat
               delay 2
-              
+
               -- Check for test status indicators
               set testsSucceeded to false
               set testsFailed to false
-              
+
               -- Look for success indicators (green checkmarks)
               try
                 set testsSucceeded to exists (first UI element of outline 1 of scroll area 1 of group 1 of splitter group a of window 1 whose description contains "Test Succeeded")
               end try
-              
+
               -- Look for failure indicators (red X)
               try
                 set testsFailed to exists (first UI element of outline 1 of scroll area 1 of group 1 of splitter group a of window 1 whose description contains "Test Failed")
               end try
-              
+
               if testsSucceeded then
                 set testResult to "All UI tests succeeded"
                 exit repeat
@@ -101,7 +101,7 @@ on runXcodeUITests(waitTime)
                 set testResult to "One or more UI tests failed"
                 exit repeat
               end if
-              
+
               -- Check if we've timed out
               if (current date) > timeoutDate then
                 set testResult to "UI Test timeout after " & waitTime & " seconds"
@@ -116,7 +116,7 @@ on runXcodeUITests(waitTime)
         end try
       end tell
     end tell
-    
+
     return testResult
   on error errMsg number errNum
     return "error (" & errNum & ") running Xcode UI tests: " & errMsg

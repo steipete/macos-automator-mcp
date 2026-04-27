@@ -38,7 +38,7 @@ on run
 		-- Default values for interactive mode
 		set defaultSource to ""
 		set defaultDestination to ""
-		
+
 		return compressFiles(defaultSource, defaultDestination)
 	on error errMsg
 		return "Error: " & errMsg
@@ -50,16 +50,16 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set theSource to "--MCP_INPUT:source"
 	set theDestination to "--MCP_INPUT:destination"
-	
+
 	-- Validate parameters
 	if theSource is "" then
 		return "Error: Source path is required for compression."
 	end if
-	
+
 	if theDestination is "" then
 		return "Error: Destination archive path is required for compression."
 	end if
-	
+
 	return compressFiles(theSource, theDestination)
 end processMCPParameters
 
@@ -67,25 +67,25 @@ end processMCPParameters
 on compressFiles(sourcePath, destArchive)
 	-- Check if source exists
 	set sourceExists to do shell script "[ -e " & quoted form of sourcePath & " ] && echo 'exists' || echo 'not exists'"
-	
+
 	if sourceExists is "not exists" then
 		return "Error: Source path does not exist: " & sourcePath
 	end if
-	
+
 	-- Determine archive type based on destination extension
 	set archiveExtension to my getFileExtension(destArchive)
 	set archiveExtension to my toLower(archiveExtension)
-	
+
 	-- Get source basename for archive creation
 	set sourceBasename to do shell script "basename " & quoted form of sourcePath
-	
+
 	-- Construct and execute the appropriate compress command based on file type
 	set compressCommand to ""
-	
+
 	if archiveExtension is "zip" then
 		-- Check if source is a directory
 		set sourceType to do shell script "[ -d " & quoted form of sourcePath & " ] && echo 'directory' || echo 'file'"
-		
+
 		if sourceType is "directory" then
 			-- For directories, we need to change to the parent dir and zip from there
 			set parentDir to do shell script "dirname " & quoted form of sourcePath
@@ -123,7 +123,7 @@ on compressFiles(sourcePath, destArchive)
 		return "Error: Unsupported archive format: " & archiveExtension & ¬
 			". Supported formats are: zip, tar, tgz, tar.gz, tbz2, tar.bz2, txz, tar.xz, 7z."
 	end if
-	
+
 	-- Execute compression command
 	try
 		do shell script compressCommand
@@ -136,7 +136,7 @@ end compressFiles
 -- Helper function to get file extension
 on getFileExtension(filePath)
 	set fileName to do shell script "basename " & quoted form of filePath
-	
+
 	-- Check for double extensions like .tar.gz
 	if fileName ends with ".tar.gz" then
 		return "tar.gz"
@@ -145,7 +145,7 @@ on getFileExtension(filePath)
 	else if fileName ends with ".tar.xz" then
 		return "tar.xz"
 	end if
-	
+
 	-- Regular extension
 	if fileName contains "." then
 		set AppleScript's text item delimiters to "."
@@ -183,6 +183,7 @@ end toLower
 ## Example Usage
 
 ### Create a ZIP archive
+
 ```json
 {
   "source": "/Users/username/Documents/project",
@@ -191,6 +192,7 @@ end toLower
 ```
 
 ### Create a compressed TAR archive
+
 ```json
 {
   "source": "/Users/username/Documents/data",
@@ -199,6 +201,7 @@ end toLower
 ```
 
 ### Compress a single file
+
 ```json
 {
   "source": "/Users/username/Documents/report.pdf",
@@ -207,6 +210,7 @@ end toLower
 ```
 
 ### Create 7z archive
+
 ```json
 {
   "source": "/Users/username/Projects/code",

@@ -1,5 +1,5 @@
 ---
-title: 'AppleScript Core: Basic ''tell application'' Block'
+title: "AppleScript Core: Basic 'tell application' Block"
 category: 02_as_core
 id: applescript_core_tell_application_block
 description: The fundamental structure for sending commands to a macOS application.

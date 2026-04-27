@@ -1,5 +1,5 @@
 ---
-title: 'JS Snippet: Get/Set Input Field Value'
+title: "JS Snippet: Get/Set Input Field Value"
 category: 07_browsers
 id: js_get_set_input_value
 description: >-
@@ -17,17 +17,20 @@ notes: The 'inputElement' variable must hold a reference to the form field.
 ---
 
 **Get Value:**
+
 ```javascript
 // Assume 'inputElement' is a reference to an <input>, <textarea>, or <select>
 inputElement ? inputElement.value : null;
 ```
 
 **Set Value:**
+
 ```javascript
 // Assume 'inputElement' is a reference to an <input> or <textarea>
 // Replace 'New Value Here' with the desired text.
 if (inputElement) {
-  inputElement.value = 'New Value Here';
+  inputElement.value = "New Value Here";
 }
 ```
-END_TIP 
+
+END_TIP

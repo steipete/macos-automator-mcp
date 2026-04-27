@@ -1,5 +1,5 @@
 ---
-title: 'Xcode: Open Instruments for Profiling'
+title: "Xcode: Open Instruments for Profiling"
 category: 13_developer
 id: xcode_open_instruments
 description: Opens Xcode Instruments for app profiling with a selected template.
@@ -40,46 +40,46 @@ on openXcodeInstruments(profileTemplate)
   if profileTemplate is missing value or profileTemplate is "" then
     set profileTemplate to "Time Profiler"
   end if
-  
+
   tell application "Xcode"
     activate
     delay 1
   end tell
-  
+
   set profilerResult to "Instruments result unknown"
-  
+
   try
     tell application "System Events"
       tell process "Xcode"
         -- Select Product menu
         click menu item "Product" of menu bar 1
         delay 0.5
-        
+
         -- Click Profile menu item
         click menu item "Profile" of menu "Product" of menu bar 1
-        
+
         -- Wait for Instruments template chooser to appear
         delay 3
-        
+
         -- Select the template
         try
           tell application process "Instruments"
             -- Look for the template in the template browser
             set foundTemplate to false
-            
+
             -- Wait for Instruments to fully load
             delay 2
-            
+
             -- Try to find and click the template
             tell window 1
               set templateElements to (UI elements whose name contains profileTemplate)
               if (count of templateElements) > 0 then
                 click item 1 of templateElements
                 delay 1
-                
+
                 -- Click Choose button
                 click button "Choose" of window 1
-                
+
                 set foundTemplate to true
                 set profilerResult to "Successfully opened Instruments with template: " & profileTemplate
               else
@@ -92,7 +92,7 @@ on openXcodeInstruments(profileTemplate)
         end try
       end tell
     end tell
-    
+
     return profilerResult
   on error errMsg number errNum
     return "error (" & errNum & ") opening Xcode Instruments: " & errMsg

@@ -1,5 +1,5 @@
 ---
-title: 'Core: Stay-Open Applet Handler ''on idle'''
+title: "Core: Stay-Open Applet Handler 'on idle'"
 category: 02_as_core
 id: core_handler_on_idle
 description: >-
@@ -51,4 +51,5 @@ on quit
   continue quit -- Allow the applet to actually quit
 end quit
 ```
-END_TIP 
+
+END_TIP

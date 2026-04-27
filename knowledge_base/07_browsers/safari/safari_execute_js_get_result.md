@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Execute JavaScript in Front Tab and Get Result'
+title: "Safari: Execute JavaScript in Front Tab and Get Result"
 category: 07_browsers
 id: safari_execute_js_get_result
 description: >-
@@ -35,7 +35,7 @@ on executeJsInSafari(javascriptCode)
   tell application "Safari"
     if not running then return "error: Safari is not running."
     if (count of documents) is 0 then return "error: No document open in Safari."
-    
+
     activate
     delay 0.2
     try
@@ -53,4 +53,5 @@ end executeJsInSafari
 
 return my executeJsInSafari("--MCP_INPUT:jsCode")
 ```
-END_TIP 
+
+END_TIP

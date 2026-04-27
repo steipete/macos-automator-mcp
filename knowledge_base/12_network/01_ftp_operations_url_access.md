@@ -42,17 +42,17 @@ on performFtpOperation(ftpServer, username, password, remoteFilePath, localFileP
   if localFilePath is missing value or localFilePath is "" then
     return "error: Local file path is required."
   end if
-  
+
   -- Default to download if operation not specified
   if operation is missing value or operation is "" then
     set operation to "download"
   end if
-  
+
   -- Ensure the FTP URL has the proper format
   if ftpServer does not start with "ftp://" then
     set ftpServer to "ftp://" & ftpServer
   end if
-  
+
   -- Construct the full FTP URL with credentials if provided
   set ftpUrl to ftpServer
   if username is not missing value and username is not "" then
@@ -64,13 +64,13 @@ on performFtpOperation(ftpServer, username, password, remoteFilePath, localFileP
       set ftpUrl to "ftp://" & username & "@" & text 7 thru -1 of ftpServer
     end if
   end if
-  
+
   -- Append the remote file path to the URL
   if character 1 of remoteFilePath is not "/" then
     set remoteFilePath to "/" & remoteFilePath
   end if
   set ftpUrl to ftpUrl & remoteFilePath
-  
+
   -- Make sure the local file path is in POSIX format
   if character 1 of localFilePath is not "/" then
     -- Try to convert from HFS path if needed
@@ -80,7 +80,7 @@ on performFtpOperation(ftpServer, username, password, remoteFilePath, localFileP
       -- Assume it's a relative path and try to use it as is
     end try
   end if
-  
+
   -- Perform the operation
   try
     if operation is "download" then
@@ -88,23 +88,23 @@ on performFtpOperation(ftpServer, username, password, remoteFilePath, localFileP
       set curlCmd to "curl -s -o " & quoted form of localFilePath & " " & quoted form of ftpUrl
       do shell script curlCmd
       return "Successfully downloaded file from " & ftpUrl & " to " & localFilePath
-      
+
     else if operation is "upload" then
       -- Method 1: Using curl for upload
       set curlCmd to "curl -s -T " & quoted form of localFilePath & " " & quoted form of ftpUrl
       do shell script curlCmd
       return "Successfully uploaded file from " & localFilePath & " to " & ftpUrl
-      
+
     else if operation is "list" then
       -- List directory contents
       set curlCmd to "curl -s -l " & quoted form of ftpUrl
       set directoryListing to do shell script curlCmd
       return "Directory listing for " & ftpUrl & ":" & return & directoryListing
-      
+
     else
       return "error: Invalid operation. Use 'download', 'upload', or 'list'."
     end if
-    
+
   on error errMsg
     return "Error performing FTP operation: " & errMsg
   end try
@@ -143,11 +143,13 @@ This script provides three main FTP operations:
    - Example: Check what files are available on the server
 
 The script includes two implementation methods:
+
 - Modern approach using `curl` (recommended for current macOS versions)
 - Legacy approach using URL Access Scripting (included for reference)
 
 Security considerations:
+
 - FTP sends credentials in plain text (consider SFTP or FTPS for secure transfers)
 - For security, never hardcode credentials in your scripts
 - If your connection requires passive mode, add `-P -` to the curl commands
-END_TIP
+  END_TIP

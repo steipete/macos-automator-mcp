@@ -57,6 +57,7 @@ end if
 ```
 
 The script demonstrates various ways to control system volume, including:
+
 1. Setting absolute volume level (0-100)
 2. Muting and unmuting audio output
 3. Incrementally adjusting volume up or down

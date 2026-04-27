@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: load script Command'
+title: "StandardAdditions: load script Command"
 category: 02_as_core
 id: osax_load_script
 description: >-
@@ -70,20 +70,20 @@ set versionResult to ""
 try
   set libFileAlias to alias libPathString
   set loadedLib to load script libFileAlias
-  
+
   -- Call a handler from the loaded script
   set greetingResult to greet("World") of loadedLib
   -- Access a property from the loaded script
   set versionResult to libVersion of loadedLib
-  
+
   -- Alternatively, using `tell` block
   -- tell loadedLib
   --   set greetingResult to greet("Again")
   --   set versionResult to libVersion
   -- end tell
-  
+
   set finalMessage to "Greeting: " & greetingResult & "\nLibrary Version: " & versionResult
-  
+
 on error errMsg number errNum
   set finalMessage to "Error loading or using script (" & errNum & "): " & errMsg
 end try
@@ -97,4 +97,5 @@ end try
 
 return finalMessage
 ```
-END_TIP 
+
+END_TIP

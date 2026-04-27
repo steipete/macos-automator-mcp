@@ -1,5 +1,5 @@
 ---
-title: 'System: Switch Audio Output Device'
+title: "System: Switch Audio Output Device"
 category: 04_system
 id: switch_audio_output
 description: >-
@@ -53,7 +53,7 @@ try
   set switchAudioInstalled to true
 on error
   set switchAudioInstalled to false
-  
+
   -- Try common Homebrew installation paths
   try
     do shell script "test -f /usr/local/bin/SwitchAudioSource && echo 'Found'"
@@ -78,7 +78,7 @@ if not switchAudioInstalled then
   set resultText to resultText & "If you don't have Homebrew installed, run this first:" & return
   set resultText to resultText & "    /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"" & return & return
   set resultText to resultText & "After installing, run this script again to switch audio output devices."
-  
+
   return resultText
 end if
 
@@ -91,7 +91,7 @@ end if
 try
   set availableDevices to do shell script switchAudioPath & " -a -t output"
   set devicesList to paragraphs of availableDevices
-  
+
   -- Get current output device
   set currentDevice to do shell script switchAudioPath & " -c -t output"
 on error errMsg
@@ -101,7 +101,7 @@ end try
 -- If no device name provided, list available devices
 if deviceNameParam is "" then
   set resultText to "Available Audio Output Devices:" & return & return
-  
+
   set deviceCounter to 1
   repeat with deviceName in devicesList
     -- Mark current device with an asterisk
@@ -110,13 +110,13 @@ if deviceNameParam is "" then
     else
       set resultText to resultText & deviceCounter & ". " & deviceName & return
     end if
-    
+
     set deviceCounter to deviceCounter + 1
   end repeat
-  
+
   set resultText to resultText & return & "Current Output Device: " & currentDevice & return & return
   set resultText to resultText & "To switch to a specific device, provide the device_name parameter."
-  
+
   return resultText
 end if
 
@@ -132,11 +132,11 @@ end repeat
 if not deviceExists then
   set resultText to "Error: Device '" & deviceNameParam & "' not found in the list of available output devices." & return & return
   set resultText to resultText & "Available Audio Output Devices:" & return
-  
+
   repeat with deviceName in devicesList
     set resultText to resultText & "- " & deviceName & return
   end repeat
-  
+
   return resultText
 end if
 
@@ -149,10 +149,10 @@ end if
 -- Switch to the requested device
 try
   do shell script switchAudioPath & " -s \"" & deviceNameParam & "\" -t output"
-  
+
   -- Verify the switch was successful
   set newCurrentDevice to do shell script switchAudioPath & " -c -t output"
-  
+
   if newCurrentDevice is deviceNameParam then
     set resultText to "Successfully switched audio output to:" & return
     set resultText to resultText & "'" & deviceNameParam & "'"
@@ -160,7 +160,7 @@ try
     set resultText to "Error: Switch command completed but device did not change." & return
     set resultText to resultText & "Current device is still: " & newCurrentDevice
   end if
-  
+
   return resultText
 on error errMsg
   return "Error switching audio output device: " & errMsg

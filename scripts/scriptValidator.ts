@@ -1,7 +1,7 @@
-import fs from 'node:fs/promises';
-import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
-import matter from 'gray-matter';
+import fs from "node:fs/promises";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+import matter from "gray-matter";
 
 // Define report types locally since kbReport.js is missing
 interface ValidationReport {
@@ -11,7 +11,7 @@ interface ValidationReport {
 
 const report: ValidationReport = {
   scriptSyntaxValidated: 0,
-  scriptSyntaxErrors: 0
+  scriptSyntaxErrors: 0,
 };
 
 function logErrorToReport(filePath: string, message: string, isLocalKbIssue = false): void {
@@ -29,18 +29,18 @@ const execPromise = promisify(exec);
  */
 async function validateScriptSyntax(
   scriptContent: string,
-  language: 'applescript' | 'javascript'
+  language: "applescript" | "javascript",
 ): Promise<{ isValid: boolean; error?: string }> {
-  if (!scriptContent || scriptContent.trim() === '') {
-    return { isValid: false, error: 'Empty script content' };
+  if (!scriptContent || scriptContent.trim() === "") {
+    return { isValid: false, error: "Empty script content" };
   }
 
   try {
     // Escape single quotes in script content for shell execution
-    const escapedScript = scriptContent.replace(/'/g, "'\\''")
-    
+    const escapedScript = scriptContent.replace(/'/g, "'\\''");
+
     try {
-      if (language === 'applescript') {
+      if (language === "applescript") {
         // Fast inline method for AppleScript
         await execPromise(`osacompile -e '${escapedScript}' -o /dev/null`);
       } else {
@@ -50,16 +50,20 @@ async function validateScriptSyntax(
       return { isValid: true };
     } catch (error) {
       const errorObj = error as { stderr?: string; stdout?: string; message?: string };
-      return { 
-        isValid: false, 
-        error: errorObj.stderr || errorObj.stdout || errorObj.message || 'Unknown error during syntax validation'
+      return {
+        isValid: false,
+        error:
+          errorObj.stderr ||
+          errorObj.stdout ||
+          errorObj.message ||
+          "Unknown error during syntax validation",
       };
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return { 
-      isValid: false, 
-      error: `Failed to validate script: ${errorMessage}` 
+    return {
+      isValid: false,
+      error: `Failed to validate script: ${errorMessage}`,
     };
   }
 }
@@ -70,7 +74,7 @@ async function validateScriptSyntax(
 function extractScriptFromMarkdown(markdownContent: string): string | null {
   const scriptBlockRegex = /```(?:applescript|javascript)\s*\n([\s\S]*?)\n```/i;
   const scriptMatch = markdownContent.match(scriptBlockRegex);
-  
+
   return scriptMatch && scriptMatch[1] ? scriptMatch[1].trim() : null;
 }
 
@@ -79,15 +83,15 @@ function extractScriptFromMarkdown(markdownContent: string): string | null {
  */
 export async function validateTipScriptSyntax(
   filePath: string,
-  isLocalKb: boolean
+  isLocalKb: boolean,
 ): Promise<boolean> {
   try {
-    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const fileContent = await fs.readFile(filePath, "utf-8");
     const { data: frontmatter, content: markdownBody } = matter(fileContent);
-    
+
     // Check if this is an AppleScript or JXA file
-    const language = frontmatter.language as 'applescript' | 'javascript';
-    if (!language || !['applescript', 'javascript'].includes(language)) {
+    const language = frontmatter.language as "applescript" | "javascript";
+    if (!language || !["applescript", "javascript"].includes(language)) {
       // Not a script file or missing language specification
       return true;
     }
@@ -107,11 +111,11 @@ export async function validateTipScriptSyntax(
     if (!result.isValid && result.error) {
       // Increment the count of scripts with syntax errors
       report.scriptSyntaxErrors++;
-      
+
       logErrorToReport(
         filePath,
         `${language.toUpperCase()} syntax error: ${result.error}`,
-        isLocalKb
+        isLocalKb,
       );
       return false;
     }
@@ -120,13 +124,9 @@ export async function validateTipScriptSyntax(
   } catch (error) {
     // Count validation failures as syntax errors for reporting
     report.scriptSyntaxErrors++;
-    
+
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logErrorToReport(
-      filePath,
-      `Failed to validate script syntax: ${errorMessage}`,
-      isLocalKb
-    );
+    logErrorToReport(filePath, `Failed to validate script syntax: ${errorMessage}`, isLocalKb);
     return false;
   }
 }
@@ -139,7 +139,7 @@ export async function validateTipScriptSyntax(
  */
 export async function validateScriptFiles(
   filePaths: string[],
-  isLocalKb: boolean
+  isLocalKb: boolean,
 ): Promise<{ total: number; valid: number; invalid: number }> {
   let valid = 0;
   let invalid = 0;
@@ -156,6 +156,6 @@ export async function validateScriptFiles(
   return {
     total: filePaths.length,
     valid,
-    invalid
+    invalid,
   };
 }

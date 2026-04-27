@@ -1,5 +1,5 @@
 ---
-title: 'Mail: Get Unread Message Count'
+title: "Mail: Get Unread Message Count"
 category: 09_productivity
 id: mail_get_unread_count
 description: >-
@@ -38,18 +38,18 @@ end setDefaultMailbox
 -- Main function to get unread count
 on getUnreadCount(targetMailboxName)
   set mailboxToCheck to my setDefaultMailbox(targetMailboxName)
-  
+
   tell application "Mail"
     try
       set allAccounts to every account
       set totalUnread to 0
       set accountCounts to {}
-      
+
       -- Check each account
       repeat with thisAccount in allAccounts
         set accountName to name of thisAccount
         set accountUnread to 0
-        
+
         try
           set accountMailboxes to every mailbox of thisAccount
           repeat with aMailbox in accountMailboxes
@@ -59,7 +59,7 @@ on getUnreadCount(targetMailboxName)
               exit repeat
             end if
           end repeat
-          
+
           -- Add this account's results
           if accountUnread > 0 then
             copy {account:accountName, unread:accountUnread} to end of accountCounts
@@ -69,10 +69,10 @@ on getUnreadCount(targetMailboxName)
           -- Skip this account if there's an error
         end try
       end repeat
-      
+
       -- Format the result
       set resultText to "Total unread in " & mailboxToCheck & ": " & totalUnread & " messages"
-      
+
       if (count of accountCounts) > 0 then
         set resultText to resultText & " ("
         repeat with i from 1 to count of accountCounts
@@ -84,7 +84,7 @@ on getUnreadCount(targetMailboxName)
         end repeat
         set resultText to resultText & ")"
       end if
-      
+
       return resultText
     on error errMsg
       return "Error checking unread count: " & errMsg
@@ -96,6 +96,7 @@ return my getUnreadCount("--MCP_INPUT:mailboxName")
 ```
 
 This script:
+
 1. Checks the specified mailbox (or INBOX by default) across all mail accounts
 2. Reports the total unread count and a breakdown by account
 3. Works with any mailbox name that exists in your Mail accounts

@@ -1,5 +1,5 @@
 ---
-title: 'JXA Unicode File Operations'
+title: "JXA Unicode File Operations"
 category: 03_jxa_core
 id: jxa_unicode_file_operations
 description: Working with Unicode text in files using the Objective-C bridge in JXA
@@ -27,7 +27,7 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Import Foundation framework for NSString operations
-ObjC.import('Foundation');
+ObjC.import("Foundation");
 ```
 
 ## Unicode File Operations
@@ -35,38 +35,38 @@ ObjC.import('Foundation');
 ```javascript
 function unicodeFileOperations() {
   // Import Foundation framework
-  ObjC.import('Foundation');
-  
-  const desktopPath = app.pathTo('desktop').toString();
-  const filePath = desktopPath + '/jxa_unicode_test.txt';
-  
+  ObjC.import("Foundation");
+
+  const desktopPath = app.pathTo("desktop").toString();
+  const filePath = desktopPath + "/jxa_unicode_test.txt";
+
   // Text with Unicode characters
-  const unicodeText = 'Unicode Text with special characters: 您好 Olá こんにちは Привет';
-  
+  const unicodeText = "Unicode Text with special characters: 您好 Olá こんにちは Привет";
+
   try {
     // Convert string to NSString
     const nsString = $.NSString.alloc.initWithUTF8String(unicodeText);
-    
+
     // Write to file using NSString methods with UTF-8 encoding
     const result = nsString.writeToFileAtomicallyEncodingError(
       filePath,
       true,
       $.NSUTF8StringEncoding,
-      null
+      null,
     );
-    
+
     if (result) {
       // Read the file back using NSString for correct Unicode handling
       const fileManager = $.NSFileManager.defaultManager;
       const fileExists = fileManager.fileExistsAtPath(filePath);
-      
+
       if (fileExists) {
         const nsFileContent = $.NSString.stringWithContentsOfFileEncodingError(
           filePath,
           $.NSUTF8StringEncoding,
-          null
+          null,
         );
-        
+
         app.displayDialog("Unicode file contents: " + nsFileContent.js);
       }
     } else {

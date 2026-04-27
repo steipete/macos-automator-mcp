@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Capture Screenshot'
+title: "Firefox: Capture Screenshot"
 category: 07_browsers
 id: firefox_capture_screenshot
 description: Captures a screenshot of a webpage using Firefox's built-in screenshot tool.
@@ -28,16 +28,16 @@ on run {input, parameters}
   set screenshotType to "--MCP_INPUT:type" -- "visible", "fullpage", or "element"
   set saveLocation to "--MCP_INPUT:saveLocation" -- Destination folder
   set fileName to "--MCP_INPUT:fileName" -- Custom filename
-  
+
   -- Use defaults if not specified
   if screenshotType is "" or screenshotType is "--MCP_INPUT:type" then
     set screenshotType to "visible"
   end if
-  
+
   if saveLocation is "" or saveLocation is "--MCP_INPUT:saveLocation" then
     set saveLocation to (path to desktop folder as string)
   end if
-  
+
   if fileName is "" or fileName is "--MCP_INPUT:fileName" then
     -- Generate a timestamp-based filename
     set currentDate to current date
@@ -51,12 +51,12 @@ on run {input, parameters}
       set fileName to fileName & ".png"
     end if
   end if
-  
+
   tell application "Firefox"
     activate
     delay 0.5 -- Allow Firefox to activate
   end tell
-  
+
   -- Open Developer Tools if not already open
   tell application "System Events"
     tell process "Firefox"
@@ -64,25 +64,25 @@ on run {input, parameters}
       delay 1 -- Allow DevTools to open
     end tell
   end tell
-  
+
   -- Take screenshot using the menu commands in Developer Tools
   tell application "System Events"
     tell process "Firefox"
       -- First, click the "..." menu in DevTools if it exists
       -- This is where Screenshot is usually found
-      
+
       -- Try to find the kebab menu (three dots) in DevTools
       try
         -- This will depend on Firefox version and UI layout
         -- Find and click the button with the "..." label or similar
-        
+
         -- Open DevTools menu (may vary by Firefox version)
         keystroke "." using {command down, shift down} -- Common shortcut for DevTools options
         delay 0.5
-        
+
         -- Look for "Take a screenshot" option and click it
         set foundScreenshot to false
-        
+
         -- Try to find and click the screenshot option
         -- Loop through menu items to find it
         repeat with menuItem in menu items of menu 1 of front window
@@ -93,17 +93,17 @@ on run {input, parameters}
             exit repeat
           end if
         end repeat
-        
+
         -- If above method fails, try alternative approach with keyboard
         if not foundScreenshot then
           -- Close the menu with Escape
           key code 53 -- Escape key
           delay 0.3
-          
+
           -- Try using Shift+F2 to open the Developer Toolbar
           key code 120 using {shift down} -- Shift+F2
           delay 0.5
-          
+
           -- Type "screenshot" command
           if screenshotType is "visible" then
             keystroke "screenshot --clipboard"
@@ -112,7 +112,7 @@ on run {input, parameters}
           else if screenshotType is "element" then
             keystroke "screenshot --selector \"--MCP_INPUT:selector\" --clipboard"
           end if
-          
+
           keystroke return
           delay 1.5 -- Allow time for the screenshot to be taken
         end if
@@ -121,7 +121,7 @@ on run {input, parameters}
         -- Press Ctrl+Shift+S which is the Firefox shortcut to take a screenshot in some versions
         keystroke "s" using {control down, shift down}
         delay 0.5
-        
+
         -- Send additional keystrokes based on screenshot type
         if screenshotType is "fullpage" then
           -- Navigate to full page option (might need adjustments)
@@ -135,16 +135,16 @@ on run {input, parameters}
           keystroke tab
           keystroke space
         end if
-        
+
         -- Confirm/save the screenshot
         delay 0.5
         keystroke return
         delay 1 -- Wait for save dialog
       end try
-      
+
       -- Handle the save dialog
       delay 1.5 -- Wait for save dialog to appear
-      
+
       -- Type the file path
       set fullSavePath to saveLocation & fileName
       keystroke "g" using {command down, shift down} -- Open Go to Folder
@@ -152,18 +152,18 @@ on run {input, parameters}
       keystroke saveLocation
       keystroke return
       delay 0.5
-      
+
       -- Type the filename
       keystroke "a" using {command down} -- Select all
       keystroke fileName
       delay 0.3
-      
+
       -- Click Save button
       keystroke return
       delay 1 -- Allow save to complete
     end tell
   end tell
-  
+
   return "Screenshot captured: " & fileName & " saved to " & saveLocation
 end run
 ```
@@ -177,55 +177,55 @@ on run {input, parameters}
   -- Get parameters
   set screenshotType to "--MCP_INPUT:type" -- "visible", "fullpage", or "element"
   set cssSelector to "--MCP_INPUT:selector" -- For element screenshots
-  
+
   tell application "Firefox"
     activate
     delay 0.5 -- Allow Firefox to activate
   end tell
-  
+
   -- First open the console
   tell application "System Events"
     tell process "Firefox"
       -- Open console with Command+Option+K
       keystroke "k" using {command down, option down}
       delay 0.7 -- Allow console to open
-      
+
       -- Clear any existing console content
       keystroke "l" using {command down}
       delay 0.3
-      
+
       -- Prepare JavaScript based on screenshot type
       set jsCommand to ""
-      
+
       if screenshotType is "fullpage" then
         -- Full page screenshot JavaScript
         set jsCommand to "async function fullPageScreenshot() {
   const allDevicePixelRatios = window.devicePixelRatio;
   window.devicePixelRatio = 1;
-  
+
   const fullHeight = Math.max(
     document.body.scrollHeight, document.documentElement.scrollHeight,
     document.body.offsetHeight, document.documentElement.offsetHeight,
     document.body.clientHeight, document.documentElement.clientHeight
   );
-  
+
   const fullWidth = Math.max(
     document.body.scrollWidth, document.documentElement.scrollWidth,
     document.body.offsetWidth, document.documentElement.offsetWidth,
     document.body.clientWidth, document.documentElement.clientWidth
   );
-  
+
   const canvas = document.createElement('canvas');
   canvas.width = fullWidth;
   canvas.height = fullHeight;
   const ctx = canvas.getContext('2d');
-  
+
   const originalScrollPos = window.scrollY;
-  
+
   for (let y = 0; y < fullHeight; y += window.innerHeight) {
     window.scrollTo(0, y);
     await new Promise(r => setTimeout(r, 200)); // Wait for render
-    
+
     ctx.drawImage(
       await new Promise(resolve => {
         const img = new Image();
@@ -236,10 +236,10 @@ on run {input, parameters}
       0, y, window.innerWidth, window.innerHeight
     );
   }
-  
+
   window.scrollTo(0, originalScrollPos);
   window.devicePixelRatio = allDevicePixelRatios;
-  
+
   return canvas.toDataURL('image/png');
 }
 fullPageScreenshot().then(dataUrl => {
@@ -259,7 +259,7 @@ fullPageScreenshot().then(dataUrl => {
     console.error('Element not found with selector: " & cssSelector & "');
     return;
   }
-  
+
   html2canvas(element).then(canvas => {
     const dataUrl = canvas.toDataURL('image/png');
     const a = document.createElement('a');
@@ -277,10 +277,10 @@ fullPageScreenshot().then(dataUrl => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   const ctx = canvas.getContext('2d');
-  
-  ctx.drawWindow(window, window.scrollX, window.scrollY, 
+
+  ctx.drawWindow(window, window.scrollX, window.scrollY,
                  window.innerWidth, window.innerHeight, 'rgb(255,255,255)');
-  
+
   const dataUrl = canvas.toDataURL('image/png');
   const a = document.createElement('a');
   a.href = dataUrl;
@@ -290,14 +290,14 @@ fullPageScreenshot().then(dataUrl => {
   document.body.removeChild(a);
 })();"
       end if
-      
+
       -- Execute the JavaScript in console
       keystroke jsCommand
       keystroke return
       delay 3 -- Allow screenshot to be processed
     end tell
   end tell
-  
+
   return "Screenshot captured and saved"
 end run
 ```
@@ -312,23 +312,23 @@ on run
     activate
     delay 0.5 -- Allow Firefox to activate
   end tell
-  
+
   tell application "System Events"
     tell process "Firefox"
       -- Use Shift+Command+S to open screenshot tool (Firefox 88+)
       keystroke "s" using {shift down, command down}
       delay 1 -- Allow screenshot tool to appear
-      
+
       -- Press Return to take screenshot with default settings
       keystroke return
       delay 1.5 -- Allow time for the save dialog
-      
+
       -- Press Return again to save with default filename location
       keystroke return
       delay 1 -- Allow save to complete
     end tell
   end tell
-  
+
   return "Screenshot captured and saved to Downloads folder"
 end run
 ```

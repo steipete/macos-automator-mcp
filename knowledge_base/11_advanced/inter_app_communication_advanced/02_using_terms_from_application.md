@@ -1,5 +1,5 @@
 ---
-title: 'Advanced: ''using terms from application'' Block'
+title: "Advanced: 'using terms from application' Block"
 category: 11_advanced
 id: advanced_using_terms_from
 description: >-
@@ -37,7 +37,7 @@ This is most common when a command or object name is ambiguous (e.g., both Finde
 tell application "System Events"
   -- Commands here use System Events' dictionary by default.
   set processList to name of every process
-  
+
   set finderWindowCount to "(Finder not running or no windows)"
   if "Finder" is in processList then
     using terms from application "Finder"
@@ -50,14 +50,14 @@ tell application "System Events"
         set finderWindowCount to "Error getting Finder window count: " & errMsg
       end try
     end using terms from
-    
+
     -- Outside the block, 'window' would again refer to System Events' concept (if it had one, or error if ambiguous).
     -- For example, this would likely error if System Events doesn't have a top-level 'window' property or command:
-    -- set sysEventWindowCount to count of windows 
+    -- set sysEventWindowCount to count of windows
   end if
-  
+
   set sysEventActive to name of first application process whose frontmost is true
-  
+
 end tell
 
 -- Another common scenario: Scripting Additions
@@ -97,4 +97,5 @@ return "System Events active app: " & sysEventActive & ¬
   "\nFinder window count (using its terms): " & finderWindowCount & ¬
   "\nOriginal Text: " & originalText & " -> Reversed (simulated OSAX): " & reversedText
 ```
-END_TIP 
+
+END_TIP

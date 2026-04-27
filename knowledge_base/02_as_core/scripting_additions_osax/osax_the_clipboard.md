@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: the clipboard Command'
+title: "StandardAdditions: the clipboard Command"
 category: 02_as_core
 id: osax_the_clipboard
 description: Gets or sets the contents of the system clipboard.
@@ -75,4 +75,5 @@ return "Set clipboard to: '" & myText & "'" & ¬
   "\nClipboard Info (first data type): " & firstDataType & ¬
   "\n" & pasteSimResult
 ```
-END_TIP 
+
+END_TIP

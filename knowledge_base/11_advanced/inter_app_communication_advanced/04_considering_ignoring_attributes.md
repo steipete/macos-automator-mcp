@@ -1,5 +1,5 @@
 ---
-title: 'Advanced: ''considering/ignoring attributes'' Block'
+title: "Advanced: 'considering/ignoring attributes' Block"
 category: 11_advanced
 id: advanced_considering_ignoring_attributes
 description: >-
@@ -103,4 +103,5 @@ end repeat
 
 return output
 ```
-END_TIP 
+
+END_TIP

@@ -19,7 +19,7 @@ return "Hello, " & userName
 set message to "Proceed with caution?"
 set customButtons to {"Cancel", "No", "Yes"}
 set choiceResult to display dialog message with title "Confirmation" buttons customButtons default button "Yes" cancel button "Cancel" giving up after 10
-  
+
 -- Process the user's response
 set userChoice to button returned of choiceResult
 if userChoice is "Yes" then

@@ -1,5 +1,5 @@
 ---
-title: 'Keynote: Start and Stop Slideshow'
+title: "Keynote: Start and Stop Slideshow"
 category: 10_creative
 id: keynote_slideshow_control
 description: Starts or stops the slideshow for the frontmost Keynote presentation.
@@ -12,7 +12,7 @@ keywords:
   - presentation mode
 language: applescript
 isComplex: true
-argumentsPrompt: 'Action to perform: ''start'' or ''stop'' as ''slideshowAction'' in inputData.'
+argumentsPrompt: "Action to perform: 'start' or 'stop' as 'slideshowAction' in inputData."
 notes: >
   - A Keynote presentation must be open.
 
@@ -38,13 +38,13 @@ on controlKeynoteSlideshow(action)
     if not running then return "error: Keynote is not running."
     if (count of documents) is 0 then return "error: No Keynote presentation is open."
     activate
-    
+
     try
       if action is "start" then
         -- Keynote dictionary uses 'show' for the document or 'play' for the application
         -- 'play front document' or just 'play' if a document is open often works.
         -- 'show front document' is also a possibility.
-        
+
         -- Check if already playing to avoid issues
         if playing is false then
           play front document -- Or simply 'play'
@@ -52,7 +52,7 @@ on controlKeynoteSlideshow(action)
         else
           return "Keynote slideshow is already playing."
         end if
-        
+
       else if action is "stop" then
         -- Keynote dictionary uses 'stop slideshow' or just 'stop'
         if playing is true then
@@ -77,7 +77,7 @@ on controlKeynoteSlideshow(action)
       else if action is "stop" then
         log "Direct stop command failed: " & errMsg & " - Attempting UI Scripting for Stop (Escape key)."
         try
-          tell application "System Events" to tell process "Keynote" 
+          tell application "System Events" to tell process "Keynote"
             key code 53 -- Escape key
           end tell
           return "Keynote slideshow stopped (via UI scripting - Escape key)."
@@ -92,4 +92,5 @@ end controlKeynoteSlideshow
 
 return my controlKeynoteSlideshow("--MCP_INPUT:slideshowAction")
 ```
-END_TIP 
+
+END_TIP

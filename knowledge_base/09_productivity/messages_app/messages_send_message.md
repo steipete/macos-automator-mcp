@@ -1,5 +1,5 @@
 ---
-title: 'Messages: Send Message'
+title: "Messages: Send Message"
 category: 09_productivity
 id: messages_send_message
 description: Sends a text message to a specified recipient using the Messages app.
@@ -22,18 +22,18 @@ on run {recipient, messageText}
       if recipient is "" or recipient is missing value then
         set recipient to "--MCP_INPUT:recipient"
       end if
-      
+
       if messageText is "" or messageText is missing value then
         set messageText to "--MCP_INPUT:messageText"
       end if
-      
+
       set targetService to 1st service whose service type = iMessage
       set targetBuddy to buddy recipient of targetService
-      
+
       send messageText to targetBuddy
-      
+
       return "Message sent successfully to " & recipient
-      
+
     on error errMsg number errNum
       if errNum is -1728 then
         -- Try an alternative approach for non-iMessage contacts
@@ -51,4 +51,5 @@ on run {recipient, messageText}
   end tell
 end run
 ```
+
 END_TIP

@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Clear Cache and Website Data'
+title: "Safari: Clear Cache and Website Data"
 category: 07_browsers
 id: safari_clear_cache
 description: >-
@@ -47,20 +47,20 @@ on clearSafariData(clearOption)
   if clearOption is missing value or clearOption is "" then
     set clearOption to "all"
   end if
-  
+
   if not application "Safari" is running then
     tell application "Safari" to activate
     delay 1
   else
     tell application "Safari" to activate
   end if
-  
+
   tell application "System Events"
     tell process "Safari"
       -- Open Safari preferences
       click menu item "Settings…" of menu "Safari" of menu bar 1
       delay 1
-      
+
       -- Go to the Privacy tab
       try
         -- Modern Safari versions (13+)
@@ -84,20 +84,20 @@ on clearSafariData(clearOption)
           end try
         end try
       end try
-      
+
       delay 0.5
-      
+
       -- Clear different types of data based on user option
       if clearOption is "all" or clearOption is "cache" then
         -- Click "Manage Website Data..." button
         try
           click button "Manage Website Data…" of window 1
           delay 1
-          
+
           -- Click "Remove All" button in the dialog
           click button "Remove All" of sheet 1 of window 1
           delay 0.5
-          
+
           -- Confirm removal
           click button "Remove Now" of sheet 1 of sheet 1 of window 1
           delay 0.5
@@ -105,13 +105,13 @@ on clearSafariData(clearOption)
           log "Error clearing website data: " & errMsg
         end try
       end if
-      
+
       if clearOption is "all" or clearOption is "cookies" then
         -- Try to click "Remove All Website Data" button if it exists
         try
           click button "Remove All Website Data…" of window 1
           delay 0.5
-          
+
           -- Confirm removal
           click button "Remove Now" of sheet 1 of window 1
           delay 0.5
@@ -120,7 +120,7 @@ on clearSafariData(clearOption)
           -- Might be a different UI version, try alternative approach
         end try
       end if
-      
+
       -- For local storage specifically
       if clearOption is "all" or clearOption is "local" then
         -- This is typically cleared with "Remove All Website Data" but
@@ -134,7 +134,7 @@ on clearSafariData(clearOption)
           log "Error toggling cookie settings: " & errMsg
         end try
       end if
-      
+
       -- Close preferences window
       try
         keystroke "w" using command down
@@ -147,7 +147,7 @@ on clearSafariData(clearOption)
       end try
     end tell
   end tell
-  
+
   -- Return success message based on what was cleared
   if clearOption is "all" then
     return "Successfully cleared all Safari website data and cache."

@@ -1,5 +1,5 @@
 ---
-title: 'Paths: Understanding POSIX and HFS+ Paths'
+title: "Paths: Understanding POSIX and HFS+ Paths"
 category: 05_files
 id: paths_posix_vs_hfs
 description: >-
@@ -20,6 +20,7 @@ macOS uses POSIX paths (e.g., `/Users/yourname/Documents/file.txt`) at the Unix 
 AppleScript traditionally uses HFS+ paths (e.g., `Macintosh HD:Users:yourname:Documents:file.txt`). It's crucial to convert them correctly.
 
 **Conversion:**
+
 - POSIX to AppleScript `file` object: `POSIX file "/path/to/file"`
 - AppleScript `file`/`alias` or HFS path string to POSIX path string: `POSIX path of anAppleScriptPathOrFileObject`
 
@@ -43,4 +44,4 @@ return "AS File Object: " & (myASFileObject as text) & "\\nRetrieved POSIX: " & 
 ```
 
 **Note:** When providing paths to `do shell script`, always use POSIX paths and ensure they are properly quoted using `quoted form of`.
-END_TIP 
+END_TIP

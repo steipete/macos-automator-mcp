@@ -1,5 +1,5 @@
 ---
-title: 'Xcode: Build Project via xcodebuild Shell Command'
+title: "Xcode: Build Project via xcodebuild Shell Command"
 category: 13_developer
 id: xcode_build_project_shell
 description: Builds an Xcode project or workspace using the 'xcodebuild' command-line tool.
@@ -38,16 +38,16 @@ on buildXcodeProject(theProjectPath, theSchemeName, theConfigName)
   if theProjectPath ends with ".xcworkspace" then
     set projectOrWorkspaceFlag to "-workspace"
   end if
-  
+
   set command to "xcodebuild " & projectOrWorkspaceFlag & " " & quoted form of theProjectPath & ¬
     " -scheme " & quoted form of theSchemeName
-    
+
   if theConfigName is not missing value and theConfigName is not "" then
     set command to command & " -configuration " & quoted form of theConfigName
   end if
-  
+
   set command to command & " build" -- Or "clean build", "archive", etc.
-  
+
   try
     -- Change to project directory first if build requires relative paths
     -- Extract directory path from the project path directly
@@ -60,4 +60,5 @@ end buildXcodeProject
 
 return my buildXcodeProject("--MCP_INPUT:projectPath", "--MCP_INPUT:schemeName", "--MCP_INPUT:configName")
 ```
-END_TIP 
+
+END_TIP

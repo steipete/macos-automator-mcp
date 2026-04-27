@@ -12,8 +12,10 @@
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
-    "target": "esnext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "lib": ["esnext"],                                   /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+    "target": "esnext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "lib": [
+      "esnext"
+    ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "libReplacement": true,                           /* Enable lib replacement. */
     // "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
@@ -33,7 +35,7 @@
     // "baseUrl": ".",
     // "rootDirs": [],
     // "typeRoots": [],
-    // "types": [],
+    "types": ["node"],
     // "allowUmdGlobalAccess": true,
     // "moduleSuffixes": [],
     // "allowImportingTsExtensions": true,
@@ -110,7 +112,7 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    
+
     /* Paths - moved from outside compilerOptions */
     "paths": {
       "@modelcontextprotocol/sdk/server/mcp.js": [

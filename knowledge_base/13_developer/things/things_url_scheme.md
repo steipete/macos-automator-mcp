@@ -4,7 +4,7 @@ title: Use Things URL Scheme
 description: Use AppleScript with Things URL scheme for quick actions
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, url scheme, automation'
+tags: "things, productivity, task management, url scheme, automation"
 keywords:
   - url-scheme
   - quick-add
@@ -41,74 +41,74 @@ The script uses Things' URL scheme to perform various actions quickly.
 -- Use Things URL scheme for various actions
 on useThingsURLScheme(action, parameters)
     set baseURL to "things:///"
-    
+
     if action is "add" then
         set thingsURL to baseURL & "add?"
-        
+
         -- Parse parameters for add action
         set paramList to {}
-        
+
         if parameters contains "title" then
             set title to valueForKey(parameters, "title")
             set end of paramList to "title=" & encodeURLComponent(title)
         end if
-        
+
         if parameters contains "notes" then
             set notes to valueForKey(parameters, "notes")
             set end of paramList to "notes=" & encodeURLComponent(notes)
         end if
-        
+
         if parameters contains "when" then
             set whenDate to valueForKey(parameters, "when")
             set end of paramList to "when=" & encodeURLComponent(whenDate)
         end if
-        
+
         if parameters contains "deadline" then
             set deadline to valueForKey(parameters, "deadline")
             set end of paramList to "deadline=" & encodeURLComponent(deadline)
         end if
-        
+
         if parameters contains "tags" then
             set tags to valueForKey(parameters, "tags")
             set end of paramList to "tags=" & encodeURLComponent(tags)
         end if
-        
+
         if parameters contains "list" then
             set listId to valueForKey(parameters, "list")
             set end of paramList to "list=" & encodeURLComponent(listId)
         end if
-        
+
         -- Join parameters with &
         set AppleScript's text item delimiters to "&"
         set paramString to paramList as text
         set AppleScript's text item delimiters to ""
-        
+
         set thingsURL to thingsURL & paramString
-        
+
     else if action is "show" then
         set thingsURL to baseURL & "show?"
-        
+
         if parameters contains "id" then
             set listId to valueForKey(parameters, "id")
             set thingsURL to thingsURL & "id=" & encodeURLComponent(listId)
         else
             return "Error: 'id' parameter is required for show action."
         end if
-        
+
     else if action is "search" then
         set thingsURL to baseURL & "search?"
-        
+
         if parameters contains "query" then
             set query to valueForKey(parameters, "query")
             set thingsURL to thingsURL & "query=" & encodeURLComponent(query)
         else
             return "Error: 'query' parameter is required for search action."
         end if
-        
+
     else
         return "Error: Unsupported action. Use 'add', 'show', or 'search'."
     end if
-    
+
     -- Open the URL
     open location thingsURL
     return "Things URL opened: " & thingsURL
@@ -130,7 +130,7 @@ end valueForKey
 on encodeURLComponent(input)
     set theChars to the characters of input
     set encodedString to ""
-    
+
     repeat with c in theChars
         set theChar to c as string
         if theChar is " " then
@@ -145,7 +145,7 @@ on encodeURLComponent(input)
             set encodedString to encodedString & theChar
         end if
     end repeat
-    
+
     return encodedString
 end encodeURLComponent
 

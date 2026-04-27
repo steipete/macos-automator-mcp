@@ -37,7 +37,7 @@ on run {input, parameters}
     set projectPath to "--MCP_INPUT:projectPath"
     set serverCommand to "--MCP_INPUT:serverCommand"
     set clientCommand to "--MCP_INPUT:clientCommand"
-    
+
     if projectPath is "" or projectPath is missing value then
         tell application "Finder"
             if exists Finder window 1 then
@@ -49,16 +49,16 @@ on run {input, parameters}
             end if
         end tell
     end if
-    
+
     -- Set default commands if not provided
     if serverCommand is "" or serverCommand is missing value then
         set serverCommand to ""
     end if
-    
+
     if clientCommand is "" or clientCommand is missing value then
         set clientCommand to ""
     end if
-    
+
     tell application "iTerm"
         -- Create a new window or use existing
         if exists window 1 then
@@ -66,7 +66,7 @@ on run {input, parameters}
         else
             set projectWindow to (create window with default profile)
         end if
-        
+
         tell projectWindow
             -- Set up server pane (top)
             tell current session
@@ -75,7 +75,7 @@ on run {input, parameters}
                 if serverCommand is not "" then
                     write text serverCommand
                 end if
-                
+
                 -- Split horizontally for client pane (middle)
                 set clientPane to (split horizontally with default profile)
                 tell clientPane
@@ -85,7 +85,7 @@ on run {input, parameters}
                         write text clientCommand
                     end if
                 end tell
-                
+
                 -- Split client pane horizontally for free terminal (bottom)
                 tell clientPane
                     set freePane to (split horizontally with default profile)
@@ -95,7 +95,7 @@ on run {input, parameters}
                     end tell
                 end tell
             end tell
-            
+
             -- Create a second tab for utility functions
             set utilityTab to (create tab with default profile)
             tell utilityTab
@@ -105,11 +105,11 @@ on run {input, parameters}
                 end tell
             end tell
         end tell
-        
+
         -- Activate iTerm and bring to front
         activate
     end tell
-    
+
     return "Created development environment for project at " & projectPath
 end run
 ```
@@ -119,22 +119,26 @@ end run
 For different project types, you might want to use these standard commands:
 
 ### Node.js Projects
+
 ```
 npm start
 ```
 
 ### React Projects
+
 ```
 npm run dev
 ```
 
 ### Python Projects
+
 ```
 python manage.py runserver  # Django
 flask run                   # Flask
 ```
 
 ### Ruby on Rails
+
 ```
 rails server
 ```

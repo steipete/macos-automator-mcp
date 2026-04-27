@@ -1,5 +1,5 @@
 ---
-title: 'Music: Basic Playback Controls'
+title: "Music: Basic Playback Controls"
 category: 10_creative
 id: music_playback_controls
 description: >-
@@ -31,39 +31,39 @@ Control basic playback features of the Music app.
 ```applescript
 -- Ensure Music app is targeted
 tell application "Music" -- or "iTunes" on older systems
-  
+
   -- Play (starts current track or unpauses)
   -- play
   -- delay 1 -- Let it play for a moment
-  
+
   -- Pause
   -- pause
   -- delay 1
-  
+
   -- Play again to ensure something is playing for next/previous
   play
   delay 0.5
-  
+
   set initialVolume to sound volume
-  
+
   -- Set volume (0-100)
   set sound volume to 50 -- Set to half volume
   delay 0.5
-  
+
   -- Next track
   -- next track
   -- delay 1
-  
+
   -- Previous track
   -- previous track
   -- delay 1
-  
+
   -- Stop playback
   -- stop
-  
+
   -- Restore initial volume (optional)
   -- set sound volume to initialVolume
-  
+
   -- Get current player state
   set playerStateInfo to "Player state: " & (player state as string)
   if player state is playing then
@@ -74,10 +74,11 @@ tell application "Music" -- or "iTunes" on older systems
       set playerStateInfo to playerStateInfo & "\nCurrent Track: (Could not get track name)"
     end try
   end if
-  
+
   -- For the return value, let's report the volume and state.
   return "Sound volume set to: " & (sound volume as string) & "\n" & playerStateInfo & "\n(Note: Play/Pause/Next/Previous commands are commented out for sequential execution in a single run. Uncomment to test each.)"
-  
+
 end tell
 ```
-END_TIP 
+
+END_TIP

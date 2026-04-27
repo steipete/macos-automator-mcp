@@ -1,5 +1,5 @@
 ---
-title: 'Advanced: Raw Apple Events'
+title: "Advanced: Raw Apple Events"
 category: 11_advanced
 id: advanced_raw_apple_events
 description: >-
@@ -39,8 +39,8 @@ While application dictionaries typically provide user-friendly terms, understand
 
 **How to type Guillemets:**
 
-*   `«` : Option + \
-*   `»` : Shift + Option + \
+- `«` : Option + \
+- `»` : Shift + Option + \
 
 ```applescript
 -- This example demonstrates sending a raw 'run' event to Finder.
@@ -102,11 +102,11 @@ tell application "Finder"
     -- '----' is the raw code for the direct parameter.
     -- 'kocl' is the code for `class` and 'obj ' is the element type for object specifier.
     -- 'form' is `prop`, 'want' is `csel` (current selection), 'seld' is the data to set.
-    
+
     -- This is highly complex and usually abstracted by dictionary terms like `select`
     -- The below is a conceptual representation. Constructing complex raw events manually is rare.
     -- event "coresetd" given {"----":{targetFile}, "kobj":desktop window 1}
-    
+
     -- The simpler, dictionary-based way:
     select targetFile
     set selectionResult to "Selected '" & (name of targetFile) & "' using standard select command."
@@ -114,10 +114,11 @@ tell application "Finder"
     set selectionResult to "Error in selection example: " & e3
   end try
   -- Clean up
-  -- delete file testFilePath 
+  -- delete file testFilePath
 end tell
 *)
 
 return result1 & "\n" & result2 & "\n" & selectionResult
 ```
-END_TIP 
+
+END_TIP

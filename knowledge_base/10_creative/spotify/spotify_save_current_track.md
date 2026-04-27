@@ -1,5 +1,5 @@
 ---
-title: 'Spotify: Save Current Track'
+title: "Spotify: Save Current Track"
 category: 10_creative
 id: spotify_save_current_track
 description: >-
@@ -68,13 +68,13 @@ tell application "Spotify"
   if not running then
     return "Spotify is not running. Please launch it first."
   end if
-  
+
   try
     -- Check if a track is available
     if player state is stopped then
       return "No track is currently playing or paused in Spotify."
     end if
-    
+
     -- Get the track details
     set trackName to name of current track
     set artistName to artist of current track
@@ -84,7 +84,7 @@ tell application "Spotify"
     set trackPosition to player position -- in seconds
     set spotifyURI to spotify url of current track
     set playerStateText to player state as text
-    
+
     -- Format duration for display
     set durationMin to trackDurationSec div 60
     set durationSec to trackDurationSec mod 60
@@ -94,7 +94,7 @@ tell application "Spotify"
       set durationSecText to durationSec as text
     end if
     set formattedDuration to durationMin & ":" & durationSecText
-    
+
     -- Get current timestamp if requested
     set timestampText to ""
     if includeTimestamp is "yes" then
@@ -103,15 +103,15 @@ tell application "Spotify"
       set timeString to my padNumber(hours of currentDate) & ":" & my padNumber(minutes of currentDate) & ":" & my padNumber(seconds of currentDate)
       set timestampText to dateString & " " & timeString
     end if
-    
+
     -- Create sanitized filename based on track
     set sanitizedTrackName to my sanitizeFileName(trackName)
     set sanitizedArtistName to my sanitizeFileName(artistName)
     set baseFileName to sanitizedArtistName & " - " & sanitizedTrackName
-    
+
     -- Generate file content based on format
     set fileContent to ""
-    
+
     if outputFormat is "text" then
       set fileContent to "Spotify Track Information" & return & return
       set fileContent to fileContent & "Track: " & trackName & return
@@ -119,16 +119,16 @@ tell application "Spotify"
       set fileContent to fileContent & "Album: " & albumName & return
       set fileContent to fileContent & "Duration: " & formattedDuration & return
       set fileContent to fileContent & "Spotify URI: " & spotifyURI & return
-      
+
       if includeTimestamp is "yes" then
         set fileContent to fileContent & "Saved on: " & timestampText & return
       end if
-      
+
       set fileContent to fileContent & return & "To play this track again, use the Spotify URI or open:" & return
       set fileContent to fileContent & "https://open.spotify.com/track/" & my extractIDFromURI(spotifyURI)
-      
+
       set fileExtension to "txt"
-      
+
     else if outputFormat is "json" then
       -- Build JSON object
       set fileContent to "{" & return
@@ -139,48 +139,48 @@ tell application "Spotify"
       set fileContent to fileContent & "  \"duration_formatted\": \"" & formattedDuration & "\"," & return
       set fileContent to fileContent & "  \"spotify_uri\": \"" & spotifyURI & "\"," & return
       set fileContent to fileContent & "  \"player_state\": \"" & playerStateText & "\"," & return
-      
+
       if includeTimestamp is "yes" then
         set fileContent to fileContent & "  \"saved_at\": \"" & timestampText & "\"," & return
       end if
-      
+
       set fileContent to fileContent & "  \"web_url\": \"https://open.spotify.com/track/" & my extractIDFromURI(spotifyURI) & "\"" & return
       set fileContent to fileContent & "}"
-      
+
       set fileExtension to "json"
-      
+
     else if outputFormat is "csv" then
       -- Create CSV header and data rows
       set fileContent to "Track,Artist,Album,Duration,Spotify URI"
-      
+
       if includeTimestamp is "yes" then
         set fileContent to fileContent & ",Saved At"
       end if
-      
+
       set fileContent to fileContent & return
-      
+
       -- Add track data
       set fileContent to fileContent & "\"" & my escapeCSV(trackName) & "\","
       set fileContent to fileContent & "\"" & my escapeCSV(artistName) & "\","
       set fileContent to fileContent & "\"" & my escapeCSV(albumName) & "\","
       set fileContent to fileContent & "\"" & formattedDuration & "\","
       set fileContent to fileContent & "\"" & spotifyURI & "\""
-      
+
       if includeTimestamp is "yes" then
         set fileContent to fileContent & ",\"" & timestampText & "\""
       end if
-      
+
       set fileExtension to "csv"
     end if
-    
+
     -- Determine save path
     set filePath to ""
-    
+
     if saveLocation is "desktop" then
       set filePath to (path to desktop as text) & baseFileName & "." & fileExtension
     else
       set filePath to saveLocation
-      
+
       -- If path doesn't end with extension, append filename and extension
       if filePath does not end with ("." & fileExtension) then
         if filePath ends with "/" then
@@ -190,15 +190,15 @@ tell application "Spotify"
         end if
       end if
     end if
-    
+
     -- Convert to POSIX path for file operations
     set posixPath to POSIX path of filePath
-    
+
     -- Write the file
     do shell script "cat > " & quoted form of posixPath & " << 'EOF'
 " & fileContent & "
 EOF"
-    
+
     -- Return success message with file details
     set resultMessage to "Successfully saved " & outputFormat & " information for track:" & return
     set resultMessage to resultMessage & "\"" & trackName & "\" by " & artistName & return & return
@@ -207,9 +207,9 @@ EOF"
     set resultMessage to resultMessage & "- Basic track information" & return
     set resultMessage to resultMessage & "- Spotify URI for reuse: " & spotifyURI & return
     set resultMessage to resultMessage & "- Track URL: https://open.spotify.com/track/" & my extractIDFromURI(spotifyURI)
-    
+
     return resultMessage
-    
+
   on error errMsg number errNum
     return "Error saving track information (" & errNum & "): " & errMsg
   end try
@@ -228,11 +228,11 @@ end padNumber
 on sanitizeFileName(fileName)
   set invalidChars to {":", "/", "\\", "*", "?", "\"", "<", ">", "|"}
   set sanitized to fileName
-  
+
   repeat with invalidChar in invalidChars
     set sanitized to my replaceText(sanitized, invalidChar, "-")
   end repeat
-  
+
   return sanitized
 end sanitizeFileName
 
@@ -274,7 +274,7 @@ on extractIDFromURI(uri)
       set AppleScript's text item delimiters to ""
       return trackID
     end if
-    
+
     -- Reset delimiters
     set AppleScript's text item delimiters to ""
     return ""

@@ -1,5 +1,5 @@
 ---
-title: 'Keynote: Create New Presentation from Theme'
+title: "Keynote: Create New Presentation from Theme"
 category: 10_creative
 id: keynote_create_presentation_theme
 description: Creates a new Keynote presentation using a specified theme name.
@@ -26,7 +26,7 @@ on createKeynotePresentation(theThemeName)
     -- Default to a common theme or error out
     -- For this example, we'll let Keynote pick its default if name is empty,
     -- but ideally, we'd require a theme name or have a known good default.
-    -- set theThemeName to "White" 
+    -- set theThemeName to "White"
   end if
 
   tell application "Keynote"
@@ -39,14 +39,14 @@ on createKeynotePresentation(theThemeName)
 
       -- Simpler approach: make new document (uses default or last used theme)
       -- set newDocument to make new document
-      
+
       -- Attempt to use theme by name (might require exact theme object reference)
       -- This is conceptual; direct theme object reference is better.
       -- For now, let's show how to set it *after* creation, or UI script it.
-      
+
       set newDocument to make new document -- Creates with default theme
       delay 0.5 -- Allow document to appear
-      
+
       -- If a specific theme name is given, try to change to it.
       -- This is often done via UI scripting the theme chooser, as direct theme setting can be complex.
       -- For simplicity, this example doesn't change the theme after creation,
@@ -65,7 +65,7 @@ on createKeynotePresentation(theThemeName)
             log "Could not apply theme '" & theThemeName & "' directly: " & themeError
          end try
       end if
-      
+
       return "New Keynote presentation created (likely with default theme). Intended theme: " & theThemeName
     on error errMsg
       return "error: Failed to create Keynote presentation - " & errMsg
@@ -75,4 +75,5 @@ end createKeynotePresentation
 
 return my createKeynotePresentation("--MCP_INPUT:themeName")
 ```
-END_TIP 
+
+END_TIP

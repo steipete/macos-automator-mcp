@@ -1,5 +1,5 @@
 ---
-title: 'Core: Integer Data Type'
+title: "Core: Integer Data Type"
 category: 02_as_core
 id: core_datatype_integer
 description: Working with integer (whole number) values in AppleScript.
@@ -43,4 +43,5 @@ set stringAsInt to "25" as integer
 
 return "Sum: " & sumResult & "\nDiv: " & divResult & "\nMod: " & modResult & "\nAs String: " & intAsString & "\nString as Int: " & stringAsInt
 ```
-END_TIP 
+
+END_TIP

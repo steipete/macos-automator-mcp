@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Geolocation Spoofing'
+title: "Chrome: Geolocation Spoofing"
 category: 07_browsers
 id: chrome_geolocation_spoofing
 description: >-
@@ -53,7 +53,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
   if accuracy is missing value or accuracy is "" then
     set accuracy to 10 -- Default accuracy in meters
   end if
-  
+
   -- Predefined locations
   set presetLocations to {¬
     {"london", 51.5074, -0.1278, "London, UK"}, ¬
@@ -67,11 +67,11 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
     {"cape_town", -33.9249, 18.4241, "Cape Town, South Africa"}, ¬
     {"moscow", 55.7558, 37.6173, "Moscow, Russia"} ¬
   }
-  
+
   -- If we have a preset, use those coordinates
   if preset is not missing value and preset is not "" then
     set presetFound to false
-    
+
     repeat with presetInfo in presetLocations
       if item 1 of presetInfo is preset then
         set latitude to item 2 of presetInfo
@@ -81,7 +81,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
         exit repeat
       end if
     end repeat
-    
+
     if not presetFound then
       return "error: Invalid preset location. Available options: london, new_york, san_francisco, tokyo, sydney, paris, beijing, rio, cape_town, moscow."
     end if
@@ -93,38 +93,38 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
       set locationName to "San Francisco, USA"
     end if
   end if
-  
+
   -- Check for real location mode
   if useRealLocation is true then
     set locationMode to "useRealLocation"
   else
     set locationMode to "customLocation"
   end if
-  
+
   -- Make sure Chrome is running
   tell application "Google Chrome"
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure it's in the foreground
     activate
   end tell
-  
+
   -- Open DevTools
   tell application "System Events"
     tell process "Google Chrome"
       set frontmost to true
       delay 0.3
-      
+
       -- Check if DevTools is already open
       set devToolsOpen to false
       repeat with w in windows
@@ -133,7 +133,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
           exit repeat
         end if
       end repeat
-      
+
       -- Open DevTools if not already open
       if not devToolsOpen then
         key code 34 using {command down, option down} -- Option+Command+I
@@ -141,10 +141,10 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
       end if
     end tell
   end tell
-  
+
   -- Generate a unique ID for this geolocation session
   set sessionId to "mcpGeoLocation_" & (random number from 100000 to 999999) as string
-  
+
   -- Prepare the JavaScript for geolocation spoofing
   set geoScript to "
     (function() {
@@ -158,7 +158,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
             mockPosition: null
           };
         }
-        
+
         // Clear any existing session with the same ID
         if (window.mcpGeolocation.activeSession === '" & sessionId & "') {
           console.log('Stopping previous geolocation session with same ID');
@@ -168,15 +168,15 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
             window.mcpGeolocation.mockPosition = null;
           }
         }
-        
+
         // Set up the new session
         window.mcpGeolocation.activeSession = '" & sessionId & "';
-        
+
         // Configure the location mode
         if ('" & locationMode & "' === 'useRealLocation') {
           window.mcpGeolocation.mode = 'real';
           window.mcpGeolocation.mockPosition = null;
-          
+
           // Restore original geolocation if it was saved
           if (window.mcpGeolocation.originalGeolocation) {
             try {
@@ -201,9 +201,9 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
             timestamp: Date.now()
           };
         }
-        
+
         // Configuration methods for geolocation spoofing
-        
+
         // Method 1: DevTools Emulation API (most reliable if available)
         async function setupDevToolsEmulation() {
           if (typeof EmulationAgent !== 'undefined') {
@@ -225,16 +225,16 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
               console.error('Failed to use EmulationAgent:', e);
             }
           }
-          
+
           return null; // Indicate method not available
         }
-        
+
         // Method 2: chrome.debugger API
         async function setupChromeDebugger() {
           if (typeof chrome !== 'undefined' && chrome.debugger && chrome.devtools) {
             try {
               const tabId = chrome.devtools.inspectedWindow.tabId;
-              
+
               // First attach the debugger
               await new Promise((resolve, reject) => {
                 chrome.debugger.attach({tabId}, '1.3', result => {
@@ -245,7 +245,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
                   }
                 });
               });
-              
+
               // Set or clear geolocation override
               if (window.mcpGeolocation.mode === 'mock') {
                 await new Promise((resolve, reject) => {
@@ -272,16 +272,16 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
                   });
                 });
               }
-              
+
               return { success: true, method: 'chrome.debugger' };
             } catch (e) {
               console.error('Failed to use chrome.debugger:', e);
             }
           }
-          
+
           return null; // Indicate method not available
         }
-        
+
         // Method 3: Navigator.geolocation override (fallback)
         function setupNavigatorOverride() {
           try {
@@ -289,7 +289,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
             if (!window.mcpGeolocation.originalGeolocation) {
               window.mcpGeolocation.originalGeolocation = navigator.geolocation;
             }
-            
+
             // If returning to real location, restore original
             if (window.mcpGeolocation.mode === 'real') {
               if (window.mcpGeolocation.originalGeolocation) {
@@ -298,7 +298,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
               }
               return { success: true, method: 'navigatorRestore' };
             }
-            
+
             // Create mock geolocation object
             const mockGeolocation = {
               getCurrentPosition: function(success, error, options) {
@@ -306,13 +306,13 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
                   success(window.mcpGeolocation.mockPosition);
                 }, 200); // Small delay to simulate network
               },
-              
+
               watchPosition: function(success, error, options) {
                 // Immediately return the position
                 setTimeout(function() {
                   success(window.mcpGeolocation.mockPosition);
                 }, 200);
-                
+
                 // Create a timer to simulate position updates
                 const watchId = setInterval(function() {
                   // Add small random variations to make it realistic
@@ -329,32 +329,32 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
                     },
                     timestamp: Date.now()
                   };
-                  
+
                   success(mockPosition);
                 }, 5000); // Update every 5 seconds
-                
+
                 return watchId;
               },
-              
+
               clearWatch: function(watchId) {
                 clearInterval(watchId);
               }
             };
-            
+
             // Replace navigator.geolocation with our mock
             navigator.geolocation = mockGeolocation;
-            
+
             return { success: true, method: 'navigatorOverride' };
           } catch (e) {
             console.error('Failed to override navigator.geolocation:', e);
             return { error: true, message: e.toString(), method: 'navigatorOverride' };
           }
         }
-        
+
         // Try each method in sequence until one works
         return (async () => {
           let result = null;
-          
+
           // Try DevTools Emulation first
           result = await setupDevToolsEmulation();
           if (result && result.success) {
@@ -366,7 +366,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
               " & (if locationMode is "useRealLocation" then "message: 'Successfully restored real geolocation'" else "message: 'Successfully spoofed geolocation to " & latitude & ", " & longitude & " (accuracy: " & accuracy & "m)'") & "
             };
           }
-          
+
           // Try chrome.debugger next
           result = await setupChromeDebugger();
           if (result && result.success) {
@@ -378,7 +378,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
               " & (if locationMode is "useRealLocation" then "message: 'Successfully restored real geolocation'" else "message: 'Successfully spoofed geolocation to " & latitude & ", " & longitude & " (accuracy: " & accuracy & "m)'") & "
             };
           }
-          
+
           // Fall back to navigator override
           result = setupNavigatorOverride();
           if (result && result.success) {
@@ -391,7 +391,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
               note: 'Using the navigator override method. This works only for new geolocation requests and requires a page refresh for best results.'
             };
           }
-          
+
           // If all methods failed
           return {
             error: true,
@@ -400,20 +400,20 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
           };
         })();
       } catch (e) {
-        return { 
-          error: true, 
+        return {
+          error: true,
           message: e.toString(),
           stack: e.stack
         };
       }
     })();
   "
-  
+
   -- Execute the script
   tell application "Google Chrome"
     try
       set geoResult to execute active tab of front window javascript geoScript
-      
+
       -- Check if request succeeded
       if geoResult contains "error" then
         -- We need to try a different approach - first open the Sensors panel in DevTools to set location
@@ -422,29 +422,29 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
             -- Try to open the DevTools menu
             click menu item "More Tools" of menu 1 of menu bar item "View" of menu bar 1
             delay 0.2
-            
+
             -- Look for Sensors or Developer Tools options
             try
               click menu item "Sensors" of menu 1 of menu item "More Tools" of menu 1 of menu bar item "View" of menu bar 1
               delay 0.5
-              
+
               -- Now look for location dropdown in the Sensors panel
               -- Note: This is a heuristic as the exact UI elements can vary
               repeat with w in windows
                 try
                   set allGroups to groups of w
-                  
+
                   repeat with g in allGroups
                     if description of g contains "Location" or description of g contains "Geolocation" then
                       set locationGroup to g
-                      
+
                       -- Try to find the dropdown
                       set allPopups to pop up buttons of locationGroup
                       if (count of allPopups) > 0 then
                         -- Click the location dropdown
                         click (item 1 of allPopups)
                         delay 0.3
-                        
+
                         -- Select appropriate option
                         if locationMode is "useRealLocation" then
                           click menu item "No override" of menu 1 of item 1 of allPopups
@@ -452,7 +452,7 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
                           -- If custom location option exists
                           click menu item "Custom location..." of menu 1 of item 1 of allPopups
                           delay 0.3
-                          
+
                           -- Try to find latitude/longitude fields
                           set allTextFields to text fields of locationGroup
                           if (count of allTextFields) ≥ 3 then
@@ -462,12 +462,12 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
                             set value of item 3 of allTextFields to accuracy as string
                           end if
                         end if
-                        
+
                         exit repeat
                       end if
                     end if
                   end repeat
-                  
+
                   exit repeat
                 on error
                   -- Continue to next window
@@ -475,10 +475,10 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
               end repeat
             on error
               -- Sensors option not found, let's try manually opening the sensors panel
-              -- Go to Network conditions 
+              -- Go to Network conditions
               key code 110 using {command down, shift down} -- Command+Shift+N for network
               delay 0.5
-              
+
               -- Try to access the additional panels using keyboard
               key code 48 using {command down} -- Command+Tab key to navigate panels
               delay 0.3
@@ -487,11 +487,11 @@ on spoofGeolocation(latitude, longitude, accuracy, preset, useRealLocation)
             end try
           end tell
         end tell
-        
+
         -- After UI manipulation, try running our JavaScript again
         delay 1
         set secondAttemptResult to execute active tab of front window javascript geoScript
-        
+
         -- Return the result, which might still be an error but at least we tried UI method
         return secondAttemptResult
       else
@@ -506,4 +506,5 @@ end spoofGeolocation
 
 return my spoofGeolocation("--MCP_INPUT:latitude", "--MCP_INPUT:longitude", "--MCP_INPUT:accuracy", "--MCP_INPUT:preset", "--MCP_INPUT:useRealLocation")
 ```
+
 END_TIP

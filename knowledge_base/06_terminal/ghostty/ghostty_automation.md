@@ -32,12 +32,12 @@ This script automates interactions with the Ghostty terminal emulator, a fast, f
 on run {input, parameters}
     set command to "--MCP_INPUT:command"
     set workDir to "--MCP_INPUT:workDir"
-    
+
     -- Set default working directory if not specified
     if workDir is "" or workDir is missing value then
         set workDir to "~"
     end if
-    
+
     -- Check if Ghostty is installed
     try
         do shell script "osascript -e 'exists application \"Ghostty\"'"
@@ -45,25 +45,25 @@ on run {input, parameters}
         display dialog "Ghostty terminal application is not installed on this system." buttons {"OK"} default button "OK" with icon stop
         return
     end try
-    
+
     -- Launch Ghostty and execute command if provided
     tell application "Ghostty"
         activate
     end tell
-    
+
     -- Allow time for Ghostty to launch
     delay 0.5
-    
+
     -- Change to working directory
     if workDir is not "~" then
         sendTextToGhostty("cd " & workDir)
     end if
-    
+
     -- Execute command if provided
     if command is not "" and command is not missing value then
         sendTextToGhostty(command)
     end if
-    
+
     return "Ghostty terminal opened" & (if command is not "" and command is not missing value then " and executed: " & command else "")
 end run
 
@@ -101,19 +101,19 @@ on createMultiPaneEnvironment()
     tell application "Ghostty"
         activate
     end tell
-    
+
     delay 0.5
-    
+
     -- Split horizontally (uses default Ghostty shortcuts)
     tell application "System Events"
         tell process "Ghostty"
             keystroke "d" using {shift down, command down}
             delay 0.3
-            
+
             -- Split vertically in the right pane
             keystroke "d" using {command down}
             delay 0.3
-            
+
             -- Go back to first pane
             keystroke "[" using {command down, option down}
         end tell
@@ -130,7 +130,7 @@ on alfredRun(query)
     -- Parse the query into command components
     set command_parts to my splitString(query, " ")
     set cmd_name to item 1 of command_parts
-    
+
     if cmd_name is "ssh" and (count of command_parts) > 1 then
         set server to item 2 of command_parts
         tell application "Ghostty"
@@ -167,19 +167,19 @@ on switchGhosttyConfig(configName)
     set configDir to (POSIX path of (path to home folder)) & ".config/ghostty/configs/"
     set targetConfig to configDir & configName & ".conf"
     set mainConfig to (POSIX path of (path to home folder)) & ".config/ghostty/config"
-    
+
     try
         -- Check if the config exists
         do shell script "test -f " & quoted form of targetConfig
-        
+
         -- Create a symbolic link to the config
         do shell script "ln -sf " & quoted form of targetConfig & " " & quoted form of mainConfig
-        
+
         -- Restart Ghostty for the changes to take effect
         tell application "Ghostty" to quit
         delay 1
         tell application "Ghostty" to activate
-        
+
         return "Switched to Ghostty config: " & configName
     on error
         return "Error: Config file " & configName & ".conf not found"

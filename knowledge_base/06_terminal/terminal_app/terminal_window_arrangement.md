@@ -1,5 +1,5 @@
 ---
-title: 'Terminal: Window and Tab Arrangement'
+title: "Terminal: Window and Tab Arrangement"
 id: terminal_window_arrangement
 category: 06_terminal
 description: >-
@@ -27,6 +27,7 @@ isComplex: true
 This script arranges Terminal.app windows according to various layout patterns, helping you organize your workspace efficiently. It can arrange existing windows or create new ones in the desired configuration.
 
 **Features:**
+
 - Arrange windows in a grid pattern (rows and columns)
 - Cascade windows diagonally across the screen
 - Arrange windows horizontally (side by side)
@@ -40,19 +41,19 @@ on runWithInput(inputData, legacyArguments)
     set defaultGridRows to 2
     set defaultGridColumns to 2
     set defaultPositions to {}
-    
+
     -- Parse input parameters
     set theLayout to defaultLayout
     set gridRows to defaultGridRows
     set gridColumns to defaultGridColumns
     set customPositions to defaultPositions
-    
+
     if inputData is not missing value then
         if inputData contains {layout:""} then
             set theLayout to layout of inputData
             --MCP_INPUT:layout
         end if
-        
+
         if inputData contains {gridRows:""} then
             try
                 set gridRows to gridRows of inputData as integer
@@ -60,7 +61,7 @@ on runWithInput(inputData, legacyArguments)
                 --MCP_INPUT:gridRows
             end try
         end if
-        
+
         if inputData contains {gridColumns:""} then
             try
                 set gridColumns to gridColumns of inputData as integer
@@ -68,29 +69,29 @@ on runWithInput(inputData, legacyArguments)
                 --MCP_INPUT:gridColumns
             end try
         end if
-        
+
         if inputData contains {positions:""} then
             set customPositions to positions of inputData
             --MCP_INPUT:positions
         end if
     end if
-    
+
     -- Convert layout to lowercase
     set theLayout to my toLower(theLayout)
-    
+
     -- Get screen dimensions
     set screenDimensions to getScreenDimensions()
     set screenWidth to item 1 of screenDimensions
     set screenHeight to item 2 of screenDimensions
-    
+
     tell application "Terminal"
         -- Check if Terminal.app is running and has open windows
         set windowCount to count of windows
-        
+
         if windowCount is 0 then
             -- No windows open, ask if we should create new ones
             display dialog "No Terminal windows are open. Create new windows for arrangement?" buttons {"Cancel", "Create"} default button "Create"
-            
+
             -- Create windows based on the layout
             if theLayout is "grid" then
                 set windowCount to gridRows * gridColumns
@@ -107,34 +108,34 @@ on runWithInput(inputData, legacyArguments)
                     set windowCount to 1
                 end if
             end if
-            
+
             -- Create the windows
             repeat windowCount times
                 do script ""
                 delay 0.3
             end repeat
-            
+
             -- Get the updated window count
             set windowCount to count of windows
         end if
-        
+
         -- Apply the selected layout
         if theLayout is "grid" then
             arrangeInGrid(gridRows, gridColumns, screenWidth, screenHeight)
             return "Arranged " & windowCount & " Terminal windows in a " & gridRows & "×" & gridColumns & " grid."
-            
+
         else if theLayout is "cascade" then
             arrangeInCascade(screenWidth, screenHeight)
             return "Arranged " & windowCount & " Terminal windows in a cascade pattern."
-            
+
         else if theLayout is "horizontal" then
             arrangeHorizontally(screenWidth, screenHeight)
             return "Arranged " & windowCount & " Terminal windows horizontally."
-            
+
         else if theLayout is "vertical" then
             arrangeVertically(screenWidth, screenHeight)
             return "Arranged " & windowCount & " Terminal windows vertically."
-            
+
         else if theLayout is "custom" then
             if class of customPositions is list and (count of customPositions) > 0 then
                 arrangeCustom(customPositions)
@@ -142,7 +143,7 @@ on runWithInput(inputData, legacyArguments)
             else
                 return "Error: Custom layout requires valid position specifications."
             end if
-            
+
         else
             return "Error: Invalid layout type. Use 'grid', 'cascade', 'horizontal', 'vertical', or 'custom'."
         end if
@@ -154,30 +155,30 @@ on arrangeInGrid(rows, columns, screenWidth, screenHeight)
     tell application "Terminal"
         set windowCount to count of windows
         set windowIndex to 1
-        
+
         set marginX to 20
         set marginY to 20
         set usableWidth to screenWidth - (2 * marginX)
         set usableHeight to screenHeight - (2 * marginY)
-        
+
         set cellWidth to usableWidth / columns
         set cellHeight to usableHeight / rows
-        
+
         -- Calculate window dimensions with spacing
         set spacingX to 10
         set spacingY to 10
         set windowWidth to cellWidth - spacingX
         set windowHeight to cellHeight - spacingY
-        
+
         repeat with row from 1 to rows
             repeat with col from 1 to columns
                 if windowIndex > windowCount then exit repeat
-                
+
                 set winX to marginX + ((col - 1) * cellWidth)
                 set winY to marginY + ((row - 1) * cellHeight)
-                
+
                 set bounds of window windowIndex to {winX, winY, winX + windowWidth, winY + windowHeight}
-                
+
                 set windowIndex to windowIndex + 1
             end repeat
             if windowIndex > windowCount then exit repeat
@@ -189,15 +190,15 @@ end arrangeInGrid
 on arrangeInCascade(screenWidth, screenHeight)
     tell application "Terminal"
         set windowCount to count of windows
-        
+
         set baseWidth to (screenWidth * 0.75)
         set baseHeight to (screenHeight * 0.75)
         set offsetStep to 30
-        
+
         repeat with i from 1 to windowCount
             set winX to 50 + ((i - 1) * offsetStep)
             set winY to 50 + ((i - 1) * offsetStep)
-            
+
             -- Ensure the window doesn't go off screen
             if winX + baseWidth > screenWidth then
                 set winX to 50
@@ -205,7 +206,7 @@ on arrangeInCascade(screenWidth, screenHeight)
             if winY + baseHeight > screenHeight then
                 set winY to 50
             end if
-            
+
             set bounds of window i to {winX, winY, winX + baseWidth, winY + baseHeight}
         end repeat
     end tell
@@ -215,20 +216,20 @@ end arrangeInCascade
 on arrangeHorizontally(screenWidth, screenHeight)
     tell application "Terminal"
         set windowCount to count of windows
-        
+
         set marginX to 20
         set marginY to 50
         set usableWidth to screenWidth - (2 * marginX)
-        
+
         -- Calculate window width with spacing
         set spacingX to 10
         set windowWidth to (usableWidth / windowCount) - spacingX
         set windowHeight to screenHeight - (2 * marginY)
-        
+
         repeat with i from 1 to windowCount
             set winX to marginX + ((i - 1) * (windowWidth + spacingX))
             set winY to marginY
-            
+
             set bounds of window i to {winX, winY, winX + windowWidth, winY + windowHeight}
         end repeat
     end tell
@@ -238,20 +239,20 @@ end arrangeHorizontally
 on arrangeVertically(screenWidth, screenHeight)
     tell application "Terminal"
         set windowCount to count of windows
-        
+
         set marginX to 50
         set marginY to 20
         set usableHeight to screenHeight - (2 * marginY)
-        
+
         -- Calculate window height with spacing
         set spacingY to 10
         set windowHeight to (usableHeight / windowCount) - spacingY
         set windowWidth to screenWidth - (2 * marginX)
-        
+
         repeat with i from 1 to windowCount
             set winX to marginX
             set winY to marginY + ((i - 1) * (windowHeight + spacingY))
-            
+
             set bounds of window i to {winX, winY, winX + windowWidth, winY + windowHeight}
         end repeat
     end tell
@@ -262,17 +263,17 @@ on arrangeCustom(positionsList)
     tell application "Terminal"
         set windowCount to count of windows
         set positionCount to count of positionsList
-        
+
         -- Apply as many positions as we have windows
         repeat with i from 1 to (min of windowCount and positionCount)
             set positionData to item i of positionsList
-            
+
             -- Extract position data
             set winX to 0
             set winY to 0
             set winWidth to 800
             set winHeight to 600
-            
+
             try
                 if positionData contains {x:0} then
                     set winX to x of positionData as integer
@@ -290,7 +291,7 @@ on arrangeCustom(positionsList)
                 -- Skip invalid position data
                 return "Error: Invalid position data for window " & i
             end try
-            
+
             -- Apply the position
             set bounds of window i to {winX, winY, winX + winWidth, winY + winHeight}
         end repeat
@@ -339,6 +340,7 @@ The grid layout arranges windows in rows and columns, creating a structured view
 - Customizable number of rows and columns
 
 When to use:
+
 - Server monitoring across multiple systems
 - Running and viewing multiple processes side by side
 - Comparing output from different commands
@@ -352,6 +354,7 @@ The cascade layout arranges windows in a diagonal pattern, with each window slig
 - Creates a natural visual hierarchy
 
 When to use:
+
 - When you need to switch frequently between several windows
 - When window titles are important for identification
 - For workflows where one window might be primary but others need to remain accessible
@@ -365,6 +368,7 @@ The horizontal layout arranges windows side by side across the screen:
 - Perfect for comparing output across windows
 
 When to use:
+
 - Code comparison across different files or versions
 - Log file monitoring with different log sources
 - Command execution with side-by-side results
@@ -378,6 +382,7 @@ The vertical layout stacks windows from top to bottom:
 - Great for reading long output or logs
 
 When to use:
+
 - Reading through long command outputs
 - Working with log files or text-heavy content
 - When vertical space is more valuable than horizontal
@@ -391,6 +396,7 @@ The custom layout allows precise control over window positions and sizes:
 - Accommodate specific workflow requirements
 
 When to use:
+
 - Complex workflows with specific window placement needs
 - When you want to save and reuse specific window arrangements
 - When standard patterns don't fit your needs
@@ -409,8 +415,8 @@ For example, to span two side-by-side monitors:
 {
   "layout": "custom",
   "positions": [
-    {"x": 50, "y": 50, "width": 800, "height": 600},
-    {"x": 1970, "y": 50, "width": 800, "height": 600}
+    { "x": 50, "y": 50, "width": 800, "height": 600 },
+    { "x": 1970, "y": 50, "width": 800, "height": 600 }
   ]
 }
 ```
@@ -436,6 +442,7 @@ This window arrangement script works well in combination with other Terminal man
 ```
 
 Create a 2×2 grid with:
+
 - Top-left: Code editing
 - Top-right: Server/application output
 - Bottom-left: Git commands
@@ -450,6 +457,7 @@ Create a 2×2 grid with:
 ```
 
 Create side-by-side windows for:
+
 - CPU/memory monitoring (htop)
 - Network traffic
 - Disk I/O
@@ -461,9 +469,9 @@ Create side-by-side windows for:
 {
   "layout": "custom",
   "positions": [
-    {"x": 0, "y": 0, "width": 1200, "height": 800},
-    {"x": 1220, "y": 0, "width": 700, "height": 400},
-    {"x": 1220, "y": 420, "width": 700, "height": 400}
+    { "x": 0, "y": 0, "width": 1200, "height": 800 },
+    { "x": 1220, "y": 0, "width": 700, "height": 400 },
+    { "x": 1220, "y": 420, "width": 700, "height": 400 }
   ]
 }
 ```

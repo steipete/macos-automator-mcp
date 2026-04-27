@@ -1,8 +1,8 @@
 ---
-title: 'System: Volume Control'
+title: "System: Volume Control"
 category: 04_system
 id: system_volume_control
-description: 'Control system volume, mute status, and audio output devices on macOS.'
+description: "Control system volume, mute status, and audio output devices on macOS."
 keywords:
   - volume
   - audio
@@ -85,79 +85,79 @@ end if
 if actionParam is "get_status" then
   -- Get current volume status
   set currentVolumeInfo to my getVolumeInfo()
-  
+
   set resultText to "Current System Audio Status:" & return & return
   set resultText to resultText & "Volume: " & (item 1 of currentVolumeInfo) & "%" & return
   set resultText to resultText & "Muted: " & (item 2 of currentVolumeInfo) & return
-  
+
   -- Try to get output device information
   try
     set outputDeviceInfo to my getOutputDeviceInfo()
-    
+
     set resultText to resultText & return & "Current Output Device:" & return
     set resultText to resultText & "Name: " & (item 1 of outputDeviceInfo) & return
     set resultText to resultText & "Type: " & (item 2 of outputDeviceInfo) & return
   on error
     -- Skip if output device info is not available
   end try
-  
+
   return resultText
-  
+
 else if actionParam is "set_volume" then
   -- Set system volume
   try
     -- Convert volume from 0-100 to 0-7 for macOS
     set volumeLevel to volumeLevelParam as number
     set macOsVolume to round ((volumeLevel / 100) * 7)
-    
+
     -- Set the volume
     set volume output volume volumeLevel
-    
+
     -- Get new volume status
     set currentVolumeInfo to my getVolumeInfo()
-    
+
     set resultText to "Volume set successfully:" & return & return
     set resultText to resultText & "New Volume: " & (item 1 of currentVolumeInfo) & "%" & return
     set resultText to resultText & "Muted: " & (item 2 of currentVolumeInfo)
-    
+
     return resultText
   on error errMsg
     return "Error setting volume: " & errMsg
   end try
-  
+
 else if actionParam is "mute" then
   -- Mute the system volume
   try
     set volume with output muted
-    
+
     return "System audio muted successfully."
   on error errMsg
     return "Error muting system audio: " & errMsg
   end try
-  
+
 else if actionParam is "unmute" then
   -- Unmute the system volume
   try
     set volume without output muted
-    
+
     -- Get current volume status
     set currentVolumeInfo to my getVolumeInfo()
-    
+
     set resultText to "System audio unmuted successfully:" & return & return
     set resultText to resultText & "Current Volume: " & (item 1 of currentVolumeInfo) & "%"
-    
+
     return resultText
   on error errMsg
     return "Error unmuting system audio: " & errMsg
   end try
-  
+
 else if actionParam is "toggle_mute" then
   -- Toggle mute status
   try
     -- Get current mute status
     set currentVolumeInfo to my getVolumeInfo()
     set isMuted to item 2 of currentVolumeInfo
-    
+
     if isMuted is "Yes" then
       -- Currently muted, so unmute
       set volume without output muted
@@ -167,11 +167,11 @@ else if actionParam is "toggle_mute" then
       set volume with output muted
       set newMuteStatus to "Yes"
     end if
-    
+
     set resultText to "Toggled mute status:" & return & return
     set resultText to resultText & "Previous Status: " & isMuted & return
     set resultText to resultText & "New Status: " & newMuteStatus
-    
+
     return resultText
   on error errMsg
     return "Error toggling mute status: " & errMsg
@@ -183,12 +183,12 @@ end if
 -- Get current volume and mute status
 on getVolumeInfo()
   set volumeInfo to {}
-  
+
   try
     -- Get current output volume (0-100)
     set currentVolume to output volume of (get volume settings)
     set end of volumeInfo to currentVolume
-    
+
     -- Get current mute status
     set isMuted to output muted of (get volume settings)
     if isMuted then
@@ -200,27 +200,27 @@ on getVolumeInfo()
     set end of volumeInfo to "Unknown"
     set end of volumeInfo to "Unknown"
   end try
-  
+
   return volumeInfo
 end getVolumeInfo
 
 -- Get information about the current output device
 on getOutputDeviceInfo()
   set deviceInfo to {}
-  
+
   try
     do shell script "system_profiler SPAudioDataType | grep 'Output'"
-    
+
     -- Parse the output to extract device name
     set deviceOutput to (do shell script "system_profiler SPAudioDataType | grep -A 3 'Output'")
-    
+
     -- Extract the device name (this is a simple approach and may need refinement)
     set deviceLines to paragraphs of deviceOutput
-    
+
     -- Initialize with unknown values
     set deviceName to "Unknown"
     set deviceType to "Unknown"
-    
+
     repeat with aLine in deviceLines
       if aLine contains ":" then
         -- Try to extract property and value
@@ -228,7 +228,7 @@ on getOutputDeviceInfo()
         if colonOffset > 1 then
           set propName to trim(text 1 thru (colonOffset - 1) of aLine)
           set propValue to trim(text (colonOffset + 1) thru end of aLine)
-          
+
           if propName contains "Name" then
             set deviceName to propValue
           else if propName contains "Type" then
@@ -237,31 +237,31 @@ on getOutputDeviceInfo()
         end if
       end if
     end repeat
-    
+
     set end of deviceInfo to deviceName
     set end of deviceInfo to deviceType
   on error
     set end of deviceInfo to "Unknown"
     set end of deviceInfo to "Unknown"
   end try
-  
+
   return deviceInfo
 end getOutputDeviceInfo
 
 -- Trim whitespace from a string
 on trim(inputString)
   set trimmedString to inputString
-  
+
   -- Trim leading whitespace
   repeat while trimmedString begins with " " or trimmedString begins with tab
     set trimmedString to text 2 thru end of trimmedString
   end repeat
-  
+
   -- Trim trailing whitespace
   repeat while trimmedString ends with " " or trimmedString ends with tab
     set trimmedString to text 1 thru ((length of trimmedString) - 1) of trimmedString
   end repeat
-  
+
   return trimmedString
 end trim
 ```

@@ -4,7 +4,7 @@ title: Create Project in Things
 description: Use AppleScript to create a new project in Things app
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, project'
+tags: "things, productivity, task management, project"
 keywords:
   - projects
   - planning
@@ -42,22 +42,22 @@ The script uses Things' AppleScript support to create a project with customizabl
 -- Create a project in Things with various properties
 on createThingsProject(projectName, projectNotes, projectDueDate, areaName, tagNames)
     set projectProperties to {name:projectName}
-    
+
     -- Add optional properties if provided
     if projectNotes is not equal to "" then
         set projectProperties to projectProperties & {notes:projectNotes}
     end if
-    
+
     -- Parse due date if provided
     if projectDueDate is not equal to "" then
         set projectProperties to projectProperties & {due date:date projectDueDate}
     end if
-    
+
     -- Add to area if specified
     if areaName is not equal to "" then
         set projectProperties to projectProperties & {area:areaName}
     end if
-    
+
     -- Add tags if provided
     if tagNames is not equal to "" then
         set AppleScript's text item delimiters to ","
@@ -65,7 +65,7 @@ on createThingsProject(projectName, projectNotes, projectDueDate, areaName, tagN
         set AppleScript's text item delimiters to ""
         set projectProperties to projectProperties & {tags:tagList}
     end if
-    
+
     tell application "Things3"
         set newProject to make new project with properties projectProperties
         return id of newProject

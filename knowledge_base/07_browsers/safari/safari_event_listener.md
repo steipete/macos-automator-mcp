@@ -2,7 +2,7 @@
 title: Safari Event Listener Management
 category: 07_browsers
 id: safari_event_listener
-description: 'Lists, adds, removes, and monitors event listeners on a webpage in Safari'
+description: "Lists, adds, removes, and monitors event listeners on a webpage in Safari"
 language: applescript
 keywords:
   - safari
@@ -45,32 +45,32 @@ on run argv
 	set event_type to ""
 	set options_json to "{}"
 	set monitor_duration to 10
-	
+
 	-- Process arguments if provided
 	if (count of argv) ≥ 1 then
 		if item 1 of argv is not "" then
 			set action to item 1 of argv
 		end if
 	end if
-	
+
 	if (count of argv) ≥ 2 then
 		if item 2 of argv is not "" then
 			set css_selector to item 2 of argv
 		end if
 	end if
-	
+
 	if (count of argv) ≥ 3 then
 		if item 3 of argv is not "" then
 			set event_type to item 3 of argv
 		end if
 	end if
-	
+
 	if (count of argv) ≥ 4 then
 		if item 4 of argv is not "" then
 			set options_json to item 4 of argv
 		end if
 	end if
-	
+
 	if (count of argv) ≥ 5 then
 		if item 5 of argv is not "" then
 			try
@@ -80,19 +80,19 @@ on run argv
 			end try
 		end if
 	end if
-	
+
 	-- Check if Safari is running
 	tell application "System Events"
 		set safariRunning to (exists process "Safari")
 	end tell
-	
+
 	if not safariRunning then
 		return "{\"error\": \"Safari is not running. Please open Safari and try again.\"}"
 	end if
-	
+
 	tell application "Safari"
 		set current_tab to current tab of window 1
-		
+
 		-- Perform the requested action
 		if action is "list" then
 			set result to my listEventListeners(current_tab, css_selector, event_type)
@@ -109,7 +109,7 @@ on run argv
 		else
 			set result to "{\"error\": \"Invalid action. Use 'list', 'add', 'remove', 'monitor', 'trigger', or 'analyze'.\"}"
 		end if
-		
+
 		return result
 	end tell
 end run
@@ -128,13 +128,13 @@ on listEventListeners(tab_ref, selector, event_type)
 					}
 					return null;
 				}
-				
+
 				// Helper function to get event listeners
 				function getElementListeners(element) {
 					if (!element) return [];
-					
+
 					let listeners = [];
-					
+
 					// Check for jQuery events first
 					const jQueryEvents = getJQueryEvents(element);
 					if (jQueryEvents) {
@@ -149,7 +149,7 @@ on listEventListeners(tab_ref, selector, event_type)
 							});
 						}
 					}
-					
+
 					// For standard DOM listeners, we can't access them directly
 					// We can infer some information based on element attributes
 					for (const attr of element.attributes || []) {
@@ -163,7 +163,7 @@ on listEventListeners(tab_ref, selector, event_type)
 							});
 						}
 					}
-					
+
 					// Add note about listener limitations
 					if (listeners.length === 0) {
 						if (element.onclick || element.onmouseover || element.onkeydown) {
@@ -175,13 +175,13 @@ on listEventListeners(tab_ref, selector, event_type)
 							});
 						}
 					}
-					
+
 					return listeners;
 				}
-				
+
 				let elements = [];
 				let eventFilter = '" & event_type & "';
-				
+
 				// Parse selector
 				try {
 					if ('" & selector & "' === 'document') {
@@ -194,13 +194,13 @@ on listEventListeners(tab_ref, selector, event_type)
 						error: 'Invalid selector: ' + error.message
 					});
 				}
-				
+
 				// Collect all event listeners
 				let result = {
 					count: 0,
 					listeners: []
 				};
-				
+
 				// Find inline events in HTML
 				const allTags = document.querySelectorAll('*');
 				const inlineEvents = [];
@@ -221,14 +221,14 @@ on listEventListeners(tab_ref, selector, event_type)
 						}
 					}
 				}
-				
+
 				// Find script tag event listeners
 				const scripts = document.querySelectorAll('script');
 				const scriptEvents = [];
 				const eventRegex = /addEventListener\\(['\"]([^'\"]+)['\"]|\\.(on\\w+)\\s*=/g;
 				for (const script of scripts) {
 					if (!script.textContent) continue;
-					
+
 					let match;
 					while ((match = eventRegex.exec(script.textContent)) !== null) {
 						const eventType = match[1] || (match[2] && match[2].slice(2));
@@ -241,7 +241,7 @@ on listEventListeners(tab_ref, selector, event_type)
 						}
 					}
 				}
-				
+
 				// Process selected elements
 				elements.forEach(element => {
 					const elementListeners = getElementListeners(element);
@@ -255,22 +255,22 @@ on listEventListeners(tab_ref, selector, event_type)
 						});
 					}
 				});
-				
+
 				// Add inline and script events
 				result.listeners = result.listeners.concat(inlineEvents, scriptEvents);
 				result.count = result.listeners.length;
-				
+
 				// Add note about browser limitations
 				result.notes = [
 					'Browser security restrictions prevent direct access to attached event listeners.',
 					'This list shows visible event attributes and inferred listeners only.'
 				];
-				
+
 				return JSON.stringify(result);
 			})();
 		" in tab_ref
 	end tell
-	
+
 	return js_result
 end listEventListeners
 
@@ -282,13 +282,13 @@ on addEventListeners(tab_ref, selector, event_type, options_json)
 				const options = " & options_json & ";
 				const eventType = '" & event_type & "';
 				let selector = '" & selector & "';
-				
+
 				if (!eventType) {
 					return JSON.stringify({
 						error: 'Event type is required'
 					});
 				}
-				
+
 				let elements = [];
 				try {
 					elements = Array.from(document.querySelectorAll(selector));
@@ -297,25 +297,25 @@ on addEventListeners(tab_ref, selector, event_type, options_json)
 						error: 'Invalid selector: ' + error.message
 					});
 				}
-				
+
 				if (elements.length === 0) {
 					return JSON.stringify({
 						error: 'No elements found matching selector: ' + selector
 					});
 				}
-				
+
 				// Generate a unique function name for this event handler
 				const handlerId = 'eventHandler_' + Math.random().toString(36).substr(2, 9);
-				
+
 				// Create a function to handle the event
 				let handlerCode = options.handlerCode || 'console.log(\"Event: \" + event.type, event);';
-				
+
 				// Store the handler on the window so we can reference it later for removal
 				window[handlerId] = new Function('event', handlerCode);
-				
+
 				// Track which elements we've attached to
 				const attachedElements = [];
-				
+
 				// Add the event listener to each element
 				elements.forEach((element, index) => {
 					try {
@@ -324,7 +324,7 @@ on addEventListeners(tab_ref, selector, event_type, options_json)
 							once: !!options.once,
 							passive: !!options.passive
 						});
-						
+
 						attachedElements.push({
 							index: index,
 							tagName: element.tagName,
@@ -335,7 +335,7 @@ on addEventListeners(tab_ref, selector, event_type, options_json)
 						console.error('Error attaching event listener:', error);
 					}
 				});
-				
+
 				return JSON.stringify({
 					success: true,
 					handlerId: handlerId,
@@ -345,10 +345,10 @@ on addEventListeners(tab_ref, selector, event_type, options_json)
 				});
 			})();
 		"
-		
+
 		set js_result to do JavaScript js_code in tab_ref
 	end tell
-	
+
 	return js_result
 end addEventListeners
 
@@ -359,13 +359,13 @@ on removeEventListeners(tab_ref, selector, event_type)
 			(function() {
 				const eventType = '" & event_type & "';
 				let selector = '" & selector & "';
-				
+
 				if (!eventType) {
 					return JSON.stringify({
 						error: 'Event type is required'
 					});
 				}
-				
+
 				let elements = [];
 				try {
 					elements = Array.from(document.querySelectorAll(selector));
@@ -374,26 +374,26 @@ on removeEventListeners(tab_ref, selector, event_type)
 						error: 'Invalid selector: ' + error.message
 					});
 				}
-				
+
 				if (elements.length === 0) {
 					return JSON.stringify({
 						error: 'No elements found matching selector: ' + selector
 					});
 				}
-				
+
 				// We can't directly remove anonymous event listeners
 				// Instead, we'll try to replace them with empty functions
 				// This is a limitation of the browser security model
-				
+
 				const removedEvents = [];
-				
+
 				elements.forEach((element, index) => {
 					// Handle inline event attributes
 					const attrName = 'on' + eventType;
 					if (element.hasAttribute(attrName)) {
 						const originalHandler = element.getAttribute(attrName);
 						element.removeAttribute(attrName);
-						
+
 						removedEvents.push({
 							type: 'attribute',
 							eventType: eventType,
@@ -405,13 +405,13 @@ on removeEventListeners(tab_ref, selector, event_type)
 							original: originalHandler
 						});
 					}
-					
+
 					// Handle property-based event handlers
 					const propName = 'on' + eventType;
 					if (element[propName]) {
 						const original = element[propName];
 						element[propName] = null;
-						
+
 						removedEvents.push({
 							type: 'property',
 							eventType: eventType,
@@ -423,11 +423,11 @@ on removeEventListeners(tab_ref, selector, event_type)
 							original: 'Function handler'
 						});
 					}
-					
+
 					// For addEventListener handlers, we can't access them
 					// Add a note about this limitation
 				});
-				
+
 				return JSON.stringify({
 					success: true,
 					elementsAffected: elements.length,
@@ -439,10 +439,10 @@ on removeEventListeners(tab_ref, selector, event_type)
 				});
 			})();
 		"
-		
+
 		set js_result to do JavaScript js_code in tab_ref
 	end tell
-	
+
 	return js_result
 end removeEventListeners
 
@@ -456,22 +456,22 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 				if (window._eventMonitor) {
 					window._eventMonitor.cleanup();
 				}
-				
+
 				// Determine which events to monitor
 				let eventList = '" & event_types & "'.split(',').map(e => e.trim()).filter(e => e);
 				if (eventList.length === 0) {
 					// Monitor all common events if none specified
 					eventList = [
-						'click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 
+						'click', 'dblclick', 'mousedown', 'mouseup', 'mousemove',
 						'keydown', 'keyup', 'keypress', 'focus', 'blur', 'change',
 						'input', 'submit', 'reset', 'touchstart', 'touchend', 'touchmove'
 					];
 				}
-				
+
 				// Set up the observer
 				const events = [];
 				const elements = '" & selector & "' ? document.querySelectorAll('" & selector & "') : [document];
-				
+
 				// Create handler function for all events
 				const handler = function(event) {
 					// Record the event details
@@ -499,10 +499,10 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 						});
 					}
 				};
-				
+
 				// Attach listeners
 				const attachedListeners = [];
-				
+
 				Array.from(elements).forEach(element => {
 					eventList.forEach(eventType => {
 						element.addEventListener(eventType, handler);
@@ -512,7 +512,7 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 						});
 					});
 				});
-				
+
 				// Create a cleanup function
 				const cleanup = function() {
 					Array.from(elements).forEach(element => {
@@ -526,13 +526,13 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 						eventCount: events.length
 					};
 				};
-				
+
 				// Store the monitor context globally so we can access it later
 				window._eventMonitor = {
 					events: events,
 					cleanup: cleanup
 				};
-				
+
 				return JSON.stringify({
 					monitoring: true,
 					events: eventList,
@@ -541,13 +541,13 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 				});
 			})();
 		"
-		
+
 		-- Set up the monitoring
 		set setup_result to do JavaScript setup_js in tab_ref
-		
+
 		-- Wait for the specified duration
 		delay duration
-		
+
 		-- Collect the results and clean up
 		set collect_js to "
 			(function() {
@@ -556,13 +556,13 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 						error: 'Event monitor not found'
 					});
 				}
-				
+
 				const result = {
 					events: window._eventMonitor.events,
 					count: window._eventMonitor.events.length,
 					summary: {}
 				};
-				
+
 				// Generate event type summary
 				window._eventMonitor.events.forEach(event => {
 					if (!result.summary[event.type]) {
@@ -570,17 +570,17 @@ on monitorEvents(tab_ref, selector, event_types, duration)
 					}
 					result.summary[event.type]++;
 				});
-				
+
 				// Clean up
 				const cleanupResult = window._eventMonitor.cleanup();
-				
+
 				return JSON.stringify(result);
 			})();
 		"
-		
+
 		set collect_result to do JavaScript collect_js in tab_ref
 	end tell
-	
+
 	return collect_result
 end monitorEvents
 
@@ -592,13 +592,13 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 				const options = " & options_json & ";
 				const eventType = '" & event_type & "';
 				let selector = '" & selector & "';
-				
+
 				if (!eventType) {
 					return JSON.stringify({
 						error: 'Event type is required'
 					});
 				}
-				
+
 				let elements = [];
 				try {
 					elements = Array.from(document.querySelectorAll(selector));
@@ -607,13 +607,13 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 						error: 'Invalid selector: ' + error.message
 					});
 				}
-				
+
 				if (elements.length === 0) {
 					return JSON.stringify({
 						error: 'No elements found matching selector: ' + selector
 					});
 				}
-				
+
 				// Create the appropriate event object based on the event type
 				let event;
 				try {
@@ -643,7 +643,7 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 								relatedTarget: null
 							});
 							break;
-							
+
 						case 'keydown':
 						case 'keyup':
 						case 'keypress':
@@ -661,7 +661,7 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 								repeat: options.repeat || false
 							});
 							break;
-							
+
 						case 'focus':
 						case 'blur':
 						case 'focusin':
@@ -673,7 +673,7 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 								relatedTarget: options.relatedTarget || null
 							});
 							break;
-							
+
 						case 'input':
 						case 'change':
 						case 'submit':
@@ -683,7 +683,7 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 								cancelable: options.cancelable !== false
 							});
 							break;
-							
+
 						default:
 							// Generic event for other types
 							event = new Event(eventType, {
@@ -696,21 +696,21 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 						error: 'Failed to create event: ' + error.message
 					});
 				}
-				
+
 				// Dispatch the event on each element
 				const results = [];
 				elements.forEach((element, index) => {
 					try {
 						// Set element value if provided (for input elements)
-						if (options.value !== undefined && (element.tagName === 'INPUT' || 
-														   element.tagName === 'TEXTAREA' || 
+						if (options.value !== undefined && (element.tagName === 'INPUT' ||
+														   element.tagName === 'TEXTAREA' ||
 														   element.tagName === 'SELECT')) {
 							element.value = options.value;
 						}
-						
+
 						// Dispatch the event
 						const dispatched = element.dispatchEvent(event);
-						
+
 						// Record the result
 						results.push({
 							index: index,
@@ -734,7 +734,7 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 						});
 					}
 				});
-				
+
 				return JSON.stringify({
 					success: true,
 					eventType: eventType,
@@ -743,10 +743,10 @@ on triggerEvent(tab_ref, selector, event_type, options_json)
 				});
 			})();
 		"
-		
+
 		set js_result to do JavaScript js_code in tab_ref
 	end tell
-	
+
 	return js_result
 end triggerEvent
 
@@ -757,13 +757,13 @@ on analyzeEventPropagation(tab_ref, selector, event_type)
 			(function() {
 				const eventType = '" & event_type & "' || 'click';
 				let selector = '" & selector & "';
-				
+
 				if (!selector) {
 					return JSON.stringify({
 						error: 'Element selector is required'
 					});
 				}
-				
+
 				let element;
 				try {
 					element = document.querySelector(selector);
@@ -772,22 +772,22 @@ on analyzeEventPropagation(tab_ref, selector, event_type)
 						error: 'Invalid selector: ' + error.message
 					});
 				}
-				
+
 				if (!element) {
 					return JSON.stringify({
 						error: 'No element found matching selector: ' + selector
 					});
 				}
-				
+
 				// Analyze the propagation path
 				const propagationPath = [];
 				let currentElement = element;
-				
+
 				while (currentElement) {
 					// Check for event attributes
 					const hasAttribute = currentElement.hasAttribute('on' + eventType);
 					const hasProperty = !!currentElement['on' + eventType];
-					
+
 					propagationPath.push({
 						tagName: currentElement.tagName || 'DOCUMENT',
 						id: currentElement.id || null,
@@ -801,10 +801,10 @@ on analyzeEventPropagation(tab_ref, selector, event_type)
 							height: currentElement.offsetHeight
 						}
 					});
-					
+
 					currentElement = currentElement.parentElement;
 				}
-				
+
 				// Add document as the final stop in the propagation
 				propagationPath.push({
 					tagName: 'DOCUMENT',
@@ -814,7 +814,7 @@ on analyzeEventPropagation(tab_ref, selector, event_type)
 					eventProperty: !!document['on' + eventType],
 					position: null
 				});
-				
+
 				// Detect potential event stoppage points
 				const stoppagePoints = document.querySelectorAll('[onclick*=\"stopPropagation\"], [onclick*=\"cancelBubble\"]');
 				const stoppageNodes = Array.from(stoppagePoints).map(node => ({
@@ -823,7 +823,7 @@ on analyzeEventPropagation(tab_ref, selector, event_type)
 					className: node.className || null,
 					attribute: node.getAttribute('onclick')
 				}));
-				
+
 				return JSON.stringify({
 					eventType: eventType,
 					targetElement: {
@@ -842,10 +842,10 @@ on analyzeEventPropagation(tab_ref, selector, event_type)
 				});
 			})();
 		"
-		
+
 		set js_result to do JavaScript js_code in tab_ref
 	end tell
-	
+
 	return js_result
 end analyzeEventPropagation
 ```

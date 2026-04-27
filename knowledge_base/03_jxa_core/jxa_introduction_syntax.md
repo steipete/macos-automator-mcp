@@ -1,5 +1,5 @@
 ---
-title: 'JXA Basics: Introduction and Syntax'
+title: "JXA Basics: Introduction and Syntax"
 category: 03_jxa_core
 id: jxa_introduction_syntax
 description: >-
@@ -40,4 +40,5 @@ app.displayDialog("Finder has " + desktopItemsCount + " items on the desktop.");
 // Return value (last expression evaluated)
 "JXA script executed. Desktop items: " + desktopItemsCount;
 ```
-END_TIP 
+
+END_TIP

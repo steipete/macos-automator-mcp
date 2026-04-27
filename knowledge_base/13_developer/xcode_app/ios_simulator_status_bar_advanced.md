@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Advanced Status Bar Control'
+title: "iOS Simulator: Advanced Status Bar Control"
 category: 13_developer
 id: ios_simulator_status_bar_advanced
 description: >-
@@ -46,7 +46,7 @@ on controlSimulatorStatusBarAdvanced(deviceIdentifier, action, time, network, ca
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Default action to override if not specified
   if action is missing value or action is "" then
     set action to "override"
@@ -54,12 +54,12 @@ on controlSimulatorStatusBarAdvanced(deviceIdentifier, action, time, network, ca
     -- Normalize to lowercase
     set action to do shell script "echo " & quoted form of action & " | tr '[:upper:]' '[:lower:]'"
   end if
-  
+
   -- Validate action
   if action is not in {"override", "clear", "list"} then
     return "error: Invalid action. Available actions: 'override', 'clear', 'list'."
   end if
-  
+
   try
     -- Check if device exists
     if deviceIdentifier is not "booted" then
@@ -70,7 +70,7 @@ on controlSimulatorStatusBarAdvanced(deviceIdentifier, action, time, network, ca
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- Handle list action (just show current status)
     if action is "list" then
       set listCmd to "xcrun simctl status_bar " & quoted form of deviceIdentifier & " list"
@@ -85,7 +85,7 @@ To override these settings, provide parameters like time, network, carrier, or b
         return "Error listing status bar settings: " & errMsg
       end try
     end if
-    
+
     -- Handle clear action (reset to default)
     if action is "clear" then
       set clearCmd to "xcrun simctl status_bar " & quoted form of deviceIdentifier & " clear"
@@ -98,22 +98,22 @@ The status bar will now show actual system time, network status, etc."
         return "Error clearing status bar settings: " & errMsg
       end try
     end if
-    
+
     -- Handle override action
     if action is "override" then
       -- Build command parts based on provided parameters
       set cmdParts to {}
-      
+
       -- Time setting
       if time is not missing value and time is not "" then
         set end of cmdParts to "--time " & quoted form of time
       end if
-      
+
       -- Network setting
       if network is not missing value and network is not "" then
         -- Normalize to lowercase
         set network to do shell script "echo " & quoted form of network & " | tr '[:upper:]' '[:lower:]'"
-        
+
         if network contains "wifi" or network is "wi-fi" then
           set end of cmdParts to "--dataNetwork wifi"
           set end of cmdParts to "--wifiMode active"
@@ -145,19 +145,19 @@ The status bar will now show actual system time, network status, etc."
           set end of cmdParts to "--wifiMode notSupported"
         end if
       end if
-      
+
       -- Carrier name
       if carrier is not missing value and carrier is not "" then
         set end of cmdParts to "--operatorName " & quoted form of carrier
       end if
-      
+
       -- Battery level
       if batteryLevel is not missing value and batteryLevel is not "" then
         try
           set batteryLevelNum to batteryLevel as number
           if batteryLevelNum ≥ 0 and batteryLevelNum ≤ 100 then
             set end of cmdParts to "--batteryLevel " & batteryLevelNum
-            
+
             -- Determine battery state based on level
             if batteryLevelNum = 100 then
               set end of cmdParts to "--batteryState charged"
@@ -171,22 +171,22 @@ The status bar will now show actual system time, network status, etc."
           -- Not a valid number, ignore
         end try
       end if
-      
+
       -- If no override parts were provided, set some demo-ready defaults
       if (count of cmdParts) is 0 then
         set cmdParts to {"--time 9:41", "--batteryLevel 100", "--batteryState charged", "--operatorName Carrier", "--dataNetwork 5G", "--cellularMode active", "--cellularBars 4"}
       end if
-      
+
       -- Build the final command
       set cmdString to "xcrun simctl status_bar " & quoted form of deviceIdentifier & " override " & (my join_list(cmdParts, " "))
-      
+
       try
         do shell script cmdString
-        
+
         -- Get current status bar settings
         set statusCmd to "xcrun simctl status_bar " & quoted form of deviceIdentifier & " list"
         set currentStatus to do shell script statusCmd
-        
+
         return "Successfully updated status bar for " & deviceIdentifier & " simulator.
 
 Current status bar settings:

@@ -1,5 +1,5 @@
 ---
-title: 'Electron Editors: Open File or Folder'
+title: "Electron Editors: Open File or Folder"
 category: 08_editors
 id: electron_open_file_folder
 description: >-
@@ -25,7 +25,7 @@ argumentsPrompt: >-
 on openItemInEditor(appName, posixPath)
   if appName is missing value or appName is "" then return "error: Target application name not provided."
   if posixPath is missing value or posixPath is "" then return "error: Item path not provided."
-  
+
   try
     -- Method 1: Using 'open' command of the application (preferred if supported)
     tell application appName
@@ -42,7 +42,7 @@ on openItemInEditor(appName, posixPath)
       set appIdentifier to appName
       if appName is "Visual Studio Code" then set appIdentifier to "com.microsoft.VSCode"
       if appName is "Cursor" then set appIdentifier to "com.cursor.ide"
-      
+
       do shell script "open -b " & quoted form of appIdentifier & " " & quoted form of posixPath
       -- Or: do shell script "open -a " & quoted form of appName & " " & quoted form of posixPath
       return "Attempted to open " & posixPath & " in " & appName & " via shell."
@@ -54,4 +54,5 @@ end openItemInEditor
 
 return my openItemInEditor("--MCP_INPUT:targetAppName", "--MCP_INPUT:itemPath")
 ```
-END_TIP 
+
+END_TIP

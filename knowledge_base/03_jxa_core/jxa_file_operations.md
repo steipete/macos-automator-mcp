@@ -1,5 +1,5 @@
 ---
-title: 'JXA: File System Operations'
+title: "JXA: File System Operations"
 category: 03_jxa_core
 id: jxa_file_operations
 description: >-
@@ -46,7 +46,7 @@ For Unicode support and advanced file operations, you'll also need the Objective
 
 ```javascript
 // Import Foundation framework for file operations
-ObjC.import('Foundation');
+ObjC.import("Foundation");
 ```
 
 ## General Usage

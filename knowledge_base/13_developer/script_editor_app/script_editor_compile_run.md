@@ -1,5 +1,5 @@
 ---
-title: 'Script Editor: Compile and Run Active Script'
+title: "Script Editor: Compile and Run Active Script"
 category: 13_developer
 id: script_editor_compile_run
 description: Tells Script Editor to compile and then run its frontmost document.
@@ -25,11 +25,11 @@ tell application "Script Editor"
     -- if (count of documents) is 0 then make new document
   end if
   activate
-  
+
   if (count of documents) is 0 then
     return "error: No script document open in Script Editor."
   end if
-  
+
   try
     tell front document
       -- Compile first (optional, run usually compiles implicitly)
@@ -39,7 +39,7 @@ tell application "Script Editor"
       if not (compiled) then
         return "error: Script did not compile successfully."
       end if
-      
+
       set scriptResult to run
       if scriptResult is missing value then
         return "Script ran. No explicit result returned."
@@ -51,4 +51,4 @@ tell application "Script Editor"
     return "error (" & errNum & ") in Script Editor: " & errMsg
   end try
 end tell
-``` 
+```

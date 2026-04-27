@@ -12,7 +12,7 @@ keywords:
   - attachment
 language: applescript
 id: mail_send_email_direct
-argumentsPrompt: 'Provide recipient email, subject, body text, and optional attachment path'
+argumentsPrompt: "Provide recipient email, subject, body text, and optional attachment path"
 category: 09_productivity
 ---
 
@@ -28,17 +28,17 @@ set attachmentPath to "" -- --MCP_INPUT:attachmentPath (optional POSIX path to f
 tell application "Mail"
   -- Create a new outgoing message
   set newMessage to make new outgoing message with properties {subject:emailSubject, content:emailBody, visible:false}
-  
+
   -- Add the recipient
   tell newMessage
     make new to recipient with properties {address:recipientEmail}
-    
+
     -- Add CC recipient (optional)
     -- make new cc recipient with properties {address:"cc@example.com"}
-    
+
     -- Add BCC recipient (optional)
     -- make new bcc recipient with properties {address:"bcc@example.com"}
-    
+
     -- Add attachment if path is provided
     if attachmentPath is not "" and attachmentPath is not missing value then
       try
@@ -50,16 +50,17 @@ tell application "Mail"
         return "Error adding attachment: " & errMsg
       end try
     end if
-    
+
     -- Send the message
     send
   end tell
-  
+
   return "Email sent to " & recipientEmail & " with subject: " & emailSubject
 end tell
 ```
 
 This script:
+
 1. Creates a new outgoing email message with specified subject and body
 2. Adds recipients (to, cc, bcc)
 3. Optionally attaches a file if a path is provided

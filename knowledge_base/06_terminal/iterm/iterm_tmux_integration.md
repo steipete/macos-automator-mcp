@@ -36,23 +36,23 @@ on run {input, parameters}
     set host to "--MCP_INPUT:host"
     set sessionName to "--MCP_INPUT:sessionName"
     set createNew to "--MCP_INPUT:createNew"
-    
+
     if sessionName is "" or sessionName is missing value then
         display dialog "Please provide a tmux session name." buttons {"OK"} default button "OK" with icon stop
         return
     end if
-    
+
     -- Set defaults if not provided
     if createNew is "" or createNew is missing value then
         set createNew to "true"
     end if
-    
+
     -- Check if this is a local or remote session
     set isRemote to (host is not "" and host is not missing value)
-    
+
     -- Build the tmux command
     set tmuxCommand to "tmux -CC "
-    
+
     if createNew is "true" then
         -- Command to attach if exists or create new
         set tmuxCommand to tmuxCommand & "new-session -A -s " & quoted form of sessionName
@@ -60,11 +60,11 @@ on run {input, parameters}
         -- Command to attach only, will fail if session doesn't exist
         set tmuxCommand to tmuxCommand & "attach-session -t " & quoted form of sessionName
     end if
-    
+
     tell application "iTerm"
         -- Create a new window and run the appropriate command
         create window with default profile
-        
+
         tell current window
             tell current session
                 if isRemote then
@@ -78,7 +78,7 @@ on run {input, parameters}
             end tell
         end tell
     end tell
-    
+
     return "Connected to " & (if isRemote then "remote" else "local") & " tmux session: " & sessionName
 end run
 ```
@@ -134,7 +134,7 @@ on setupDevelopmentEnvironment(sessionName)
                 set tmuxSessionSetup to tmuxSessionSetup & "new-window -n 'database' \\; "
                 set tmuxSessionSetup to tmuxSessionSetup & "new-window -n 'logs' \\; "
                 set tmuxSessionSetup to tmuxSessionSetup & "select-window -t 'server'"
-                
+
                 write text tmuxSessionSetup
             end tell
         end tell
@@ -149,11 +149,11 @@ To use this script for managing multiple servers:
 ```applescript
 on connectToServers()
     set servers to {{"web1", "web-server-1.example.com"}, {"db", "db-server.example.com"}, {"staging", "staging.example.com"}}
-    
+
     repeat with serverInfo in servers
         set sessionName to item 1 of serverInfo
         set hostName to item 2 of serverInfo
-        
+
         tell application "iTerm"
             create window with default profile
             tell current window
@@ -163,7 +163,7 @@ on connectToServers()
                 end tell
             end tell
         end tell
-        
+
         -- Add a slight delay between connections
         delay 2
     end repeat

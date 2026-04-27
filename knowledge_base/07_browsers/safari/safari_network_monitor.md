@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Network Monitor'
+title: "Safari: Network Monitor"
 category: 07_browsers
 id: safari_network_monitor
 description: >-
@@ -49,15 +49,15 @@ on monitorSafariNetwork(recordOption)
   if not application "Safari" is running then
     return "error: Safari is not running."
   end if
-  
+
   tell application "Safari"
     if (count of windows) is 0 or (count of tabs of front window) is 0 then
       return "error: No tabs open in Safari."
     end if
-    
+
     activate
     delay 0.5
-    
+
     try
       tell application "System Events"
         tell process "Safari"
@@ -65,7 +65,7 @@ on monitorSafariNetwork(recordOption)
           if not (exists menu bar item "Develop" of menu bar 1) then
             return "error: Develop menu not enabled in Safari. Enable it in Safari > Preferences > Advanced."
           end if
-          
+
           -- First check if Web Inspector is already open
           set inspectorOpen to false
           try
@@ -73,7 +73,7 @@ on monitorSafariNetwork(recordOption)
               set inspectorOpen to true
             end if
           end try
-          
+
           if not inspectorOpen then
             -- Open the Web Inspector if not already open
             click menu bar item "Develop" of menu bar 1
@@ -81,12 +81,12 @@ on monitorSafariNetwork(recordOption)
             click menu item "Show Web Inspector" of menu of menu bar item "Develop" of menu bar 1
             delay 1
           end if
-          
+
           -- Switch to Network tab in Web Inspector
           try
             -- Look for Network tab button in the Web Inspector
             set networkTabFound to false
-            
+
             repeat with btn in (buttons of tab group 1 of group 1 of splitter group 1 of window "Web Inspector")
               if the name of btn is "Network" then
                 click btn
@@ -94,7 +94,7 @@ on monitorSafariNetwork(recordOption)
                 exit repeat
               end if
             end repeat
-            
+
             if not networkTabFound then
               -- Try clicking by position (Network is typically the 3rd tab)
               try
@@ -109,47 +109,47 @@ on monitorSafariNetwork(recordOption)
                 set networkTabFound to true
               end try
             end if
-            
+
             delay 0.5
           end try
-          
+
           -- Handle recording option if provided
           if recordOption is not missing value and recordOption is not "" then
             set shouldRecord to false
-            
+
             -- Convert string to boolean
             if recordOption is "true" or recordOption is "yes" or recordOption is "1" then
               set shouldRecord to true
             end if
-            
+
             -- Find the record button
             try
               set recordButtonFound to false
-              
+
               -- Try different ways to find the record button
               repeat with btn in (buttons of toolbar 1 of window "Web Inspector")
                 set btnDesc to ""
                 try
                   set btnDesc to description of btn
                 end try
-                
+
                 if btnDesc contains "Record" or btnDesc contains "recording" then
                   -- Check if the button is already in the desired state
                   set buttonValue to ""
                   try
                     set buttonValue to value of btn
                   end try
-                  
+
                   -- Only click if we need to change state
                   if (shouldRecord and buttonValue does not contain "recording") or (not shouldRecord and buttonValue contains "recording") then
                     click btn
                   end if
-                  
+
                   set recordButtonFound to true
                   exit repeat
                 end if
               end repeat
-              
+
               if not recordButtonFound then
                 -- Try to find the record button by its position or other attributes
                 -- Try the first few buttons in the toolbar
@@ -164,7 +164,7 @@ on monitorSafariNetwork(recordOption)
                   end try
                 end repeat
               end if
-              
+
               if recordButtonFound then
                 if shouldRecord then
                   return "Web Inspector opened in Network tab with recording started."

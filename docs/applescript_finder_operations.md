@@ -18,18 +18,18 @@ tell application "Finder"
   if selection is {} then
     return "No items selected in Finder"
   end if
-  
+
   set selectedItems to selection
   set itemPaths to {}
-  
+
   repeat with anItem in selectedItems
     set end of itemPaths to POSIX path of (anItem as alias)
   end repeat
-  
+
   set AppleScript's text item delimiters to linefeed
   set pathsText to itemPaths as text
   set AppleScript's text item delimiters to ""
-  
+
   return "Selected items:" & linefeed & pathsText
 end tell
 ```
@@ -39,7 +39,7 @@ end tell
 ```applescript
 tell application "Finder"
   set newFolderName to "My New Folder"
-  
+
   if not (exists folder newFolderName of desktop) then
     make new folder at desktop with properties {name:newFolderName}
     return "Folder '" & newFolderName & "' created on Desktop"
@@ -55,7 +55,7 @@ end tell
 tell application "Finder"
   set sourceFile to (path to desktop as string) & "source.txt" as alias
   set targetFolder to (path to documents folder) as alias
-  
+
   move sourceFile to targetFolder
   return "Moved file to Documents folder"
 end tell
@@ -66,12 +66,12 @@ end tell
 ```applescript
 tell application "Finder"
   set targetFile to (path to desktop as string) & "example.txt" as alias
-  
+
   set fileSize to size of targetFile
   set fileModDate to modification date of targetFile
   set fileCreator to creator type of targetFile
   set fileType to file type of targetFile
-  
+
   return "File size: " & fileSize & " bytes" & linefeed & ¬
          "Modified: " & fileModDate & linefeed & ¬
          "Creator: " & fileCreator & linefeed & ¬

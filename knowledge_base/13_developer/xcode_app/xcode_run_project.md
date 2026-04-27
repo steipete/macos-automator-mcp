@@ -1,8 +1,8 @@
 ---
-title: 'Xcode: Run Project'
+title: "Xcode: Run Project"
 category: 13_developer
 id: xcode_run_project
-description: 'Runs an open Xcode project, launching the app in the simulator or on a device.'
+description: "Runs an open Xcode project, launching the app in the simulator or on a device."
 keywords:
   - Xcode
   - run
@@ -39,7 +39,7 @@ on runXcodeProject(waitTime, useDebugMode)
       set waitTime to 20
     end try
   end if
-  
+
   -- Default debug mode to false if not specified
   if useDebugMode is missing value or useDebugMode is "" then
     set useDebugMode to false
@@ -48,29 +48,29 @@ on runXcodeProject(waitTime, useDebugMode)
   else
     set useDebugMode to false
   end if
-  
+
   tell application "Xcode"
     activate
     delay 1
   end tell
-  
+
   try
     tell application "System Events"
       tell process "Xcode"
         -- Select Product menu
         click menu item "Product" of menu bar 1
         delay 0.5
-        
+
         -- Click Run or Debug menu item based on debug mode preference
         if useDebugMode then
           click menu item "Debug" of menu "Product" of menu bar 1
         else
           click menu item "Run" of menu "Product" of menu bar 1
         end if
-        
+
         -- Wait for app to launch
         delay waitTime
-        
+
         -- Return result based on debug mode
         if useDebugMode then
           return "Debug started successfully, waiting " & waitTime & " seconds for launch"

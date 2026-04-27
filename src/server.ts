@@ -3,36 +3,40 @@
 // NOTE: SDK ESM/CJS hybrid: imports work at runtime, but types are mapped via tsconfig.json "paths". Suppress TS errors for imports.
 // TODO: Replace 'unknown' with proper input types if/when SDK types are available.
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import * as sdkTypes from '@modelcontextprotocol/sdk/types.js';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import * as sdkTypes from "@modelcontextprotocol/sdk/types.js";
 // import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
-import { Logger } from './logger.js';
-import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from './schemas.js';
-import { ScriptExecutor } from './ScriptExecutor.js';
-import type { ScriptExecutionError, ExecuteScriptResponse }  from './types.js';
+import { Logger } from "./logger.js";
+import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from "./schemas.js";
+import { ScriptExecutor } from "./ScriptExecutor.js";
+import type { ScriptExecutionError, ExecuteScriptResponse } from "./types.js";
 // import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
-import { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase } from './services/knowledgeBaseService.js'; // Import KB functions
-import { substitutePlaceholders } from './placeholderSubstitutor.js'; // Value import
-import type { SubstitutionResult } from './placeholderSubstitutor.js'; // Type import
+import {
+  getKnowledgeBase,
+  getScriptingTipsService,
+  conditionallyInitializeKnowledgeBase,
+} from "./services/knowledgeBaseService.js"; // Import KB functions
+import { substitutePlaceholders } from "./placeholderSubstitutor.js"; // Value import
+import type { SubstitutionResult } from "./placeholderSubstitutor.js"; // Type import
 
 // Added imports for robust package.json loading
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Robustly load package.json
 const __filenameServer = fileURLToPath(import.meta.url);
-const packageRootServer = path.resolve(path.dirname(__filenameServer), '..'); // from dist/server.js to package root
-const packageJsonPathServer = path.join(packageRootServer, 'package.json');
+const packageRootServer = path.resolve(path.dirname(__filenameServer), ".."); // from dist/server.js to package root
+const packageJsonPathServer = path.join(packageRootServer, "package.json");
 let pkg: { version: string }; // Define type for pkg
 try {
-  pkg = JSON.parse(await fs.readFile(packageJsonPathServer, 'utf-8'));
+  pkg = JSON.parse(await fs.readFile(packageJsonPathServer, "utf-8"));
 } catch (error) {
   // Fallback or error handling if package.json cannot be read
   // This is critical for npx environments if pathing is an issue
   // Don't log in E2E tests to avoid interfering with MCP protocol
-  if (process.env.MCP_E2E_TESTING !== 'true' && process.env.VITEST !== 'true') {
+  if (process.env.MCP_E2E_TESTING !== "true" && process.env.VITEST !== "true") {
     console.error("Failed to load package.json:", error);
   }
   pkg = { version: "0.0.0-error" }; // Provide a fallback
@@ -40,11 +44,11 @@ try {
 
 const SERVER_START_TIME_ISO = new Date().toISOString();
 
-const IS_E2E_TESTING = process.env.MCP_E2E_TESTING === 'true' || process.env.VITEST === 'true';
+const IS_E2E_TESTING = process.env.MCP_E2E_TESTING === "true" || process.env.VITEST === "true";
 let hasEmittedFirstCallInfo = false; // Flag for first tool call
 const serverInfoMessage = `MacOS Automator MCP v${pkg.version}, started at ${SERVER_START_TIME_ISO}`;
 
-const logger = new Logger('macos_automator_server');
+const logger = new Logger("macos_automator_server");
 const scriptExecutor = new ScriptExecutor();
 
 async function main() {
@@ -55,12 +59,14 @@ async function main() {
     // console.log("[Server Startup] HOME:", process.env.HOME);
     // console.log("[Server Startup] USER:", process.env.USER);
 
-    logger.info('Starting macos_automator MCP Server...');
-    logger.warn("CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.");
+    logger.info("Starting macos_automator MCP Server...");
+    logger.warn(
+      "CRITICAL: Ensure macOS Automation & Accessibility permissions are correctly configured for the application running this server (e.g., Terminal, Node). See README.md for details.",
+    );
 
     // Eagerly initialize Knowledge Base if KB_PARSING is set to eager
     const eagerParseEnv = process.env.KB_PARSING?.toLowerCase();
-    if (eagerParseEnv === 'eager') {
+    if (eagerParseEnv === "eager") {
       await conditionallyInitializeKnowledgeBase(true);
     } else {
       conditionallyInitializeKnowledgeBase(false); // Log that it's lazy
@@ -68,12 +74,12 @@ async function main() {
   }
 
   const server = new McpServer({
-    name: 'macos_automator', // Matches the key in mcp.json
+    name: "macos_automator", // Matches the key in mcp.json
     version: pkg.version, // Dynamically use version from package.json
   });
 
   server.registerTool(
-    'execute_script',
+    "execute_script",
     {
       description: `Automate macOS tasks using AppleScript or JXA (JavaScript for Automation) to control applications like Terminal, Chrome, Safari, Finder, etc.
 
@@ -106,59 +112,84 @@ async function main() {
       let execution_time_seconds: number | undefined;
       let scriptContentToExecute: string | undefined = input.script_content;
       let scriptPathToExecute: string | undefined = input.script_path;
-      let languageToUse: 'applescript' | 'javascript';
+      let languageToUse: "applescript" | "javascript";
       let finalArgumentsForScriptFile = input.arguments || [];
       let substitutionLogs: string[] = [];
 
-      logger.debug('execute_script called with input:', input);
+      logger.debug("execute_script called with input:", input);
 
       // Construct the main part of the response first
-      const mainOutputContent: { type: 'text'; text: string }[] = [];
+      const mainOutputContent: { type: "text"; text: string }[] = [];
 
       if (input.kb_script_id) {
         const kb = await getKnowledgeBase();
         const tip = kb.tips.find((t: { id: string }) => t.id === input.kb_script_id);
 
         if (!tip) {
-          throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, `Knowledge base script with ID '${input.kb_script_id}' not found.`);
+          throw new sdkTypes.McpError(
+            sdkTypes.ErrorCode.InvalidParams,
+            `Knowledge base script with ID '${input.kb_script_id}' not found.`,
+          );
         }
         if (!tip.script) {
-            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InternalError, `Knowledge base script ID '${input.kb_script_id}' has no script content.`);
+          throw new sdkTypes.McpError(
+            sdkTypes.ErrorCode.InternalError,
+            `Knowledge base script ID '${input.kb_script_id}' has no script content.`,
+          );
         }
 
         languageToUse = tip.language;
-        scriptPathToExecute = undefined; 
-        finalArgumentsForScriptFile = []; 
+        scriptPathToExecute = undefined;
+        finalArgumentsForScriptFile = [];
 
-        if (tip.script) { // Check if tip.script exists before substitution
-            const substitutionResult: SubstitutionResult = substitutePlaceholders({
-                scriptContent: tip.script, // Use tip.script directly
-                inputData: input.input_data,
-                args: input.arguments, // Pass input.arguments which might be undefined
-                includeSubstitutionLogs: input.include_substitution_logs || false,
-            });
+        if (tip.script) {
+          // Check if tip.script exists before substitution
+          const substitutionResult: SubstitutionResult = substitutePlaceholders({
+            scriptContent: tip.script, // Use tip.script directly
+            inputData: input.input_data,
+            args: input.arguments, // Pass input.arguments which might be undefined
+            includeSubstitutionLogs: input.include_substitution_logs || false,
+          });
 
-            scriptContentToExecute = substitutionResult.substitutedScript;
-            substitutionLogs = substitutionResult.logs;
+          scriptContentToExecute = substitutionResult.substitutedScript;
+          substitutionLogs = substitutionResult.logs;
         }
-        logger.info('Executing Knowledge Base script', { id: tip.id, finalLength: scriptContentToExecute?.length });
+        logger.info("Executing Knowledge Base script", {
+          id: tip.id,
+          finalLength: scriptContentToExecute?.length,
+        });
       } else if (input.script_path || input.script_content) {
-        languageToUse = input.language || 'applescript';
+        languageToUse = input.language || "applescript";
         if (input.script_path) {
-            logger.debug('Executing script from path', { scriptPath: input.script_path, language: languageToUse });
+          logger.debug("Executing script from path", {
+            scriptPath: input.script_path,
+            language: languageToUse,
+          });
         } else if (input.script_content) {
-            logger.debug('Executing script from content', { language: languageToUse, initialLength: input.script_content.length });
+          logger.debug("Executing script from content", {
+            language: languageToUse,
+            initialLength: input.script_content.length,
+          });
         }
       } else {
-        throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, "No script source provided (content, path, or KB ID).");
+        throw new sdkTypes.McpError(
+          sdkTypes.ErrorCode.InvalidParams,
+          "No script source provided (content, path, or KB ID).",
+        );
       }
-      
+
       // Log the actual script to be executed (especially useful for KB scripts after substitution)
       if (scriptContentToExecute) {
-        logger.debug('Final script content to be executed:', { language: languageToUse, script: scriptContentToExecute });
+        logger.debug("Final script content to be executed:", {
+          language: languageToUse,
+          script: scriptContentToExecute,
+        });
       } else if (scriptPathToExecute) {
         // For scriptPath, we don't log content here, just that it's a path-based execution
-        logger.debug('Executing script via path (content not logged here):', { scriptPath: scriptPathToExecute, language: languageToUse });
+        logger.debug("Executing script via path (content not logged here):", {
+          scriptPath: scriptPathToExecute,
+          language: languageToUse,
+        });
       }
 
       try {
@@ -167,16 +198,18 @@ async function main() {
           {
             language: languageToUse,
             timeoutMs: (input.timeout_seconds || 60) * 1000,
-            output_format_mode: input.output_format_mode || 'auto',
-            arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [], 
-          }
+            output_format_mode: input.output_format_mode || "auto",
+            arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [],
+          },
         );
         execution_time_seconds = result.execution_time_seconds;
-        
+
         if (result.stderr) {
-           logger.warn('Script execution produced stderr (even on success)', { stderr: result.stderr });
+          logger.warn("Script execution produced stderr (even on success)", {
+            stderr: result.stderr,
+          });
         }
-        
+
         let isError = false;
         const errorPattern = /^\s*error[:\s-]/i;
         if (errorPattern.test(result.stdout)) {
@@ -185,12 +218,15 @@ async function main() {
 
         if (input.include_substitution_logs && substitutionLogs.length > 0) {
           const logsHeader = "\n--- Substitution Logs ---\n";
-          const logsString = substitutionLogs.join('\n');
+          const logsString = substitutionLogs.join("\n");
           // Prepend to main result, not just stdout string if other parts exist
-          mainOutputContent.push({ type: 'text', text: `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}` });
+          mainOutputContent.push({
+            type: "text",
+            text: `${logsHeader}${logsString}\n\n--- Original STDOUT ---\n${result.stdout}`,
+          });
         }
 
-        mainOutputContent.push({ type: 'text', text: result.stdout });
+        mainOutputContent.push({ type: "text", text: result.stdout });
 
         if (input.include_executed_script_in_output) {
           let scriptIdentifier = "Script source not determined (should not happen).";
@@ -199,15 +235,15 @@ async function main() {
           } else if (scriptPathToExecute) {
             scriptIdentifier = `\n--- Executed Script Path ---\n${scriptPathToExecute}`;
           }
-          mainOutputContent.push({ type: 'text', text: scriptIdentifier });
+          mainOutputContent.push({ type: "text", text: scriptIdentifier });
         }
 
         // Now, construct the final response with potential first-call info
-        const finalResponseContent: { type: 'text'; text: string }[] = [];
+        const finalResponseContent: { type: "text"; text: string }[] = [];
         finalResponseContent.push(...mainOutputContent); // Add the actual script output
 
         if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
-          finalResponseContent.push({ type: 'text', text: serverInfoMessage });
+          finalResponseContent.push({ type: "text", text: serverInfoMessage });
           hasEmittedFirstCallInfo = true;
         }
 
@@ -219,11 +255,14 @@ async function main() {
         if (input.report_execution_time) {
           const ms = result.execution_time_seconds * 1000;
           let timeMessage = "Script executed in ";
-          if (ms < 1) { // Less than 1 millisecond
+          if (ms < 1) {
+            // Less than 1 millisecond
             timeMessage += "<1 millisecond.";
-          } else if (ms < 1000) { // 1ms up to 999ms
+          } else if (ms < 1000) {
+            // 1ms up to 999ms
             timeMessage += `${ms.toFixed(0)} milliseconds.`;
-          } else if (ms < 60000) { // 1 second up to 59.999 seconds
+          } else if (ms < 60000) {
+            // 1 second up to 59.999 seconds
             timeMessage += `${(ms / 1000).toFixed(2)} seconds.`;
           } else {
             const totalSeconds = ms / 1000;
@@ -231,38 +270,44 @@ async function main() {
             const remainingSeconds = Math.round(totalSeconds % 60);
             timeMessage += `${minutes} minute(s) and ${remainingSeconds} seconds.`;
           }
-          response.content.push({ type: 'text', text: `${timeMessage}` });
+          response.content.push({ type: "text", text: `${timeMessage}` });
         }
 
         return response;
-
       } catch (error: unknown) {
         const typedError = error as ScriptExecutionError;
         const execError = error as ScriptExecutionError;
         execution_time_seconds = execError.execution_time_seconds;
 
-        let baseErrorMessage = 'Script execution failed. ';
-        
+        let baseErrorMessage = "Script execution failed. ";
+
         if (execError.name === "UnsupportedPlatformError") {
-            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidRequest, execError.message);
+          throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidRequest, execError.message);
         }
         if (execError.name === "ScriptFileAccessError") {
-            throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, execError.message);
+          throw new sdkTypes.McpError(sdkTypes.ErrorCode.InvalidParams, execError.message);
         }
         if (execError.isTimeout) {
-             throw new sdkTypes.McpError(sdkTypes.ErrorCode.RequestTimeout, `Script execution timed out after ${input.timeout_seconds || 60} seconds.`);
+          throw new sdkTypes.McpError(
+            sdkTypes.ErrorCode.RequestTimeout,
+            `Script execution timed out after ${input.timeout_seconds || 60} seconds.`,
+          );
         }
 
-        baseErrorMessage += execError.stderr?.trim() ? `Details: ${execError.stderr.trim()}` : (execError.message || 'No specific error message from script.');
-        
+        baseErrorMessage += execError.stderr?.trim()
+          ? `Details: ${execError.stderr.trim()}`
+          : execError.message || "No specific error message from script.";
+
         let finalErrorMessage = baseErrorMessage;
-        const permissionErrorPattern = /Not authorized|access for assistive devices is disabled|errAEEventNotPermitted|errAEAccessDenied|-1743|-10004/i;
-        const likelyPermissionError = execError.stderr && permissionErrorPattern.test(execError.stderr);
+        const permissionErrorPattern =
+          /Not authorized|access for assistive devices is disabled|errAEEventNotPermitted|errAEAccessDenied|-1743|-10004/i;
+        const likelyPermissionError =
+          execError.stderr && permissionErrorPattern.test(execError.stderr);
         // Sometimes exit code 1 with no stderr can also be a silent permission issue
-        const possibleSilentPermissionError = execError.exitCode === 1 && !execError.stderr?.trim(); 
+        const possibleSilentPermissionError = execError.exitCode === 1 && !execError.stderr?.trim();
 
         if (likelyPermissionError || possibleSilentPermissionError) {
-            finalErrorMessage = `${baseErrorMessage}\n\nPOSSIBLE PERMISSION ISSUE: Ensure the application running this server (e.g., Terminal, Node) has required permissions in 'System Settings > Privacy & Security > Automation' and 'Accessibility'. See README.md. The target application for the script may also need specific permissions.`;
+          finalErrorMessage = `${baseErrorMessage}\n\nPOSSIBLE PERMISSION ISSUE: Ensure the application running this server (e.g., Terminal, Node) has required permissions in 'System Settings > Privacy & Security > Automation' and 'Accessibility'. See README.md. The target application for the script may also need specific permissions.`;
         }
 
         // Append the attempted script to the error message
@@ -275,10 +320,10 @@ async function main() {
         finalErrorMessage += scriptIdentifierForError;
 
         if (input.include_substitution_logs && substitutionLogs.length > 0) {
-            finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join('\n')}`;
+          finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join("\n")}`;
         }
 
-        logger.error('execute_script handler error', { execution_time_seconds });
+        logger.error("execute_script handler error", { execution_time_seconds });
 
         // Construct a complete error response, with potential first-call info
         const errorOutputParts: string[] = [finalErrorMessage];
@@ -286,20 +331,23 @@ async function main() {
           errorOutputParts.push(serverInfoMessage);
           hasEmittedFirstCallInfo = true;
         }
-        
+
         const errorResponse: ExecuteScriptResponse = {
-          content: [{ type: 'text', text: errorOutputParts.join('\n\n') }],
+          content: [{ type: "text", text: errorOutputParts.join("\n\n") }],
           isError: true,
         };
-        
+
         if (input.report_execution_time && typedError.execution_time_seconds !== undefined) {
           const ms = typedError.execution_time_seconds * 1000;
           let timeMessage = "Script execution failed after ";
-          if (ms < 1) { // Less than 1 millisecond
+          if (ms < 1) {
+            // Less than 1 millisecond
             timeMessage += "<1 millisecond.";
-          } else if (ms < 1000) { // 1ms up to 999ms
+          } else if (ms < 1000) {
+            // 1ms up to 999ms
             timeMessage += `${ms.toFixed(0)} milliseconds.`;
-          } else if (ms < 60000) { // 1 second up to 59.999 seconds
+          } else if (ms < 60000) {
+            // 1 second up to 59.999 seconds
             timeMessage += `${(ms / 1000).toFixed(2)} seconds.`;
           } else {
             const totalSeconds = ms / 1000;
@@ -307,17 +355,17 @@ async function main() {
             const remainingSeconds = Math.round(totalSeconds % 60);
             timeMessage += `${minutes} minute(s) and ${remainingSeconds} seconds.`;
           }
-          errorResponse.content.push({ type: 'text', text: `\n${timeMessage}` });
+          errorResponse.content.push({ type: "text", text: `\n${timeMessage}` });
         }
-        
+
         return errorResponse;
       }
-    }
+    },
   );
 
   // ADD THE NEW TOOL get_scripting_tips HERE
   server.registerTool(
-    'get_scripting_tips',
+    "get_scripting_tips",
     {
       description: `Discover how to automate any app on your Mac with this comprehensive knowledge base of AppleScript/JXA tips and runnable scripts. This tool is essential for discovery and should be the FIRST CHOICE when aiming to automate macOS tasks, especially those involving common applications or system functions, before attempting to write scripts from scratch. It helps identify pre-built, tested solutions, effectively teaching you how to control virtually any aspect of your macOS experience.
 
@@ -354,37 +402,39 @@ async function main() {
     },
     async (args: unknown) => {
       const input = GetScriptingTipsInputSchema.parse(args);
-      
+
       // Call getScriptingTipsService directly with the input parameters
       let content = await getScriptingTipsService(input);
 
       // Append first-call info if applicable
       if (!IS_E2E_TESTING && !hasEmittedFirstCallInfo) {
-        content += '\n\n' + serverInfoMessage;
+        content += "\n\n" + serverInfoMessage;
         hasEmittedFirstCallInfo = true;
       }
 
       return {
-        content: [{
-          type: 'text',
-          text: content
-        }]
+        content: [
+          {
+            type: "text",
+            text: content,
+          },
+        ],
       };
-    }
+    },
   );
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
   // Graceful shutdown
-  process.on('SIGINT', async () => {
-    logger.info('Shutting down macos_automator MCP Server...');
+  process.on("SIGINT", async () => {
+    logger.info("Shutting down macos_automator MCP Server...");
     await server.close();
     process.exit(0);
   });
 }
 
 main().catch((error) => {
-  logger.error('Fatal error in server', error);
+  logger.error("Fatal error in server", error);
   process.exit(1);
 });

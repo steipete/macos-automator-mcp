@@ -40,7 +40,7 @@ on run
 		set defaultText to ""
 		set defaultTerminals to {"Terminal.app", "iTerm2", "Ghostty"}
 		set defaultTargets to {}
-		
+
 		return echoText(defaultText, defaultTerminals, defaultTargets)
 	on error errMsg
 		return "Error: " & errMsg
@@ -53,21 +53,21 @@ on processMCPParameters(inputParams)
 	set theText to "--MCP_INPUT:text"
 	set theTerminals to "--MCP_INPUT:terminals"
 	set theTargets to "--MCP_INPUT:targets"
-	
+
 	-- Default values
 	if theTerminals is "" then
 		set theTerminals to {"Terminal.app", "iTerm2", "Ghostty"}
 	end if
-	
+
 	if theTargets is "" then
 		set theTargets to {}
 	end if
-	
+
 	-- Validate input
 	if theText is "" then
 		return "Error: No text provided to echo."
 	end if
-	
+
 	return echoText(theText, theTerminals, theTargets)
 end processMCPParameters
 
@@ -76,10 +76,10 @@ on echoText(textToEcho, terminals, targets)
 	set successCount to 0
 	set failCount to 0
 	set resultMessage to ""
-	
+
 	-- Check which terminals are running
 	set runningTerminals to {}
-	
+
 	tell application "System Events"
 		if "Terminal" is in (name of processes) and "Terminal.app" is in terminals then
 			set end of runningTerminals to "Terminal.app"
@@ -91,17 +91,17 @@ on echoText(textToEcho, terminals, targets)
 			set end of runningTerminals to "Ghostty"
 		end if
 	end tell
-	
+
 	if length of runningTerminals is 0 then
 		return "Error: None of the specified terminal applications are running."
 	end if
-	
+
 	-- Process Terminal.app
 	if "Terminal.app" is in runningTerminals then
 		try
 			tell application "Terminal"
 				activate
-				
+
 				-- Determine target windows/tabs
 				if length of targets is 0 then
 					-- Target all windows and tabs
@@ -109,18 +109,18 @@ on echoText(textToEcho, terminals, targets)
 						set currentWindow to window i
 						repeat with j from 1 to count of tabs of currentWindow
 							set currentTab to tab j of currentWindow
-							
+
 							-- Echo the text
 							tell currentTab
 								set selected of currentTab to true
 								delay 0.3
-								
+
 								tell application "System Events" to tell process "Terminal"
 									keystroke textToEcho
 									-- Do not press return - just echo
 								end tell
 							end tell
-							
+
 							set successCount to successCount + 1
 							delay 0.3
 						end repeat
@@ -137,13 +137,13 @@ on echoText(textToEcho, terminals, targets)
 			set failCount to failCount + 1
 		end try
 	end if
-	
+
 	-- Process iTerm2
 	if "iTerm2" is in runningTerminals then
 		try
 			tell application "iTerm2"
 				activate
-				
+
 				-- Determine target windows/tabs/sessions
 				if length of targets is 0 then
 					-- Target all windows, tabs, and sessions
@@ -156,12 +156,12 @@ on echoText(textToEcho, terminals, targets)
 											-- Select the session
 											select
 											delay 0.3
-											
+
 											-- Echo the text without executing
 											tell application "System Events" to tell process "iTerm2"
 												keystroke textToEcho
 											end tell
-											
+
 											set successCount to successCount + 1
 										end tell
 									end repeat
@@ -181,19 +181,19 @@ on echoText(textToEcho, terminals, targets)
 			set failCount to failCount + 1
 		end try
 	end if
-	
+
 	-- Process Ghostty
 	if "Ghostty" is in runningTerminals then
 		try
 			tell application "Ghostty"
 				activate
-				
+
 				-- Echo to the active window
 				tell application "System Events" to tell process "Ghostty"
 					keystroke textToEcho
 					-- Do not press return - just echo
 				end tell
-				
+
 				set successCount to successCount + 1
 			end tell
 		on error errMsg
@@ -201,16 +201,16 @@ on echoText(textToEcho, terminals, targets)
 			set failCount to failCount + 1
 		end try
 	end if
-	
+
 	-- Build result message
 	if successCount > 0 then
 		set resultMessage to resultMessage & "Echo successful to " & successCount & " terminal" & (if successCount = 1 then "" else "s") & ". "
 	end if
-	
+
 	if failCount > 0 then
 		set resultMessage to resultMessage & "Failed to echo to " & failCount & " terminal" & (if failCount = 1 then "" else "s") & "."
 	end if
-	
+
 	return resultMessage
 end echoText
 
@@ -218,31 +218,31 @@ end echoText
 on processTerminalTargets(targets, textToEcho)
 	set successCount to 0
 	set failCount to 0
-	
+
 	repeat with targetSpec in targets
 		if targetSpec starts with "Terminal.app:" then
 			set targetParts to my splitString(targetSpec, ":")
-			
+
 			if (count of targetParts) ≥ 3 then
 				try
 					set windowIndex to item 2 of targetParts as integer
 					set tabIndex to item 3 of targetParts as integer
-					
+
 					tell application "Terminal"
 						if windowIndex > 0 and windowIndex ≤ (count of windows) and ¬
 							tabIndex > 0 and tabIndex ≤ (count of tabs of window windowIndex) then
 							set currentTab to tab tabIndex of window windowIndex
-							
+
 							-- Echo the text
 							tell currentTab
 								set selected of currentTab to true
 								delay 0.3
-								
+
 								tell application "System Events" to tell process "Terminal"
 									keystroke textToEcho
 								end tell
 							end tell
-							
+
 							set successCount to successCount + 1
 						else
 							set failCount to failCount + 1
@@ -254,7 +254,7 @@ on processTerminalTargets(targets, textToEcho)
 			end if
 		end if
 	end repeat
-	
+
 	return {successCount, failCount}
 end processTerminalTargets
 
@@ -262,17 +262,17 @@ end processTerminalTargets
 on processITermTargets(targets, textToEcho)
 	set successCount to 0
 	set failCount to 0
-	
+
 	repeat with targetSpec in targets
 		if targetSpec starts with "iTerm2:" then
 			set targetParts to my splitString(targetSpec, ":")
-			
+
 			if (count of targetParts) ≥ 4 then
 				try
 					set windowIndex to item 2 of targetParts as integer
 					set tabIndex to item 3 of targetParts as integer
 					set sessionIndex to item 4 of targetParts as integer
-					
+
 					tell application "iTerm2"
 						tell window windowIndex
 							tell tab tabIndex
@@ -280,12 +280,12 @@ on processITermTargets(targets, textToEcho)
 									-- Select the session
 									select
 									delay 0.3
-									
+
 									-- Echo the text
 									tell application "System Events" to tell process "iTerm2"
 										keystroke textToEcho
 									end tell
-									
+
 									set successCount to successCount + 1
 								end tell
 							end tell
@@ -297,7 +297,7 @@ on processITermTargets(targets, textToEcho)
 			end if
 		end if
 	end repeat
-	
+
 	return {successCount, failCount}
 end processITermTargets
 
@@ -320,6 +320,7 @@ end splitString
 ## Example Usage
 
 ### Echo to all terminals
+
 ```json
 {
   "text": "sudo systemctl restart nginx"
@@ -327,6 +328,7 @@ end splitString
 ```
 
 ### Echo to specific terminals
+
 ```json
 {
   "text": "rm -rf ./temp/*",
@@ -335,6 +337,7 @@ end splitString
 ```
 
 ### Target specific windows/tabs
+
 ```json
 {
   "text": "docker-compose down && docker-compose up",

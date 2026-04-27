@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Get URL of Front Tab'
+title: "Firefox: Get URL of Front Tab"
 category: 07_browsers
 id: firefox_get_front_tab_url
 description: >-
@@ -76,4 +76,5 @@ tell application "System Events"
   end tell
 end tell
 ```
+
 END_TIP

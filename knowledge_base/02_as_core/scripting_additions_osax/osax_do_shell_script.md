@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: do shell script Command'
+title: "StandardAdditions: do shell script Command"
 category: 02_as_core
 id: osax_do_shell_script
 description: Executes a Unix shell command and returns its standard output as a string.
@@ -55,4 +55,5 @@ end try
 return "User: " & whoAmI & "\\nDesktop Listing (first 100 chars):\\n" & (text 1 thru 100 of fileList) & "..."
 -- & "\\nAdmin Result: " & adminResult
 ```
-END_TIP 
+
+END_TIP

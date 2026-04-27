@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: info for Command'
+title: "StandardAdditions: info for Command"
 category: 02_as_core
 id: osax_info_for
 description: Retrieves a record of metadata about a specified file or folder alias.
@@ -24,9 +24,9 @@ notes: >
 ```applescript
 try
   set targetFile to choose file with prompt "Select a file to get info for:"
-  
+
   set fileInfo to info for targetFile
-  
+
   set output to "File Info for: " & (name of fileInfo) & "\\n"
   set output to output & "  Kind: " & (kind of fileInfo) & "\\n"
   set output to output & "  Size: " & (size of fileInfo) & " bytes\\n"
@@ -39,11 +39,11 @@ try
   on error
     set output to output & "  Default Application: Not set or not an alias\\n"
   end try
-  
+
   return output
-  
+
 on error errMsg number errNum
   if errNum is -128 then return "User cancelled."
   return "Error getting file info (" & errNum & "): " & errMsg
 end try
-``` 
+```

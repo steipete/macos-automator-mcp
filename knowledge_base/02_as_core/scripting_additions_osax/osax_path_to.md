@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: path to Command'
+title: "StandardAdditions: path to Command"
 category: 02_as_core
 id: osax_path_to
 description: >-
@@ -41,4 +41,5 @@ set tempFolderPOSIX to POSIX path of tempFolderAlias
 
 return "User Desktop: " & userDesktopPOSIX & "\\nLocal Applications: " & localApplicationsPOSIX & "\\nTemp Folder: " & tempFolderPOSIX
 ```
-END_TIP 
+
+END_TIP

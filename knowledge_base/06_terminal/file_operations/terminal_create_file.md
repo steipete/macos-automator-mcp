@@ -37,7 +37,7 @@ on run
 		-- Default values for interactive mode
 		set defaultDestination to ""
 		set defaultContent to ""
-		
+
 		return createFile(defaultDestination, defaultContent)
 	on error errMsg
 		return "Error: " & errMsg
@@ -49,12 +49,12 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set theDestination to "--MCP_INPUT:destination"
 	set theContent to "--MCP_INPUT:content"
-	
+
 	-- Validate parameters
 	if theDestination is "" then
 		return "Error: Destination path is required for file creation."
 	end if
-	
+
 	return createFile(theDestination, theContent)
 end processMCPParameters
 
@@ -63,23 +63,23 @@ on createFile(filePath, fileContent)
 	if filePath is "" then
 		return "Error: Destination path is required for file creation."
 	end if
-	
+
 	-- Check if file already exists
 	set fileExists to do shell script "[ -e " & quoted form of filePath & " ] && echo 'exists' || echo 'not exists'"
-	
+
 	if fileExists is "exists" then
 		set overwriteResponse to display dialog "File already exists. Do you want to overwrite it?" ¬
 			buttons {"Cancel", "Overwrite"} default button "Cancel" with icon caution
-		
+
 		if button returned of overwriteResponse is "Cancel" then
 			return "File creation cancelled."
 		end if
 	end if
-	
+
 	-- Create the parent directory if it doesn't exist
 	set parentDir to do shell script "dirname " & quoted form of filePath
 	do shell script "mkdir -p " & quoted form of parentDir
-	
+
 	-- Create the file with content
 	try
 		if fileContent is not "" then
@@ -91,7 +91,7 @@ EOFMARKER"
 			-- Create an empty file
 			do shell script "touch " & quoted form of filePath
 		end if
-		
+
 		return "Successfully created file: " & filePath
 	on error errMsg
 		return "Error creating file: " & errMsg
@@ -107,6 +107,7 @@ end createFile
 ## Example Usage
 
 ### Create an empty file
+
 ```json
 {
   "destination": "/Users/username/Documents/newfile.txt"
@@ -114,6 +115,7 @@ end createFile
 ```
 
 ### Create a file with content
+
 ```json
 {
   "destination": "/Users/username/Documents/config.json",
@@ -122,6 +124,7 @@ end createFile
 ```
 
 ### Create file in new directory
+
 ```json
 {
   "destination": "/Users/username/NewProject/src/index.js",
@@ -130,6 +133,7 @@ end createFile
 ```
 
 ### Create file with spaces in path
+
 ```json
 {
   "destination": "/Users/username/My Documents/Important Notes.txt",
@@ -148,15 +152,18 @@ end createFile
 ## Features
 
 ### Automatic Directory Creation
+
 - Parent directories are created automatically if they don't exist
 - No need to manually create the directory structure first
 
 ### Content Handling
+
 - Supports empty files or files with initial content
 - Preserves formatting and special characters in content
 - Uses HERE document for reliable content writing
 
 ### Overwrite Protection
+
 - Warns if file already exists
 - Requires confirmation to overwrite existing files
 - Default action is to cancel, preventing accidental overwrites

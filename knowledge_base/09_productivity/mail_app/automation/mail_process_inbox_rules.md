@@ -41,11 +41,11 @@ end run
 on processMCPParameters(inputParams)
 	-- Extract parameters
 	set rules to "--MCP_INPUT:rules"
-	
+
 	if rules is "" then
 		set rules to "default"
 	end if
-	
+
 	return processInboxWithRules(rules)
 end processMCPParameters
 
@@ -54,7 +54,7 @@ on processInboxWithRules(ruleSet)
 	if ruleSet is missing value then
 		set ruleSet to "default"
 	end if
-	
+
 	-- Load rule definitions
 	if ruleSet is "default" then
 		set rules to {¬
@@ -72,26 +72,26 @@ on processInboxWithRules(ruleSet)
 			set rules to {}
 		end try
 	end if
-	
+
 	tell application "Mail"
 		set processedCount to 0
 		set inboxMessages to messages of inbox
 		set messageCount to count of inboxMessages
-		
+
 		-- Process each message with the rules
 		repeat with i from 1 to messageCount
 			set theMessage to item i of inboxMessages
-			
+
 			repeat with theRule in rules
 				set ruleName to name of theRule
 				set ruleCriteria to criteria of theRule
 				set ruleValue to value of theRule
 				set ruleAction to action of theRule
 				set ruleDestination to destination of theRule
-				
+
 				set valueList to my splitString(ruleValue, ",")
 				set matchFound to false
-				
+
 				-- Check if message matches criteria
 				if ruleCriteria is "from" then
 					set messageSender to sender of theMessage
@@ -118,7 +118,7 @@ on processInboxWithRules(ruleSet)
 						end if
 					end repeat
 				end if
-				
+
 				-- Apply the rule action if criteria matched
 				if matchFound then
 					if ruleAction is "flag" then
@@ -134,7 +134,7 @@ on processInboxWithRules(ruleSet)
 								make new mailbox with properties {name:ruleDestination}
 								set targetMailbox to mailbox ruleDestination
 							end try
-							
+
 							-- Move the message
 							move theMessage to targetMailbox
 							set processedCount to processedCount + 1
@@ -142,13 +142,13 @@ on processInboxWithRules(ruleSet)
 							log "Error moving message: " & errMsg
 						end try
 					end if
-					
+
 					-- Once a rule is applied, move to next message
 					exit repeat
 				end if
 			end repeat
 		end repeat
-		
+
 		return {success:true, message:"Processed " & processedCount & " messages with rules", result:processedCount}
 	end tell
 end processInboxWithRules
@@ -166,6 +166,7 @@ end splitString
 ## Rule Structure
 
 Each rule consists of:
+
 - `name`: Descriptive name for the rule
 - `criteria`: What to check ("from", "subject", or "content")
 - `value`: Comma-separated list of keywords to match
@@ -175,6 +176,7 @@ Each rule consists of:
 ## Default Rules
 
 The default ruleset includes:
+
 1. **Important**: Flags emails from boss, manager, CEO, or with "urgent"
 2. **Newsletter**: Moves newsletters to "Newsletters" folder
 3. **Receipt**: Moves receipts and invoices to "Receipts" folder
@@ -188,6 +190,7 @@ The default ruleset includes:
 ## Example Usage
 
 ### Use default rules
+
 ```json
 {
   "rules": "default"
@@ -195,21 +198,22 @@ The default ruleset includes:
 ```
 
 ### Custom rules example
+
 ```json
 {
   "rules": [
     {
-      "name": "VIP", 
-      "criteria": "from", 
-      "value": "john@example.com,jane@company.com", 
-      "action": "flag", 
+      "name": "VIP",
+      "criteria": "from",
+      "value": "john@example.com,jane@company.com",
+      "action": "flag",
       "destination": ""
     },
     {
-      "name": "Development", 
-      "criteria": "subject", 
-      "value": "GitHub,pull request,CI/CD", 
-      "action": "move", 
+      "name": "Development",
+      "criteria": "subject",
+      "value": "GitHub,pull request,CI/CD",
+      "action": "move",
       "destination": "Development"
     }
   ]
@@ -219,6 +223,7 @@ The default ruleset includes:
 ## Return Value
 
 Returns an object with:
+
 - `success`: Boolean indicating operation success
 - `message`: Description of what was done
 - `result`: Number of messages processed

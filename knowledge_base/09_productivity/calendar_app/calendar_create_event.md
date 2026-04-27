@@ -1,5 +1,5 @@
 ---
-title: 'Calendar: Create New Event'
+title: "Calendar: Create New Event"
 category: 09_productivity
 id: calendar_create_event
 description: Creates a new event in the Calendar app with specified details.
@@ -10,7 +10,7 @@ keywords:
   - appointment
   - meeting
 language: applescript
-argumentsPrompt: 'Enter the event title, date/time, duration, and calendar name'
+argumentsPrompt: "Enter the event title, date/time, duration, and calendar name"
 notes: >-
   Creates a new event with the specified details. Date format should be
   'YYYY-MM-DD HH:MM:SS'. Duration is in minutes.
@@ -24,19 +24,19 @@ on run {eventTitle, eventDateTime, durationMinutes, calendarName}
       if eventTitle is "" or eventTitle is missing value then
         set eventTitle to "--MCP_INPUT:eventTitle"
       end if
-      
+
       if eventDateTime is "" or eventDateTime is missing value then
         set eventDateTime to "--MCP_INPUT:eventDateTime"
       end if
-      
+
       if durationMinutes is "" or durationMinutes is missing value then
         set durationMinutes to "--MCP_INPUT:durationMinutes"
       end if
-      
+
       if calendarName is "" or calendarName is missing value then
         set calendarName to "--MCP_INPUT:calendarName"
       end if
-      
+
       -- Convert durationMinutes to integer
       if durationMinutes is not a number then
         try
@@ -45,10 +45,10 @@ on run {eventTitle, eventDateTime, durationMinutes, calendarName}
           set durationMinutes to 60 -- Default to 1 hour if conversion fails
         end try
       end if
-      
+
       -- Find the specified calendar, or use the default calendar
       set targetCalendar to missing value
-      
+
       if calendarName is not "--MCP_INPUT:calendarName" and calendarName is not "" then
         try
           set targetCalendar to calendar calendarName
@@ -58,7 +58,7 @@ on run {eventTitle, eventDateTime, durationMinutes, calendarName}
           set AppleScript's text item delimiters to ", "
           set calendarList to allCalendars as string
           set AppleScript's text item delimiters to ""
-          
+
           return "Calendar \"" & calendarName & "\" not found. Available calendars: " & calendarList
         end try
       else
@@ -66,16 +66,16 @@ on run {eventTitle, eventDateTime, durationMinutes, calendarName}
         set targetCalendar to default calendar
         set calendarName to name of targetCalendar
       end if
-      
+
       -- Parse the date string
       set eventDate to missing value
-      
+
       if eventDateTime is not "--MCP_INPUT:eventDateTime" and eventDateTime is not "" then
         try
           -- Try to parse date in format "YYYY-MM-DD HH:MM:SS"
           set {year:y, month:m, day:d, hours:h, minutes:min} to my parseDateTime(eventDateTime)
           set eventDate to current date
-          
+
           set year of eventDate to y
           set month of eventDate to m
           set day of eventDate to d
@@ -90,26 +90,26 @@ on run {eventTitle, eventDateTime, durationMinutes, calendarName}
         set eventDate to current date
         set minutes of eventDate to (((minutes of eventDate) div 30) + 1) * 30
       end if
-      
+
       -- Calculate end date based on duration
       set endDate to eventDate + (durationMinutes * minutes)
-      
+
       -- Create the event
       tell targetCalendar
         make new event with properties {summary:eventTitle, start date:eventDate, end date:endDate}
       end tell
-      
+
       -- Format dates for user-friendly output
       set formattedStart to my formatDate(eventDate)
       set formattedEnd to my formatDate(endDate)
-      
+
       return "Event created successfully!" & return & return & ¬
              "Title: " & eventTitle & return & ¬
              "Calendar: " & calendarName & return & ¬
              "Start: " & formattedStart & return & ¬
              "End: " & formattedEnd & return & ¬
              "Duration: " & durationMinutes & " minutes"
-      
+
     on error errMsg number errNum
       return "Error (" & errNum & "): Failed to create event - " & errMsg
     end try
@@ -119,27 +119,27 @@ end run
 -- Helper function to parse date-time string in format "YYYY-MM-DD HH:MM:SS"
 on parseDateTime(dateTimeStr)
   set dateTimeParts to my split(dateTimeStr, " ")
-  
+
   if (count of dateTimeParts) < 2 then
     error "Invalid date-time format"
   end if
-  
+
   set datePart to item 1 of dateTimeParts
   set timePart to item 2 of dateTimeParts
-  
+
   set datePieces to my split(datePart, "-")
   set timePieces to my split(timePart, ":")
-  
+
   if (count of datePieces) < 3 or (count of timePieces) < 2 then
     error "Invalid date-time components"
   end if
-  
+
   set y to item 1 of datePieces as number
   set m to item 2 of datePieces as number
   set d to item 3 of datePieces as number
   set h to item 1 of timePieces as number
   set min to item 2 of timePieces as number
-  
+
   return {year:y, month:m, day:d, hours:h, minutes:min}
 end parseDateTime
 
@@ -154,7 +154,7 @@ end split
 -- Helper function to format date in user-friendly format
 on formatDate(theDate)
   set dateString to ""
-  
+
   tell (theDate)
     set dateString to its year as string
     set dateString to dateString & "-" & my padZero(its month as integer)
@@ -162,7 +162,7 @@ on formatDate(theDate)
     set dateString to dateString & " " & my padZero(its hours)
     set dateString to dateString & ":" & my padZero(its minutes)
   end tell
-  
+
   return dateString
 end formatDate
 

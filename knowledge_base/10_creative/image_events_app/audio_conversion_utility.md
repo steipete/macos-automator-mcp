@@ -46,21 +46,21 @@ on processMCPParameters(inputParams)
 	set outputPath to "--MCP_INPUT:outputPath"
 	set format to "--MCP_INPUT:format"
 	set quality to "--MCP_INPUT:quality"
-	
+
 	-- Default quality if not specified
 	if quality is equal to "" then
 		set quality to "medium"
 	end if
-	
+
 	-- Validate required parameters
 	if inputPath is equal to "" then
 		return "Error: Input path is required"
 	end if
-	
+
 	if format is equal to "" then
 		return "Error: Target format is required"
 	end if
-	
+
 	-- If output path not specified, create one in the same directory
 	if outputPath is equal to "" then
 		set inputInfo to my getFileInfo(inputPath)
@@ -69,7 +69,7 @@ on processMCPParameters(inputParams)
 		set baseName to my getBaseName(fileName)
 		set outputPath to containingFolder & baseName & "." & format
 	end if
-	
+
 	-- Perform the conversion
 	return convertAudio(inputPath, outputPath, format, quality)
 end processMCPParameters
@@ -77,18 +77,18 @@ end processMCPParameters
 -- Interactive audio conversion
 on performAudioConversion()
 	set audioFormats to {"mp3", "aac", "wav", "aiff", "flac", "m4a"}
-	
+
 	-- Select input file
 	set inputFile to choose file with prompt "Select an audio file to convert:" of type {"public.audio"}
 	set inputPath to POSIX path of inputFile
-	
+
 	-- Select output format
 	set selectedFormat to choose from list audioFormats with prompt "Convert to which format?"
 	if selectedFormat is false then
 		return "Conversion cancelled."
 	end if
 	set format to item 1 of selectedFormat
-	
+
 	-- Select quality
 	set qualityLevels to {"low", "medium", "high", "maximum"}
 	set selectedQuality to choose from list qualityLevels with prompt "Select quality level:" default items {"medium"}
@@ -96,12 +96,12 @@ on performAudioConversion()
 		return "Conversion cancelled."
 	end if
 	set quality to item 1 of selectedQuality
-	
+
 	-- Set output location
 	set defaultName to my getBaseName(my getFileName(inputPath)) & "." & format
 	set outputFile to choose file name with prompt "Save converted audio as:" default name defaultName
 	set outputPath to POSIX path of outputFile
-	
+
 	-- Perform conversion
 	return convertAudio(inputPath, outputPath, format, quality)
 end performAudioConversion
@@ -112,7 +112,7 @@ on convertAudio(inputPath, outputPath, format, quality)
 		-- Map format to afconvert format
 		set afFormat to ""
 		set bitrateFlag to ""
-		
+
 		if format is "mp3" then
 			set afFormat to "mp3"
 			if quality is "low" then
@@ -174,11 +174,11 @@ on convertAudio(inputPath, outputPath, format, quality)
 		else
 			return "Error: Unsupported audio format: " & format
 		end if
-		
+
 		-- Construct the conversion command
 		set cmd to "afconvert -f " & afFormat & " " & bitrateFlag & " " & quoted form of inputPath & " " & quoted form of outputPath
 		do shell script cmd
-		
+
 		return "Audio converted to " & format & " format at " & outputPath
 	on error errMsg
 		return "Error converting audio: " & errMsg
@@ -258,18 +258,21 @@ When using with MCP, you can provide these parameters:
 Quality settings affect different formats differently:
 
 ### MP3 and AAC/M4A
+
 - **low**: 128 kbps
-- **medium**: 192 kbps  
+- **medium**: 192 kbps
 - **high**: 256 kbps
 - **maximum**: 320 kbps
 
 ### WAV and AIFF
+
 - **low**: 16-bit, 44.1 kHz
 - **medium**: 16-bit, 48 kHz
 - **high**: 24-bit, 48 kHz
 - **maximum**: 24-bit, 96 kHz
 
 ### FLAC
+
 - **low**: Compression level 0 (fastest)
 - **medium**: Compression level 5
 - **high**: Compression level 8

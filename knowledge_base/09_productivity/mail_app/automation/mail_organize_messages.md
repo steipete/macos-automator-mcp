@@ -43,15 +43,15 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set organizeCriteria to "--MCP_INPUT:organizeCriteria"
 	set organizeDestination to "--MCP_INPUT:organizeDestination"
-	
+
 	if organizeCriteria is "" then
 		set organizeCriteria to "unread"
 	end if
-	
+
 	if organizeDestination is "" then
 		set organizeDestination to "Follow Up"
 	end if
-	
+
 	return organizeMessages(organizeCriteria, organizeDestination)
 end processMCPParameters
 
@@ -60,11 +60,11 @@ on organizeMessages(criteria, destination)
 	if criteria is missing value then
 		set criteria to "unread"
 	end if
-	
+
 	if destination is missing value then
 		set destination to "Follow Up"
 	end if
-	
+
 	tell application "Mail"
 		try
 			-- Create the destination mailbox if it doesn't exist
@@ -74,10 +74,10 @@ on organizeMessages(criteria, destination)
 				make new mailbox with properties {name:destination}
 				set targetMailbox to mailbox destination
 			end try
-			
+
 			-- Get messages to organize based on criteria
 			set messagesToOrganize to {}
-			
+
 			if criteria is "unread" then
 				set allMailboxes to every mailbox
 				repeat with mb in allMailboxes
@@ -105,7 +105,7 @@ on organizeMessages(criteria, destination)
 					set messagesToOrganize to messagesToOrganize & subjectMessages
 				end repeat
 			end if
-			
+
 			-- Move messages to destination
 			set movedCount to 0
 			repeat with theMessage in messagesToOrganize
@@ -116,7 +116,7 @@ on organizeMessages(criteria, destination)
 					-- Skip messages that can't be moved
 				end try
 			end repeat
-			
+
 			return {success:true, message:"Organized " & movedCount & " messages matching criteria '" & criteria & "' to " & destination}
 		on error errMsg
 			return {success:false, error:"Error organizing messages: " & errMsg}
@@ -140,6 +140,7 @@ end organizeMessages
 ## Example Usage
 
 ### Organize unread messages
+
 ```json
 {
   "organizeCriteria": "unread",
@@ -148,6 +149,7 @@ end organizeMessages
 ```
 
 ### Organize messages from specific sender
+
 ```json
 {
   "organizeCriteria": "from:important@client.com",
@@ -156,6 +158,7 @@ end organizeMessages
 ```
 
 ### Organize by subject keyword
+
 ```json
 {
   "organizeCriteria": "subject:invoice",
@@ -164,6 +167,7 @@ end organizeMessages
 ```
 
 ### Organize flagged messages
+
 ```json
 {
   "organizeCriteria": "flagged",
@@ -174,6 +178,7 @@ end organizeMessages
 ## Return Value
 
 Returns an object with:
+
 - `success`: Boolean indicating operation success
 - `message`: Description of what was done
 - `error`: Error message if operation failed

@@ -1,5 +1,5 @@
 ---
-title: 'JS Snippet: Click Element'
+title: "JS Snippet: Click Element"
 category: 07_browsers
 id: js_click_element
 description: JavaScript to programmatically click an HTML element.
@@ -22,4 +22,5 @@ if (element) {
   element.click();
 }
 ```
-END_TIP 
+
+END_TIP

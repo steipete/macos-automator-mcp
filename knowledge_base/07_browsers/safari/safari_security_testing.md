@@ -42,35 +42,35 @@ on run argv
 	set test_type to "all"
 	set target_url to ""
 	set verbose_mode to false
-	
+
 	-- Process arguments if provided
 	if (count of argv) ≥ 1 then
 		if item 1 of argv is not "" then
 			set test_type to item 1 of argv
 		end if
 	end if
-	
+
 	if (count of argv) ≥ 2 then
 		if item 2 of argv is not "" then
 			set target_url to item 2 of argv
 		end if
 	end if
-	
+
 	if (count of argv) ≥ 3 then
 		if item 3 of argv is "true" then
 			set verbose_mode to true
 		end if
 	end if
-	
+
 	-- Check if Safari is running
 	tell application "System Events"
 		set safariRunning to (exists process "Safari")
 	end tell
-	
+
 	if not safariRunning then
 		return "{\"error\": \"Safari is not running. Please open Safari and try again.\"}"
 	end if
-	
+
 	tell application "Safari"
 		-- Navigate to the specified URL if provided
 		if target_url is not "" then
@@ -79,44 +79,44 @@ on run argv
 			-- Wait for page to load
 			delay 3
 		end if
-		
+
 		-- Get current tab information
 		set current_tab to current tab of window 1
 		set page_url to URL of current_tab
-		
+
 		-- Execute all requested tests
 		set test_results to {}
-		
+
 		-- Check if page is using HTTPS
 		if test_type is "https" or test_type is "all" then
 			set https_result to my checkHttps(page_url, current_tab)
 			set test_results to test_results & {https_result}
 		end if
-		
+
 		-- Check for mixed content
 		if test_type is "mixed-content" or test_type is "all" then
 			set mixed_content_result to my checkMixedContent(current_tab)
 			set test_results to test_results & {mixed_content_result}
 		end if
-		
+
 		-- Check Content Security Policy
 		if test_type is "csp" or test_type is "all" then
 			set csp_result to my checkCSP(current_tab)
 			set test_results to test_results & {csp_result}
 		end if
-		
+
 		-- Run basic XSS tests
 		if test_type is "xss" or test_type is "all" then
 			set xss_result to my checkXSS(current_tab)
 			set test_results to test_results & {xss_result}
 		end if
-		
+
 		-- Check cookie security
 		if test_type is "cookies" or test_type is "all" then
 			set cookie_result to my checkCookies(current_tab, verbose_mode)
 			set test_results to test_results & {cookie_result}
 		end if
-		
+
 		-- Format results as JSON
 		set json_result to "{"
 		repeat with i from 1 to count of test_results
@@ -127,7 +127,7 @@ on run argv
 			end if
 		end repeat
 		set json_result to json_result & "}"
-		
+
 		return json_result
 	end tell
 end run
@@ -135,11 +135,11 @@ end run
 -- Check if the page is using HTTPS
 on checkHttps(page_url, tab_ref)
 	set is_https to false
-	
+
 	if page_url starts with "https://" then
 		set is_https to true
 	end if
-	
+
 	-- Additional certificate verification via JavaScript
 	set js_result to ""
 	tell application "Safari"
@@ -154,9 +154,9 @@ on checkHttps(page_url, tab_ref)
 			})();
 		" in tab_ref
 	end tell
-	
+
 	return "\"https\": {
-		\"secure\": " & my boolToString(is_https) & ", 
+		\"secure\": " & my boolToString(is_https) & ",
 		\"details\": " & js_result & "
 	}"
 end checkHttps
@@ -170,7 +170,7 @@ on checkMixedContent(tab_ref)
 					hasMixedContent: false,
 					insecureResources: []
 				};
-				
+
 				// Check for insecure images
 				document.querySelectorAll('img[src^=\"http:\"]').forEach(img => {
 					result.hasMixedContent = true;
@@ -179,7 +179,7 @@ on checkMixedContent(tab_ref)
 						url: img.src
 					});
 				});
-				
+
 				// Check for insecure scripts
 				document.querySelectorAll('script[src^=\"http:\"]').forEach(script => {
 					result.hasMixedContent = true;
@@ -188,7 +188,7 @@ on checkMixedContent(tab_ref)
 						url: script.src
 					});
 				});
-				
+
 				// Check for insecure stylesheets
 				document.querySelectorAll('link[rel=\"stylesheet\"][href^=\"http:\"]').forEach(link => {
 					result.hasMixedContent = true;
@@ -197,7 +197,7 @@ on checkMixedContent(tab_ref)
 						url: link.href
 					});
 				});
-				
+
 				// Check for insecure iframes
 				document.querySelectorAll('iframe[src^=\"http:\"]').forEach(iframe => {
 					result.hasMixedContent = true;
@@ -206,7 +206,7 @@ on checkMixedContent(tab_ref)
 						url: iframe.src
 					});
 				});
-				
+
 				// Limit the number of resources to avoid overly large responses
 				if (result.insecureResources.length > 10) {
 					const count = result.insecureResources.length;
@@ -216,12 +216,12 @@ on checkMixedContent(tab_ref)
 						message: 'Additional ' + (count - 10) + ' insecure resources not shown'
 					});
 				}
-				
+
 				return JSON.stringify(result);
 			})();
 		" in tab_ref
 	end tell
-	
+
 	return "\"mixedContent\": " & mixed_content_js
 end checkMixedContent
 
@@ -235,43 +235,43 @@ on checkCSP(tab_ref)
 					policies: {},
 					recommendations: []
 				};
-				
+
 				// Function to parse CSP header into object
 				function parseCSP(cspString) {
 					if (!cspString) return {};
-					
+
 					const policies = {};
 					const directives = cspString.split(';').map(part => part.trim());
-					
+
 					directives.forEach(directive => {
 						if (!directive) return;
 						const [key, ...values] = directive.split(' ');
 						policies[key] = values.filter(v => v);
 					});
-					
+
 					return policies;
 				}
-				
+
 				// Try to get CSP meta tag
 				const cspMeta = document.querySelector('meta[http-equiv=\"Content-Security-Policy\"]');
 				if (cspMeta && cspMeta.content) {
 					result.hasCSP = true;
 					result.policies['meta'] = parseCSP(cspMeta.content);
 				}
-				
+
 				// Check for critical directives
 				const criticalDirectives = ['default-src', 'script-src', 'object-src', 'base-uri'];
 				const missingDirectives = criticalDirectives.filter(dir => {
 					return !result.policies.meta || !result.policies.meta[dir];
 				});
-				
+
 				if (missingDirectives.length > 0) {
 					result.recommendations.push({
 						severity: 'high',
 						message: 'Missing critical CSP directives: ' + missingDirectives.join(', ')
 					});
 				}
-				
+
 				// Check for unsafe inline scripts if CSP is present
 				if (result.hasCSP) {
 					const scriptSrc = result.policies.meta && result.policies.meta['script-src'];
@@ -287,12 +287,12 @@ on checkCSP(tab_ref)
 						message: 'No Content Security Policy detected. Implementing CSP can help prevent XSS attacks.'
 					});
 				}
-				
+
 				return JSON.stringify(result);
 			})();
 		" in tab_ref
 	end tell
-	
+
 	return "\"contentSecurityPolicy\": " & csp_js
 end checkCSP
 
@@ -305,11 +305,11 @@ on checkXSS(tab_ref)
 					vulnerabilities: [],
 					testsPerformed: []
 				};
-				
+
 				// Track tests performed
 				result.testsPerformed.push('DOM-based XSS checks');
 				result.testsPerformed.push('Input field sanitization checks');
-				
+
 				// Check for vulnerable patterns in JS
 				const scripts = Array.from(document.getElementsByTagName('script'));
 				const vulnerablePatterns = [
@@ -318,10 +318,10 @@ on checkXSS(tab_ref)
 					{ pattern: /innerHTML/g, name: 'innerHTML' },
 					{ pattern: /outerHTML/g, name: 'outerHTML' }
 				];
-				
+
 				scripts.forEach(script => {
 					if (!script.textContent) return;
-					
+
 					vulnerablePatterns.forEach(vp => {
 						if (vp.pattern.test(script.textContent)) {
 							result.vulnerabilities.push({
@@ -332,19 +332,19 @@ on checkXSS(tab_ref)
 						}
 					});
 				});
-				
+
 				// Check input fields for potential reflection
 				const inputs = document.querySelectorAll('input:not([type=password]):not([type=hidden])');
 				inputs.forEach(input => {
 					result.testsPerformed.push(`Input field check: ${input.name || input.id || 'unnamed'}`);
-					
+
 					// Check if input has event handlers
-					const hasInputEvents = input.hasAttribute('onchange') || 
+					const hasInputEvents = input.hasAttribute('onchange') ||
 							   input.hasAttribute('oninput') ||
 							   input.hasAttribute('onkeyup') ||
 							   input.hasAttribute('onkeydown') ||
 							   input.hasAttribute('onpaste');
-					
+
 					if (hasInputEvents) {
 						result.vulnerabilities.push({
 							type: 'input-event-handler',
@@ -353,7 +353,7 @@ on checkXSS(tab_ref)
 						});
 					}
 				});
-				
+
 				// Safety checks - we're not injecting any real payloads to avoid harming the site
 				if (result.vulnerabilities.length === 0) {
 					result.vulnerabilities.push({
@@ -362,12 +362,12 @@ on checkXSS(tab_ref)
 						severity: 'info'
 					});
 				}
-				
+
 				return JSON.stringify(result);
 			})();
 		" in tab_ref
 	end tell
-	
+
 	return "\"xssChecks\": " & xss_js
 end checkXSS
 
@@ -382,29 +382,29 @@ on checkCookies(tab_ref, verbose_mode)
 					secureCookies: 0,
 					thirdPartyCookies: 0
 				};
-				
+
 				// We can't access HttpOnly cookies via JS, so we'll note that
 				result.notes = [\"HTTP-only cookies can't be detected via JavaScript\"];
-				
+
 				// For demo purposes, we'll simulate finding some insecure cookies
 				// In a real implementation, you would use Safari's document.cookie to analyze accessible cookies
-				
+
 				const cookieString = document.cookie;
 				const cookies = cookieString.split(';').map(c => c.trim());
-				
+
 				let hostname = window.location.hostname;
 				cookies.forEach(cookie => {
 					if (!cookie) return;
-					
+
 					const parts = cookie.split('=');
 					const name = parts[0];
-					
+
 					// Check for secure flag in cookie name (this is just a simulation)
 					// Real analysis would require checking headers which JS can't do
-					const seemsSecure = name.toLowerCase().includes('secure') || 
+					const seemsSecure = name.toLowerCase().includes('secure') ||
 										name.toLowerCase().includes('token') ||
 										name.toLowerCase().includes('auth');
-					
+
 					if (seemsSecure) {
 						result.secureCookies++;
 					} else {
@@ -415,28 +415,28 @@ on checkCookies(tab_ref, verbose_mode)
 						});
 					}
 				});
-				
+
 				// Add some recommendations
 				result.recommendations = [];
-				
+
 				if (result.insecureCookies.length > 0) {
 					result.recommendations.push({
 						severity: 'medium',
 						message: 'Some cookies appear to be missing security flags (HttpOnly, Secure, SameSite)'
 					});
 				}
-				
+
 				// Add recommendation for using modern cookie settings
 				result.recommendations.push({
 					severity: 'info',
 					message: 'For sensitive cookies, use HttpOnly, Secure flags and SameSite=Strict attribute'
 				});
-				
+
 				return JSON.stringify(result);
 			})();
 		" in tab_ref
 	end tell
-	
+
 	return "\"cookieSecurity\": " & cookie_js
 end checkCookies
 

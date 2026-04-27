@@ -1,5 +1,5 @@
 ---
-title: 'Script Editor: Save Document'
+title: "Script Editor: Save Document"
 category: 13_developer
 id: script_editor_save_document
 description: >-
@@ -41,20 +41,20 @@ on saveScriptEditorDocument(savePath, saveFormat, stayOpen)
   if savePath is missing value or savePath is "" then
     return "error: Save path is required."
   end if
-  
+
   -- Set default format if not specified
   if saveFormat is missing value or saveFormat is "" then
     set saveFormat to "script"
   end if
-  
+
   -- Convert saveFormat to proper class value
   set formatClass to my getFileFormatClass(saveFormat)
-  
+
   -- Handle stay open flag (for applications) if provided
   if stayOpen is missing value then
     set stayOpen to false
   end if
-  
+
   tell application "Script Editor"
     try
       -- Check if Script Editor is running and has documents open
@@ -64,26 +64,26 @@ on saveScriptEditorDocument(savePath, saveFormat, stayOpen)
       if (count of documents) is 0 then
         return "Error: No documents are open in Script Editor."
       end if
-      
+
       -- Reference to the frontmost document
       set scriptDoc to front document
       set docName to name of scriptDoc
-      
+
       -- Make sure the document is compiled before saving
       if not compiled of scriptDoc then
         compile scriptDoc
       end if
-      
+
       -- Ensure we have a proper file path
       -- If path is not absolute, interpret as relative to Desktop
       if character 1 of savePath is not "/" and savePath does not contain ":" then
         set desktopPath to POSIX path of (path to desktop)
         set savePath to desktopPath & "/" & savePath
       end if
-      
+
       -- Create a file reference
       set saveFile to savePath
-      
+
       -- Save the document in the requested format
       if formatClass is application then
         -- Application format with stay-open flag
@@ -92,13 +92,13 @@ on saveScriptEditorDocument(savePath, saveFormat, stayOpen)
         -- Other formats don't use the stay-open flag
         save scriptDoc in saveFile as formatClass
       end if
-      
+
       -- Get the final path of the saved file
       set savedPath to savePath
       if path of scriptDoc is not missing value then
         set savedPath to POSIX path of (path of scriptDoc as text)
       end if
-      
+
       return "Successfully saved document '" & docName & "'" & return & ¬
         "Format: " & saveFormat & return & ¬
         "Path: " & savedPath & return & ¬
@@ -157,7 +157,8 @@ This script provides functionality to save Script Editor documents in various fo
 The "stay open" parameter is only relevant for application formats and determines whether the application continues running after executing its initial code.
 
 When creating applications, consider:
+
 - Setting "stay open" to true for scripts that need to respond to ongoing events
 - Setting "stay open" to false for scripts that perform a task and then exit
 - Adding proper quit and idle handlers for stay-open applications
-END_TIP
+  END_TIP

@@ -1,5 +1,5 @@
 ---
-title: 'Core: Stay-Open Applet Handler ''on quit'''
+title: "Core: Stay-Open Applet Handler 'on quit'"
 category: 02_as_core
 id: core_handler_on_quit
 description: >-
@@ -48,7 +48,7 @@ on quit
   -- Simulate saving data or cleanup
   set dataToSave to "Data has been processed and saved."
   log "Clean up complete. Final data state: " & dataToSave
-  
+
   -- Display a dialog (optional, mainly for demonstration)
   -- In a real applet, you might write to a file or log silently.
   try
@@ -56,7 +56,7 @@ on quit
   on error number -1712 -- dialog timed out
     log "Quit dialog timed out."
   end try
-  
+
   continue quit -- THIS IS ESSENTIAL to allow the applet to actually quit.
 end quit
 
@@ -66,4 +66,5 @@ end quit
 -- 3. Quit the applet (e.g., from its Dock icon, or Cmd-Q if it's frontmost).
 -- 4. Check the Script Editor log for messages from `on run` and `on quit`.
 ```
-END_TIP 
+
+END_TIP

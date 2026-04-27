@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: time to GMT Command'
+title: "StandardAdditions: time to GMT Command"
 category: 02_as_core
 id: osax_time_to_gmt
 description: >-
@@ -27,4 +27,5 @@ set gmtOffsetInHours to gmtOffsetInSeconds / (60 * 60)
 
 return "Offset from GMT: " & gmtOffsetInSeconds & " seconds (" & gmtOffsetInHours & " hours)."
 ```
-END_TIP 
+
+END_TIP

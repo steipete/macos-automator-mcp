@@ -30,122 +30,122 @@ The functions can be used to read from and write to form fields, checkboxes, sli
 ```javascript
 // Get the value of a UI element
 function getElementValue(appName, target, wait) {
-    try {
-        // Activate the application
-        const app = Application(appName);
-        app.activate();
-        delay(wait);
-        
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Find the target element based on provided criteria
-        const element = findUIElement(process, target);
-        
-        if (!element) {
-            return {
-                success: false,
-                error: "Target element not found"
-            };
-        }
-        
-        // Get the value of the element
-        let value = null;
-        
-        // Different element types store their values differently
-        if (element.value !== undefined) {
-            value = element.value();
-        } else if (element.staticText && element.staticText.length > 0) {
-            value = element.staticText[0].value();
-        } else if (element.name !== undefined) {
-            value = element.name();
-        } else if (element.title !== undefined) {
-            value = element.title();
-        }
-        
-        return {
-            success: true,
-            value: value,
-            message: `Retrieved value from element in ${appName}`
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error getting element value: ${error.message}`
-        };
+  try {
+    // Activate the application
+    const app = Application(appName);
+    app.activate();
+    delay(wait);
+
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
     }
+
+    // Find the target element based on provided criteria
+    const element = findUIElement(process, target);
+
+    if (!element) {
+      return {
+        success: false,
+        error: "Target element not found",
+      };
+    }
+
+    // Get the value of the element
+    let value = null;
+
+    // Different element types store their values differently
+    if (element.value !== undefined) {
+      value = element.value();
+    } else if (element.staticText && element.staticText.length > 0) {
+      value = element.staticText[0].value();
+    } else if (element.name !== undefined) {
+      value = element.name();
+    } else if (element.title !== undefined) {
+      value = element.title();
+    }
+
+    return {
+      success: true,
+      value: value,
+      message: `Retrieved value from element in ${appName}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error getting element value: ${error.message}`,
+    };
+  }
 }
 
 // Set the value of a UI element
 function setElementValue(appName, target, value, wait) {
-    try {
-        if (value === undefined) {
-            return {
-                success: false,
-                error: "Value parameter is required"
-            };
-        }
-        
-        // Activate the application
-        const app = Application(appName);
-        app.activate();
-        delay(wait);
-        
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Find the target element based on provided criteria
-        const element = findUIElement(process, target);
-        
-        if (!element) {
-            return {
-                success: false,
-                error: "Target element not found"
-            };
-        }
-        
-        // Set the value of the element
-        if (element.value !== undefined) {
-            element.value.set(value);
-        } else {
-            // Try to set the element's value by selecting all text and typing
-            element.click();
-            delay(0.2);
-            
-            // Select all existing text (Cmd+A)
-            systemEvents.keystroke("a", {using: "command down"});
-            delay(0.2);
-            
-            // Type the new value
-            systemEvents.keystroke(value);
-        }
-        
-        return {
-            success: true,
-            message: `Set value of element in ${appName}`
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error setting element value: ${error.message}`
-        };
+  try {
+    if (value === undefined) {
+      return {
+        success: false,
+        error: "Value parameter is required",
+      };
     }
+
+    // Activate the application
+    const app = Application(appName);
+    app.activate();
+    delay(wait);
+
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
+    }
+
+    // Find the target element based on provided criteria
+    const element = findUIElement(process, target);
+
+    if (!element) {
+      return {
+        success: false,
+        error: "Target element not found",
+      };
+    }
+
+    // Set the value of the element
+    if (element.value !== undefined) {
+      element.value.set(value);
+    } else {
+      // Try to set the element's value by selecting all text and typing
+      element.click();
+      delay(0.2);
+
+      // Select all existing text (Cmd+A)
+      systemEvents.keystroke("a", { using: "command down" });
+      delay(0.2);
+
+      // Type the new value
+      systemEvents.keystroke(value);
+    }
+
+    return {
+      success: true,
+      message: `Set value of element in ${appName}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error setting element value: ${error.message}`,
+    };
+  }
 }
 ```
 
@@ -154,12 +154,14 @@ function setElementValue(appName, target, value, wait) {
 When using with MCP, you can provide these parameters:
 
 ### For getValue action:
+
 - `action`: Must be "getValue"
 - `appName`: The name of the application to target
 - `target`: Object specifying the element to get the value from (see Target Specification in the Base documentation)
 - `wait`: Seconds to wait after activating the application (default: 1)
 
 ### For setValue action:
+
 - `action`: Must be "setValue"
 - `appName`: The name of the application to target
 - `target`: Object specifying the element to set the value for

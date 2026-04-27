@@ -70,12 +70,12 @@ end logoutUser
 on scheduleSleep(minutesToWait)
   set secondsToWait to minutesToWait * 60
   set timeToSleep to secondsToWait / 60
-  
+
   display notification "System will sleep in " & minutesToWait & " minutes" with title "Sleep Scheduled"
-  
+
   delay secondsToWait
   sleepSystem()
-  
+
   return "Sleep scheduled after " & minutesToWait & " minutes"
 end scheduleSleep
 
@@ -83,11 +83,11 @@ end scheduleSleep
 on preventSleep(durationMinutes)
   -- Uses caffeinate command-line tool to prevent sleep
   set durationSeconds to durationMinutes * 60
-  
+
   do shell script "caffeinate -d -t " & durationSeconds & " &"
-  
+
   display notification "System will stay awake for " & durationMinutes & " minutes" with title "Sleep Prevention Active"
-  
+
   return "System sleep prevented for " & durationMinutes & " minutes"
 end preventSleep
 
@@ -102,7 +102,7 @@ on configureSleepSettings(displaySleepMinutes, systemSleepMinutes, harddiskSleep
   try
     -- Requires admin privileges - will prompt for password
     do shell script "pmset -a displaysleep " & displaySleepMinutes & " sleep " & systemSleepMinutes & " disksleep " & harddiskSleepMinutes with administrator privileges
-    
+
     return "Sleep settings configured: Display: " & displaySleepMinutes & "m, System: " & systemSleepMinutes & "m, Hard Disk: " & harddiskSleepMinutes & "m"
   on error errMsg
     return "Error configuring sleep settings: " & errMsg
@@ -120,14 +120,14 @@ on scheduleWake(hour, minute)
   try
     -- Convert to 24-hour format if needed
     set hour24 to hour
-    
+
     -- Format time as HH:MM (with leading zeros if needed)
     set hourStr to text -2 thru -1 of ("0" & hour24)
     set minuteStr to text -2 thru -1 of ("0" & minute)
-    
+
     -- Schedule wake with pmset (requires admin privileges)
     do shell script "pmset repeat wake MTWRFSU " & hourStr & ":" & minuteStr with administrator privileges
-    
+
     return "System wake scheduled for " & hourStr & ":" & minuteStr & " daily"
   on error errMsg
     return "Error scheduling wake: " & errMsg
@@ -167,14 +167,14 @@ end forceShutdown
 -- Example usage: Menu for common power operations
 on showPowerMenu()
   set powerOptions to {"Sleep Now", "Restart", "Shut Down", "Log Out", "Sleep in 30 Minutes", "Prevent Sleep for 60 Minutes", "Show Power Settings", "Cancel Scheduled Power Events", "Cancel"}
-  
+
   set selectedOption to choose from list powerOptions with prompt "Select Power Operation:" default items {"Sleep Now"}
-  
+
   if selectedOption is false then
     return "Operation cancelled"
   else
     set operation to item 1 of selectedOption
-    
+
     if operation is "Sleep Now" then
       return sleepSystem()
     else if operation is "Restart" then

@@ -1,5 +1,5 @@
 ---
-title: 'Electron Editors (VS Code): Get Active Editor Content via DevTools JS'
+title: "Electron Editors (VS Code): Get Active Editor Content via DevTools JS"
 category: 08_editors
 id: electron_vscode_get_editor_content_js
 description: >-
@@ -65,10 +65,10 @@ on getVSCodeEditorContent()
       -- key code 34 using {command down, option down} -- Optionally close DevTools
     end tell
   end tell
-  
+
   delay 0.2
   set clipboardContent to (the clipboard as text)
-  
+
   set text item delimiters to "%%SCRIPT_RESULT_START%%"
   set tempSplit to text items of clipboardContent
   if count of tempSplit > 1 then
@@ -88,4 +88,5 @@ end getVSCodeEditorContent
 
 return my getVSCodeEditorContent()
 ```
-END_TIP 
+
+END_TIP

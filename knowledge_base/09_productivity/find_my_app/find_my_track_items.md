@@ -48,16 +48,16 @@ on run argv
     -- Initialize parameters with default values
     set targetItemName to ""
     set shouldPlaySound to false
-    
+
     -- Parse command-line arguments
     if count of argv > 0 then
         set targetItemName to item 1 of argv
     end if
-    
+
     if count of argv > 1 then
         set shouldPlaySound to (item 2 of argv is "true" or item 2 of argv is "yes" or item 2 of argv is "1")
     end if
-    
+
     -- If no specific item is targeted, just list all items
     if targetItemName is "" then
         return listFindMyItems()
@@ -70,7 +70,7 @@ end run
 -- Main handler to list all items in Find My
 on listFindMyItems()
     set itemsList to {}
-    
+
     try
         -- Launch Find My app
         tell application "Find My"
@@ -78,7 +78,7 @@ on listFindMyItems()
             -- Give the app time to fully load
             delay 2
         end tell
-        
+
         -- Use UI scripting to interact with the app
         tell application "System Events"
             tell process "Find My"
@@ -86,12 +86,12 @@ on listFindMyItems()
                 repeat until (exists window 1)
                     delay 0.5
                 end repeat
-                
+
                 -- Switch to Items tab - this is typically the third tab in the toolbar
                 -- Note: UI element specifics might vary slightly across macOS versions
                 if exists toolbar 1 of window 1 then
                     set toolbarButtons to buttons of toolbar 1 of window 1
-                    
+
                     -- Look for the Items button - usually the 3rd button
                     if (count of toolbarButtons) ≥ 3 then
                         click item 3 of toolbarButtons
@@ -103,18 +103,18 @@ on listFindMyItems()
                 else
                     error "Toolbar not found in Find My app"
                 end if
-                
+
                 -- Look for the sidebar where items are listed
                 if exists group 1 of window 1 then
                     if exists scroll area 1 of group 1 of window 1 then
                         set sidebarItems to UI elements of scroll area 1 of group 1 of window 1
-                        
+
                         -- Extract item information
                         repeat with anItem in sidebarItems
                             try
                                 if exists static text 1 of anItem then
                                     set itemName to value of static text 1 of anItem
-                                    
+
                                     -- Try to get location (might not exist for all items)
                                     set itemLocation to "Unknown location"
                                     try
@@ -122,7 +122,7 @@ on listFindMyItems()
                                             set itemLocation to value of static text 2 of anItem
                                         end if
                                     end try
-                                    
+
                                     -- Add item to our list
                                     set end of itemsList to {name:itemName, location:itemLocation}
                                 end if
@@ -138,21 +138,21 @@ on listFindMyItems()
                 end if
             end tell
         end tell
-        
+
         -- Quit Find My app when done
         tell application "Find My" to quit
-        
+
         if (count of itemsList) is 0 then
             return {error:"No items found. Make sure you have items registered in Find My."}
         end if
-        
+
         return itemsList
     on error errMsg
         -- Ensure the app quits if there's an error
         try
             tell application "Find My" to quit
         end try
-        
+
         return {error:"Error retrieving items: " & errMsg}
     end try
 end listFindMyItems
@@ -166,7 +166,7 @@ on trackSpecificItem(targetItemName, shouldPlaySound)
             -- Give the app time to fully load
             delay 2
         end tell
-        
+
         -- Use UI scripting to interact with the app
         tell application "System Events"
             tell process "Find My"
@@ -174,11 +174,11 @@ on trackSpecificItem(targetItemName, shouldPlaySound)
                 repeat until (exists window 1)
                     delay 0.5
                 end repeat
-                
+
                 -- Switch to Items tab - third tab in the toolbar
                 if exists toolbar 1 of window 1 then
                     set toolbarButtons to buttons of toolbar 1 of window 1
-                    
+
                     -- Look for the Items button - usually the 3rd button
                     if (count of toolbarButtons) ≥ 3 then
                         click item 3 of toolbarButtons
@@ -190,30 +190,30 @@ on trackSpecificItem(targetItemName, shouldPlaySound)
                 else
                     error "Toolbar not found in Find My app"
                 end if
-                
+
                 -- Initialize result variables
                 set foundItem to false
                 set itemInfo to {}
-                
+
                 -- Look for the item in the sidebar
                 if exists group 1 of window 1 then
                     if exists scroll area 1 of group 1 of window 1 then
                         set sidebarItems to UI elements of scroll area 1 of group 1 of window 1
-                        
+
                         repeat with anItem in sidebarItems
                             try
                                 if exists static text 1 of anItem then
                                     set itemName to value of static text 1 of anItem
-                                    
+
                                     -- Check if this is our target item
                                     if itemName contains targetItemName then
                                         -- Click on the item to select it
                                         click anItem
                                         set foundItem to true
-                                        
+
                                         -- Wait for item details to load
                                         delay 1
-                                        
+
                                         -- Try to get location
                                         set itemLocation to "Unknown location"
                                         try
@@ -221,15 +221,15 @@ on trackSpecificItem(targetItemName, shouldPlaySound)
                                                 set itemLocation to value of static text 2 of anItem
                                             end if
                                         end try
-                                        
+
                                         set itemInfo to {name:itemName, location:itemLocation}
-                                        
+
                                         -- Play sound if requested
                                         if shouldPlaySound then
                                             set soundResult to playSound()
                                             set itemInfo to itemInfo & {sound:soundResult}
                                         end if
-                                        
+
                                         exit repeat
                                     end if
                                 end if
@@ -243,7 +243,7 @@ on trackSpecificItem(targetItemName, shouldPlaySound)
                 else
                     error "Sidebar not found in Find My app"
                 end if
-                
+
                 -- Handle item not found
                 if not foundItem then
                     tell application "Find My" to quit
@@ -251,17 +251,17 @@ on trackSpecificItem(targetItemName, shouldPlaySound)
                 end if
             end tell
         end tell
-        
+
         -- Quit Find My app when done
         tell application "Find My" to quit
-        
+
         return itemInfo
     on error errMsg
         -- Ensure the app quits if there's an error
         try
             tell application "Find My" to quit
         end try
-        
+
         return {error:"Error tracking item: " & errMsg}
     end try
 end trackSpecificItem
@@ -272,18 +272,18 @@ on playSound()
         tell application "System Events"
             tell process "Find My"
                 -- Look for the Play Sound button or menu item
-                
+
                 -- First check if there's a direct Play Sound button
                 if exists button "Play Sound" of window 1 then
                     click button "Play Sound" of window 1
                     return "Sound is playing on the item"
                 end if
-                
+
                 -- If not, check if there's an Actions menu with Play Sound option
                 if exists button "Actions" of window 1 then
                     click button "Actions" of window 1
                     delay 0.5
-                    
+
                     -- Try to find and click the Play Sound menu item
                     if exists menu item "Play Sound" of menu 1 of window 1 then
                         click menu item "Play Sound" of menu 1 of window 1
@@ -322,6 +322,7 @@ end playSound
 ## Error Handling
 
 The script includes comprehensive error handling to:
+
 - Ensure the Find My app is launched properly
 - Navigate to the correct tab for items
 - Handle cases where no items are found

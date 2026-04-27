@@ -26,7 +26,7 @@ parameters:
     default: Windows 11
   - name: operation
     type: string
-    description: 'The operation to perform (list, start, stop, suspend, status)'
+    description: "The operation to perform (list, start, stop, suspend, status)"
     required: false
     default: list
 category: 13_developer
@@ -45,13 +45,13 @@ on run {vmName, operation}
 	-- Set default values if parameters are not provided
 	if vmName is missing value then set vmName to "--MCP_INPUT:vmName"
 	if operation is missing value then set operation to "--MCP_INPUT:operation"
-	
+
 	-- Validate operation parameter
 	set validOperations to {"list", "start", "stop", "suspend", "status"}
 	if operation is not in validOperations then
 		return "Error: Invalid operation. Please use one of: " & validOperations as string
 	end if
-	
+
 	-- Main control flow based on the requested operation
 	try
 		if operation is "list" then
@@ -76,13 +76,13 @@ on listVirtualMachines()
 		tell application "Parallels Desktop"
 			set vmList to {}
 			set allVMs to every virtual machine
-			
+
 			repeat with currentVM in allVMs
 				set vmName to name of currentVM
 				set vmState to state of currentVM as string
 				set end of vmList to vmName & " (" & vmState & ")"
 			end repeat
-			
+
 			if length of vmList is 0 then
 				return "No virtual machines found."
 			else
@@ -116,7 +116,7 @@ on getVMStatus(vmName)
 	if not vmExists(vmName) then
 		return "Error: Virtual machine '" & vmName & "' does not exist."
 	end if
-	
+
 	try
 		tell application "Parallels Desktop"
 			set targetVM to virtual machine vmName
@@ -133,11 +133,11 @@ on startVM(vmName)
 	if not vmExists(vmName) then
 		return "Error: Virtual machine '" & vmName & "' does not exist."
 	end if
-	
+
 	try
 		tell application "Parallels Desktop"
 			set targetVM to virtual machine vmName
-			
+
 			-- Only start if not already running
 			if state of targetVM is not running then
 				start targetVM
@@ -156,11 +156,11 @@ on stopVM(vmName)
 	if not vmExists(vmName) then
 		return "Error: Virtual machine '" & vmName & "' does not exist."
 	end if
-	
+
 	try
 		tell application "Parallels Desktop"
 			set targetVM to virtual machine vmName
-			
+
 			-- Only stop if running
 			if state of targetVM is running then
 				-- Using force stop (equivalent to power off)
@@ -180,11 +180,11 @@ on suspendVM(vmName)
 	if not vmExists(vmName) then
 		return "Error: Virtual machine '" & vmName & "' does not exist."
 	end if
-	
+
 	try
 		tell application "Parallels Desktop"
 			set targetVM to virtual machine vmName
-			
+
 			-- Only suspend if running
 			if state of targetVM is running then
 				suspend targetVM
@@ -209,21 +209,25 @@ end suspendVM
 ## Usage Examples
 
 ### List all virtual machines
+
 ```applescript
 osascript -e 'run script "/path/to/script.scpt" with parameters {"", "list"}'
 ```
 
 ### Start a specific VM
+
 ```applescript
 osascript -e 'run script "/path/to/script.scpt" with parameters {"Windows 11", "start"}'
 ```
 
 ### Check VM status
+
 ```applescript
 osascript -e 'run script "/path/to/script.scpt" with parameters {"macOS VM", "status"}'
 ```
 
 ### Suspend a VM
+
 ```applescript
 osascript -e 'run script "/path/to/script.scpt" with parameters {"Ubuntu", "suspend"}'
 ```

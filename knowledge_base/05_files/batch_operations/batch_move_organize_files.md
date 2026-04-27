@@ -38,10 +38,10 @@ on run
 		-- Use file selection dialog for interactive mode
 		set fileList to chooseFiles()
 		set targetFolder to chooseFolder()
-		
+
 		-- Ask about date organization
 		set organizeByDate to button returned of (display dialog "Organize files by creation date?" buttons {"No", "Yes"} default button "Yes") is "Yes"
-		
+
 		return batchMove(fileList, targetFolder, organizeByDate)
 	on error errMsg
 		return "Error: " & errMsg
@@ -54,7 +54,7 @@ on processMCPParameters(inputParams)
 	set fileList to "--MCP_INPUT:fileList"
 	set targetFolder to "--MCP_INPUT:targetFolder"
 	set organizeByDate to "--MCP_INPUT:organizeByDate"
-	
+
 	-- Default values
 	if organizeByDate is "" then
 		set organizeByDate to false
@@ -65,16 +65,16 @@ on processMCPParameters(inputParams)
 			set organizeByDate to false
 		end try
 	end if
-	
+
 	-- Validate parameters
 	if fileList is "" or class of fileList is not list then
 		return "Error: File list is required and must be a list."
 	end if
-	
+
 	if targetFolder is "" then
 		return "Error: Target folder is required."
 	end if
-	
+
 	return batchMove(fileList, targetFolder, organizeByDate)
 end processMCPParameters
 
@@ -82,12 +82,12 @@ end processMCPParameters
 on chooseFiles()
 	set theFiles to {}
 	set dialogResult to (choose file with prompt "Select files to move:" with multiple selections allowed)
-	
+
 	-- Convert results to a list of POSIX paths
 	repeat with aFile in dialogResult
 		set end of theFiles to POSIX path of aFile
 	end repeat
-	
+
 	return theFiles
 end chooseFiles
 
@@ -100,24 +100,24 @@ end chooseFolder
 -- Move files to target folder, optionally organizing by creation date
 on batchMove(fileList, targetFolder, organizeByDate)
 	set movedFiles to {}
-	
+
 	repeat with filePath in fileList
 		set fullPath to filePath as string
 		set fileName to do shell script "basename " & quoted form of fullPath
-		
+
 		-- Determine destination path
 		if organizeByDate then
 			-- Get file creation date
 			set fileDate to do shell script "stat -f '%SB' -t '%Y-%m-%d' " & quoted form of fullPath
 			set dateFolder to targetFolder & "/" & fileDate
-			
+
 			-- Create date folder if it doesn't exist
 			do shell script "mkdir -p " & quoted form of dateFolder
 			set destPath to dateFolder & "/" & fileName
 		else
 			set destPath to targetFolder & "/" & fileName
 		end if
-		
+
 		-- Move the file
 		try
 			do shell script "mv " & quoted form of fullPath & " " & quoted form of destPath
@@ -126,7 +126,7 @@ on batchMove(fileList, targetFolder, organizeByDate)
 			log "Error moving " & fullPath & ": " & errMsg
 		end try
 	end repeat
-	
+
 	if organizeByDate then
 		return "Moved " & (count of movedFiles) & " files, organized by date"
 	else
@@ -144,18 +144,17 @@ end batchMove
 ## Example Usage
 
 ### Simple batch move
+
 ```json
 {
-  "fileList": [
-    "/Users/john/Downloads/file1.pdf",
-    "/Users/john/Downloads/file2.pdf"
-  ],
+  "fileList": ["/Users/john/Downloads/file1.pdf", "/Users/john/Downloads/file2.pdf"],
   "targetFolder": "/Users/john/Documents/PDFs",
   "organizeByDate": false
 }
 ```
 
 ### Organize photos by date
+
 ```json
 {
   "fileList": [
@@ -169,6 +168,7 @@ end batchMove
 ```
 
 ### Archive project files by date
+
 ```json
 {
   "fileList": [
@@ -184,11 +184,13 @@ end batchMove
 ## Date Organization
 
 When `organizeByDate` is enabled:
+
 - Files are organized into subfolders named by creation date (YYYY-MM-DD)
 - Folders are created automatically if they don't exist
 - Files created on the same day go into the same folder
 
 ### Example folder structure:
+
 ```
 /Target Folder/
 ├── 2024-01-15/
@@ -212,16 +214,19 @@ When `organizeByDate` is enabled:
 ## Features
 
 ### Automatic Folder Creation
+
 - Date folders are created automatically
 - No need to manually create folder structure
 - Uses YYYY-MM-DD format for consistent sorting
 
 ### File Preservation
+
 - Original filenames are preserved
 - Only the location changes, not the file itself
 - File attributes remain unchanged
 
 ### Error Handling
+
 - Failed moves are logged but don't stop the process
 - Returns count of successfully moved files
 - Original files remain if move fails

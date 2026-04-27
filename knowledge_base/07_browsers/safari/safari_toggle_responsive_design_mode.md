@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Toggle Responsive Design Mode'
+title: "Safari: Toggle Responsive Design Mode"
 category: 07_browsers
 id: safari_toggle_responsive_design_mode
 description: >-
@@ -45,15 +45,15 @@ on toggleResponsiveDesignMode(devicePreset)
   if not application "Safari" is running then
     return "error: Safari is not running."
   end if
-  
+
   tell application "Safari"
     if (count of windows) is 0 or (count of tabs of front window) is 0 then
       return "error: No tabs open in Safari."
     end if
-    
+
     activate
     delay 0.5
-    
+
     try
       tell application "System Events"
         tell process "Safari"
@@ -61,15 +61,15 @@ on toggleResponsiveDesignMode(devicePreset)
           if not (exists menu bar item "Develop" of menu bar 1) then
             return "error: Develop menu not enabled in Safari. Enable it in Safari > Preferences > Advanced."
           end if
-          
+
           -- Toggle the Responsive Design Mode
           click menu bar item "Develop" of menu bar 1
           delay 0.2
-          
+
           if devicePreset is missing value or devicePreset is "" then
             -- Simple toggle behavior
             click menu item "Enter Responsive Design Mode" of menu of menu bar item "Develop" of menu bar 1
-            
+
             -- Determine if we entered or exited responsive mode
             delay 1
             set exitMenuItem to exists of menu item "Exit Responsive Design Mode" of menu of menu bar item "Develop" of menu bar 1
@@ -84,11 +84,11 @@ on toggleResponsiveDesignMode(devicePreset)
               click menu item "Enter Responsive Design Mode" of menu of menu bar item "Develop" of menu bar 1
               delay 1
             end if
-            
+
             -- Now select the device preset
             -- We need to click the responsive icon in the toolbar
             set responsiveButtonFound to false
-            
+
             -- Try multiple ways to find the responsive design button
             try
               -- First try using the toolbar
@@ -102,13 +102,13 @@ on toggleResponsiveDesignMode(devicePreset)
                 end if
               end repeat
             end try
-            
+
             if not responsiveButtonFound then
               -- Use the Web Inspector UI
               tell window 1
                 -- Locate and click the responsive button in the toolbar
                 -- The exact UI element varies by Safari version, so we try multiple approaches
-                
+
                 -- Try to find the button by accessibility description
                 set responsiveButtons to buttons whose description contains "Responsive"
                 if (count of responsiveButtons) > 0 then
@@ -124,15 +124,15 @@ on toggleResponsiveDesignMode(devicePreset)
                 end if
               end tell
             end if
-            
+
             if responsiveButtonFound then
               delay 0.5
-              
+
               -- Try to select the specified device preset
               -- Look for a menu item that contains the device preset name (case insensitive)
               set deviceMenuItemFound to false
               set devicePresetLower to my toLowerCase(devicePreset)
-              
+
               repeat with menuItem in menu items of front menu
                 set menuItemNameLower to my toLowerCase(name of menuItem)
                 if menuItemNameLower contains devicePresetLower then
@@ -141,7 +141,7 @@ on toggleResponsiveDesignMode(devicePreset)
                   exit repeat
                 end if
               end repeat
-              
+
               if deviceMenuItemFound then
                 return "Successfully selected device preset: " & devicePreset
               else
@@ -164,18 +164,18 @@ on toLowerCase(sourceText)
   set lowercaseText to ""
   set upperChars to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   set lowerChars to "abcdefghijklmnopqrstuvwxyz"
-  
+
   repeat with i from 1 to length of sourceText
     set currentChar to character i of sourceText
     set charPos to offset of currentChar in upperChars
-    
+
     if charPos > 0 then
       set lowercaseText to lowercaseText & character charPos of lowerChars
     else
       set lowercaseText to lowercaseText & currentChar
     end if
   end repeat
-  
+
   return lowercaseText
 end toLowerCase
 

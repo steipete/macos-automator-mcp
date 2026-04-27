@@ -39,6 +39,7 @@ end if
 ```
 
 The `choose file` command supports several parameters:
+
 - `with prompt`: Customizes the dialog message
 - `of type`: Filters for specific file types
 - `default location`: Sets the initial directory

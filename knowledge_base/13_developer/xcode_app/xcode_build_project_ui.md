@@ -1,5 +1,5 @@
 ---
-title: 'Xcode: Build Project via UI Scripting'
+title: "Xcode: Build Project via UI Scripting"
 category: 13_developer
 id: xcode_build_project_ui
 description: Builds an Xcode project by simulating menu selections in the Xcode UI.
@@ -36,45 +36,45 @@ on buildXcodeProjectUI(waitTime)
       set waitTime to 120
     end try
   end if
-  
+
   tell application "Xcode"
     activate
     delay 1
   end tell
-  
+
   set buildResult to "Build result unknown"
-  
+
   try
     tell application "System Events"
       tell process "Xcode"
         -- Select Product menu
         click menu item "Product" of menu bar 1
         delay 0.5
-        
+
         -- Click Build menu item
         click menu item "Build" of menu "Product" of menu bar 1
-        
+
         -- Wait for build to complete (observe if build succeeded or failed)
         set startTime to current date
         set timeoutDate to startTime + waitTime
-        
+
         repeat
           delay 1
-          
+
           -- Check for build status notifications
           set buildSucceeded to false
           set buildFailed to false
-          
+
           -- Try to find build success notification
           try
             set buildSucceeded to exists (first UI element of UI element 1 of window 1 whose value of attribute "AXDescription" contains "Build Succeeded")
           end try
-          
+
           -- Try to find build failure notification
           try
             set buildFailed to exists (first UI element of UI element 1 of window 1 whose value of attribute "AXDescription" contains "Build Failed")
           end try
-          
+
           if buildSucceeded then
             set buildResult to "Build succeeded"
             exit repeat
@@ -82,7 +82,7 @@ on buildXcodeProjectUI(waitTime)
             set buildResult to "Build failed"
             exit repeat
           end if
-          
+
           -- Check if we've timed out
           if (current date) > timeoutDate then
             set buildResult to "Build timeout after " & waitTime & " seconds"
@@ -91,7 +91,7 @@ on buildXcodeProjectUI(waitTime)
         end repeat
       end tell
     end tell
-    
+
     return buildResult
   on error errMsg number errNum
     return "error (" & errNum & ") building Xcode project via UI: " & errMsg

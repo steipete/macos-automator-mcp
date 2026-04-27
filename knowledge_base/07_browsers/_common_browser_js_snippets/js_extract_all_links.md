@@ -1,5 +1,5 @@
 ---
-title: 'JS Snippet: Extract All Links from Page'
+title: "JS Snippet: Extract All Links from Page"
 category: 07_browsers
 id: js_extract_all_links
 description: JavaScript to find all <a> tags on a page and return their href attributes.
@@ -19,13 +19,14 @@ notes: >-
 ```javascript
 (() => {
   const links = [];
-  const all_a_tags = document.getElementsByTagName('a');
+  const all_a_tags = document.getElementsByTagName("a");
   for (let i = 0; i < all_a_tags.length; i++) {
     if (all_a_tags[i].href) {
       links.push(all_a_tags[i].href);
     }
   }
-  return links.join('\\n'); // Join with newlines for AppleScript to parse easily
+  return links.join("\\n"); // Join with newlines for AppleScript to parse easily
 })();
 ```
-END_TIP 
+
+END_TIP

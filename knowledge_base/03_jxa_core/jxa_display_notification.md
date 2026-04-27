@@ -26,7 +26,7 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Display a basic notification
-app.displayNotification('This is a notification message');
+app.displayNotification("This is a notification message");
 ```
 
 ## Advanced Notification with Title, Subtitle, and Sound
@@ -39,10 +39,10 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Display a notification with additional parameters
-app.displayNotification('Task completed successfully!', {
-    withTitle: 'Automation Script',
-    subtitle: 'The process is complete',
-    soundName: 'Ping' // Other options: 'Basso', 'Blow', 'Bottle', 'Frog', 'Funk', 'Glass', 'Hero', 'Morse', 'Pop', 'Purr', 'Sosumi', 'Submarine', 'Tink'
+app.displayNotification("Task completed successfully!", {
+  withTitle: "Automation Script",
+  subtitle: "The process is complete",
+  soundName: "Ping", // Other options: 'Basso', 'Blow', 'Bottle', 'Frog', 'Funk', 'Glass', 'Hero', 'Morse', 'Pop', 'Purr', 'Sosumi', 'Submarine', 'Tink'
 });
 ```
 
@@ -55,9 +55,9 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Display a notification that will automatically disappear
-app.displayNotification('This message will disappear shortly', {
-    withTitle: 'Auto-dismiss Notification'
-    // No sound to minimize distraction
+app.displayNotification("This message will disappear shortly", {
+  withTitle: "Auto-dismiss Notification",
+  // No sound to minimize distraction
 });
 ```
 
@@ -72,11 +72,11 @@ app.displayNotification('This message will disappear shortly', {
 
 ```javascript
 function performLongTask() {
-    // Simulate a long-running task
-    for (let i = 0; i < 1000000; i++) {
-        // Processing...
-    }
-    return "Completed successfully";
+  // Simulate a long-running task
+  for (let i = 0; i < 1000000; i++) {
+    // Processing...
+  }
+  return "Completed successfully";
 }
 
 const app = Application.currentApplication();
@@ -85,9 +85,9 @@ app.includeStandardAdditions = true;
 // Perform a task and notify upon completion
 const result = performLongTask();
 app.displayNotification(result, {
-    withTitle: 'Task Status',
-    subtitle: new Date().toLocaleTimeString(),
-    soundName: 'Ping'
+  withTitle: "Task Status",
+  subtitle: new Date().toLocaleTimeString(),
+  soundName: "Ping",
 });
 ```
 

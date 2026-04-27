@@ -1,5 +1,5 @@
 ---
-title: 'Calculator: Switch Calculator View'
+title: "Calculator: Switch Calculator View"
 category: 13_developer
 id: calculator_switch_view
 description: >-
@@ -12,7 +12,7 @@ keywords:
   - programmer calculator
   - basic calculator
 language: applescript
-argumentsPrompt: 'Enter the calculator view to switch to (Basic, Scientific, or Programmer)'
+argumentsPrompt: "Enter the calculator view to switch to (Basic, Scientific, or Programmer)"
 notes: >-
   Changes the Calculator app's view mode. Valid options are 'Basic',
   'Scientific', or 'Programmer'.
@@ -25,15 +25,15 @@ on run {viewMode}
       if viewMode is "" or viewMode is missing value then
         set viewMode to "--MCP_INPUT:viewMode"
       end if
-      
+
       -- Normalize the input
       set viewMode to do shell script "echo " & quoted form of viewMode & " | tr '[:upper:]' '[:lower:]'"
-      
+
       activate
-      
+
       -- Give Calculator time to launch
       delay 1
-      
+
       tell application "System Events"
         tell process "Calculator"
           -- Determine which menu item to click based on the view mode
@@ -51,11 +51,12 @@ on run {viewMode}
           end if
         end tell
       end tell
-      
+
     on error errMsg number errNum
       return "Error (" & errNum & "): Failed to switch calculator view - " & errMsg
     end try
   end tell
 end run
 ```
+
 END_TIP

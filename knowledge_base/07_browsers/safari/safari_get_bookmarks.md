@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Get Bookmarks'
+title: "Safari: Get Bookmarks"
 category: 07_browsers
 id: safari_get_bookmarks
 description: Retrieves bookmarks from Safari and returns them in a structured format.
@@ -40,17 +40,17 @@ This script retrieves bookmarks from Safari and returns them in a structured JSO
 
 on getSafariBookmarks(folderName)
   set bookmarksDbPath to (POSIX path of (path to home folder)) & "Library/Safari/Bookmarks.plist"
-  
+
   -- Check if the database exists
   set dbExists to do shell script "[ -f " & quoted form of bookmarksDbPath & " ] && echo 'yes' || echo 'no'"
-  
+
   if dbExists is "no" then
     return "error: Safari bookmarks database not found. Make sure Safari has been run at least once."
   end if
-  
+
   -- Use plutil to convert plist to JSON and then parse it
   set jsonData to do shell script "plutil -convert json -o - " & quoted form of bookmarksDbPath
-  
+
   -- Use shell script with Python to extract bookmarks from JSON
   set pythonScript to "
 import sys
@@ -63,17 +63,17 @@ data = json.loads(sys.stdin.read())
 # Function to process bookmark items recursively
 def process_bookmark_items(items, folder_filter=None, current_folder=''):
     result = []
-    
+
     for item in items:
         if item.get('WebBookmarkType') == 'WebBookmarkTypeList':
             # This is a folder
             folder_name = item.get('Title', 'Untitled Folder')
             folder_path = current_folder + '/' + folder_name if current_folder else folder_name
-            
+
             # Process children of this folder
             children = item.get('Children', [])
             child_results = process_bookmark_items(children, folder_filter, folder_path)
-            
+
             # Add folder entry with its children
             if child_results and (folder_filter is None or folder_filter.lower() in folder_path.lower()):
                 result.append({
@@ -86,7 +86,7 @@ def process_bookmark_items(items, folder_filter=None, current_folder=''):
             # This is a bookmark
             url = item.get('URLString', '')
             title = item.get('URIDictionary', {}).get('title', 'Untitled')
-            
+
             if url and (folder_filter is None or folder_filter.lower() in current_folder.lower()):
                 result.append({
                     'type': 'bookmark',
@@ -94,7 +94,7 @@ def process_bookmark_items(items, folder_filter=None, current_folder=''):
                     'url': url,
                     'path': current_folder
                 })
-    
+
     return result
 
 # Main processing
@@ -114,7 +114,7 @@ try:
                         'url': url,
                         'path': 'Reading List'
                     })
-    
+
     # Process bookmark bar and other bookmarks
     bookmark_items = []
     for child in data.get('Children', []):
@@ -128,12 +128,12 @@ try:
                     'path': folder_name,
                     'items': items
                 })
-    
+
     # Combine everything
     result = {
         'bookmarks': bookmark_items
     }
-    
+
     # Add reading list if it exists and either no folder filter or it matches Reading List
     if reading_list_items and (not '" & folderName & "' or 'reading list'.lower() in '" & folderName & "'.lower()):
         result['reading_list'] = {
@@ -142,22 +142,22 @@ try:
             'path': 'Reading List',
             'items': reading_list_items
         }
-    
+
     # Convert to JSON and print
     print(json.dumps(result, indent=2))
 except Exception as e:
     print(json.dumps({'error': str(e)}))
 "
-  
+
   -- Execute Python script
   set result to do shell script "python3 -c " & quoted form of pythonScript & " <<< " & quoted form of jsonData
-  
+
   -- Handle potential errors from the Python script
   if result contains "\"error\":" then
     set errorDict to my parseJSON(result)
     return "error: Failed to extract bookmarks - " & (errorDict's error)
   end if
-  
+
   return result
 end getSafariBookmarks
 

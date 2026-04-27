@@ -1,12 +1,12 @@
 ---
-title: 'Core: Boolean Data Type'
+title: "Core: Boolean Data Type"
 category: 02_as_core
 id: core_datatype_boolean
 description: Working with boolean (true/false) values in AppleScript.
 keywords:
   - boolean
-  - 'true'
-  - 'false'
+  - "true"
+  - "false"
   - data type
   - logical
   - condition
@@ -50,4 +50,5 @@ set boolAsInteger to false as integer -- 0 (true is 1)
 
 return "Message: " & message & "\nIs Greater: " & isGreater & "\nBoth True: " & bothTrue & "\nNot Failed: " & isNotFailed & "\nAs String: " & boolAsString & "\nAs Integer: " & boolAsInteger
 ```
-END_TIP 
+
+END_TIP

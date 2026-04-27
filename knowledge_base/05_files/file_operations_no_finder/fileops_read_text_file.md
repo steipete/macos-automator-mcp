@@ -1,5 +1,5 @@
 ---
-title: 'File Ops (No Finder): Read Text File Content'
+title: "File Ops (No Finder): Read Text File Content"
 category: 05_files
 id: fileops_read_text_file
 description: >-
@@ -35,4 +35,5 @@ end readFileContent
 
 return my readFileContent("--MCP_INPUT:filePath")
 ```
-END_TIP 
+
+END_TIP

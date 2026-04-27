@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Configure Touch Indicators'
+title: "iOS Simulator: Configure Touch Indicators"
 category: 13_developer
 id: ios_simulator_touch_indicators
 description: Configures touch indicators and visual feedback in iOS Simulator.
@@ -39,14 +39,14 @@ on configureTouchIndicators(enableTouchIndicators, enableEdgeGestures, showCoord
   if enableTouchIndicators is missing value or enableTouchIndicators is "" then
     return "error: Touch indicator setting not provided. Specify 'true' to enable touch indicators or 'false' to disable them."
   end if
-  
+
   -- Normalize settings
   if enableTouchIndicators is "true" or enableTouchIndicators is "yes" or enableTouchIndicators is "1" then
     set enableTouchIndicators to true
   else
     set enableTouchIndicators to false
   end if
-  
+
   -- Default edge gestures to match touch indicators if not specified
   if enableEdgeGestures is missing value or enableEdgeGestures is "" then
     set enableEdgeGestures to enableTouchIndicators
@@ -55,7 +55,7 @@ on configureTouchIndicators(enableTouchIndicators, enableEdgeGestures, showCoord
   else
     set enableEdgeGestures to false
   end if
-  
+
   -- Default coordinate display to false if not specified
   if showCoordinates is missing value or showCoordinates is "" then
     set showCoordinates to false
@@ -64,7 +64,7 @@ on configureTouchIndicators(enableTouchIndicators, enableEdgeGestures, showCoord
   else
     set showCoordinates to false
   end if
-  
+
   try
     -- Close simulator before changing settings
     set simulatorRunning to false
@@ -73,20 +73,20 @@ on configureTouchIndicators(enableTouchIndicators, enableEdgeGestures, showCoord
         set simulatorRunning to true
       end if
     end tell
-    
+
     -- Set the single touch indicator preference
     do shell script "defaults write com.apple.iphonesimulator ShowSingleTouches -bool " & enableTouchIndicators
-    
+
     -- Set the edge gestures preference
     do shell script "defaults write com.apple.iphonesimulator ShowEdgeGestures -bool " & enableEdgeGestures
-    
+
     -- Set the coordinate display preference
     if showCoordinates then
       do shell script "defaults write com.apple.iphonesimulator ShowPointCoordinates -bool true"
     else
       do shell script "defaults delete com.apple.iphonesimulator ShowPointCoordinates 2>/dev/null || true"
     end if
-    
+
     -- If simulator was running, restart it to apply settings
     if simulatorRunning then
       tell application "Simulator" to quit
@@ -94,18 +94,18 @@ on configureTouchIndicators(enableTouchIndicators, enableEdgeGestures, showCoord
       tell application "Simulator" to activate
       delay 3
     end if
-    
+
     -- Build result message
     set resultMessage to "Successfully " & (if enableTouchIndicators then "enabled" else "disabled") & " touch indicators"
-    
+
     if enableEdgeGestures is not equal to enableTouchIndicators then
       set resultMessage to resultMessage & " and " & (if enableEdgeGestures then "enabled" else "disabled") & " edge gesture indicators"
     end if
-    
+
     if showCoordinates then
       set resultMessage to resultMessage & " with coordinate display enabled"
     end if
-    
+
     set resultMessage to resultMessage & ".
 
 Current simulator touch visualization settings:
@@ -119,7 +119,7 @@ Touch indicators are particularly useful for:
 - Recording tutorial videos
 - Demonstrating app interactions
 - Precise positioning of UI elements"
-    
+
     return resultMessage
   on error errMsg number errNum
     return "error (" & errNum & ") configuring touch indicators: " & errMsg

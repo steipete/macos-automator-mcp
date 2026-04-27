@@ -1,8 +1,8 @@
 ---
-title: 'Core: ID Reference Form'
+title: "Core: ID Reference Form"
 category: 02_as_core
 id: core_reference_id
-description: 'Accessing objects by their unique ID (e.g., process ID, window ID).'
+description: "Accessing objects by their unique ID (e.g., process ID, window ID)."
 keywords:
   - reference form
   - id
@@ -55,7 +55,7 @@ tell application "System Events"
       if (count of windows) > 0 then
         set firstWindow to window 1
         set firstWindowID to id of firstWindow
-        
+
         set windowByID to window id firstWindowID
         set windowOutput to "Title of window with ID " & firstWindowID & ": " & (name of windowByID)
       else
@@ -70,4 +70,5 @@ end tell
 
 return "Process by ID: " & processOutput & "\nWindow by ID: " & windowOutput
 ```
-END_TIP 
+
+END_TIP

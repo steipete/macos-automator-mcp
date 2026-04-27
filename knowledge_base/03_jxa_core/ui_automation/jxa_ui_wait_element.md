@@ -29,54 +29,54 @@ The function polls for a UI element to appear within a specified timeout period.
 ```javascript
 // Wait for a UI element to appear
 function waitForElement(appName, target, timeout) {
-    try {
-        // Activate the application
-        const app = Application(appName);
-        app.activate();
-        
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Convert timeout to seconds
-        const timeoutSeconds = typeof timeout === 'number' ? timeout : 10;
-        const startTime = new Date().getTime();
-        const endTime = startTime + (timeoutSeconds * 1000);
-        
-        // Poll for the element until it appears or timeout
-        let element = null;
-        while (new Date().getTime() < endTime) {
-            element = findUIElement(process, target);
-            
-            if (element) {
-                // Element found
-                return {
-                    success: true,
-                    message: `Element found after ${((new Date().getTime() - startTime) / 1000).toFixed(1)} seconds`
-                };
-            }
-            
-            // Wait before checking again
-            delay(0.5);
-        }
-        
-        return {
-            success: false,
-            error: `Element not found within ${timeoutSeconds} seconds`
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error waiting for element: ${error.message}`
-        };
+  try {
+    // Activate the application
+    const app = Application(appName);
+    app.activate();
+
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
     }
+
+    // Convert timeout to seconds
+    const timeoutSeconds = typeof timeout === "number" ? timeout : 10;
+    const startTime = new Date().getTime();
+    const endTime = startTime + timeoutSeconds * 1000;
+
+    // Poll for the element until it appears or timeout
+    let element = null;
+    while (new Date().getTime() < endTime) {
+      element = findUIElement(process, target);
+
+      if (element) {
+        // Element found
+        return {
+          success: true,
+          message: `Element found after ${((new Date().getTime() - startTime) / 1000).toFixed(1)} seconds`,
+        };
+      }
+
+      // Wait before checking again
+      delay(0.5);
+    }
+
+    return {
+      success: false,
+      error: `Element not found within ${timeoutSeconds} seconds`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error waiting for element: ${error.message}`,
+    };
+  }
 }
 ```
 

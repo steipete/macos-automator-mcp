@@ -1,5 +1,5 @@
 ---
-title: 'JXA: System Events and UI Control'
+title: "JXA: System Events and UI Control"
 category: 03_jxa_core
 id: jxa_system_events_ui_control
 description: >-
@@ -39,7 +39,7 @@ For all System Events operations, you need to grant accessibility permissions to
 Basic setup for System Events:
 
 ```javascript
-const systemEvents = Application('System Events');
+const systemEvents = Application("System Events");
 
 // Helper function to activate an app before sending input
 function activateApp(appName) {

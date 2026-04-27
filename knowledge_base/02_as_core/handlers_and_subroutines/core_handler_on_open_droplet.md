@@ -1,5 +1,5 @@
 ---
-title: 'Core: Droplet Handler ''on open'''
+title: "Core: Droplet Handler 'on open'"
 category: 02_as_core
 id: core_handler_on_open_droplet
 description: >-
@@ -32,7 +32,7 @@ on open listOfDroppedItems
     repeat with anItem in listOfDroppedItems
       set end of outputPaths to POSIX path of anItem
     end repeat
-    
+
     if outputPaths is {} then
       display dialog "No valid items were processed."
     else
@@ -41,10 +41,11 @@ on open listOfDroppedItems
       set AppleScript's text item delimiters to ""
       display dialog displayMessage
     end if
-    
+
   on error errMsg number errNum
     display dialog "Error processing dropped items (" & errNum & "):\\n" & errMsg
   end try
 end open
 ```
-END_TIP 
+
+END_TIP

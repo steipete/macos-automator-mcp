@@ -1,5 +1,5 @@
 ---
-title: 'Mail: Export Email Contacts'
+title: "Mail: Export Email Contacts"
 category: 09_productivity
 id: mail_export_contacts
 description: Extracts email addresses from selected messages and exports them to a file
@@ -45,7 +45,7 @@ on extractEmailAddress(fullAddress)
     -- Extract email from formats like "Name <email@example.com>" or just "email@example.com"
     set AppleScript's text item delimiters to "<"
     set emailParts to text items of fullAddress
-    
+
     if (count of emailParts) > 1 then
       -- Format has angle brackets
       set emailWithBracket to item 2 of emailParts
@@ -55,12 +55,12 @@ on extractEmailAddress(fullAddress)
       -- Simple email format without brackets
       set emailAddress to fullAddress
     end if
-    
+
     -- Clean up the address (remove any remaining whitespace)
     set AppleScript's text item delimiters to ""
     set emailAddress to emailAddress as string
     set emailAddress to do shell script "echo " & quoted form of emailAddress & " | tr -d '[:space:]'"
-    
+
     return emailAddress
   on error
     return ""
@@ -71,7 +71,7 @@ on extractDomain(emailAddress)
   try
     set AppleScript's text item delimiters to "@"
     set emailParts to text items of emailAddress
-    
+
     if (count of emailParts) > 1 then
       return item 2 of emailParts
     else
@@ -84,7 +84,7 @@ end extractDomain
 
 on exportContacts(exportFilePath)
   set outputPath to my getDefaultExportPath(exportFilePath)
-  
+
   tell application "Mail"
     try
       -- Get selected messages
@@ -92,14 +92,14 @@ on exportContacts(exportFilePath)
       if (count of selectedMessages) is 0 then
         return "Error: No messages selected. Please select messages in Mail.app before running this script."
       end if
-      
+
       -- Create containers for the addresses
       set allAddresses to {}
       set fromAddresses to {}
       set toAddresses to {}
       set ccAddresses to {}
       set domainCounts to {}
-      
+
       -- Process selected messages
       repeat with thisMessage in selectedMessages
         -- Extract From address
@@ -108,7 +108,7 @@ on exportContacts(exportFilePath)
           copy fromAddy to end of fromAddresses
           copy fromAddy to end of allAddresses
         end if
-        
+
         -- Extract To addresses (may be multiple)
         set toList to to recipient of thisMessage
         repeat with recipient in toList
@@ -118,7 +118,7 @@ on exportContacts(exportFilePath)
             copy toAddy to end of allAddresses
           end if
         end repeat
-        
+
         -- Extract CC addresses if present
         set ccList to cc recipient of thisMessage
         repeat with recipient in ccList
@@ -129,17 +129,17 @@ on exportContacts(exportFilePath)
           end if
         end repeat
       end repeat
-      
+
       -- Count unique addresses
       set uniqueAddresses to {}
       repeat with address in allAddresses
         if address is not in uniqueAddresses then
           copy address to end of uniqueAddresses
-          
+
           -- Count addresses by domain
           set domain to my extractDomain(address)
           set domainFound to false
-          
+
           repeat with i from 1 to count of domainCounts
             set thisDomainInfo to item i of domainCounts
             if domain is equal to domain of thisDomainInfo then
@@ -149,19 +149,19 @@ on exportContacts(exportFilePath)
               exit repeat
             end if
           end repeat
-          
+
           if not domainFound then
             copy {domain:domain, count:1} to end of domainCounts
           end if
         end if
       end repeat
-      
+
       -- Sort domains by count (descending)
       set sortedDomains to {}
       repeat while (count of domainCounts) > 0
         set maxCount to 0
         set maxIndex to 0
-        
+
         repeat with i from 1 to count of domainCounts
           set thisDomainInfo to item i of domainCounts
           if (count of thisDomainInfo) > maxCount then
@@ -169,44 +169,44 @@ on exportContacts(exportFilePath)
             set maxIndex to i
           end if
         end repeat
-        
+
         if maxIndex > 0 then
           copy item maxIndex of domainCounts to end of sortedDomains
           set domainCounts to items 1 thru (maxIndex - 1) of domainCounts & items (maxIndex + 1) thru (count of domainCounts) of domainCounts
         end if
       end repeat
-      
+
       -- Create the output content
       set outputContent to "Mail Contacts Export" & return & "====================" & return & return
       set outputContent to outputContent & "Total Addresses Found: " & (count of uniqueAddresses) & return
       set outputContent to outputContent & "From Addresses: " & (count of fromAddresses) & return
       set outputContent to outputContent & "To Addresses: " & (count of toAddresses) & return
       set outputContent to outputContent & "CC Addresses: " & (count of ccAddresses) & return & return
-      
+
       -- Add domain statistics
       set outputContent to outputContent & "Email Domains (by frequency):" & return
       set outputContent to outputContent & "---------------------------" & return
-      
+
       repeat with domainInfo in sortedDomains
         set outputContent to outputContent & domain of domainInfo & ": " & count of domainInfo & return
       end repeat
-      
+
       set outputContent to outputContent & return & "All Email Addresses:" & return
       set outputContent to outputContent & "------------------" & return
-      
+
       -- Sort addresses alphabetically
       set uniqueAddresses to my sortAddresses(uniqueAddresses)
       repeat with address in uniqueAddresses
         set outputContent to outputContent & address & return
       end repeat
-      
+
       -- Write to file
       try
         set fileRef to open for access file outputPath with write permission
         set eof of fileRef to 0
         write outputContent to fileRef
         close access fileRef
-        
+
         return "Exported " & (count of uniqueAddresses) & " unique email addresses to " & outputPath
       on error errMsg
         try
@@ -214,7 +214,7 @@ on exportContacts(exportFilePath)
         end try
         return "Error writing to file: " & errMsg
       end try
-      
+
     on error errMsg
       return "Error exporting contacts: " & errMsg
     end try
@@ -240,6 +240,7 @@ return my exportContacts("--MCP_INPUT:exportPath")
 ```
 
 This script:
+
 1. Extracts email addresses from currently selected messages in Mail.app
 2. Handles addresses in various formats, including "Name <email@example.com>"
 3. Groups addresses by sender, recipient, and CC categories

@@ -29,13 +29,13 @@ on scheduleBackup(frequency)
     set scriptPath to path to me as string
     set plistLabel to "com.user.backup." & backupName
     set plistPath to "~/Library/LaunchAgents/" & plistLabel & ".plist"
-    
+
     -- Expand the path
     set expandedPlistPath to do shell script "echo " & quoted form of plistPath
-    
+
     -- Determine the schedule
     set startCalendarInterval to ""
-    
+
     if frequency is "daily" then
       set startCalendarInterval to "<key>StartCalendarInterval</key>
       <dict>
@@ -65,7 +65,7 @@ on scheduleBackup(frequency)
         <integer>0</integer>
       </dict>"
     end if
-    
+
     -- Create the plist content
     set plistContent to "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
@@ -84,13 +84,13 @@ on scheduleBackup(frequency)
     <false/>
 </dict>
 </plist>"
-    
+
     -- Write the plist file
     do shell script "echo " & quoted form of plistContent & " > " & quoted form of expandedPlistPath
-    
+
     -- Load the launchd job
     do shell script "launchctl load " & quoted form of expandedPlistPath
-    
+
     logMessage("Scheduled " & frequency & " backup")
     return "Backup scheduled: " & frequency
   on error errMsg
@@ -108,20 +108,20 @@ on unscheduleBackup()
   try
     set plistLabel to "com.user.backup." & backupName
     set plistPath to "~/Library/LaunchAgents/" & plistLabel & ".plist"
-    
+
     -- Expand the path
     set expandedPlistPath to do shell script "echo " & quoted form of plistPath
-    
+
     -- Check if the plist exists
     set plistExists to do shell script "test -f " & quoted form of expandedPlistPath & " && echo 'yes' || echo 'no'"
-    
+
     if plistExists is "yes" then
       -- Unload the launchd job
       do shell script "launchctl unload " & quoted form of expandedPlistPath
-      
+
       -- Remove the plist file
       do shell script "rm " & quoted form of expandedPlistPath
-      
+
       logMessage("Removed backup schedule")
       return "Backup schedule removed"
     else
@@ -144,7 +144,7 @@ on run argv
       return performBackup()
     end if
   end if
-  
+
   -- Interactive menu if no arguments
   showBackupMenu()
 end run

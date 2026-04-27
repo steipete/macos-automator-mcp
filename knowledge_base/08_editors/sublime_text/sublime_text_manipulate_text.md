@@ -1,7 +1,7 @@
 ---
 id: sublime_text_manipulate_text
 title: Manipulate text in Sublime Text
-description: 'Insert, replace, or modify text in Sublime Text'
+description: "Insert, replace, or modify text in Sublime Text"
 language: applescript
 author: Claude
 keywords:
@@ -16,7 +16,7 @@ usage_examples:
   - Transform text with common operations
 parameters:
   - name: action
-    description: 'The action to perform (''insert'', ''replace'', ''transform'')'
+    description: "The action to perform ('insert', 'replace', 'transform')"
     required: true
   - name: text
     description: The text to insert or replace with
@@ -38,28 +38,28 @@ on run {input, parameters}
     set action to "--MCP_INPUT:action"
     set textContent to "--MCP_INPUT:text"
     set transformType to "--MCP_INPUT:transformType"
-    
+
     -- Validate action
     if action is not "insert" and action is not "replace" and action is not "transform" then
         return "Error: Invalid action. Use 'insert', 'replace', or 'transform'."
     end if
-    
+
     -- Check if Sublime Text is running
     tell application "System Events"
         set isRunning to (exists process "Sublime Text")
     end tell
-    
+
     if not isRunning then
         tell application "Sublime Text" to activate
         delay 1 -- Give time for Sublime Text to start
     end if
-    
+
     -- Activate Sublime Text
     tell application "Sublime Text"
         activate
         delay 0.5
     end tell
-    
+
     -- Perform the requested action
     if action is "insert" then
         return my insertText(textContent)
@@ -75,17 +75,17 @@ on insertText(textToInsert)
     if textToInsert is "" or textToInsert is missing value then
         return "Error: No text provided to insert"
     end if
-    
+
     -- Save text to clipboard
     set the clipboard to textToInsert
-    
+
     -- Paste the text at the cursor position
     tell application "System Events"
         tell process "Sublime Text"
             keystroke "v" using {command down}
         end tell
     end tell
-    
+
     return "Inserted text at cursor position"
 end insertText
 
@@ -94,13 +94,13 @@ on replaceText(newText)
     if newText is "" or newText is missing value then
         return "Error: No replacement text provided"
     end if
-    
+
     -- Check if there's a selection
     set hasSelection to false
-    
+
     -- Save current clipboard
     set oldClipboard to my getClipboard()
-    
+
     -- Copy current selection to check if there's something selected
     tell application "System Events"
         tell process "Sublime Text"
@@ -108,34 +108,34 @@ on replaceText(newText)
             delay 0.3
         end tell
     end tell
-    
+
     set selection to my getClipboard()
-    
+
     -- If nothing was copied, there was no selection
     if selection is not "" then
         set hasSelection to true
     end if
-    
+
     if not hasSelection then
         -- Restore original clipboard
         my setClipboard(oldClipboard)
         return "Error: No text is currently selected in Sublime Text"
     end if
-    
+
     -- Set new text to clipboard
     set the clipboard to newText
-    
+
     -- Paste to replace selection
     tell application "System Events"
         tell process "Sublime Text"
             keystroke "v" using {command down}
         end tell
     end tell
-    
+
     -- Restore original clipboard
     delay 0.3
     my setClipboard(oldClipboard)
-    
+
     return "Replaced selected text"
 end replaceText
 
@@ -144,7 +144,7 @@ on transformText(transform)
     if transform is "" or transform is missing value then
         return "Error: No transformation type specified"
     end if
-    
+
     -- Map transformation types to Sublime Text commands
     if transform is "uppercase" then
         return my executeTransformCommand("Upper Case")
@@ -184,16 +184,16 @@ on executeTransformCommand(commandName)
             -- Open command palette
             keystroke "p" using {command down, shift down}
             delay 0.3
-            
+
             -- Type the command
             keystroke commandName
             delay 0.3
-            
+
             -- Execute the command
             keystroke return
         end tell
     end tell
-    
+
     return "Applied transformation: " & commandName
 end executeTransformCommand
 

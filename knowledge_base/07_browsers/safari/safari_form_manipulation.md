@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Form Manipulation'
+title: "Safari: Form Manipulation"
 category: 07_browsers
 id: safari_form_manipulation
 description: >-
@@ -62,19 +62,19 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
   if formDataJson is missing value or formDataJson is "" then
     return "error: Form data not provided."
   end if
-  
+
   -- Set default values
   if formSelector is missing value or formSelector is "" then
     set formSelector to "form"
   end if
-  
+
   set doSubmit to false
   if shouldSubmit is not missing value and shouldSubmit is not "" then
     if shouldSubmit is "true" or shouldSubmit is "yes" or shouldSubmit is "1" then
       set doSubmit to true
     end if
   end if
-  
+
   -- Construct JavaScript for form manipulation
   set formJS to "
     (function() {
@@ -87,17 +87,17 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
           error: `Invalid JSON in form data: ${error.message}`
         });
       }
-      
+
       // Target form
       const formSelector = '" & formSelector & "';
       const forms = document.querySelectorAll(formSelector);
-      
+
       if (forms.length === 0) {
         return JSON.stringify({
           error: `No forms found matching selector: ${formSelector}`
         });
       }
-      
+
       // We'll track all actions for the results report
       const results = {
         successful: [],
@@ -105,7 +105,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
         form: formSelector,
         formCount: forms.length
       };
-      
+
       // Process each matching form
       forms.forEach((form, formIndex) => {
         // Process each field in the form data
@@ -113,20 +113,20 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
           try {
             // Field can be identified by name, id, or selector
             let field = null;
-            
+
             // Try finding by name
             field = form.elements[fieldKey];
-            
+
             // If not found, try as ID
             if (!field) {
               field = form.querySelector(`#${fieldKey}`);
             }
-            
+
             // If still not found, use as a CSS selector
             if (!field) {
               field = form.querySelector(fieldKey);
             }
-            
+
             // Skip if field not found
             if (!field) {
               results.failed.push({
@@ -135,18 +135,18 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
               });
               return;
             }
-            
+
             // Handle different input types
             switch (field.type) {
               case 'checkbox':
                 // Convert various true/false representations
                 let isChecked = false;
-                if (fieldValue === true || fieldValue === 1 || fieldValue === '1' || 
+                if (fieldValue === true || fieldValue === 1 || fieldValue === '1' ||
                     fieldValue === 'true' || fieldValue === 'yes' || fieldValue === 'on') {
                   isChecked = true;
                 }
                 field.checked = isChecked;
-                
+
                 // Dispatch change event
                 field.dispatchEvent(new Event('change', { bubbles: true }));
                 results.successful.push({
@@ -155,12 +155,12 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   value: isChecked
                 });
                 break;
-                
+
               case 'radio':
                 // For radio buttons, we need to find the one with matching value
                 const radioGroup = form.querySelectorAll(`input[type='radio'][name='${field.name}']`);
                 let radioFound = false;
-                
+
                 radioGroup.forEach(radio => {
                   if (radio.value == fieldValue) {
                     radio.checked = true;
@@ -168,7 +168,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                     radioFound = true;
                   }
                 });
-                
+
                 if (radioFound) {
                   results.successful.push({
                     field: fieldKey,
@@ -182,11 +182,11 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   });
                 }
                 break;
-                
+
               case 'select-one':
                 // Single select dropdown
                 let selectFound = false;
-                
+
                 // Try to find option by value
                 for (let i = 0; i < field.options.length; i++) {
                   if (field.options[i].value == fieldValue) {
@@ -195,7 +195,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                     break;
                   }
                 }
-                
+
                 // If not found by value, try to find by text
                 if (!selectFound) {
                   for (let i = 0; i < field.options.length; i++) {
@@ -206,7 +206,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                     }
                   }
                 }
-                
+
                 if (selectFound) {
                   field.dispatchEvent(new Event('change', { bubbles: true }));
                   results.successful.push({
@@ -221,7 +221,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   });
                 }
                 break;
-                
+
               case 'select-multiple':
                 // Multi-select dropdown - value should be an array
                 if (!Array.isArray(fieldValue)) {
@@ -231,17 +231,17 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   });
                   break;
                 }
-                
+
                 // First deselect all options
                 for (let i = 0; i < field.options.length; i++) {
                   field.options[i].selected = false;
                 }
-                
+
                 // Now select the specified options
                 let multiSelectFound = false;
                 fieldValue.forEach(value => {
                   let optionFound = false;
-                  
+
                   // Try to find by value
                   for (let i = 0; i < field.options.length; i++) {
                     if (field.options[i].value == value) {
@@ -251,7 +251,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                       break;
                     }
                   }
-                  
+
                   // If not found by value, try by text
                   if (!optionFound) {
                     for (let i = 0; i < field.options.length; i++) {
@@ -264,7 +264,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                     }
                   }
                 });
-                
+
                 if (multiSelectFound) {
                   field.dispatchEvent(new Event('change', { bubbles: true }));
                   results.successful.push({
@@ -279,18 +279,18 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   });
                 }
                 break;
-                
+
               case 'file':
                 // File input - we'll use a data URL or local file path
                 try {
                   // This is tricky because of security restrictions
                   // We'll try using a programmatic approach
                   const dataTransfer = new DataTransfer();
-                  
+
                   // Create a mock file
                   let fileData;
                   let fileName;
-                  
+
                   if (typeof fieldValue === 'string') {
                     if (fieldValue.startsWith('data:')) {
                       // It's a data URL
@@ -298,7 +298,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                       const mimeType = header.match(/data:(.*?);/)[1];
                       const extension = mimeType.split('/')[1];
                       fileName = `file-${Date.now()}.${extension}`;
-                      
+
                       // Convert base64 to blob
                       const binaryString = window.atob(content);
                       const len = binaryString.length;
@@ -320,7 +320,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                       // Data URL in content
                       const [header, content] = fieldValue.content.split(',');
                       const mimeType = header.match(/data:(.*?);/)[1];
-                      
+
                       // Convert base64 to blob
                       const binaryString = window.atob(content);
                       const len = binaryString.length;
@@ -336,20 +336,20 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   } else {
                     throw new Error('Invalid file data format');
                   }
-                  
+
                   // Create a File object
-                  const file = new File([fileData], fileName, { 
+                  const file = new File([fileData], fileName, {
                     type: fileData.type,
                     lastModified: Date.now()
                   });
-                  
+
                   // Add to DataTransfer
                   dataTransfer.items.add(file);
-                  
+
                   // Set files property
                   field.files = dataTransfer.files;
                   field.dispatchEvent(new Event('change', { bubbles: true }));
-                  
+
                   results.successful.push({
                     field: fieldKey,
                     type: 'file',
@@ -362,7 +362,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   });
                 }
                 break;
-                
+
               case 'date':
               case 'datetime-local':
               case 'month':
@@ -378,7 +378,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   value: fieldValue
                 });
                 break;
-                
+
               case 'range':
                 // Range slider
                 field.value = fieldValue;
@@ -390,7 +390,7 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   value: fieldValue
                 });
                 break;
-                
+
               case 'color':
                 // Color picker - value should be a hex color
                 field.value = fieldValue;
@@ -402,17 +402,17 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
                   value: fieldValue
                 });
                 break;
-                
+
               default:
                 // Text, email, password, number, url, search, tel, textarea, etc.
                 field.value = fieldValue;
-                
+
                 // Trigger events to simulate user input
                 field.dispatchEvent(new Event('focus', { bubbles: true }));
                 field.dispatchEvent(new Event('input', { bubbles: true }));
                 field.dispatchEvent(new Event('change', { bubbles: true }));
                 field.dispatchEvent(new Event('blur', { bubbles: true }));
-                
+
                 results.successful.push({
                   field: fieldKey,
                   type: field.type || 'text',
@@ -428,19 +428,19 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
           }
         });
       });
-      
+
       // Submit the form if requested
       const shouldSubmit = " & (doSubmit as string) & ";
       if (shouldSubmit) {
         try {
           const form = forms[0]; // Submit the first matching form
-          
+
           // Add a flag to detect when page starts loading
           window._formSubmissionInProgress = true;
-          
+
           // Submit the form
           form.submit();
-          
+
           // Note: We won't be able to return after navigation,
           // so the 'submitted' status may not be included in the result
           results.submitted = true;
@@ -448,26 +448,26 @@ on manipulateForms(formDataJson, formSelector, shouldSubmit)
           results.submitError = submitError.message;
         }
       }
-      
+
       return JSON.stringify(results, null, 2);
     })();
   "
-  
+
   tell application "Safari"
     if not running then
       return "error: Safari is not running."
     end if
-    
+
     try
       if (count of windows) is 0 or (count of tabs of front window) is 0 then
         return "error: No tabs open in Safari."
       end if
-      
+
       set currentTab to current tab of front window
-      
+
       -- Execute the JavaScript
       set jsResult to do JavaScript formJS in currentTab
-      
+
       return jsResult
     on error errMsg
       return "error: Failed to manipulate form - " & errMsg & ". Make sure 'Allow JavaScript from Apple Events' is enabled in Safari's Develop menu."

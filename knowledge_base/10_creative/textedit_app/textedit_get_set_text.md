@@ -1,5 +1,5 @@
 ---
-title: 'TextEdit: Get and Set Text of Front Document'
+title: "TextEdit: Get and Set Text of Front Document"
 category: 10_creative
 id: textedit_get_set_text
 description: >-
@@ -16,6 +16,7 @@ notes: TextEdit must be running and have a document open (for getting text).
 ---
 
 **Get Text:**
+
 ```applescript
 tell application "TextEdit"
   if not running then return "error: TextEdit is not running."
@@ -30,6 +31,7 @@ end tell
 ```
 
 **Set Text (Overwrites existing content):**
+
 ```applescript
 --MCP_INPUT:newTextContent
 
@@ -56,4 +58,5 @@ end setTextInFrontTextEditDoc
 -- Example call for setting text if run by ID:
 return my setTextInFrontTextEditDoc("--MCP_INPUT:newTextContent")
 ```
+
 END_TIP

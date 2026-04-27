@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: delay Command'
+title: "StandardAdditions: delay Command"
 category: 02_as_core
 id: osax_delay
 description: Pauses script execution for a specified number of seconds.
@@ -37,4 +37,5 @@ log "Script finished after additional 0.5s delay at: " & finalTime
 
 return "Script execution paused and resumed. Final log time: " & finalTime
 ```
-END_TIP 
+
+END_TIP

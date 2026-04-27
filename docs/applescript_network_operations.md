@@ -10,26 +10,26 @@ on downloadWithCurl(downloadUrl, savePath)
   if downloadUrl does not start with "http://" and downloadUrl does not start with "https://" then
     set downloadUrl to "https://" & downloadUrl
   end if
-  
+
   -- If no save path provided, use Downloads folder
   if savePath is missing value or savePath is "" then
     set fileName to last text item of downloadUrl delimited by "/"
     if fileName is "" or fileName contains "?" then
       set fileName to "downloaded_file"
     end if
-    
+
     set downloadsFolder to POSIX path of (path to downloads folder)
     set savePath to downloadsFolder & fileName
   end if
-  
+
   -- Download the file with curl
   set curlCmd to "curl -sSL -o " & quoted form of savePath & " " & quoted form of downloadUrl
   try
     do shell script curlCmd
-    
+
     -- Get file size
     set fileSize to do shell script "ls -l " & quoted form of savePath & " | awk '{print $5}'"
-    
+
     return "Successfully downloaded to: " & savePath & " (" & fileSize & " bytes)"
   on error errMsg
     return "Error downloading: " & errMsg
@@ -48,7 +48,7 @@ on fetchWebContent(theUrl)
   if theUrl does not start with "http://" and theUrl does not start with "https://" then
     set theUrl to "https://" & theUrl
   end if
-  
+
   try
     -- Use curl to fetch text content
     set curlCmd to "curl -sSL " & quoted form of theUrl
@@ -70,7 +70,7 @@ on postToWebService(apiUrl, jsonData)
   -- Create the curl command for a POST request with JSON
   set curlCmd to "curl -sSL -X POST -H 'Content-Type: application/json' -d " & ¬
                   quoted form of jsonData & " " & quoted form of apiUrl
-  
+
   try
     set apiResponse to do shell script curlCmd
     return apiResponse

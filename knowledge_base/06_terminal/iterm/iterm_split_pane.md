@@ -1,7 +1,7 @@
 ---
 id: iterm_split_pane
 title: iTerm2 Split Pane Management
-description: 'Creates, navigates between, and manages split panes in iTerm2'
+description: "Creates, navigates between, and manages split panes in iTerm2"
 language: applescript
 author: Claude
 keywords:
@@ -16,7 +16,7 @@ usage_examples:
   - Close specific panes or organize multi-pane layouts
 parameters:
   - name: action
-    description: 'Action to perform - create, close, navigate, resize, or maximize'
+    description: "Action to perform - create, close, navigate, resize, or maximize"
     required: true
   - name: direction
     description: >-
@@ -24,7 +24,7 @@ parameters:
       down
     required: false
   - name: resizeAmount
-    description: 'Amount to resize by (1-10, where 10 is maximum) when using resize action'
+    description: "Amount to resize by (1-10, where 10 is maximum) when using resize action"
     required: false
 category: 06_terminal
 ---
@@ -38,15 +38,15 @@ on run {input, parameters}
     set action to "--MCP_INPUT:action"
     set direction to "--MCP_INPUT:direction"
     set resizeAmount to "--MCP_INPUT:resizeAmount"
-    
+
     -- Validate and set defaults for parameters
     if action is "" or action is missing value then
         return "Error: Please specify an action (create, close, navigate, resize, or maximize)"
     end if
-    
+
     -- Convert parameters to lowercase for case-insensitive comparison
     set action to my toLowerCase(action)
-    
+
     -- Set defaults and validate direction if needed
     if direction is not "" and direction is not missing value then
         set direction to my toLowerCase(direction)
@@ -59,7 +59,7 @@ on run {input, parameters}
             set direction to "right"
         end if
     end if
-    
+
     -- Set default resize amount if not provided
     if resizeAmount is "" or resizeAmount is missing value then
         if action is "resize" then
@@ -74,7 +74,7 @@ on run {input, parameters}
             set resizeAmount to 5
         end try
     end if
-    
+
     -- Check if iTerm2 is running
     tell application "System Events"
         if not (exists process "iTerm2") then
@@ -82,11 +82,11 @@ on run {input, parameters}
             delay 1 -- Give iTerm2 time to launch
         end if
     end tell
-    
+
     -- Perform the requested action
     tell application "iTerm2"
         activate
-        
+
         if action is "create" then
             return createSplitPane(direction)
         else if action is "close" then
@@ -146,27 +146,27 @@ on navigatePanes(direction)
             if direction is "right" then
                 tell application "System Events" to key code 124 using {option down, command down}
                 return "Navigated to the right pane"
-                
+
             else if direction is "left" then
                 tell application "System Events" to key code 123 using {option down, command down}
                 return "Navigated to the left pane"
-                
+
             else if direction is "up" then
                 tell application "System Events" to key code 126 using {option down, command down}
                 return "Navigated to the upper pane"
-                
+
             else if direction is "down" then
                 tell application "System Events" to key code 125 using {option down, command down}
                 return "Navigated to the lower pane"
-                
+
             else if direction is "next" then
                 tell application "System Events" to key code 48 using {shift down, command down}
                 return "Navigated to the next pane"
-                
+
             else if direction is "previous" then
                 tell application "System Events" to key code 48 using {shift down, command down, option down}
                 return "Navigated to the previous pane"
-                
+
             else
                 return "Error: Invalid navigation direction. Use 'right', 'left', 'up', 'down', 'next', or 'previous'."
             end if
@@ -180,38 +180,38 @@ on resizePane(direction, amount)
     set keyCount to round (amount / 3.5)
     if keyCount < 1 then set keyCount to 1
     if keyCount > 3 then set keyCount to 3
-    
+
     tell application "iTerm2"
         activate
-        
+
         if direction is "right" then
             repeat keyCount times
                 tell application "System Events" to key code 124 using {control down, command down}
                 delay 0.1
             end repeat
             return "Resized pane to the right"
-            
+
         else if direction is "left" then
             repeat keyCount times
                 tell application "System Events" to key code 123 using {control down, command down}
                 delay 0.1
             end repeat
             return "Resized pane to the left"
-            
+
         else if direction is "up" then
             repeat keyCount times
                 tell application "System Events" to key code 126 using {control down, command down}
                 delay 0.1
             end repeat
             return "Resized pane upward"
-            
+
         else if direction is "down" then
             repeat keyCount times
                 tell application "System Events" to key code 125 using {control down, command down}
                 delay 0.1
             end repeat
             return "Resized pane downward"
-            
+
         else
             return "Error: Invalid resize direction. Use 'right', 'left', 'up', or 'down'."
         end if
@@ -246,6 +246,7 @@ In iTerm2, terminal windows can be divided into multiple panes:
 3. **Pane**: Each tab can be split into multiple panes (sessions)
 
 Panes can be split:
+
 - **Horizontally**: Creates left and right panes
 - **Vertically**: Creates top and bottom panes
 
@@ -311,22 +312,22 @@ on createGridLayout()
     tell application "iTerm2"
         tell current window
             set original to current session
-            
+
             -- Create first horizontal split
             tell original
                 set rightPane to split horizontally with default profile
             end tell
-            
+
             -- Split the left pane vertically
             tell original
                 set bottomLeftPane to split vertically with default profile
             end tell
-            
+
             -- Split the right pane vertically
             tell rightPane
                 set bottomRightPane to split vertically with default profile
             end tell
-            
+
             -- Now we have a 2x2 grid
             return "Created a 2x2 grid layout"
         end tell
@@ -373,5 +374,5 @@ If pane operations don't work as expected:
 
 1. **Accessibility Permissions**: For keyboard shortcuts, ensure the script has proper permissions
 2. **iTerm2 Focus**: Make sure iTerm2 is active when manipulating panes
-3. **Profile Issues**: If splits fail, check that the specified profile exists 
+3. **Profile Issues**: If splits fail, check that the specified profile exists
 4. **Version Compatibility**: Some features might vary between iTerm2 versions

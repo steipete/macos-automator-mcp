@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: List All Tabs'
+title: "Firefox: List All Tabs"
 category: 07_browsers
 id: firefox_list_all_tabs
 description: Lists all open tabs in the frontmost Firefox window using UI scripting.
@@ -28,22 +28,22 @@ This script retrieves a list of all open tabs in the frontmost Firefox window. S
 on run
   -- Initialize empty list for tab information
   set tabsList to {}
-  
+
   tell application "Firefox"
     activate
     delay 0.5 -- Allow Firefox to activate fully
   end tell
-  
+
   -- Open the tab list menu
   tell application "System Events"
     tell process "Firefox"
       -- Click the tab list button
       keystroke "," using {shift down, command down} -- Keyboard shortcut for tab list
       delay 0.5 -- Allow menu to appear
-      
+
       -- Get tab list
       set tabElements to UI elements of group 1 of window 1 whose role is "AXStaticText"
-      
+
       -- Extract tab information
       repeat with tabElement in tabElements
         set tabName to value of tabElement
@@ -51,12 +51,12 @@ on run
           copy tabName to end of tabsList
         end if
       end repeat
-      
+
       -- Close the tab list
       keystroke escape
     end tell
   end tell
-  
+
   return tabsList
 end run
 ```
@@ -69,38 +69,38 @@ If the above method doesn't work reliably, this alternative uses the clipboard t
 on run
   -- Save current clipboard content
   set oldClipboard to the clipboard
-  
+
   tell application "Firefox"
     activate
     delay 0.5 -- Allow Firefox to activate fully
   end tell
-  
+
   -- Use Tab Overview feature
   tell application "System Events"
     tell process "Firefox"
       -- Open tab overview
       keystroke "," using {shift down, command down}
       delay 0.5 -- Allow the overview to open
-      
+
       -- Select all text (tabs list)
       keystroke "a" using {command down}
       delay 0.2
-      
+
       -- Copy to clipboard
       keystroke "c" using {command down}
       delay 0.2
-      
+
       -- Close the overview
       keystroke escape
     end tell
   end tell
-  
+
   -- Process clipboard content into a list
   set tabsText to the clipboard
   set AppleScript's text item delimiters to return
   set tabsList to every text item of tabsText
   set AppleScript's text item delimiters to ""
-  
+
   -- Clean up the list
   set cleanList to {}
   repeat with tabItem in tabsList
@@ -108,10 +108,10 @@ on run
       copy tabItem to end of cleanList
     end if
   end repeat
-  
+
   -- Restore original clipboard
   set the clipboard to oldClipboard
-  
+
   return cleanList
 end run
 ```

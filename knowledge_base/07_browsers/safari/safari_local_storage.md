@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Local Storage Management'
+title: "Safari: Local Storage Management"
 category: 07_browsers
 id: safari_local_storage
 description: >-
@@ -62,58 +62,58 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
   if operation is missing value or operation is "" then
     return "error: Operation not provided. Must be 'get', 'set', 'remove', or 'clear'."
   end if
-  
+
   -- Validate storage type
   if storageType is missing value or storageType is "" then
     return "error: Storage type not provided. Must be 'local', 'session', 'cookie', or 'indexedDB'."
   end if
-  
+
   -- Convert to lowercase for case-insensitive comparison
   set operation to my toLowerCase(operation)
   set storageType to my toLowerCase(storageType)
-  
+
   -- Validate operation and storage type values
   if operation is not "get" and operation is not "set" and operation is not "remove" and operation is not "clear" then
     return "error: Invalid operation. Must be 'get', 'set', 'remove', or 'clear'."
   end if
-  
+
   if storageType is not "local" and storageType is not "session" and storageType is not "cookie" and storageType is not "indexeddb" then
     return "error: Invalid storage type. Must be 'local', 'session', 'cookie', or 'indexedDB'."
   end if
-  
+
   -- Validate operation-specific required parameters
   if operation is "set" and (storageKey is missing value or storageKey is "") then
     return "error: Key parameter is required for 'set' operation."
   end if
-  
+
   if operation is "remove" and (storageKey is missing value or storageKey is "") then
     return "error: Key parameter is required for 'remove' operation."
   end if
-  
+
   -- Prepare cookie parameters as JavaScript object properties
   set cookieParams to ""
   if storageType is "cookie" then
     if domain is not missing value and domain is not "" then
       set cookieParams to cookieParams & "domain: '" & domain & "', "
     end if
-    
+
     if path is not missing value and path is not "" then
       set cookieParams to cookieParams & "path: '" & path & "', "
     else
       set cookieParams to cookieParams & "path: '/', "
     end if
-    
+
     if expires is not missing value and expires is not "" then
       set cookieParams to cookieParams & "expires: " & expires & ", "
     end if
-    
+
     if secure is not missing value and secure is not "" then
       if secure is "true" or secure is "yes" or secure is "1" then
         set cookieParams to cookieParams & "secure: true, "
       end if
     end if
   end if
-  
+
   -- Construct JavaScript for browser storage operations
   set storageJS to "
     (function() {
@@ -128,7 +128,7 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
           return String(value);
         }
       }
-      
+
       // Helper function to parse string values that might be JSON
       function safeParse(value) {
         if (typeof value !== 'string') return value;
@@ -138,20 +138,20 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
           return value;
         }
       }
-      
+
       // Storage type and operations
       const storageType = '" & storageType & "';
       const operation = '" & operation & "';
       const key = " & my jsStringOrNull(storageKey) & ";
       let value = " & my jsValueOrNull(storageValue) & ";
-      
+
       // Results object
       const result = {
         operation: operation,
         storageType: storageType,
         success: false
       };
-      
+
       try {
         // Handle operations based on storage type
         switch (storageType) {
@@ -201,7 +201,7 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
               result.success = true;
             }
             break;
-            
+
           case 'session':
             // sessionStorage operations - same pattern as localStorage
             if (operation === 'get') {
@@ -248,7 +248,7 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
               result.success = true;
             }
             break;
-            
+
           case 'cookie':
             // Cookie operations
             if (operation === 'get') {
@@ -258,7 +258,7 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                 if (name) acc[name] = safeParse(value);
                 return acc;
               }, {});
-              
+
               if (key) {
                 result.key = key;
                 result.value = cookies[key];
@@ -277,31 +277,31 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
             } else if (operation === 'set') {
               // Create cookie with provided parameters
               let cookieString = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-              
+
               // Add cookie parameters
               const cookieParams = {" & cookieParams & "};
-              
+
               if (cookieParams.domain) {
                 cookieString += `; domain=${cookieParams.domain}`;
               }
-              
+
               if (cookieParams.path) {
                 cookieString += `; path=${cookieParams.path}`;
               }
-              
+
               if (cookieParams.expires) {
                 const expirationDate = new Date();
                 expirationDate.setDate(expirationDate.getDate() + cookieParams.expires);
                 cookieString += `; expires=${expirationDate.toUTCString()}`;
               }
-              
+
               if (cookieParams.secure) {
                 cookieString += '; secure';
               }
-              
+
               // Set the cookie
               document.cookie = cookieString;
-              
+
               result.key = key;
               result.value = value;
               result.message = `Set cookie '${key}'`;
@@ -309,7 +309,7 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
             } else if (operation === 'remove') {
               // To remove a cookie, set its expiration date to the past
               document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-              
+
               result.key = key;
               result.message = `Removed cookie '${key}'`;
               result.success = true;
@@ -322,24 +322,24 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                 const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
                 document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
               }
-              
+
               result.message = `Attempted to clear all accessible cookies`;
               result.success = true;
             }
             break;
-            
+
           case 'indexeddb':
             // Basic IndexedDB operations
             // Note: IndexedDB is asynchronous, so we need to handle promises
-            
+
             // For simplicity, we'll use a fixed database and object store name
             const dbName = 'SafariAutomationDB';
             const storeName = 'DataStore';
-            
+
             // Create a promise that will be resolved with the result
             return new Promise((resolve, reject) => {
               let request;
-              
+
               // Common function to handle DB open errors
               const handleError = (event) => {
                 resolve(JSON.stringify({
@@ -349,7 +349,7 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                   message: `IndexedDB error: ${event.target.error}`
                 }));
               };
-              
+
               if (operation === 'clear') {
                 // Deleting the entire database is the simplest way to clear all data
                 request = indexedDB.deleteDatabase(dbName);
@@ -364,10 +364,10 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                 request.onerror = handleError;
                 return;
               }
-              
+
               // Open (or create) the database
               request = indexedDB.open(dbName, 1);
-              
+
               request.onupgradeneeded = (event) => {
                 const db = event.target.result;
                 // Create an object store if it doesn't exist
@@ -375,22 +375,22 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                   db.createObjectStore(storeName);
                 }
               };
-              
+
               request.onerror = handleError;
-              
+
               request.onsuccess = (event) => {
                 const db = event.target.result;
-                
+
                 // Handle different operations
                 if (operation === 'get') {
                   // Get a specific value or all values
                   const transaction = db.transaction([storeName], 'readonly');
                   const objectStore = transaction.objectStore(storeName);
-                  
+
                   if (key) {
                     // Get specific key
                     const getRequest = objectStore.get(key);
-                    
+
                     getRequest.onsuccess = () => {
                       resolve(JSON.stringify({
                         operation: 'get',
@@ -398,18 +398,18 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                         key: key,
                         value: getRequest.result,
                         success: getRequest.result !== undefined,
-                        message: getRequest.result !== undefined ? 
-                          `Retrieved value for key '${key}' from IndexedDB` : 
+                        message: getRequest.result !== undefined ?
+                          `Retrieved value for key '${key}' from IndexedDB` :
                           `Key '${key}' not found in IndexedDB`
                       }));
                     };
-                    
+
                     getRequest.onerror = handleError;
                   } else {
                     // Get all values
                     const allData = {};
                     const cursorRequest = objectStore.openCursor();
-                    
+
                     cursorRequest.onsuccess = (event) => {
                       const cursor = event.target.result;
                       if (cursor) {
@@ -426,16 +426,16 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                         }));
                       }
                     };
-                    
+
                     cursorRequest.onerror = handleError;
                   }
                 } else if (operation === 'set') {
                   // Set a value
                   const transaction = db.transaction([storeName], 'readwrite');
                   const objectStore = transaction.objectStore(storeName);
-                  
+
                   const putRequest = objectStore.put(value, key);
-                  
+
                   putRequest.onsuccess = () => {
                     resolve(JSON.stringify({
                       operation: 'set',
@@ -445,15 +445,15 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                       message: `Successfully set IndexedDB key '${key}'`
                     }));
                   };
-                  
+
                   putRequest.onerror = handleError;
                 } else if (operation === 'remove') {
                   // Remove a value
                   const transaction = db.transaction([storeName], 'readwrite');
                   const objectStore = transaction.objectStore(storeName);
-                  
+
                   const deleteRequest = objectStore.delete(key);
-                  
+
                   deleteRequest.onsuccess = () => {
                     resolve(JSON.stringify({
                       operation: 'remove',
@@ -463,13 +463,13 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
                       message: `Removed key '${key}' from IndexedDB`
                     }));
                   };
-                  
+
                   deleteRequest.onerror = handleError;
                 }
               };
             });
         }
-        
+
         // Return result as JSON string for non-IndexedDB operations
         return JSON.stringify(result);
       } catch (error) {
@@ -482,22 +482,22 @@ on manageBrowserStorage(operation, storageType, storageKey, storageValue, domain
       }
     })();
   "
-  
+
   tell application "Safari"
     if not running then
       return "error: Safari is not running."
     end if
-    
+
     try
       if (count of windows) is 0 or (count of tabs of front window) is 0 then
         return "error: No tabs open in Safari."
       end if
-      
+
       set currentTab to current tab of front window
-      
+
       -- Execute the JavaScript
       set jsResult to do JavaScript storageJS in currentTab
-      
+
       return jsResult
     on error errMsg
       return "error: Failed to manage browser storage - " & errMsg & ". Make sure 'Allow JavaScript from Apple Events' is enabled in Safari's Develop menu."
@@ -538,7 +538,7 @@ on escapeJSString(jsString)
   set escapedString to my replaceText(escapedString, return, "\\n")
   -- Replace quotes
   set escapedString to my replaceText(escapedString, "'", "\\'")
-  
+
   return escapedString
 end escapeJSString
 
@@ -557,18 +557,18 @@ on toLowerCase(sourceText)
   set lowercaseText to ""
   set upperChars to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   set lowerChars to "abcdefghijklmnopqrstuvwxyz"
-  
+
   repeat with i from 1 to length of sourceText
     set currentChar to character i of sourceText
     set charPos to offset of currentChar in upperChars
-    
+
     if charPos > 0 then
       set lowercaseText to lowercaseText & character charPos of lowerChars
     else
       set lowercaseText to lowercaseText & currentChar
     end if
   end repeat
-  
+
   return lowercaseText
 end toLowerCase
 

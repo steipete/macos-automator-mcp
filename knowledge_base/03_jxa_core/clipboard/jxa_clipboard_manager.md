@@ -36,75 +36,77 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 class ClipboardManager {
-    constructor(maxItems = 10) {
-        this.items = [];
-        this.maxItems = maxItems;
-    }
-    
-    // Add current clipboard content to history
-    saveCurrentClipboard() {
-        try {
-            const content = app.theClipboard();
-            if (content && content.length > 0) {
-                // Add to the beginning of the array
-                this.items.unshift(content);
-                
-                // Keep array within maxItems limit
-                if (this.items.length > this.maxItems) {
-                    this.items.pop();
-                }
-                
-                console.log(`Saved clipboard item: "${this._truncate(content, 30)}"`);
-                return true;
-            }
-        } catch (error) {
-            console.log("Could not save clipboard content: " + error);
+  constructor(maxItems = 10) {
+    this.items = [];
+    this.maxItems = maxItems;
+  }
+
+  // Add current clipboard content to history
+  saveCurrentClipboard() {
+    try {
+      const content = app.theClipboard();
+      if (content && content.length > 0) {
+        // Add to the beginning of the array
+        this.items.unshift(content);
+
+        // Keep array within maxItems limit
+        if (this.items.length > this.maxItems) {
+          this.items.pop();
         }
-        return false;
+
+        console.log(`Saved clipboard item: "${this._truncate(content, 30)}"`);
+        return true;
+      }
+    } catch (error) {
+      console.log("Could not save clipboard content: " + error);
     }
-    
-    // Restore a specific item to the clipboard
-    restoreItem(index) {
-        if (index >= 0 && index < this.items.length) {
-            try {
-                app.setTheClipboardTo(this.items[index]);
-                console.log(`Restored clipboard item ${index + 1}: "${this._truncate(this.items[index], 30)}"`);
-                return true;
-            } catch (error) {
-                console.log(`Could not restore clipboard item ${index + 1}: ${error}`);
-            }
-        } else {
-            console.log(`Invalid item index: ${index}`);
-        }
-        return false;
+    return false;
+  }
+
+  // Restore a specific item to the clipboard
+  restoreItem(index) {
+    if (index >= 0 && index < this.items.length) {
+      try {
+        app.setTheClipboardTo(this.items[index]);
+        console.log(
+          `Restored clipboard item ${index + 1}: "${this._truncate(this.items[index], 30)}"`,
+        );
+        return true;
+      } catch (error) {
+        console.log(`Could not restore clipboard item ${index + 1}: ${error}`);
+      }
+    } else {
+      console.log(`Invalid item index: ${index}`);
     }
-    
-    // Show all stored items
-    listItems() {
-        if (this.items.length === 0) {
-            console.log("No items in clipboard history");
-            return [];
-        }
-        
-        console.log("Clipboard History:");
-        this.items.forEach((item, index) => {
-            console.log(`${index + 1}: "${this._truncate(item, 50)}"`);
-        });
-        
-        return this.items;
+    return false;
+  }
+
+  // Show all stored items
+  listItems() {
+    if (this.items.length === 0) {
+      console.log("No items in clipboard history");
+      return [];
     }
-    
-    // Clear all stored items
-    clearHistory() {
-        this.items = [];
-        console.log("Clipboard history cleared");
-    }
-    
-    // Helper method to truncate long strings
-    _truncate(str, maxLength) {
-        if (str.length <= maxLength) return str;
-        return str.substring(0, maxLength) + "...";
-    }
+
+    console.log("Clipboard History:");
+    this.items.forEach((item, index) => {
+      console.log(`${index + 1}: "${this._truncate(item, 50)}"`);
+    });
+
+    return this.items;
+  }
+
+  // Clear all stored items
+  clearHistory() {
+    this.items = [];
+    console.log("Clipboard history cleared");
+  }
+
+  // Helper method to truncate long strings
+  _truncate(str, maxLength) {
+    if (str.length <= maxLength) return str;
+    return str.substring(0, maxLength) + "...";
+  }
 }
 ```
 

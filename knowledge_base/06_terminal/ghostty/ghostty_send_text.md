@@ -21,7 +21,7 @@ parameters:
     description: The text to send to Ghostty
     required: true
   - name: executeCommand
-    description: 'Whether to press Return after sending the text (default: false)'
+    description: "Whether to press Return after sending the text (default: false)"
     required: false
 category: 06_terminal
 ---
@@ -34,12 +34,12 @@ This script allows you to send text to a Ghostty terminal window without automat
 on run {input, parameters}
     set textToSend to "--MCP_INPUT:text"
     set executeCommand to "--MCP_INPUT:executeCommand"
-    
+
     -- Validate and set defaults for parameters
     if textToSend is "" or textToSend is missing value then
         return "Error: No text provided to send to Ghostty."
     end if
-    
+
     if executeCommand is "" or executeCommand is missing value then
         set executeCommand to false
     else
@@ -49,13 +49,13 @@ on run {input, parameters}
             set executeCommand to false
         end try
     end if
-    
+
     -- Check if Ghostty is installed and running
     try
         tell application "System Events"
             set ghosttyRunning to exists process "Ghostty"
         end tell
-        
+
         if not ghosttyRunning then
             tell application "Ghostty" to activate
             delay 1 -- Give Ghostty time to start up
@@ -63,19 +63,19 @@ on run {input, parameters}
     on error
         return "Error: Ghostty terminal application is not installed or cannot be started."
     end try
-    
+
     -- Process multi-line text for sending
     set processedText to my processTextForTerminal(textToSend)
-    
+
     -- Send the text to Ghostty using System Events
     tell application "System Events"
         tell process "Ghostty"
             set frontmost to true
             delay 0.3 -- Give window time to activate
-            
+
             -- Send the text
             keystroke processedText
-            
+
             -- Optionally press Return/Enter to execute the command
             if executeCommand then
                 keystroke return
@@ -111,6 +111,7 @@ Ghostty is a modern GPU-accelerated terminal emulator for macOS that offers exce
 #### 1. Complex Command Preparation
 
 When working with complex commands that have multiple flags and options, it's helpful to:
+
 - Send the command template to the terminal
 - Make adjustments as needed
 - Execute only when ready
@@ -118,6 +119,7 @@ When working with complex commands that have multiple flags and options, it's he
 #### 2. Interactive CLI Tools
 
 Many command-line tools require multiple inputs or have interactive modes:
+
 - Database clients (MySQL, PostgreSQL)
 - Configuration wizards (npm init, create-react-app)
 - REPL environments (Python, Node.js)
@@ -125,6 +127,7 @@ Many command-line tools require multiple inputs or have interactive modes:
 #### 3. Scripting and Automation
 
 For DevOps and automation workflows:
+
 - Prepare complex sequences of commands
 - Allow for human verification before execution
 - Create semi-automated workflows with pauses for human input
@@ -138,6 +141,7 @@ For this script to work properly:
 3. "Secure Input" must not be active when automating keyboard entry
 
 To grant Accessibility permissions:
+
 1. Open System Settings > Privacy & Security > Accessibility
 2. Add Ghostty and the scripting application to the list of allowed apps
 
@@ -149,10 +153,10 @@ The `processTextForTerminal` function can be extended to handle special characte
 on processTextForTerminal(inputText)
     -- Example: Replace tab characters with spaces for better compatibility
     set processedText to my replaceText(inputText, tab, "    ")
-    
+
     -- Example: Escape special characters if needed
     -- set processedText to my replaceText(processedText, "$", "\\$")
-    
+
     return processedText
 end processTextForTerminal
 

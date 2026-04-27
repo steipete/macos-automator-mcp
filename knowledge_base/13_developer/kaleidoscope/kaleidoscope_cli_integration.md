@@ -4,7 +4,7 @@ title: Kaleidoscope Command Line Integration
 description: Use AppleScript with Kaleidoscope's command-line tool ksdiff
 author: steipete
 language: applescript
-tags: 'kaleidoscope, ksdiff, command line, terminal, diff'
+tags: "kaleidoscope, ksdiff, command line, terminal, diff"
 keywords:
   - kaleidoscope
   - cli
@@ -51,28 +51,28 @@ on useKaleidoscopeCLI(operation, filePath1, filePath2, filePath3, outputPath)
             return "Error: ksdiff command-line tool not found. Please install Kaleidoscope and its CLI tools."
         end if
     end try
-    
+
     -- Build the command based on the operation
     if operation is "compare" then
         set cmd to quoted form of ksdiffPath & " " & quoted form of filePath1 & " " & quoted form of filePath2
-        
+
     else if operation is "merge" then
         if filePath3 is "" or outputPath is "" then
             return "Error: Merge operation requires base, mine, theirs, and output path parameters."
         end if
-        
+
         set cmd to quoted form of ksdiffPath & " --merge " & quoted form of filePath1 & " " & quoted form of filePath2 & " " & quoted form of filePath3 & " -o " & quoted form of outputPath
-        
+
     else if operation is "git" then
         set cmd to quoted form of ksdiffPath & " --git " & quoted form of filePath1
-        
+
     else if operation is "help" then
         set cmd to quoted form of ksdiffPath & " --help"
-        
+
     else
         return "Error: Unsupported operation. Use 'compare', 'merge', 'git', or 'help'."
     end if
-    
+
     -- Execute the command
     try
         do shell script cmd

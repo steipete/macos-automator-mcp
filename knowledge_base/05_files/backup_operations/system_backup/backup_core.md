@@ -43,13 +43,13 @@ property logFile : "~/Library/Logs/MacBackup.log"
 on initializeBackup()
   -- Convert log path to full path
   set fullLogPath to do shell script "echo " & quoted form of logFile
-  
+
   -- Initialize the log file if logging is enabled
   if logEnabled then
     do shell script "touch " & quoted form of fullLogPath
     logMessage("Backup initialized at " & (current date as string))
   end if
-  
+
   return "Backup system initialized"
 end initializeBackup
 ```
@@ -90,16 +90,16 @@ on createBackupDestination()
       logMessage("Error: Backup destination not specified")
       return "ERROR: Backup destination not specified"
     end if
-    
+
     -- Expand tilde in destination path if needed
     if backupDestination starts with "~" then
       set expandedPath to do shell script "echo " & quoted form of backupDestination
       set backupDestination to expandedPath
     end if
-    
+
     -- Create destination directory if it doesn't exist
     do shell script "mkdir -p " & quoted form of backupDestination
-    
+
     return "Backup destination created: " & backupDestination
   on error errMsg
     logMessage("Error creating backup destination: " & errMsg)
@@ -117,38 +117,38 @@ on validateSources()
     logMessage("Error: No backup sources specified")
     return "ERROR: No backup sources specified"
   end if
-  
+
   set validSources to {}
   set invalidSources to {}
-  
+
   repeat with sourceFolder in backupSourceFolders
     -- Expand tilde in source path if needed
     if sourceFolder starts with "~" then
       set expandedPath to do shell script "echo " & quoted form of sourceFolder
       set sourceFolder to expandedPath
     end if
-    
+
     -- Check if source exists
     set sourceExists to do shell script "test -e " & quoted form of sourceFolder & " && echo 'yes' || echo 'no'"
-    
+
     if sourceExists is "yes" then
       set end of validSources to sourceFolder
     else
       set end of invalidSources to sourceFolder
     end if
   end repeat
-  
+
   if (count of invalidSources) > 0 then
     set invalidList to join(invalidSources, ", ")
     logMessage("Warning: Some backup sources do not exist: " & invalidList)
     return "WARNING: Some backup sources do not exist: " & invalidList
   end if
-  
+
   if (count of validSources) is 0 then
     logMessage("Error: No valid backup sources available")
     return "ERROR: No valid backup sources available"
   end if
-  
+
   set backupSourceFolders to validSources
   logMessage("Validated " & (count of validSources) & " backup sources")
   return "Validated backup sources: " & (count of validSources)
@@ -170,11 +170,11 @@ end join
 on createExcludeFile()
   set excludePath to "/tmp/backup_exclude_" & (do shell script "echo $RANDOM")
   set excludeContent to ""
-  
+
   repeat with pattern in excludePatterns
     set excludeContent to excludeContent & pattern & return
   end repeat
-  
+
   do shell script "echo " & quoted form of excludeContent & " > " & quoted form of excludePath
   return excludePath
 end createExcludeFile

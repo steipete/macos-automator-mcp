@@ -1,5 +1,5 @@
 ---
-title: 'iOS Simulator: Simulate Shake Gesture'
+title: "iOS Simulator: Simulate Shake Gesture"
 category: 13_developer
 id: ios_simulator_shake_gesture
 description: Simulates device shake gesture in iOS Simulator.
@@ -36,7 +36,7 @@ on simulateShakeGesture(deviceIdentifier, intensity)
   if deviceIdentifier is missing value or deviceIdentifier is "" then
     set deviceIdentifier to "booted"
   end if
-  
+
   -- Default intensity to 3 (medium) if not specified or invalid
   if intensity is missing value or intensity is "" then
     set intensity to 3
@@ -50,7 +50,7 @@ on simulateShakeGesture(deviceIdentifier, intensity)
       set intensity to 3
     end try
   end if
-  
+
   try
     -- Check if device exists and is booted
     if deviceIdentifier is not "booted" then
@@ -61,11 +61,11 @@ on simulateShakeGesture(deviceIdentifier, intensity)
         return "error: Device '" & deviceIdentifier & "' not found. Use 'booted' for the currently booted device, or check available devices."
       end try
     end if
-    
+
     -- There are multiple ways to trigger shake:
     -- 1. Use simctl directly - most reliable when available
     set shakeSuccess to false
-    
+
     -- Try direct simctl command (newer Xcode versions)
     try
       set shakeCmd to "xcrun simctl shake " & quoted form of deviceIdentifier
@@ -75,13 +75,13 @@ on simulateShakeGesture(deviceIdentifier, intensity)
       -- Command may not exist in older Xcode versions
       set shakeSuccess to false
     end try
-    
+
     -- If direct command failed, try UI automation approach
     if not shakeSuccess then
       -- Make sure simulator is running and frontmost
       tell application "Simulator" to activate
       delay 0.5
-      
+
       -- Try sending keyboard shortcut Ctrl+Cmd+Z which triggers shake in the simulator
       try
         tell application "System Events"
@@ -104,12 +104,12 @@ on simulateShakeGesture(deviceIdentifier, intensity)
         end try
       end try
     end if
-    
+
     -- For intensity > 3, simulate multiple shakes
     if intensity > 3 and shakeSuccess then
       -- Number of repeated shakes based on intensity
       set shakeCount to intensity - 2
-      
+
       repeat (shakeCount) times
         delay 0.3
         -- Repeat the most successful method
@@ -127,7 +127,7 @@ on simulateShakeGesture(deviceIdentifier, intensity)
         end if
       end repeat
     end if
-    
+
     if shakeSuccess then
       set intensityText to ""
       if intensity is 1 then
@@ -141,7 +141,7 @@ on simulateShakeGesture(deviceIdentifier, intensity)
       else
         set intensityText to "very strong"
       end if
-      
+
       return "Successfully simulated " & intensityText & " shake gesture on " & deviceIdentifier & " simulator.
 
 This simulates the user shaking the device, which can trigger:

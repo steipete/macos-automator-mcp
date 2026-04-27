@@ -1,5 +1,5 @@
 ---
-title: 'Core: Name Reference Form'
+title: "Core: Name Reference Form"
 category: 02_as_core
 id: core_reference_name
 description: >-
@@ -32,14 +32,14 @@ tell application "Finder"
     -- Make sure a file named "MyTestDocument.txt" exists on your Desktop for this to work
     -- You might need to create it first for a successful run.
     -- set testFile to make new file at desktop with properties {name:"MyTestDocument.txt"}
-    
+
     set myDoc to file "MyTestDocument.txt" of desktop
     set docName to name of myDoc
     set docKind to kind of myDoc
-    
+
     -- Clean up (optional)
     -- delete myDoc
-    
+
   on error errMsg
     set docName to "(Error: Ensure 'MyTestDocument.txt' exists on Desktop)"
     set docKind to errMsg
@@ -82,4 +82,5 @@ return "Document Name (Finder): " & docName & ¬
   "\nFront Document Name (TextEdit): " & frontDocName & ¬
   "\nWindow Title (System Events/Safari): " & windowTitle
 ```
-END_TIP 
+
+END_TIP

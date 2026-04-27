@@ -64,14 +64,14 @@ app.includeStandardAdditions = true;
 
 // Try to get text from clipboard
 try {
-    const clipboardText = app.theClipboard();
-    if (clipboardText && clipboardText.length > 0) {
-        console.log("Clipboard contains text: " + clipboardText);
-    } else {
-        console.log("Clipboard is empty or doesn't contain text");
-    }
+  const clipboardText = app.theClipboard();
+  if (clipboardText && clipboardText.length > 0) {
+    console.log("Clipboard contains text: " + clipboardText);
+  } else {
+    console.log("Clipboard is empty or doesn't contain text");
+  }
 } catch (error) {
-    console.log("Clipboard doesn't contain text data");
+  console.log("Clipboard doesn't contain text data");
 }
 ```
 

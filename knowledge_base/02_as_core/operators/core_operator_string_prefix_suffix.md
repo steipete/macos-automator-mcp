@@ -1,8 +1,8 @@
 ---
-title: 'Core: String Prefix/Suffix Operators'
+title: "Core: String Prefix/Suffix Operators"
 category: 02_as_core
 id: core_operator_string_prefix_suffix
-description: 'Covers string operators like ''starts with'', ''ends with'', and their negations.'
+description: "Covers string operators like 'starts with', 'ends with', and their negations."
 keywords:
   - operator
   - string
@@ -49,4 +49,5 @@ return "Starts with Apple: " & startsWithApple & ¬
   "\nStarts with Apple (lower, case-sensitive): " & startsWithAppleCaseSens & ¬
   "\nEnds with guide (lower, case-sensitive): " & endsWithGuideCaseSens
 ```
-END_TIP 
+
+END_TIP

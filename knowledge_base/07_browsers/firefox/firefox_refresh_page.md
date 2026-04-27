@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Refresh Current Page'
+title: "Firefox: Refresh Current Page"
 category: 07_browsers
 id: firefox_refresh_page
 description: Refreshes (reloads) the current page in Firefox.
@@ -24,19 +24,19 @@ This script refreshes the current page in Firefox. It uses System Events to send
 on run {input, parameters}
   -- Default to standard refresh
   set forceRefresh to false
-  
+
   -- Check if input parameter requests force refresh
   if input is not {} then
     if input as string is "force" then
       set forceRefresh to true
     end if
   end if
-  
+
   tell application "Firefox"
     activate
     delay 0.3 -- Allow Firefox to activate
   end tell
-  
+
   tell application "System Events"
     tell process "Firefox"
       if forceRefresh then
@@ -48,7 +48,7 @@ on run {input, parameters}
       end if
     end tell
   end tell
-  
+
   if forceRefresh then
     return "Force refreshed the current Firefox page (bypassing cache)"
   else
@@ -65,12 +65,12 @@ This version includes a parameter that can be used to specify whether to perform
 on run {input, parameters}
   -- Get the refresh type (normal/force)
   set refreshType to "--MCP_INPUT:refreshType"
-  
+
   tell application "Firefox"
     activate
     delay 0.3 -- Allow Firefox to activate
   end tell
-  
+
   tell application "System Events"
     tell process "Firefox"
       if refreshType is "force" then

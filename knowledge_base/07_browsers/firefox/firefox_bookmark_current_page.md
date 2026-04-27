@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Bookmark Current Page'
+title: "Firefox: Bookmark Current Page"
 category: 07_browsers
 id: firefox_bookmark_current_page
 description: >-
@@ -27,15 +27,15 @@ on run {input, parameters}
   -- Get parameters (optional)
   set bookmarkFolder to "--MCP_INPUT:folder"
   set bookmarkTags to "--MCP_INPUT:tags"
-  
+
   -- If no folder specified, use the default
   if bookmarkFolder is "" then set bookmarkFolder to "Other Bookmarks"
-  
+
   tell application "Firefox"
     activate
     delay 0.3 -- Allow Firefox to activate
   end tell
-  
+
   -- First get the current page title before bookmarking
   set pageTitle to ""
   tell application "System Events"
@@ -44,7 +44,7 @@ on run {input, parameters}
       set pageTitle to name of frontWindow
     end tell
   end tell
-  
+
   -- Use keyboard shortcut to bookmark the current page (Command+D)
   tell application "System Events"
     tell process "Firefox"
@@ -52,7 +52,7 @@ on run {input, parameters}
       delay 0.5 -- Wait for bookmark dialog
     end tell
   end tell
-  
+
   -- Interact with the bookmark dialog
   tell application "System Events"
     tell process "Firefox"
@@ -64,7 +64,7 @@ on run {input, parameters}
           set folderMenuButton to button 1 of group 1 of window 1
           click folderMenuButton
           delay 0.3
-          
+
           -- Try to find and select the specified folder
           -- This is a simplified approach - in reality you might need more complex
           -- UI navigating to find the exact menu item
@@ -79,7 +79,7 @@ on run {input, parameters}
           end try
           delay 0.3
         end if
-        
+
         -- Optional: Add tags if specified
         if bookmarkTags is not "" then
           -- Tab to the tags field and enter tags
@@ -90,11 +90,11 @@ on run {input, parameters}
           keystroke bookmarkTags
           delay 0.2
         end if
-        
+
         -- Click Done to save the bookmark
         keystroke return -- Submit the dialog
         delay 0.5
-        
+
         return "Bookmarked \"" & pageTitle & "\""
       else
         return "Bookmark dialog didn't appear or was already bookmarked"
@@ -114,22 +114,22 @@ on run
     activate
     delay 0.3 -- Allow Firefox to activate
   end tell
-  
+
   -- Use keyboard shortcut to bookmark the current page (Command+D)
   tell application "System Events"
     tell process "Firefox"
       -- Get window title for result message
       set windowTitle to name of front window
-      
+
       -- Use bookmark shortcut
       keystroke "d" using {command down}
       delay 0.5 -- Wait for bookmark dialog
-      
+
       -- Press Return to accept the default options
       keystroke return
     end tell
   end tell
-  
+
   return "Bookmarked the current page in Firefox"
 end run
 ```
@@ -144,7 +144,7 @@ on run
     activate
     delay 0.5 -- Allow Firefox to activate fully
   end tell
-  
+
   tell application "System Events"
     tell process "Firefox"
       -- Try to find and click the star/bookmark button in the toolbar
@@ -152,7 +152,7 @@ on run
         -- Look for the bookmark/star button in the toolbar
         -- This assumes the button is visible in the UI
         set toolbarGroups to groups of toolbar 1 of front window
-        
+
         repeat with grp in toolbarGroups
           try
             -- Look for a button that might be the bookmark star
@@ -161,7 +161,7 @@ on run
               if description of btn contains "Bookmark" or description of btn contains "star" then
                 click btn
                 delay 0.5 -- Wait for bookmark dialog
-                
+
                 -- Press Return to accept the default options
                 keystroke return
                 return "Bookmarked the current page using toolbar button"
@@ -169,19 +169,19 @@ on run
             end repeat
           end try
         end repeat
-        
+
         -- If we couldn't find the button, fall back to keyboard shortcut
         keystroke "d" using {command down}
         delay 0.5
         keystroke return
-        
+
       on error
         -- Fall back to keyboard shortcut if UI approach fails
         keystroke "d" using {command down}
         delay 0.5
         keystroke return
       end try
-      
+
       return "Bookmarked the current page in Firefox"
     end tell
   end tell

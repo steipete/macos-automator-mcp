@@ -4,7 +4,7 @@ title: Complete To-Dos in Things
 description: Use AppleScript to mark to-dos as completed in Things app
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, complete, done'
+tags: "things, productivity, task management, complete, done"
 keywords:
   - completion
   - task status
@@ -64,7 +64,7 @@ on completeThingsToDo(todoIdentifier, identifierType)
             on error
                 return "Error: To-do with ID " & todoIdentifier & " not found"
             end try
-            
+
         else if identifierType is "name" then
             -- Find by name (first exact match)
             set matchingToDos to to dos where name is todoIdentifier
@@ -74,19 +74,19 @@ on completeThingsToDo(todoIdentifier, identifierType)
             else
                 return "Error: No to-do found with name: " & todoIdentifier
             end if
-            
+
         else if identifierType is "tag" then
             -- Complete all with tag
             set taggedToDos to to dos where tag names contains todoIdentifier
             set completedCount to 0
-            
+
             repeat with t in taggedToDos
                 set status of t to completed
                 set completedCount to completedCount + 1
             end repeat
-            
+
             return "Completed " & completedCount & " to-do(s) with tag: " & todoIdentifier
-            
+
         else
             return "Error: Invalid identifier type. Use 'id', 'name', or 'tag'."
         end if

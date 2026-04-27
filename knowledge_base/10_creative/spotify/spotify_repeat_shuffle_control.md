@@ -1,5 +1,5 @@
 ---
-title: 'Spotify: Repeat and Shuffle Control'
+title: "Spotify: Repeat and Shuffle Control"
 category: 10_creative
 id: spotify_repeat_shuffle_control
 description: Control Spotify's repeat and shuffle settings via AppleScript.
@@ -69,12 +69,12 @@ tell application "Spotify"
   if not running then
     return "Spotify is not running. Please launch it first."
   end if
-  
+
   try
     -- Store initial values for reporting
     set initialRepeatState to repeating
     set initialShuffleState to shuffling
-    
+
     -- Execute the requested action
     if actionParam is "toggle_repeat" then
       set repeating to not repeating
@@ -93,36 +93,36 @@ tell application "Spotify"
         set shuffling to false
       end if
     end if
-    
+
     -- Get current states after any changes
     set currentRepeatState to repeating
     set currentShuffleState to shuffling
-    
+
     -- Prepare status strings
     if currentRepeatState then
       set repeatStatus to "on"
     else
       set repeatStatus to "off"
     end if
-    
+
     if currentShuffleState then
       set shuffleStatus to "on"
     else
       set shuffleStatus to "off"
     end if
-    
+
     -- Report on actions taken and current status
     set resultMessage to "Current Spotify Playback Settings:\n"
     set resultMessage to resultMessage & "- Repeat: " & repeatStatus & "\n"
     set resultMessage to resultMessage & "- Shuffle: " & shuffleStatus
-    
+
     if actionParam is not "get_status" then
       set resultMessage to resultMessage & "\n\nAction Performed: " & actionParam
-      
+
       if actionParam is "set_repeat" or actionParam is "set_shuffle" then
         set resultMessage to resultMessage & " to " & valueParam
       end if
-      
+
       -- For toggle actions, report the state change
       if actionParam is "toggle_repeat" then
         set resultMessage to resultMessage & "\nRepeat changed from " & (initialRepeatState as text) & " to " & (currentRepeatState as text)
@@ -130,16 +130,16 @@ tell application "Spotify"
         set resultMessage to resultMessage & "\nShuffle changed from " & (initialShuffleState as text) & " to " & (currentShuffleState as text)
       end if
     end if
-    
+
     -- Get current track info if playing
     if player state is playing then
       set trackName to name of current track
       set artistName to artist of current track
       set resultMessage to resultMessage & "\n\nCurrently Playing: " & trackName & " by " & artistName
     end if
-    
+
     return resultMessage
-    
+
   on error errMsg number errNum
     return "Error controlling Spotify settings (" & errNum & "): " & errMsg
   end try

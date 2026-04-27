@@ -5,7 +5,7 @@ description: >-
   AppleScript function to identify which process is using a specific TCP port
   and optionally terminate it.
 language: applescript
-compatibility: 'macOS Sonoma, Ventura, Monterey, Big Sur, Catalina'
+compatibility: "macOS Sonoma, Ventura, Monterey, Big Sur, Catalina"
 author: Claude
 tags:
   - network
@@ -176,7 +176,7 @@ sample_snippets:
       end findProcessByPort
 arguments:
   - name: portNumber
-    description: 'The TCP port number to check (e.g., 8080)'
+    description: "The TCP port number to check (e.g., 8080)"
     type: number
     required: true
   - name: shouldKill
@@ -191,32 +191,32 @@ category: 12_network
 -- Find which process is using a specific port and optionally kill it
 on findProcessByPort(portNumber, shouldKill)
     set portNumber to portNumber as string
-    
+
     try
         -- Check if any process is using this port
         set portCheckCommand to "lsof -nP -iTCP:" & portNumber & " -sTCP:LISTEN"
         set portCheckResult to do shell script portCheckCommand
-        
+
         -- Extract PID and process name directly from lsof output
         -- Format the command to extract both in one go to avoid empty result issues
         set pidAndName to do shell script "echo " & quoted form of portCheckResult & " | awk 'NR>1 {print $2 \"|\" $1}' | head -1"
-        
+
         -- Split the result to get PID and process name
         set AppleScript's text item delimiters to "|"
         set pidAndNameItems to text items of pidAndName
         set pid to item 1 of pidAndNameItems
         set processName to item 2 of pidAndNameItems
         set AppleScript's text item delimiters to ""
-        
+
         -- Create result message
         set resultMessage to "Port " & portNumber & " is being used by " & processName & " (PID: " & pid & ")"
-        
+
         -- Kill the process if requested
         if shouldKill is true then
             do shell script "kill -9 " & pid
             set resultMessage to resultMessage & ". Process has been terminated."
         end if
-        
+
         return resultMessage
     on error errorMessage
         if errorMessage contains "pattern not found" or errorMessage contains "not a valid process ID" then

@@ -1,5 +1,5 @@
 ---
-title: 'Music: Repeat and Shuffle Control'
+title: "Music: Repeat and Shuffle Control"
 category: 10_creative
 id: music_repeat_shuffle_control
 description: Control Apple Music's repeat and shuffle settings via AppleScript.
@@ -71,13 +71,13 @@ tell application "Music"
   if not running then
     return "Music app is not running. Please launch it first."
   end if
-  
+
   try
     -- Store initial values for reporting
     set initialSongRepeat to song repeat
     set initialShuffleEnabled to shuffle enabled
     set initialShuffleMode to shuffle mode
-    
+
     -- Execute the requested action
     if actionParam is "toggle_repeat" then
       -- Cycle through off -> one -> all -> off
@@ -88,11 +88,11 @@ tell application "Music"
       else
         set song repeat to off
       end if
-      
+
     else if actionParam is "toggle_shuffle" then
       -- Toggle shuffle on/off
       set shuffle enabled to not shuffle enabled
-      
+
     else if actionParam is "set_repeat" then
       -- Set specific repeat mode
       if valueParam is "off" then
@@ -102,7 +102,7 @@ tell application "Music"
       else if valueParam is "all" then
         set song repeat to all
       end if
-      
+
     else if actionParam is "set_shuffle" then
       -- Set specific shuffle state
       if valueParam is "on" then
@@ -111,12 +111,12 @@ tell application "Music"
         set shuffle enabled to false
       end if
     end if
-    
+
     -- Get current states after any changes
     set currentSongRepeat to song repeat
     set currentShuffleEnabled to shuffle enabled
     set currentShuffleMode to shuffle mode
-    
+
     -- Prepare status strings
     if currentSongRepeat is off then
       set repeatStatus to "off"
@@ -127,7 +127,7 @@ tell application "Music"
     else
       set repeatStatus to "unknown"
     end if
-    
+
     if currentShuffleEnabled then
       if currentShuffleMode is songs then
         set shuffleStatus to "on (songs)"
@@ -141,23 +141,23 @@ tell application "Music"
     else
       set shuffleStatus to "off"
     end if
-    
+
     -- Report on actions taken and current status
     set resultMessage to "Current Apple Music Playback Settings:\n"
     set resultMessage to resultMessage & "- Repeat: " & repeatStatus & "\n"
     set resultMessage to resultMessage & "- Shuffle: " & shuffleStatus
-    
+
     if actionParam is not "get_status" then
       set resultMessage to resultMessage & "\n\nAction Performed: " & actionParam
-      
+
       if actionParam is "set_repeat" or actionParam is "set_shuffle" then
         set resultMessage to resultMessage & " to " & valueParam
       end if
-      
+
       -- For toggle actions, report the state change
       if actionParam is "toggle_repeat" then
         set resultMessage to resultMessage & "\nRepeat changed from "
-        
+
         if initialSongRepeat is off then
           set resultMessage to resultMessage & "off"
         else if initialSongRepeat is one then
@@ -165,19 +165,19 @@ tell application "Music"
         else if initialSongRepeat is all then
           set resultMessage to resultMessage & "all tracks"
         end if
-        
+
         set resultMessage to resultMessage & " to " & repeatStatus
       else if actionParam is "toggle_shuffle" then
         set resultMessage to resultMessage & "\nShuffle changed from "
-        
+
         if initialShuffleEnabled then
           set resultMessage to resultMessage & "on"
         else
           set resultMessage to resultMessage & "off"
         end if
-        
+
         set resultMessage to resultMessage & " to "
-        
+
         if currentShuffleEnabled then
           set resultMessage to resultMessage & "on"
         else
@@ -185,18 +185,18 @@ tell application "Music"
         end if
       end if
     end if
-    
+
     -- Get current track info if playing
     if player state is playing or player state is paused then
       set trackName to name of current track
       set artistName to artist of current track
       set playerStateText to player state as text
-      
+
       set resultMessage to resultMessage & "\n\nCurrently " & playerStateText & ": " & trackName & " by " & artistName
     end if
-    
+
     return resultMessage
-    
+
   on error errMsg number errNum
     return "Error controlling Music settings (" & errNum & "): " & errMsg
   end try

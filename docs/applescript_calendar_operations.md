@@ -21,8 +21,8 @@ tell application "Calendar"
   tell calendar 1
     make new event with properties {
       summary: eventTitle,
-      start date: eventStartDate, 
-      end date: eventEndDate, 
+      start date: eventStartDate,
+      end date: eventEndDate,
       description: eventNotes
     }
   end tell
@@ -32,7 +32,7 @@ end tell
 on makeDate(dateStr, timeStr)
   set {year:y, month:m, day:d} to {text 1 thru 4 of dateStr, text 6 thru 7 of dateStr, text 9 thru 10 of dateStr}
   set {hour:h, minute:min} to {text 1 thru 2 of timeStr, text 4 thru 5 of timeStr}
-  
+
   set dateObj to current date
   set year of dateObj to y as integer
   set month of dateObj to m as integer
@@ -40,7 +40,7 @@ on makeDate(dateStr, timeStr)
   set hours of dateObj to h as integer
   set minutes of dateObj to min as integer
   set seconds of dateObj to 0
-  
+
   return dateObj
 end makeDate
 ```
@@ -54,17 +54,17 @@ tell application "Calendar"
   set hours of todayStart to 0
   set minutes of todayStart to 0
   set seconds of todayStart to 0
-  
+
   -- Set end time to end of today
   set todayEnd to todayStart + (24 * 60 * 60) -- Add seconds in a day
-  
+
   -- Get events from all calendars
   set todaysEvents to {}
   repeat with currentCal in calendars
     set calEvents to events of currentCal whose start date is greater than or equal to todayStart and start date is less than todayEnd
     set todaysEvents to todaysEvents & calEvents
   end repeat
-  
+
   -- Create a summary of events
   set eventSummary to "Today's events (" & (count of todaysEvents) & " total):" & return
   repeat with thisEvent in todaysEvents
@@ -73,7 +73,7 @@ tell application "Calendar"
     set eventSummary to eventSummary & return & ¬
       time string of eventStart & " - " & eventTitle
   end repeat
-  
+
   return eventSummary
 end tell
 ```
@@ -83,7 +83,7 @@ end tell
 ```applescript
 tell application "Calendar"
   set defaultCal to calendar "Work"
-  
+
   tell defaultCal
     -- Create the event
     set newMeeting to make new event with properties {
@@ -92,13 +92,13 @@ tell application "Calendar"
       end date: (current date) + (25 * 60 * 60), -- Tomorrow + 1 hour
       location: "Conference Room A"
     }
-    
+
     -- Add an alarm 15 minutes before
     tell newMeeting
       make new display alarm at end of display alarms with properties {
         trigger interval: -15 * minutes
       }
-      
+
       -- Add attendees (requires properly configured Mail)
       make new attendee at end of attendees with properties {
         email: "colleague@example.com"

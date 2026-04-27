@@ -1,5 +1,5 @@
 ---
-title: 'Mail: Save Attachments from Selected Email'
+title: "Mail: Save Attachments from Selected Email"
 category: 09_productivity
 id: mail_save_attachments
 description: Extracts and saves all attachments from selected email messages in Mail.app
@@ -12,7 +12,7 @@ keywords:
   - extract
 language: applescript
 isComplex: true
-argumentsPrompt: 'Provide a save path as ''savePath'' in inputData (optional, defaults to Desktop)'
+argumentsPrompt: "Provide a save path as 'savePath' in inputData (optional, defaults to Desktop)"
 notes: |
   - Extracts attachments from currently selected emails in Mail.app
   - By default saves to Desktop, but a custom path can be specified
@@ -43,36 +43,36 @@ end getDefaultSavePath
 on sanitizeFilename(filename)
   set invalidChars to {":", "/", "\\", "*", "?", "\"", "<", ">", "|"}
   set sanitized to filename
-  
+
   repeat with invalidChar in invalidChars
     set AppleScript's text item delimiters to invalidChar
     set textItems to text items of sanitized
     set AppleScript's text item delimiters to "_"
     set sanitized to textItems as text
   end repeat
-  
+
   return sanitized
 end sanitizeFilename
 
 -- Main function to save attachments
 on saveAttachments(targetPath)
   set savePath to my getDefaultSavePath(targetPath)
-  
+
   tell application "Mail"
     try
       set selectedMessages to selection
       if (count of selectedMessages) is 0 then
         return "Error: No messages selected. Please select one or more messages in Mail.app"
       end if
-      
+
       set savedAttachments to {}
       set totalSaved to 0
-      
+
       -- Process each selected message
       repeat with thisMessage in selectedMessages
         set messageSubject to subject of thisMessage
         set sanitizedSubject to my sanitizeFilename(messageSubject)
-        
+
         -- Get all attachments in this message
         set messageAttachments to mail attachments of content of thisMessage
         if (count of messageAttachments) > 0 then
@@ -80,7 +80,7 @@ on saveAttachments(targetPath)
           repeat with thisAttachment in messageAttachments
             set attachmentName to name of thisAttachment
             set sanitizedName to my sanitizeFilename(attachmentName)
-            
+
             -- Create a folder with the message subject if multiple messages selected
             if (count of selectedMessages) > 1 then
               -- Create folder for this message
@@ -89,17 +89,17 @@ on saveAttachments(targetPath)
             else
               set attachmentPath to savePath & sanitizedName
             end if
-            
+
             -- Save the attachment
             save thisAttachment in (POSIX file attachmentPath)
-            
+
             -- Log the saved attachment
             copy attachmentPath to end of savedAttachments
             set totalSaved to totalSaved + 1
           end repeat
         end if
       end repeat
-      
+
       -- Format the result
       if totalSaved is 0 then
         return "No attachments found in the selected message(s)"
@@ -107,7 +107,7 @@ on saveAttachments(targetPath)
         set resultText to "Saved " & totalSaved & " attachment"
         if totalSaved > 1 then set resultText to resultText & "s"
         set resultText to resultText & " to " & savePath
-        
+
         if totalSaved ≤ 5 then
           -- List the files if there aren't too many
           set resultText to resultText & ":" & return
@@ -115,7 +115,7 @@ on saveAttachments(targetPath)
             set resultText to resultText & "- " & item i of savedAttachments & return
           end repeat
         end if
-        
+
         return resultText
       end if
     on error errMsg
@@ -128,6 +128,7 @@ return my saveAttachments("--MCP_INPUT:savePath")
 ```
 
 This script:
+
 1. Extracts all attachments from currently selected emails in Mail.app
 2. Saves them to the specified location (or Desktop by default)
 3. Creates subfolders based on email subjects when multiple messages are selected

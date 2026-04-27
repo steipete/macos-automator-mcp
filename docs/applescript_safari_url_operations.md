@@ -13,7 +13,7 @@ on openInSafariNewTab(theURL)
       delay 1 -- Give Safari time to launch
     end if
     activate
-    
+
     -- Open in new window if no windows exist, or new tab if windows already open
     if (count of windows) is 0 then
       make new document with properties {URL:theURL}
@@ -37,11 +37,11 @@ tell application "Safari"
   if not running then
     return "Safari is not running"
   end if
-  
+
   if (count of windows) is 0 then
     return "No Safari windows are open"
   end if
-  
+
   set currentURL to URL of current tab of front window
   return currentURL
 end tell
@@ -60,16 +60,16 @@ end tell
 ```applescript
 tell application "Safari"
   activate
-  
+
   -- Open multiple websites in new tabs
   set siteList to {"https://apple.com", "https://developer.apple.com", "https://support.apple.com"}
-  
+
   repeat with currentSite in siteList
     tell front window
       make new tab with properties {URL:currentSite}
     end tell
   end repeat
-  
+
   -- Switch to the first tab we created
   tell front window
     set current tab to tab 2 -- Tab 1 is the original tab

@@ -1,5 +1,5 @@
 ---
-title: 'Core: Reference Operator (''a reference to'')'
+title: "Core: Reference Operator ('a reference to')"
 category: 02_as_core
 id: core_operator_reference_to
 description: >-
@@ -63,4 +63,5 @@ return "myVar (after ref change): " & myVar & ¬
   "\nmyRecord (after ref change): " & myRecord & ¬
   "\ncounter (after ref handler): " & counter
 ```
-END_TIP 
+
+END_TIP

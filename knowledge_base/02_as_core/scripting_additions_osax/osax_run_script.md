@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: run script Command'
+title: "StandardAdditions: run script Command"
 category: 02_as_core
 id: osax_run_script
 description: >-
@@ -98,4 +98,5 @@ end try
 
 return "Result from file: " & result1 & "\n\nResult from object: " & result2
 ```
-END_TIP 
+
+END_TIP

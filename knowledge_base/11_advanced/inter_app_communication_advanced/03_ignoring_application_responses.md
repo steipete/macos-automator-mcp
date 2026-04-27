@@ -1,5 +1,5 @@
 ---
-title: 'Advanced: ''ignoring application responses'' Block'
+title: "Advanced: 'ignoring application responses' Block"
 category: 11_advanced
 id: advanced_ignoring_responses
 description: >-
@@ -53,38 +53,38 @@ set statusLog to ""
 tell application "TextEdit"
   -- Without ignoring responses, each `make new document` would wait for completion.
   -- With `ignoring application responses`, AppleScript sends the commands and moves on.
-  
+
   ignoring application responses
     try
       make new document with properties {text: "Document 1 - Sent without waiting"}
       set statusLog to statusLog & "Sent command to create Document 1.\n"
-      
+
       make new document with properties {text: "Document 2 - Also sent without waiting"}
       set statusLog to statusLog & "Sent command to create Document 2.\n"
-      
+
       -- Even if an error occurred here (e.g., trying to access a non-existent document),
       -- the script might not immediately halt or report it *outside* the tell block.
       -- set text of document 99 to "This will likely fail silently inside ignore block"
-      
+
     on error eMsg number eNum
-      -- This error block within the ignoring block might not be hit reliably 
+      -- This error block within the ignoring block might not be hit reliably
       -- if the error is from the target app not responding quickly enough.
       set statusLog to statusLog & "Error inside ignoring block (unlikely to be caught for app errors): " & eMsg & "\n"
     end try
   end ignoring
-  
+
   set statusLog to statusLog & "Commands sent. TextEdit might still be processing.\n"
-  
+
   -- Give TextEdit a moment to process the commands sent without waiting
   delay 1 -- This delay is outside the `ignoring` block
-  
+
   try
     set docCount to count of documents
     set statusLog to statusLog & "TextEdit now has " & docCount & " documents.\n"
   on error e
     set statusLog to statusLog & "Could not get document count: " & e & "\n"
   end try
-  
+
 end tell
 
 -- Example of where it's useful: telling multiple apps to quit
@@ -108,4 +108,5 @@ if quitStatus is "" then set quitStatus to "(Quit example not run)"
 
 return statusLog & "\n" & quitStatus
 ```
-END_TIP 
+
+END_TIP

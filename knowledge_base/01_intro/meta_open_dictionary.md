@@ -1,5 +1,5 @@
 ---
-title: 'Meta: Exploring Application Scriptability (Open Dictionary)'
+title: "Meta: Exploring Application Scriptability (Open Dictionary)"
 category: 01_intro
 id: meta_open_dictionary
 description: >-
@@ -26,15 +26,17 @@ The key to automating any macOS application with AppleScript is understanding it
 
 **What You'll See:**
 The dictionary window opens, typically showing:
--   **Suites:** Groups of related commands and objects (e.g., "Standard Suite", "Text Suite", application-specific suites).
--   **Commands:** Verbs or actions the application can perform (e.g., `open`, `close`, `make new`, `get`, `set`, `delete`). Each command will list its parameters and what it returns.
--   **Classes (Objects):** Nouns or things the application works with (e.g., `window`, `document`, `tab`, `event`, `message`, `file`, `folder`). Each class will list:
-    -   `Elements`: Other objects it can contain (e.g., a `window` contains `tabs`).
-    -   `Properties`: Attributes of the object (e.g., a `tab` has a `URL` property and a `name` property).
+
+- **Suites:** Groups of related commands and objects (e.g., "Standard Suite", "Text Suite", application-specific suites).
+- **Commands:** Verbs or actions the application can perform (e.g., `open`, `close`, `make new`, `get`, `set`, `delete`). Each command will list its parameters and what it returns.
+- **Classes (Objects):** Nouns or things the application works with (e.g., `window`, `document`, `tab`, `event`, `message`, `file`, `folder`). Each class will list:
+  - `Elements`: Other objects it can contain (e.g., a `window` contains `tabs`).
+  - `Properties`: Attributes of the object (e.g., a `tab` has a `URL` property and a `name` property).
 
 **Using the Dictionary:**
--   Click on a command or class to see its detailed description, parameters (for commands), and properties/elements (for classes).
--   This is your primary reference for figuring out *how* to tell an application to do something.
+
+- Click on a command or class to see its detailed description, parameters (for commands), and properties/elements (for classes).
+- This is your primary reference for figuring out _how_ to tell an application to do something.
 
 ```applescript
 (*
@@ -59,5 +61,6 @@ tell application "Safari"
 end tell
 *)
 ```
+
 **Note:** Not all applications are scriptable, and some have more extensive dictionaries than others. "System Events" has a very large dictionary for UI scripting and process control.
-END_TIP 
+END_TIP

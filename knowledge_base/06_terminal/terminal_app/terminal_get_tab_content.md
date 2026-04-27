@@ -1,5 +1,5 @@
 ---
-title: 'Terminal: Get Current Tab Content'
+title: "Terminal: Get Current Tab Content"
 id: terminal_get_tab_content
 category: 06_terminal
 description: >-
@@ -21,10 +21,12 @@ isComplex: false
 This script fetches all the text currently displayed in the active tab of the frontmost `Terminal.app` window, including its scrollback history.
 
 **Usage:**
+
 - Useful for capturing the state of a terminal session.
 - Can be used to read the output of commands that have already been run.
 
 **Important Notes:**
+
 - `Terminal.app` must be running and have an active window.
 - The script will target the selected tab of the frontmost window.
 
@@ -35,7 +37,7 @@ on runWithInput(inputData, legacyArguments)
         if not (exists window 1) then
             return "Error: Terminal.app has no windows open."
         end if
-        
+
         try
             set frontWindow to window 1
             set currentTab to selected tab of frontWindow
@@ -47,4 +49,5 @@ on runWithInput(inputData, legacyArguments)
     end tell
 end runWithInput
 ```
---- 
+
+---

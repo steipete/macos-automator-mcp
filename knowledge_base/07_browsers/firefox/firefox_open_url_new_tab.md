@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Open URL in New Tab'
+title: "Firefox: Open URL in New Tab"
 category: 07_browsers
 id: firefox_open_url_new_tab
 description: Opens a specified URL in a new tab in Firefox.
@@ -21,20 +21,21 @@ This script opens a new tab in Firefox and loads a specified URL. Since Firefox 
 ```applescript
 on run {input, parameters}
   set theURL to "--MCP_INPUT:url"
-  
+
   tell application "Firefox"
     activate
     delay 0.5 -- Allow Firefox to activate
-    
+
     -- Open a new tab using keyboard shortcut
     tell application "System Events" to keystroke "t" using command down
     delay 0.5 -- Allow the tab to open
-    
+
     -- Now load the URL
     OpenURL theURL
   end tell
-  
+
   return "Opened " & theURL & " in a new Firefox tab"
 end run
 ```
+
 END_TIP

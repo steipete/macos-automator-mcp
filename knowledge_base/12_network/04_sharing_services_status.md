@@ -30,12 +30,12 @@ This script demonstrates how to manage macOS sharing services like File Sharing,
 -- 1. Check status of sharing services
 on getServicesStatus()
   set statusReport to "macOS Sharing Services Status:" & return & return
-  
+
   try
     -- Check Remote Login (SSH) status
     set sshStatus to do shell script "systemsetup -getremotelogin"
     set statusReport to statusReport & "• Remote Login (SSH): " & sshStatus & return & return
-    
+
     -- Check Screen Sharing (VNC) status
     set screenSharingStatus to "Unknown"
     try
@@ -46,7 +46,7 @@ on getServicesStatus()
       set screenSharingStatus to "Off"
     end try
     set statusReport to statusReport & "• Screen Sharing (VNC): " & screenSharingStatus & return & return
-    
+
     -- Check File Sharing (SMB) status
     set smbStatus to "Unknown"
     try
@@ -57,7 +57,7 @@ on getServicesStatus()
       set smbStatus to "Off"
     end try
     set statusReport to statusReport & "• File Sharing (SMB): " & smbStatus & return & return
-    
+
     -- Check Remote Management (Apple Remote Desktop) status
     set ardStatus to "Unknown"
     try
@@ -68,7 +68,7 @@ on getServicesStatus()
       set ardStatus to "Off"
     end try
     set statusReport to statusReport & "• Remote Management (ARD): " & ardStatus & return & return
-    
+
     -- Check Remote Apple Events status
     set raeStatus to "Unknown"
     try
@@ -78,14 +78,14 @@ on getServicesStatus()
       set raeStatus to "Error getting Remote Apple Events status"
     end try
     set statusReport to statusReport & "• Remote Apple Events: " & raeStatus & return & return
-    
+
     -- Get computer name and sharing name
     set computerName to do shell script "scutil --get ComputerName"
     set localHostName to do shell script "scutil --get LocalHostName"
-    
+
     set statusReport to statusReport & "Computer Name: " & computerName & return
     set statusReport to statusReport & "Local Network Name: " & localHostName & return
-    
+
     return statusReport
   on error errMsg
     return "Error getting services status: " & errMsg
@@ -103,7 +103,7 @@ on toggleRemoteLogin(enableService)
       set toggleCmd to "systemsetup -setremotelogin off"
       set resultMsg to "Remote Login (SSH) has been disabled."
     end if
-    
+
     do shell script toggleCmd with administrator privileges
     return resultMsg
   on error errMsg
@@ -122,7 +122,7 @@ on toggleScreenSharing(enableService)
       set toggleCmd to "launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist"
       set resultMsg to "Screen Sharing has been disabled."
     end if
-    
+
     do shell script toggleCmd with administrator privileges
     return resultMsg
   on error errMsg
@@ -141,7 +141,7 @@ on toggleFileSharing(enableService)
       set toggleCmd to "launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist"
       set resultMsg to "File Sharing has been disabled."
     end if
-    
+
     do shell script toggleCmd with administrator privileges
     return resultMsg
   on error errMsg
@@ -155,22 +155,22 @@ on setComputerNames(newComputerName, newLocalHostName)
     -- Set Computer Name (user-friendly name)
     set computerNameCmd to "scutil --set ComputerName " & quoted form of newComputerName
     do shell script computerNameCmd with administrator privileges
-    
+
     -- Set Local Network Name (Bonjour name for sharing)
     -- Convert to valid hostname (alphanumeric and hyphen only, no spaces)
     if newLocalHostName is missing value or newLocalHostName is "" then
       set newLocalHostName to newComputerName
     end if
-    
+
     -- Replace spaces and special characters with hyphens
     set validHostname to do shell script "echo " & quoted form of newLocalHostName & " | tr -c 'a-zA-Z0-9-' '-'"
     set localHostNameCmd to "scutil --set LocalHostName " & quoted form of validHostname
     do shell script localHostNameCmd with administrator privileges
-    
+
     -- Also set the HostName (mainly used for Terminal/command line)
     set hostNameCmd to "scutil --set HostName " & quoted form of validHostname
     do shell script hostNameCmd with administrator privileges
-    
+
     return "Computer Name changed to: " & newComputerName & return & ¬
       "Local Host Name changed to: " & validHostname
   on error errMsg
@@ -214,14 +214,16 @@ This comprehensive script provides several functions for managing macOS sharing 
    - Ensures host names are valid (removing special characters)
 
 Security Considerations:
+
 - Only enable services you actively need
 - Disable sharing services when not in use, especially in public networks
 - Remote Login (SSH) should only be enabled with strong password or key authentication
 - Screen Sharing gives full graphical access to your Mac
 
 This script is especially useful for:
+
 - Setting up new Macs with consistent sharing configurations
 - Creating automated workflows that need to toggle services
 - System administration and remote management
 - Security protocols that require controlled access to services
-END_TIP
+  END_TIP

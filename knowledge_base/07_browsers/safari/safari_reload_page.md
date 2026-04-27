@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Reload Page'
+title: "Safari: Reload Page"
 category: 07_browsers
 id: safari_reload_page
 description: Reloads (refreshes) the current page in the active Safari tab.
@@ -28,13 +28,13 @@ on run
   if not application "Safari" is running then
     return "error: Safari is not running."
   end if
-  
+
   tell application "Safari"
     try
       if (count of documents) is 0 then
         return "error: No documents open in Safari."
       end if
-      
+
       tell front document
         set currentURL to URL
         reload

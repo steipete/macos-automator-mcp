@@ -1,5 +1,5 @@
 ---
-title: 'Core: Relative Reference Form'
+title: "Core: Relative Reference Form"
 category: 02_as_core
 id: core_reference_relative
 description: >-
@@ -42,11 +42,11 @@ tell application "Finder"
   try
     set desktopPath to path to desktop
     -- Ensure FolderB exists on the desktop relative to other folders
-    set folderB to folder "FolderB" of desktopPath 
-    
+    set folderB to folder "FolderB" of desktopPath
+
     set folderAfterB to folder after folderB -- e.g., FolderC
     set folderBeforeB to folder before folderB -- e.g., FolderA
-    
+
     set finderResult to "Folder after FolderB: " & (name of folderAfterB) & ¬
       ", Folder before FolderB: " & (name of folderBeforeB)
   on error errMsg
@@ -76,4 +76,5 @@ return "Item after 30: " & itemAfterRef & ¬
   "\nParagraph after P2: " & paraAfterTwo & ¬
   "\nError message: " & errorMsg
 ```
-END_TIP 
+
+END_TIP

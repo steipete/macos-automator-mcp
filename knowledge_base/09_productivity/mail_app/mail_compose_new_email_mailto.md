@@ -1,5 +1,5 @@
 ---
-title: 'Mail: Compose New Email (via mailto URL)'
+title: "Mail: Compose New Email (via mailto URL)"
 category: 09_productivity
 id: mail_compose_new_email_mailto
 description: >-
@@ -39,10 +39,10 @@ on createMailToURL(toAddress, mailSubject, mailBody)
 
   set encodedSubject to my urlEncode(theSubject)
   set encodedBody to my urlEncode(theBody)
-  
+
   -- Construct the mailto URL
   set mailtoURL to "mailto:" & toAddress & "?subject=" & encodedSubject & "&body=" & encodedBody
-  
+
   try
     -- Use Mail's 'open location' (which handles mailto) or 'mailto' command
     tell application "Mail"
@@ -88,4 +88,5 @@ end urlEncode
 
 return my createMailToURL("--MCP_INPUT:recipient", "--MCP_INPUT:subject", "--MCP_INPUT:body")
 ```
-END_TIP 
+
+END_TIP

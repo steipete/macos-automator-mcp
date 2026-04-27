@@ -17,12 +17,14 @@ This knowledge base provides AppleScript and JXA examples for macOS automation.
 
 **Querying Tips:**
 Use the `get_scripting_tips` tool:
+
 - To list all categories: `{"toolName": "macos_automator:get_scripting_tips", "arguments": { "input": { "listCategories": true } } }`
 - For tips in a specific category (e.g., "finder"): `{"toolName": "macos_automator:get_scripting_tips", "arguments": { "input": { "category": "finder" } } }`
 - To search for a term (e.g., "URL" in "safari" category): `{"toolName": "macos_automator:get_scripting_tips", "arguments": { "input": { "category": "safari", "searchTerm": "URL" } } }`
 
 **Executing Scripts:**
 Use the `execute_script` tool:
+
 1.  **Inline Script:** Provide code in `scriptContent`.
     ```json
     {
@@ -36,7 +38,7 @@ Use the `execute_script` tool:
       "toolName": "macos_automator:execute_script",
       "arguments": {
         "input": {
-          "knowledgeBaseScriptId": "safari_get_front_tab_url",
+          "knowledgeBaseScriptId": "safari_get_front_tab_url"
           // "inputData": { "someKey": "someValue" } // If the KB script expects it
         }
       }
@@ -46,9 +48,10 @@ Use the `execute_script` tool:
 3.  **From File:** Provide an absolute `scriptPath` to a file on the server.
 
 **Placeholder Conventions for KB Scripts:**
+
 - Use `--MCP_INPUT:yourKeyName` for values from the `inputData` object.
 - Use `--MCP_ARG_1`, `--MCP_ARG_2` for values from the `arguments` array.
-The server will substitute these before execution. Values are generally escaped as AppleScript strings.
+  The server will substitute these before execution. Values are generally escaped as AppleScript strings.
 
 ```applescript
 -- This is a conceptual example, not a runnable script.
@@ -70,4 +73,5 @@ on runWithInput(inputData, argsList)
   end tell
 end runWithInput
 ```
+
 END_TIP

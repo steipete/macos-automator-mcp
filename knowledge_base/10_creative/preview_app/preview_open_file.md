@@ -1,5 +1,5 @@
 ---
-title: 'Preview: Open File'
+title: "Preview: Open File"
 category: 10_creative
 id: preview_open_file
 description: Opens a specified file in the Preview application.
@@ -21,20 +21,20 @@ on run {filePath}
     if filePath is "" or filePath is missing value then
       set filePath to "--MCP_INPUT:filePath"
     end if
-    
+
     -- Convert to POSIX file if it's not already
     if filePath does not start with "/" then
       return "Error: Please provide a valid absolute POSIX path starting with /"
     end if
-    
+
     set fileToOpen to POSIX file filePath
-    
+
     tell application "Preview"
       activate
       open fileToOpen
       return "File opened successfully in Preview: " & filePath
     end tell
-    
+
   on error errMsg number errNum
     if errNum is -43 then
       return "Error: File not found at path: " & filePath
@@ -44,4 +44,5 @@ on run {filePath}
   end try
 end run
 ```
+
 END_TIP

@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Inject JavaScript'
+title: "Safari: Inject JavaScript"
 category: 07_browsers
 id: safari_inject_script
 description: >-
@@ -58,7 +58,7 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
   if (scriptCode is missing value or scriptCode is "") and (scriptUrl is missing value or scriptUrl is "") then
     return "error: Either script code or script URL must be provided."
   end if
-  
+
   -- Set default for persistent flag
   set shouldPersist to false
   if persistent is not missing value and persistent is not "" then
@@ -66,10 +66,10 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
       set shouldPersist to true
     end if
   end if
-  
+
   -- Prepare the JavaScript to be injected
   set injectionJS to ""
-  
+
   -- Handle loading external script if URL is provided
   if scriptUrl is not missing value and scriptUrl is not "" then
     set injectionJS to "
@@ -84,7 +84,7 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
             document.head.appendChild(script);
           });
         }
-        
+
         // Load the external script
         try {
           loadScript('" & scriptUrl & "')
@@ -101,7 +101,7 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
       })();
     "
   end if
-  
+
   -- If direct script code is provided, add it to the injection
   if scriptCode is not missing value and scriptCode is not "" then
     -- Prepare the direct script code
@@ -116,7 +116,7 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
       })();
     "
   end if
-  
+
   -- Add persistence code if requested
   if shouldPersist then
     set persistCode to "
@@ -124,18 +124,18 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
       (function setupPersistence() {
         // Create a unique ID for our injected script to avoid duplicates
         const scriptId = 'safari-injected-script-' + Math.random().toString(36).substring(2);
-        
+
         // Create a flag on window to track if we've already set up persistence
         if (window._safariScriptInjectionObserver) {
           console.log('Persistence observer already exists');
           return;
         }
-        
+
         // Function to re-inject our code when DOM changes
         const reInjectOnChange = function() {
           // Store our code in sessionStorage for re-injection
           sessionStorage.setItem(scriptId, `" & my escapeForJS(injectionJS) & "`);
-          
+
           // Set up a MutationObserver to watch for DOM changes
           const observer = new MutationObserver((mutations) => {
             // Throttle execution to avoid excessive re-runs
@@ -153,18 +153,18 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
               }, 1000);
             }
           });
-          
+
           // Start observing
           observer.observe(document.body, {
             childList: true,
             subtree: true
           });
-          
+
           // Store the observer for reference
           window._safariScriptInjectionObserver = observer;
           console.log('Persistence observer set up for injected script');
         };
-        
+
         // Call immediately and also set up to run when page is fully loaded
         reInjectOnChange();
         if (document.readyState === 'complete') {
@@ -174,28 +174,28 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
         }
       })();
     "
-    
+
     -- Add the persistence code to our injection
     set injectionJS to injectionJS & persistCode
   end if
-  
+
   -- Execute the prepared JavaScript in Safari
   tell application "Safari"
     if not running then
       return "error: Safari is not running."
     end if
-    
+
     try
       if (count of windows) is 0 or (count of tabs of front window) is 0 then
         return "error: No tabs open in Safari."
       end if
-      
+
       set currentTab to current tab of front window
       set pageUrl to URL of currentTab
-      
+
       -- Execute the JavaScript
       set jsResult to do JavaScript injectionJS in currentTab
-      
+
       -- Handle the result
       if jsResult is missing value then
         if scriptUrl is not missing value and scriptUrl is not "" then
@@ -203,7 +203,7 @@ on injectJavaScript(scriptCode, scriptUrl, persistent)
         else
           set successMsg to "Successfully injected JavaScript code"
         end if
-        
+
         if shouldPersist then
           return successMsg & " with persistence enabled."
         else
@@ -228,7 +228,7 @@ on escapeForJS(jsCode)
   set escapedCode to my replaceText(escapedCode, "\"", "\\\"")
   -- Replace backticks
   set escapedCode to my replaceText(escapedCode, "`", "\\`")
-  
+
   return escapedCode
 end escapeForJS
 

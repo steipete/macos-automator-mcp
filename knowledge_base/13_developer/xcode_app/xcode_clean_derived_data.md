@@ -1,5 +1,5 @@
 ---
-title: 'Xcode: Clean Derived Data and Module Cache'
+title: "Xcode: Clean Derived Data and Module Cache"
 category: 13_developer
 id: xcode_clean_derived_data
 description: Cleans Xcode's derived data and module cache to fix common build issues.
@@ -37,7 +37,7 @@ on cleanXcodeDerivedData(keepDocumentation)
   else if keepDocumentation is "false" then
     set keepDocumentation to false
   end if
-  
+
   -- Quit Xcode if it's running
   set isXcodeRunning to false
   try
@@ -46,7 +46,7 @@ on cleanXcodeDerivedData(keepDocumentation)
         set isXcodeRunning to true
       end if
     end tell
-    
+
     if isXcodeRunning then
       tell application "Xcode" to quit
       delay 2 -- Wait for Xcode to quit properly
@@ -54,11 +54,11 @@ on cleanXcodeDerivedData(keepDocumentation)
   on error errMsg
     display dialog "Error checking if Xcode is running: " & errMsg
   end try
-  
+
   -- Build the paths to clean
   set derivedDataPath to (path to home folder as text) & "Library:Developer:Xcode:DerivedData"
   set modulesCachePath to (path to home folder as text) & "Library:Developer:Xcode:DerivedData:ModuleCache"
-  
+
   -- Clean Derived Data
   try
     do shell script "rm -rf " & quoted form of (POSIX path of derivedDataPath)
@@ -67,7 +67,7 @@ on cleanXcodeDerivedData(keepDocumentation)
     set deletedDerivedData to false
     display dialog "Error deleting Derived Data: " & errMsg
   end try
-  
+
   -- Clean Module Cache
   try
     do shell script "rm -rf " & quoted form of (POSIX path of modulesCachePath)
@@ -76,7 +76,7 @@ on cleanXcodeDerivedData(keepDocumentation)
     set deletedModuleCache to false
     display dialog "Error deleting Module Cache: " & errMsg
   end try
-  
+
   -- Clean the LLVM module cache as well
   try
     do shell script "rm -rf \"$(getconf DARWIN_USER_CACHE_DIR)/org.llvm.clang/ModuleCache\""
@@ -85,7 +85,7 @@ on cleanXcodeDerivedData(keepDocumentation)
     set deletedLLVMCache to false
     display dialog "Error deleting LLVM Module Cache: " & errMsg
   end try
-  
+
   -- Optionally clean documentation cache
   set deletedDocsCache to "skipped (per user request)"
   if not keepDocumentation then
@@ -98,7 +98,7 @@ on cleanXcodeDerivedData(keepDocumentation)
       display dialog "Error deleting Documentation Cache: " & errMsg
     end try
   end if
-  
+
   -- Return results summary
   set resultText to "
 Xcode Cleanup Results:
@@ -110,7 +110,7 @@ Documentation Cache: " & deletedDocsCache & "
 
 If Xcode was running, it has been closed and you'll need to relaunch it.
 The next time you open a project, Xcode will rebuild its indexes."
-  
+
   return resultText
 end cleanXcodeDerivedData
 

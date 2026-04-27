@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Capture Screenshot'
+title: "Chrome: Capture Screenshot"
 category: 07_browsers
 id: chrome_capture_screenshot
 description: >-
@@ -50,42 +50,42 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
     set userHome to POSIX path of (path to home folder)
     set outputPath to userHome & "Downloads/chrome_screenshot_" & my getTimestamp() & ".png"
   end if
-  
+
   if captureMode is missing value or captureMode is "" then
     set captureMode to "viewport"
   else
     set captureMode to my toLowerCase(captureMode)
   end if
-  
+
   -- Validate parameters
   if captureMode is not "fullpage" and captureMode is not "viewport" and captureMode is not "element" then
     return "error: Invalid captureMode. Use 'fullPage', 'viewport', or 'element'."
   end if
-  
+
   if captureMode is "element" and (elementSelector is missing value or elementSelector is "") then
     return "error: Element selector is required when using 'element' capture mode."
   end if
-  
+
   -- Make sure Chrome is running
   tell application "Google Chrome"
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure it's in the foreground
     activate
-    
+
     -- Generate a unique ID for this execution
     set executionId to "mcpScreenshot_" & (random number from 100000 to 999999) as string
-    
+
     -- Create JavaScript to capture the screenshot
     set captureScript to "
       (function() {
@@ -95,17 +95,17 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
             let screenshotData = null;
             let statusMessage = '';
             let errorMessage = null;
-            
+
             try {
               const captureMode = '" & captureMode & "';
               " & (if captureMode is "element" then "const elementSelector = '" & my escapeJSString(elementSelector) & "';" else "") & "
-              
+
               // Method 1: Try using the modern Capture API if available
               if (typeof CaptureController === 'function') {
                 try {
                   const controller = new CaptureController();
                   let options = { controller };
-                  
+
                   if (captureMode === 'fullpage') {
                     options.format = 'png';
                     options.captureBeyondViewport = true;
@@ -116,7 +116,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                     }
                     options.target = element;
                   }
-                  
+
                   const blob = await new Promise((resolve, reject) => {
                     if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
                       navigator.mediaDevices.getDisplayMedia({ preferCurrentTab: true })
@@ -138,14 +138,14 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                       reject(new Error('MediaDevices API not supported'));
                     }
                   });
-                  
+
                   const reader = new FileReader();
                   await new Promise((resolve, reject) => {
                     reader.onload = resolve;
                     reader.onerror = reject;
                     reader.readAsDataURL(blob);
                   });
-                  
+
                   screenshotData = reader.result.split(',')[1]; // Get base64 part
                   statusMessage = 'Screenshot captured using modern Capture API';
                   return { data: screenshotData, message: statusMessage };
@@ -154,12 +154,12 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                   // Continue to next method
                 }
               }
-              
+
               // Method 2: Try using DevTools Protocol if in DevTools context
               if (typeof chrome !== 'undefined' && chrome.debugger) {
                 try {
                   let captureParams = {};
-                  
+
                   if (captureMode === 'fullpage') {
                     captureParams = { format: 'png', captureBeyondViewport: true };
                   } else if (captureMode === 'element' && elementSelector) {
@@ -167,9 +167,9 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                     if (!element) {
                       throw new Error('Element not found with selector: ' + elementSelector);
                     }
-                    
+
                     const rect = element.getBoundingClientRect();
-                    captureParams = { 
+                    captureParams = {
                       format: 'png',
                       clip: {
                         x: rect.left,
@@ -183,7 +183,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                     // Viewport capture
                     captureParams = { format: 'png' };
                   }
-                  
+
                   const result = await new Promise((resolve) => {
                     chrome.debugger.sendCommand(
                       {tabId: chrome.devtools.inspectedWindow.tabId},
@@ -192,7 +192,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                       resolve
                     );
                   });
-                  
+
                   screenshotData = result.data;
                   statusMessage = 'Screenshot captured using DevTools Protocol';
                   return { data: screenshotData, message: statusMessage };
@@ -201,7 +201,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                   // Continue to next method
                 }
               }
-              
+
               // Method 3: HTML2Canvas fallback (viewport or element only)
               if (captureMode !== 'fullpage') {
                 // Dynamically load html2canvas if needed
@@ -214,7 +214,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                     document.head.appendChild(script);
                   });
                 }
-                
+
                 let targetElement = document;
                 if (captureMode === 'element' && elementSelector) {
                   targetElement = document.querySelector(elementSelector);
@@ -224,7 +224,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                 } else {
                   targetElement = document.documentElement;
                 }
-                
+
                 const canvas = await html2canvas(targetElement, {
                   scale: window.devicePixelRatio,
                   useCORS: true,
@@ -232,12 +232,12 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                   allowTaint: true,
                   foreignObjectRendering: true
                 });
-                
+
                 screenshotData = canvas.toDataURL('image/png').split(',')[1];
                 statusMessage = 'Screenshot captured using html2canvas';
                 return { data: screenshotData, message: statusMessage };
               }
-              
+
               // Method 4: Full page using canvas and scrolling (for fullpage only)
               if (captureMode === 'fullpage') {
                 const fullHeight = Math.max(
@@ -245,42 +245,42 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                   document.body.offsetHeight, document.documentElement.offsetHeight,
                   document.body.clientHeight, document.documentElement.clientHeight
                 );
-                
+
                 const fullWidth = Math.max(
                   document.body.scrollWidth, document.documentElement.scrollWidth,
                   document.body.offsetWidth, document.documentElement.offsetWidth,
                   document.body.clientWidth, document.documentElement.clientWidth
                 );
-                
+
                 const viewportHeight = window.innerHeight;
                 const viewportWidth = window.innerWidth;
-                
+
                 // Create canvas large enough for the entire page
                 const canvas = document.createElement('canvas');
                 canvas.width = fullWidth * window.devicePixelRatio;
                 canvas.height = fullHeight * window.devicePixelRatio;
                 const ctx = canvas.getContext('2d');
                 ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                
+
                 // Save current scroll position
                 const originalScrollPos = { x: window.scrollX, y: window.scrollY };
-                
+
                 // Function to capture visible portion
                 const captureViewport = () => {
                   return new Promise(resolve => {
                     setTimeout(() => {
                       ctx.drawImage(
-                        document.documentElement, 
-                        window.scrollX, window.scrollY, 
-                        viewportWidth, viewportHeight, 
-                        window.scrollX, window.scrollY, 
+                        document.documentElement,
+                        window.scrollX, window.scrollY,
+                        viewportWidth, viewportHeight,
+                        window.scrollX, window.scrollY,
                         viewportWidth, viewportHeight
                       );
                       resolve();
                     }, 100); // Small delay to allow rendering
                   });
                 };
-                
+
                 // Iterate through the page and capture each viewport
                 for (let y = 0; y < fullHeight; y += viewportHeight) {
                   for (let x = 0; x < fullWidth; x += viewportWidth) {
@@ -288,15 +288,15 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
                     await captureViewport();
                   }
                 }
-                
+
                 // Restore original scroll position
                 window.scrollTo(originalScrollPos.x, originalScrollPos.y);
-                
+
                 screenshotData = canvas.toDataURL('image/png').split(',')[1];
                 statusMessage = 'Full page screenshot captured using canvas';
                 return { data: screenshotData, message: statusMessage };
               }
-              
+
               throw new Error('No screenshot capture method was successful');
             } catch (err) {
               errorMessage = err.message || 'Unknown error capturing screenshot';
@@ -304,7 +304,7 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
               return { error: true, message: errorMessage };
             }
           }
-          
+
           // Execute the screenshot capture and store result
           captureScreenshot().then(result => {
             // Store result in sessionStorage with the unique ID
@@ -317,9 +317,9 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
             }));
             console.error('Failed to capture screenshot:', err);
           });
-          
-          return { 
-            status: 'pending', 
+
+          return {
+            status: 'pending',
             message: 'Screenshot capture initiated. Retrieving result with ID: " & executionId & "',
             executionId: '" & executionId & "'
           };
@@ -328,10 +328,10 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
         }
       })();
     "
-    
+
     -- Execute the first script to initiate screenshot capture
     set captureInitResult to execute active tab of front window javascript captureScript
-    
+
     -- Prepare script to retrieve the screenshot data
     set retrieveScript to "
       (function() {
@@ -345,36 +345,36 @@ on captureScreenshotInChrome(outputPath, captureMode, elementSelector)
         }
       })();
     "
-    
+
     -- Poll for the screenshot result with timeout
     set maxAttempts to 60 -- 30 seconds max wait time
     set attemptCounter to 0
     set screenshotData to ""
-    
+
     repeat
       delay 0.5
       set attemptCounter to attemptCounter + 1
       set resultCheck to execute active tab of front window javascript retrieveScript
-      
+
       -- If we got a result back with data, we're done
       if resultCheck is not missing value and resultCheck contains "data" then
         -- Extract the base64 data
         set screenshotData to extractFromJSON(resultCheck, "data")
         exit repeat
       end if
-      
+
       -- If there was an error, report it
       if resultCheck is not missing value and resultCheck contains "error" then
         set errorMsg to extractFromJSON(resultCheck, "message")
         return "error: Screenshot capture failed - " & errorMsg
       end if
-      
+
       -- Timeout check
       if attemptCounter ≥ maxAttempts then
         return "error: Timed out waiting for screenshot capture to complete."
       end if
     end repeat
-    
+
     -- If we have screenshot data, save it to file
     if screenshotData is not "" then
       try
@@ -392,11 +392,11 @@ end captureScreenshotInChrome
 -- Helper function to extract values from JSON string
 on extractFromJSON(jsonStr, key)
   set jsonText to jsonStr as text
-  
+
   -- Simple pattern matching to extract the value
   set pattern to "\"" & key & "\"\\s*:\\s*\"([^\"]*)\"" -- For string values
   set regexCmd to "echo " & quoted form of jsonText & " | grep -o '" & pattern & "' | sed 's/.*: \"\\(.*\\)\"/\\1/'"
-  
+
   try
     set valueStr to do shell script regexCmd
     return valueStr
@@ -404,7 +404,7 @@ on extractFromJSON(jsonStr, key)
     -- Try non-string pattern (for numbers, booleans, etc.)
     set pattern to "\"" & key & "\"\\s*:\\s*([^,\\}\\s][^,\\}]*)"
     set regexCmd to "echo " & quoted form of jsonText & " | grep -o '" & pattern & "' | sed 's/.*: \\(.*\\)/\\1/'"
-    
+
     try
       set valueStr to do shell script regexCmd
       return valueStr
@@ -435,7 +435,7 @@ on getTimestamp()
   if min < 10 then set min to "0" & min
   set s to seconds of currentDate as integer
   if s < 10 then set s to "0" & s
-  
+
   return y & m & d & "_" & h & min & s
 end getTimestamp
 
@@ -444,18 +444,18 @@ on toLowerCase(inputString)
   set upperChars to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   set lowerChars to "abcdefghijklmnopqrstuvwxyz"
   set outputString to ""
-  
+
   repeat with i from 1 to length of inputString
     set currentChar to character i of inputString
     set charIndex to offset of currentChar in upperChars
-    
+
     if charIndex > 0 then
       set outputString to outputString & character charIndex of lowerChars
     else
       set outputString to outputString & currentChar
     end if
   end repeat
-  
+
   return outputString
 end toLowerCase
 
@@ -475,4 +475,5 @@ end escapeJSString
 
 return my captureScreenshotInChrome("--MCP_INPUT:outputPath", "--MCP_INPUT:captureMode", "--MCP_INPUT:selector")
 ```
+
 END_TIP

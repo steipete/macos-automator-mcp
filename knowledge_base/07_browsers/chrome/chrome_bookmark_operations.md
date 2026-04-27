@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Bookmark Operations'
+title: "Chrome: Bookmark Operations"
 category: 07_browsers
 id: chrome_bookmark_operations
 description: >-
@@ -41,19 +41,19 @@ on bookmarkCurrentPage(folderPath)
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     set currentTab to active tab of front window
     set pageURL to URL of currentTab
     set pageTitle to title of currentTab
-    
+
     if folderPath is missing value or folderPath is "" then
       -- Add to Bookmarks Bar (default location)
       try
@@ -80,7 +80,7 @@ on bookmarkCurrentPage(folderPath)
         function addBookmarkToFolder(url, title, folderPath) {
           // Split the path into folder names
           const folderNames = folderPath.split('/');
-          
+
           // Get all bookmark folders
           function findFolder(bookmarkNodes, path) {
             for (let node of bookmarkNodes) {
@@ -92,7 +92,7 @@ on bookmarkCurrentPage(folderPath)
                     return findFolder(node.children, path.slice(1));
                   }
                 }
-                
+
                 // Try to find the folder in this node's children
                 const result = findFolder(node.children, path);
                 if (result) return result;
@@ -100,11 +100,11 @@ on bookmarkCurrentPage(folderPath)
             }
             return null; // Folder not found
           }
-          
+
           // Get bookmarks and add the new bookmark
           chrome.bookmarks.getTree(function(tree) {
             const targetFolder = findFolder(tree, folderNames);
-            
+
             if (targetFolder) {
               chrome.bookmarks.create({
                 'parentId': targetFolder.id,
@@ -123,17 +123,17 @@ on bookmarkCurrentPage(folderPath)
               });
             }
           });
-          
+
           return 'Processing bookmark...';
         }
-        
+
         addBookmarkToFolder('" & pageURL & "', '" & my escapeJSString(pageTitle) & "', '" & my escapeJSString(folderPath) & "');
       "
-      
+
       try
         -- Execute the JavaScript and check for results
         execute active tab of front window javascript jsCode
-        
+
         -- Wait for the operation to complete (check for title change)
         set maxWait to 5 -- Maximum wait time in seconds
         set startTime to current date
@@ -142,19 +142,19 @@ on bookmarkCurrentPage(folderPath)
           set currentTitle to title of active tab of front window
           if currentTitle starts with "BOOKMARK_ADDED:" then
             set folderAdded to text 16 thru -1 of currentTitle
-            
+
             -- Restore the original tab title with JavaScript
             execute active tab of front window javascript "document.title = '" & my escapeJSString(pageTitle) & "';"
-            
+
             return "Successfully added \"" & pageTitle & "\" to \"" & folderAdded & "\" folder."
           end if
-          
+
           -- Check timeout
           if ((current date) - startTime) > maxWait then
             exit repeat
           end if
         end repeat
-        
+
         -- If we got here, operation may have succeeded but we couldn't confirm
         return "Bookmark operation completed, but couldn't confirm the target folder."
       on error errMsg
@@ -180,4 +180,5 @@ end escapeJSString
 
 return my bookmarkCurrentPage("--MCP_INPUT:folderPath")
 ```
+
 END_TIP

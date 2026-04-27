@@ -1,10 +1,15 @@
 // src/types.ts
-export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
 export interface ScriptExecutionOptions {
-  language?: 'applescript' | 'javascript';
+  language?: "applescript" | "javascript";
   timeoutMs?: number;
-  output_format_mode?: 'auto' | 'human_readable' | 'structured_error' | 'structured_output_and_error' | 'direct';
+  output_format_mode?:
+    | "auto"
+    | "human_readable"
+    | "structured_error"
+    | "structured_output_and_error"
+    | "direct";
   arguments?: string[]; // For script files executed via path
 }
 
@@ -68,7 +73,7 @@ export interface ExecuteScriptInput {
    */
   report_execution_time?: boolean;
   /**
-   * Controls the output formatting flags for osascript. 
+   * Controls the output formatting flags for osascript.
    * 'auto': (Default) Uses human-readable for AppleScript, direct for JXA.
    * 'human_readable': Uses -s h.
    * 'structured_error': Uses -s s.
@@ -76,7 +81,12 @@ export interface ExecuteScriptInput {
    * 'direct': No -s flags.
    * @default auto
    */
-  output_format_mode?: 'auto' | 'human_readable' | 'structured_error' | 'structured_output_and_error' | 'direct';
+  output_format_mode?:
+    | "auto"
+    | "human_readable"
+    | "structured_error"
+    | "structured_output_and_error"
+    | "direct";
 }
 
 /**
@@ -100,9 +110,9 @@ export interface ScriptExecutorResult {
  */
 export interface ExecuteScriptResponse {
   content: Array<{
-    type: 'text';
+    type: "text";
     text: string;
   }>;
   isError?: boolean;
   [key: string]: unknown; // Required by MCP SDK for tool responses
-} 
+}

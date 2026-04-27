@@ -4,7 +4,7 @@ title: Create and Manage Tags in Things
 description: Use AppleScript to create and organize tags in Things app
 author: steipete
 language: applescript
-tags: 'things, productivity, task management, tags, organization'
+tags: "things, productivity, task management, tags, organization"
 keywords:
   - tagging
   - categorization
@@ -54,7 +54,7 @@ on manageThingsTags(operation, tagName, parentTagName)
         if operation is "create" then
             -- Create a new tag
             set tagProperties to {name:tagName}
-            
+
             -- Add parent tag if specified
             if parentTagName is not equal to "" then
                 try
@@ -69,7 +69,7 @@ on manageThingsTags(operation, tagName, parentTagName)
                     return "Error finding parent tag: " & errMsg
                 end try
             end if
-            
+
             -- Create the tag
             try
                 -- Check if tag already exists
@@ -83,7 +83,7 @@ on manageThingsTags(operation, tagName, parentTagName)
             on error errMsg
                 return "Error creating tag: " & errMsg
             end try
-            
+
         else if operation is "list" then
             -- List all tags or child tags of a parent
             if parentTagName is not equal to "" then
@@ -92,12 +92,12 @@ on manageThingsTags(operation, tagName, parentTagName)
                     if (count of parentTags) > 0 then
                         set parentTag to item 1 of parentTags
                         set childTags to tags where parent tag is parentTag
-                        
+
                         set tagList to {}
                         repeat with t in childTags
                             set end of tagList to name of t
                         end repeat
-                        
+
                         return tagList
                     else
                         return "Error: Parent tag '" & parentTagName & "' not found."
@@ -111,10 +111,10 @@ on manageThingsTags(operation, tagName, parentTagName)
                 repeat with t in tags
                     set end of tagList to name of t
                 end repeat
-                
+
                 return tagList
             end if
-            
+
         else if operation is "delete" then
             -- Delete a tag
             try
@@ -128,7 +128,7 @@ on manageThingsTags(operation, tagName, parentTagName)
             on error errMsg
                 return "Error deleting tag: " & errMsg
             end try
-            
+
         else
             return "Error: Unsupported operation. Use 'create', 'list', or 'delete'."
         end if

@@ -1,5 +1,5 @@
 ---
-title: 'Electron Editors: Get Editor Content via DevTools JS & Clipboard'
+title: "Electron Editors: Get Editor Content via DevTools JS & Clipboard"
 category: 08_editors
 id: electron_editors_get_content_via_js_clipboard
 description: >-
@@ -74,7 +74,7 @@ on getEditorContentViaJSClipboard(appName)
       delay 0.1
       key code 36 -- Execute JS (which copies editor content to clipboard)
       delay 0.8 -- Allow JS to run and clipboard to update
-      
+
       -- Close DevTools (optional, keeps things cleaner)
       -- key code 34 using {command down, option down}
     end tell
@@ -96,7 +96,7 @@ on getEditorContentViaJSClipboard(appName)
       -- set the clipboard to oldClipboard -- This might overwrite the result we want
     end try
   end if
-  
+
   -- Check if the clipboard content is one of our JS status messages
   if editorContent starts with "VSCODE_TEXT_COPIED" then
     return "Successfully triggered JS to copy content. The content should be on the clipboard now. This script will return the JS confirmation."
@@ -106,11 +106,12 @@ on getEditorContentViaJSClipboard(appName)
   else if editorContent starts with "ERROR:" then
     return "error: JavaScript execution reported an error: " & editorContent
   end if
-  
+
   return editorContent
 end getEditorContentViaJSClipboard
 
 return my getEditorContentViaJSClipboard("--MCP_INPUT:targetAppName")
 
 ```
+
 END_TIP

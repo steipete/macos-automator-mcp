@@ -39,6 +39,7 @@ The Mail Automation Script is divided into several specialized components:
 ## Key Features
 
 ### Email Composition and Sending
+
 - Create and send emails with full formatting options
 - Support for CC and BCC recipients
 - File attachments
@@ -46,6 +47,7 @@ The Mail Automation Script is divided into several specialized components:
 - Draft management
 
 ### Template System
+
 - Create and manage reusable email templates
 - Customizable placeholders for personalization
 - Save drafts as templates for future use
@@ -53,18 +55,21 @@ The Mail Automation Script is divided into several specialized components:
 - Placeholder auto-detection and filling
 
 ### Email Search and Organization
+
 - Advanced search with multiple criteria (subject, sender, recipient, content)
 - Date-based filtering
 - Account and folder specific searches
 - Limit search results for performance
 
 ### Batch Email Operations
+
 - Move messages between folders
 - Mark messages as read/unread
 - Archive messages automatically
 - Apply operations to search results
 
 ### Account and Folder Management
+
 - Support for multiple mail accounts
 - Folder navigation and selection
 - Signature management
@@ -73,6 +78,7 @@ The Mail Automation Script is divided into several specialized components:
 ## Prerequisites
 
 The script requires:
+
 - macOS with Apple Mail installed
 - Appropriate permissions to control Mail
 - For some operations, Mail needs to be the frontmost application

@@ -37,7 +37,7 @@ on run
 		-- Default values for interactive mode
 		set defaultSource to ""
 		set defaultDestination to ""
-		
+
 		return copyFiles(defaultSource, defaultDestination)
 	on error errMsg
 		return "Error: " & errMsg
@@ -49,16 +49,16 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set theSource to "--MCP_INPUT:source"
 	set theDestination to "--MCP_INPUT:destination"
-	
+
 	-- Validate parameters
 	if theSource is "" then
 		return "Error: Source path is required for copy operation."
 	end if
-	
+
 	if theDestination is "" then
 		return "Error: Destination path is required for copy operation."
 	end if
-	
+
 	return copyFiles(theSource, theDestination)
 end processMCPParameters
 
@@ -66,28 +66,28 @@ end processMCPParameters
 on copyFiles(sourcePath, destPath)
 	-- Check if source exists
 	set sourceExists to do shell script "[ -e " & quoted form of sourcePath & " ] && echo 'exists' || echo 'not exists'"
-	
+
 	if sourceExists is "not exists" then
 		return "Error: Source path does not exist: " & sourcePath
 	end if
-	
+
 	-- Check if source is a file or directory
 	set sourceType to do shell script "[ -d " & quoted form of sourcePath & " ] && echo 'directory' || echo 'file'"
-	
+
 	-- Construct the appropriate cp command
 	set cpCommand to "cp "
-	
+
 	if sourceType is "directory" then
 		set cpCommand to cpCommand & "-R " -- Recursive for directories
 	end if
-	
+
 	-- Add source and destination
 	set cpCommand to cpCommand & quoted form of sourcePath & " " & quoted form of destPath
-	
+
 	-- Execute the command
 	try
 		do shell script cpCommand
-		
+
 		if sourceType is "directory" then
 			return "Successfully copied directory from " & sourcePath & " to " & destPath
 		else
@@ -107,6 +107,7 @@ end copyFiles
 ## Example Usage
 
 ### Copy a single file
+
 ```json
 {
   "source": "/Users/username/Documents/file.txt",
@@ -115,6 +116,7 @@ end copyFiles
 ```
 
 ### Copy a directory
+
 ```json
 {
   "source": "/Users/username/Projects/myproject",
@@ -123,6 +125,7 @@ end copyFiles
 ```
 
 ### Copy with spaces in path
+
 ```json
 {
   "source": "/Users/username/My Documents/Important File.pdf",

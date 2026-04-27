@@ -33,7 +33,7 @@ This script implements the Pomodoro technique by setting a timer and automatical
 on run {input, parameters}
     set durationMinutes to "--MCP_INPUT:durationMinutes"
     set distractingApps to "--MCP_INPUT:distractingApps"
-    
+
     -- Set default duration if not specified
     if durationMinutes is "" or durationMinutes is missing value then
         set durationMinutes to 25
@@ -45,7 +45,7 @@ on run {input, parameters}
             return
         end try
     end if
-    
+
     -- Set default distracting apps if not specified
     if distractingApps is "" or distractingApps is missing value then
         set distractingAppsList to {"Mail", "Messages", "Slack", "Discord", "Twitter", "Music"}
@@ -55,10 +55,10 @@ on run {input, parameters}
         set distractingAppsList to text items of distractingApps
         set AppleScript's text item delimiters to ""
     end if
-    
+
     -- Store which apps were actually running
     set runningApps to {}
-    
+
     -- Check and quit distracting apps
     repeat with appName in distractingAppsList
         tell application "System Events"
@@ -68,7 +68,7 @@ on run {input, parameters}
             end if
         end tell
     end repeat
-    
+
     -- Enable Do Not Disturb (Big Sur and later)
     try
         tell application "System Events"
@@ -84,14 +84,14 @@ on run {input, parameters}
         -- No reliable AppleScript method for older versions
         log "Could not enable Do Not Disturb automatically"
     end try
-    
+
     -- Show start notification
     display notification "Focus session started for " & durationMinutes & " minutes" with title "Pomodoro Timer" sound name "Glass"
-    
+
     -- Set the timer
     set durationSeconds to durationMinutes * 60
     set endTime to (current date) + durationSeconds
-    
+
     -- Optional: Display a countdown (uncomment to use)
     --repeat while (current date) < endTime
     --    set timeLeft to endTime - (current date)
@@ -100,13 +100,13 @@ on run {input, parameters}
     --    -- Update display somehow (could use a dialog with a timeout)
     --    delay 1
     --end repeat
-    
+
     -- Wait for the timer to finish
     delay durationSeconds
-    
+
     -- Timer completed
     display notification "Time to take a break!" with title "Pomodoro Timer Completed" subtitle "You focused for " & durationMinutes & " minutes" sound name "Glass"
-    
+
     -- Disable Do Not Disturb (attempt for Big Sur and later)
     try
         tell application "System Events"
@@ -120,12 +120,12 @@ on run {input, parameters}
     on error
         log "Could not disable Do Not Disturb automatically"
     end try
-    
+
     -- Reopen apps that were closed
     repeat with appName in runningApps
         tell application appName to activate
     end repeat
-    
+
     return "Completed " & durationMinutes & " minute Pomodoro session"
 end run
 ```
@@ -135,6 +135,7 @@ end run
 The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks. Each interval is known as a "pomodoro," from the Italian word for tomato, after the tomato-shaped kitchen timer Cirillo used as a university student.
 
 The basic steps are:
+
 1. Decide on the task to be done
 2. Set the timer (traditionally to 25 minutes)
 3. Work on the task until the timer rings

@@ -1,5 +1,5 @@
 ---
-title: 'File Ops (No Finder): Write Text to File (Overwrite)'
+title: "File Ops (No Finder): Write Text to File (Overwrite)"
 category: 05_files
 id: fileops_write_text_file
 description: >-
@@ -47,4 +47,5 @@ end writeToFile
 
 return my writeToFile("--MCP_INPUT:filePath", "--MCP_INPUT:fileContent")
 ```
-END_TIP 
+
+END_TIP

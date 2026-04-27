@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Network Throttling'
+title: "Chrome: Network Throttling"
 category: 07_browsers
 id: chrome_network_throttling
 description: >-
@@ -52,25 +52,25 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure it's in the foreground
     activate
   end tell
-  
+
   -- Open DevTools and switch to Network panel
   tell application "System Events"
     tell process "Google Chrome"
       set frontmost to true
       delay 0.3
-      
+
       -- Check if DevTools is already open
       set devToolsOpen to false
       repeat with w in windows
@@ -79,19 +79,19 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
           exit repeat
         end if
       end repeat
-      
+
       -- Open DevTools if not already open
       if not devToolsOpen then
         key code 34 using {command down, option down} -- Option+Command+I
         delay 0.7
       end if
-      
+
       -- Switch to Network panel
       key code 45 using {command down, option down} -- Option+Command+N
       delay 0.5
     end tell
   end tell
-  
+
   -- Determine if using predefined profile or custom settings
   set useCustomProfile to false
   if profileName is missing value or profileName is "" then
@@ -107,7 +107,7 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
       set profileName to "Fast 3G"
     end if
   end if
-  
+
   -- Prepare the JavaScript for network throttling configuration
   set throttlingScript to "
     (function() {
@@ -118,24 +118,24 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
             // We're not in the DevTools context
             // Check if we can find DevTools elements in the DOM
             if (document.querySelector('.network-throttling-selector')) {
-              return { 
-                uiAvailable: true, 
-                programmaticAPI: false 
+              return {
+                uiAvailable: true,
+                programmaticAPI: false
               };
             }
-            return { 
-              error: true, 
-              message: 'Not in DevTools context and UI elements not found' 
+            return {
+              error: true,
+              message: 'Not in DevTools context and UI elements not found'
             };
           }
-          return { 
-            uiAvailable: false, 
-            programmaticAPI: true 
+          return {
+            uiAvailable: false,
+            programmaticAPI: true
           };
         }
-        
+
         const devToolsCheck = ensureDevToolsContext();
-        
+
         " & (if useCustomProfile then "
         // Custom throttling profile
         const customProfile = {
@@ -149,7 +149,7 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
         const profileName = '" & my escapeJSString(profileName) & "';
         let predefinedProfile;
         let profileDescription;
-        
+
         // Define the network conditions for predefined profiles
         switch (profileName.toLowerCase()) {
           case 'offline':
@@ -174,13 +174,13 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
             return { error: true, message: 'Unknown predefined profile: ' + profileName };
         }
         ") & "
-        
+
         // First attempt: Use DevTools API if available
         if (devToolsCheck.programmaticAPI) {
           if (typeof SDK !== 'undefined' && SDK.NetworkManager && SDK.NetworkManager.throttlingManager) {
             // Modern DevTools API approach
             const manager = SDK.NetworkManager.throttlingManager();
-            
+
             " & (if useCustomProfile then "
             // Apply custom profile
             manager.setCustomConditions(customProfile.latency, customProfile.downloadThroughput, customProfile.uploadThroughput);
@@ -204,66 +204,66 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
           } else if (typeof NetworkConditions !== 'undefined') {
             // Older DevTools API approach
             const conditions = " & (if useCustomProfile then "
-              new NetworkConditions(customProfile.latency, 
-                                  customProfile.downloadThroughput, 
+              new NetworkConditions(customProfile.latency,
+                                  customProfile.downloadThroughput,
                                   customProfile.uploadThroughput);
             " else "
-              new NetworkConditions(predefinedProfile.latency, 
-                                  predefinedProfile.downloadThroughput, 
-                                  predefinedProfile.uploadThroughput, 
+              new NetworkConditions(predefinedProfile.latency,
+                                  predefinedProfile.downloadThroughput,
+                                  predefinedProfile.uploadThroughput,
                                   predefinedProfile.offline);
             ") & "
-            
+
             NetworkConditions.setNetworkConditions(conditions);
             return { success: true, message: 'Applied network conditions using legacy API: ' + profileDescription };
           } else if (typeof Mobile !== 'undefined' && typeof Mobile.NetworkManager !== 'undefined') {
             // Alternative DevTools API path
             " & (if useCustomProfile then "
-            Mobile.NetworkManager.setNetworkConditions(customProfile.latency, 
-                                                   customProfile.downloadThroughput, 
+            Mobile.NetworkManager.setNetworkConditions(customProfile.latency,
+                                                   customProfile.downloadThroughput,
                                                    customProfile.uploadThroughput);
             " else "
-            Mobile.NetworkManager.setNetworkConditions(predefinedProfile.latency, 
-                                                   predefinedProfile.downloadThroughput, 
-                                                   predefinedProfile.uploadThroughput, 
+            Mobile.NetworkManager.setNetworkConditions(predefinedProfile.latency,
+                                                   predefinedProfile.downloadThroughput,
+                                                   predefinedProfile.uploadThroughput,
                                                    predefinedProfile.offline);
             ") & "
             return { success: true, message: 'Applied network conditions using Mobile API: ' + profileDescription };
           }
         }
-        
+
         // Second attempt: UI automation via JavaScript
         if (devToolsCheck.uiAvailable) {
           // Find and click the network throttling dropdown
           const throttlingSelector = document.querySelector('.network-throttling-selector');
           if (throttlingSelector) {
             throttlingSelector.click();
-            
+
             // Wait for dropdown menu to appear
             setTimeout(() => {
               // Look for the option matching our profile
               const menuItems = document.querySelectorAll('.toolbar-item');
               let found = false;
-              
+
               for (const item of menuItems) {
                 " & (if useCustomProfile then "
                 // For custom profile, look for "Custom..." option
                 if (item.textContent.includes('Custom')) {
                   item.click();
                   found = true;
-                  
+
                   // Wait for custom dialog
                   setTimeout(() => {
                     // Try to find input fields for custom values
                     const downloadInput = document.querySelector('[aria-label=\"Download\"]');
                     const uploadInput = document.querySelector('[aria-label=\"Upload\"]');
                     const latencyInput = document.querySelector('[aria-label=\"Latency\"]');
-                    
+
                     if (downloadInput && uploadInput && latencyInput) {
                       downloadInput.value = " & downloadKbps & ";
                       uploadInput.value = " & uploadKbps & ";
                       latencyInput.value = " & latencyMs & ";
-                      
+
                       // Find and click the Apply button
                       const buttons = document.querySelectorAll('button');
                       for (const button of buttons) {
@@ -287,16 +287,16 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
                 }
                 ") & "
               }
-              
+
               if (!found) {
                 console.error('Profile option not found in UI');
               }
             }, 200);
-            
+
             return { success: true, message: 'Attempted to set throttling via UI' };
           }
         }
-        
+
         // Third attempt: Inject a script tag with a workaround
         const scriptTag = document.createElement('script');
         scriptTag.textContent = `
@@ -315,11 +315,11 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
           console.log('Network throttling settings stored in window.__mcpNetworkThrottling');
         `;
         document.head.appendChild(scriptTag);
-        
-        return { 
-          partial: true, 
-          message: 'DevTools APIs not available. Instructions: manually select \"" & 
-          (if useCustomProfile then "Custom... > " & downloadKbps & "Kbps download, " & uploadKbps & "Kbps upload, " & latencyMs & "ms latency" else profileName) & 
+
+        return {
+          partial: true,
+          message: 'DevTools APIs not available. Instructions: manually select \"" &
+          (if useCustomProfile then "Custom... > " & downloadKbps & "Kbps download, " & uploadKbps & "Kbps upload, " & latencyMs & "ms latency" else profileName) &
           "\" from the network throttling dropdown in DevTools Network panel.'
         };
       } catch (e) {
@@ -327,12 +327,12 @@ on configureNetworkThrottling(profileName, downloadKbps, uploadKbps, latencyMs)
       }
     })();
   "
-  
+
   -- Execute the throttling script
   tell application "Google Chrome"
     try
       set throttlingResult to execute active tab of front window javascript throttlingScript
-      
+
       -- Check the result
       if throttlingResult contains "error" then
         return "error: " & throttlingResult
@@ -367,4 +367,5 @@ end escapeJSString
 
 return my configureNetworkThrottling("--MCP_INPUT:profile", "--MCP_INPUT:downloadKbps", "--MCP_INPUT:uploadKbps", "--MCP_INPUT:latencyMs")
 ```
+
 END_TIP

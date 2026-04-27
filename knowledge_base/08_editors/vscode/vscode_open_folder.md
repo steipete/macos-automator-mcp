@@ -27,7 +27,7 @@ This script opens a specified folder in Visual Studio Code. It requires VS Code'
 ```applescript
 on run {input, parameters}
     set folderPath to "--MCP_INPUT:folderPath"
-    
+
     -- Check if we have a path or if we should use the current Finder selection
     if folderPath is "" or folderPath is missing value then
         tell application "Finder"
@@ -40,13 +40,13 @@ on run {input, parameters}
             end if
         end tell
     end if
-    
+
     -- Ensure the path is properly quoted to handle spaces and special characters
     set quotedPath to quoted form of folderPath
-    
+
     -- Open the folder in VS Code
     do shell script "code " & quotedPath
-    
+
     return "Opened " & folderPath & " in VS Code"
 end run
 ```

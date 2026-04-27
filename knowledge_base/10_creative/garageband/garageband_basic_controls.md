@@ -1,5 +1,5 @@
 ---
-title: 'GarageBand: Basic Controls'
+title: "GarageBand: Basic Controls"
 category: 10_creative
 id: garageband_basic_controls
 description: >-
@@ -56,105 +56,105 @@ tell application "GarageBand"
   -- Activate GarageBand
   activate
   delay 0.5 -- Give time for GarageBand to come to foreground
-  
+
   -- Initialize result
   set resultText to ""
-  
+
   -- Use UI scripting for control
   tell application "System Events"
     tell process "GarageBand"
       -- Check if GarageBand has a window open
       if (count of windows) is 0 then
         set resultText to "GarageBand is running but no project is open."
-        
+
         -- Check if GarageBand has alert dialogs or modals open
         if (count of windows whose role is "AXSheet" or role is "AXDialog") > 0 then
           set resultText to resultText & " There appears to be a dialog box open that requires attention."
         end if
-        
+
         return resultText
       end if
-      
+
       -- Get the main window
       set mainWindow to window 1
-      
+
       -- Control playback using keyboard shortcuts
       try
         -- Return to beginning (Home key or Command+Left Arrow)
         keystroke home
         delay 0.2
-        
+
         -- Add to result
         set resultText to resultText & "Moved playhead to beginning. "
-        
+
         -- Play (Space bar)
         keystroke space
         delay 1 -- Let it play briefly
-        
+
         -- Add to result
         set resultText to resultText & "Started playback. "
-        
+
         -- Pause/Stop (Space bar again)
         keystroke space
         delay 0.2
-        
+
         -- Add to result
         set resultText to resultText & "Stopped playback. "
-        
+
         -- Forward a bit (Right arrow)
         key code 124 -- Right arrow
         delay 0.1
-        
+
         -- Add to result
         set resultText to resultText & "Moved playhead forward. "
-        
+
         -- Backward a bit (Left arrow)
         key code 123 -- Left arrow
         delay 0.1
-        
+
         -- Add to result
         set resultText to resultText & "Moved playhead backward. "
-        
+
         -- Toggle Record Mode (R key or Command+R)
         keystroke "r"
         delay 0.2
-        
+
         -- Add to result
         set resultText to resultText & "Toggled record mode. "
-        
+
         -- Toggle it back off
         keystroke "r"
         delay 0.2
-        
+
         -- Get project info if possible
         try
           -- This is challenging with GarageBand's limited scripting
           set projectInfo to ""
-          
+
           -- Try to get title from window
           set windowTitle to title of mainWindow
           if windowTitle is not "" then
             set projectInfo to "Current project: " & windowTitle
           end if
-          
+
           if projectInfo is not "" then
             set resultText to resultText & projectInfo
           end if
         on error
           -- Ignore errors in getting project info
         end try
-        
+
       on error controlErr
         set resultText to resultText & "Error performing controls: " & controlErr
       end try
     end tell
   end tell
-  
+
   -- Format the final result
   set finalResult to "GarageBand transport controls were triggered." & return
   set finalResult to finalResult & "Note: Due to GarageBand's limited AppleScript support, the exact state cannot be determined." & return
   set finalResult to finalResult & "The following operations were attempted: " & return & return & resultText
-  
+
   -- Return the result
   return finalResult
 end tell

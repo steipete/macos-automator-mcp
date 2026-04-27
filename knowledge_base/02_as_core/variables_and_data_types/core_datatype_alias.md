@@ -1,5 +1,5 @@
 ---
-title: 'Core: Alias Data Type'
+title: "Core: Alias Data Type"
 category: 02_as_core
 id: core_datatype_alias
 description: >-
@@ -64,4 +64,5 @@ end try
 
 return "Alias Name: " & aliasName & "\nKind: " & aliasKind & "\nHFS Path: " & hfsPathString & "\nPOSIX Path: " & posixPathString & "\nApp Exists: " & appExists & "\nDesktop Items (first few): " & (items 1 thru (min(5, count of itemList)) of itemList as string)
 ```
-END_TIP 
+
+END_TIP

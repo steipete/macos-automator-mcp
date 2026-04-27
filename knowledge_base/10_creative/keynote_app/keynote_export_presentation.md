@@ -1,5 +1,5 @@
 ---
-title: 'Keynote: Export Presentation (PDF, PowerPoint)'
+title: "Keynote: Export Presentation (PDF, PowerPoint)"
 category: 10_creative
 id: keynote_export_presentation
 description: Exports the frontmost Keynote presentation to PDF or PowerPoint format.
@@ -47,10 +47,10 @@ on exportKeynotePresentation(theFormat, theExportPath)
     if not running then return "error: Keynote is not running."
     if (count of documents) is 0 then return "error: No Keynote presentation is open."
     activate
-    
+
     set frontDoc to front document
     set destinationFile to POSIX file theExportPath
-    
+
     try
       if theFormat is "PDF" then
         -- PDF export settings can be specified in `as` record if needed.
@@ -69,4 +69,5 @@ end exportKeynotePresentation
 
 return my exportKeynotePresentation("--MCP_INPUT:exportFormat", "--MCP_INPUT:exportPath")
 ```
-END_TIP 
+
+END_TIP

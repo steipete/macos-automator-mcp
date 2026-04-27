@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Open Developer Tools'
+title: "Chrome: Open Developer Tools"
 category: 07_browsers
 id: chrome_open_devtools
 description: >-
@@ -36,28 +36,28 @@ on openChromeDevTools(panelName)
   if panelName is missing value or panelName is "" then
     set panelName to "elements"
   end if
-  
+
   -- Convert to lowercase for consistency
   set panelName to my toLowerCase(panelName)
-  
+
   -- Check if Chrome is running
   tell application "Google Chrome"
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure keyboard shortcuts work
     activate
   end tell
-  
+
   -- Map panel names to keyboard shortcuts
   set shortcutMap to {¬
     {"elements", "c"}, ¬
@@ -70,7 +70,7 @@ on openChromeDevTools(panelName)
     {"security", "s"}, ¬
     {"lighthouse", "g"} ¬
   }
-  
+
   -- Find the keyboard shortcut for the requested panel
   set panelShortcut to ""
   repeat with shortcutPair in shortcutMap
@@ -79,26 +79,26 @@ on openChromeDevTools(panelName)
       exit repeat
     end if
   end repeat
-  
+
   if panelShortcut is "" then
     return "error: Invalid panel name '" & panelName & "'. Supported panels: elements, console, sources, network, performance, memory, application, security, lighthouse."
   end if
-  
+
   tell application "System Events"
     tell process "Google Chrome"
       set frontmost to true
       delay 0.3
-      
+
       -- First open DevTools with Option+Command+I (key code 34 is 'i')
       key code 34 using {command down, option down}
       delay 0.5
-      
+
       -- Then navigate to the specific panel with Command+Option+[panel_shortcut]
       key code (my getKeyCode(panelShortcut)) using {command down, option down}
       delay 0.3
     end tell
   end tell
-  
+
   return "Successfully opened Chrome DevTools with the " & panelName & " panel."
 end openChromeDevTools
 
@@ -107,18 +107,18 @@ on toLowerCase(inputString)
   set upperChars to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   set lowerChars to "abcdefghijklmnopqrstuvwxyz"
   set outputString to ""
-  
+
   repeat with i from 1 to length of inputString
     set currentChar to character i of inputString
     set charIndex to offset of currentChar in upperChars
-    
+
     if charIndex > 0 then
       set outputString to outputString & character charIndex of lowerChars
     else
       set outputString to outputString & currentChar
     end if
   end repeat
-  
+
   return outputString
 end toLowerCase
 
@@ -132,16 +132,17 @@ on getKeyCode(char)
     {"s", 1}, {"t", 17}, {"u", 32}, {"v", 9}, {"w", 13}, {"x", 7}, ¬
     {"y", 16}, {"z", 6} ¬
   }
-  
+
   repeat with keyPair in keyCodeMap
     if item 1 of keyPair is char then
       return item 2 of keyPair
     end if
   end repeat
-  
+
   return 0 -- Default key code if not found (should never happen)
 end getKeyCode
 
 return my openChromeDevTools("--MCP_INPUT:panel")
 ```
+
 END_TIP

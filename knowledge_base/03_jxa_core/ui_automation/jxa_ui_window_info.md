@@ -29,45 +29,45 @@ The function can be used to retrieve information such as window names, titles, p
 ```javascript
 // Get information about application windows
 function getWindowInformation(appName) {
-    try {
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Get information about all windows
-        const windowInfo = [];
-        const windows = process.windows;
-        
-        for (let i = 0; i < windows.length; i++) {
-            const window = windows[i];
-            windowInfo.push({
-                index: i,
-                name: window.name ? window.name() : null,
-                title: window.title ? window.title() : null,
-                position: window.position ? window.position() : null,
-                size: window.size ? window.size() : null,
-                isMainWindow: window.attributes["AXMain"] ? window.attributes["AXMain"].value() : false
-            });
-        }
-        
-        return {
-            success: true,
-            windows: windowInfo,
-            message: `Retrieved window information for ${appName}`
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error getting window information: ${error.message}`
-        };
+  try {
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
     }
+
+    // Get information about all windows
+    const windowInfo = [];
+    const windows = process.windows;
+
+    for (let i = 0; i < windows.length; i++) {
+      const window = windows[i];
+      windowInfo.push({
+        index: i,
+        name: window.name ? window.name() : null,
+        title: window.title ? window.title() : null,
+        position: window.position ? window.position() : null,
+        size: window.size ? window.size() : null,
+        isMainWindow: window.attributes["AXMain"] ? window.attributes["AXMain"].value() : false,
+      });
+    }
+
+    return {
+      success: true,
+      windows: windowInfo,
+      message: `Retrieved window information for ${appName}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error getting window information: ${error.message}`,
+    };
+  }
 }
 ```
 

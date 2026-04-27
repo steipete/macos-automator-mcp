@@ -1,8 +1,8 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
-import matter from 'gray-matter';
+import fs from "node:fs/promises";
+import path from "node:path";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+import matter from "gray-matter";
 
 const execPromise = promisify(exec);
 
@@ -11,17 +11,17 @@ const execPromise = promisify(exec);
  */
 async function validateScript(
   scriptContent: string,
-  language: 'applescript' | 'javascript'
+  language: "applescript" | "javascript",
 ): Promise<{ isValid: boolean; error?: string }> {
-  if (!scriptContent || scriptContent.trim() === '') {
-    return { isValid: false, error: 'Empty script content' };
+  if (!scriptContent || scriptContent.trim() === "") {
+    return { isValid: false, error: "Empty script content" };
   }
 
   try {
     // Escape single quotes in the script content for safe shell execution
-    const escapedScript = scriptContent.replace(/'/g, "'\\''")
-    
-    if (language === 'applescript') {
+    const escapedScript = scriptContent.replace(/'/g, "'\\''");
+
+    if (language === "applescript") {
       // Directly validate AppleScript syntax with osascript -e
       await execPromise(`osascript -l AppleScript -e '${escapedScript}' > /dev/null 2>&1`);
     } else {
@@ -31,9 +31,13 @@ async function validateScript(
     return { isValid: true };
   } catch (error) {
     const errorObj = error as { stderr?: string; stdout?: string; message?: string };
-    return { 
-      isValid: false, 
-      error: errorObj.stderr || errorObj.stdout || errorObj.message || 'Unknown error during syntax validation'
+    return {
+      isValid: false,
+      error:
+        errorObj.stderr ||
+        errorObj.stdout ||
+        errorObj.message ||
+        "Unknown error during syntax validation",
     };
   }
 }
@@ -44,7 +48,7 @@ async function validateScript(
 function extractScriptFromMarkdown(markdownContent: string): string | null {
   const scriptBlockRegex = /```(?:applescript|javascript)\s*\n([\s\S]*?)\n```/i;
   const scriptMatch = markdownContent.match(scriptBlockRegex);
-  
+
   return scriptMatch && scriptMatch[1] ? scriptMatch[1].trim() : null;
 }
 
@@ -53,12 +57,12 @@ function extractScriptFromMarkdown(markdownContent: string): string | null {
  */
 async function validateTipFile(filePath: string): Promise<boolean> {
   try {
-    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const fileContent = await fs.readFile(filePath, "utf-8");
     const { data: frontmatter, content: markdownBody } = matter(fileContent);
-    
+
     // Check if this is an AppleScript or JXA file
-    const language = frontmatter.language as 'applescript' | 'javascript';
-    if (!language || !['applescript', 'javascript'].includes(language)) {
+    const language = frontmatter.language as "applescript" | "javascript";
+    if (!language || !["applescript", "javascript"].includes(language)) {
       // Not a script file or missing language specification
       return true;
     }
@@ -72,8 +76,8 @@ async function validateTipFile(filePath: string): Promise<boolean> {
 
     // Validate the script syntax
     const result = await validateScript(scriptContent, language);
-    
-    console.log(`  Syntax: ${result.isValid ? 'Valid' : 'Invalid'}`);
+
+    console.log(`  Syntax: ${result.isValid ? "Valid" : "Invalid"}`);
     if (!result.isValid && result.error) {
       console.log(`  Error: ${result.error}`);
       return false;
@@ -89,24 +93,24 @@ async function validateTipFile(filePath: string): Promise<boolean> {
 
 async function runTests() {
   const testFiles = [
-    'test_valid_applescript.md',
-    'test_invalid_applescript.md',
-    'test_valid_jxa.md',
-    'test_invalid_jxa.md'
+    "test_valid_applescript.md",
+    "test_invalid_applescript.md",
+    "test_valid_jxa.md",
+    "test_invalid_jxa.md",
   ];
-  
-  const testDir = path.join(process.cwd(), 'knowledge_base/test_syntax_validation');
-  
-  console.log('Testing Script Validator on Test Files:');
-  console.log('=======================================');
-  
+
+  const testDir = path.join(process.cwd(), "knowledge_base/test_syntax_validation");
+
+  console.log("Testing Script Validator on Test Files:");
+  console.log("=======================================");
+
   for (const file of testFiles) {
     const filePath = path.join(testDir, file);
-    
+
     try {
       console.log(`\nTesting ${file}:`);
       const result = await validateTipFile(filePath);
-      console.log(`Result: ${result ? 'Valid' : 'Invalid'}`);
+      console.log(`Result: ${result ? "Valid" : "Invalid"}`);
     } catch (error) {
       console.error(`Error testing ${file}:`, error);
     }

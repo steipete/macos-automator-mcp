@@ -43,15 +43,15 @@ on processMCPParameters(inputParams)
 	set quickRecipient to "--MCP_INPUT:quickRecipient"
 	set quickSubject to "--MCP_INPUT:quickSubject"
 	set quickContent to "--MCP_INPUT:quickContent"
-	
+
 	if quickRecipient is "" then
 		return {success:false, error:"Recipient is required for quick message"}
 	end if
-	
+
 	if quickSubject is "" then
 		set quickSubject to "Quick Message"
 	end if
-	
+
 	return createQuickMessage(quickRecipient, quickSubject, quickContent)
 end processMCPParameters
 
@@ -62,29 +62,29 @@ on createQuickMessage(recipient, subject, content)
 		tell application "Mail"
 			set recipientInput to text returned of (display dialog "Enter recipient:" default answer "")
 			set recipient to recipientInput
-			
+
 			set subjectInput to text returned of (display dialog "Enter subject:" default answer "Quick Message")
 			set subject to subjectInput
-			
+
 			set contentInput to text returned of (display dialog "Enter message content:" default answer "" with icon note)
 			set content to contentInput
 		end tell
 	end if
-	
+
 	if subject is missing value or subject is "" then
 		set subject to "Quick Message"
 	end if
-	
+
 	if content is missing value then
 		set content to ""
 	end if
-	
+
 	tell application "Mail"
 		set newMessage to make new outgoing message with properties {subject:subject, content:content, visible:true}
 		tell newMessage
 			make new to recipient at end of to recipients with properties {address:recipient}
 		end tell
-		
+
 		return {success:true, message:"Created quick message to " & recipient}
 	end tell
 end createQuickMessage
@@ -99,6 +99,7 @@ end createQuickMessage
 ## Example Usage
 
 ### Simple message
+
 ```json
 {
   "quickRecipient": "colleague@company.com",
@@ -108,6 +109,7 @@ end createQuickMessage
 ```
 
 ### Quick note
+
 ```json
 {
   "quickRecipient": "notes@example.com",
@@ -117,6 +119,7 @@ end createQuickMessage
 ```
 
 ### Basic message with default subject
+
 ```json
 {
   "quickRecipient": "friend@email.com",
@@ -126,6 +129,7 @@ end createQuickMessage
 ```
 
 ### Minimal parameters
+
 ```json
 {
   "quickRecipient": "contact@domain.com"
@@ -135,6 +139,7 @@ end createQuickMessage
 ## Interactive Mode
 
 When run without parameters, the script presents three dialog boxes:
+
 1. Recipient email address (required)
 2. Subject line (defaults to "Quick Message")
 3. Message content (optional)
@@ -142,6 +147,7 @@ When run without parameters, the script presents three dialog boxes:
 ## Return Value
 
 Returns an object with:
+
 - `success`: Boolean indicating operation success
 - `message`: Confirmation message with recipient address
 - `error`: Error message if operation failed

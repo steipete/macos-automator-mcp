@@ -1,5 +1,5 @@
 ---
-title: 'Core: Arbitrary Element Reference Form (''some'')'
+title: "Core: Arbitrary Element Reference Form ('some')"
 category: 02_as_core
 id: core_reference_arbitrary
 description: >-
@@ -73,4 +73,5 @@ return "Random option: " & randomOption & ¬
   "\nRandom Desktop file: " & randomFileOnDesktop & ¬
   "\nError from empty list: " & emptyPickError
 ```
-END_TIP 
+
+END_TIP

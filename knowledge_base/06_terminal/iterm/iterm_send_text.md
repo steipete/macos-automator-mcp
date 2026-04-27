@@ -21,7 +21,7 @@ parameters:
     description: The text to send to iTerm2
     required: true
   - name: executeCommand
-    description: 'Whether to press Return after sending the text (default: false)'
+    description: "Whether to press Return after sending the text (default: false)"
     required: false
   - name: targetSession
     description: >-
@@ -40,12 +40,12 @@ on run {input, parameters}
     set textToSend to "--MCP_INPUT:text"
     set executeCommand to "--MCP_INPUT:executeCommand"
     set targetSession to "--MCP_INPUT:targetSession"
-    
+
     -- Validate and set defaults for parameters
     if textToSend is "" or textToSend is missing value then
         return "Error: No text provided to send to iTerm2."
     end if
-    
+
     if executeCommand is "" or executeCommand is missing value then
         set executeCommand to false
     else
@@ -55,27 +55,27 @@ on run {input, parameters}
             set executeCommand to false
         end try
     end if
-    
+
     if targetSession is "" or targetSession is missing value then
         set targetSession to "active"
     end if
-    
+
     tell application "iTerm"
         activate
-        
+
         -- Determine which session to target
         set theSession to my getTargetSession(targetSession)
         if theSession is missing value then
             return "Error: Could not find the specified session."
         end if
-        
+
         -- Process special characters in the text
         set processedText to my processTextForITerm(textToSend)
-        
+
         tell theSession
             -- Send the text to the session
             write text processedText without newline
-            
+
             -- Optionally press Return/Enter to execute the command
             if executeCommand then
                 write text ""
@@ -95,12 +95,12 @@ on getTargetSession(criteria)
             create window with default profile
             delay 0.5
         end if
-        
+
         -- Handle different targeting methods
         if criteria is "active" then
             -- Get the active session
             return current session of current window
-            
+
         else
             -- Try to interpret as a session number (tab/pane index)
             try
@@ -126,7 +126,7 @@ on getTargetSession(criteria)
                 end try
             end try
         end if
-        
+
         -- Default to current session if nothing matched
         return current session of current window
     end tell
@@ -139,7 +139,7 @@ on processTextForITerm(inputText)
     set AppleScript's text item delimiters to return
     set textItems to text items of inputText
     set AppleScript's text item delimiters to ""
-    
+
     -- Join the text items back together with literal newlines
     return textItems as text
 end processTextForITerm
@@ -196,10 +196,10 @@ The script handles multi-line text by default, but you can extend it to handle o
 on processTextForITerm(inputText)
     -- Handle tab characters
     set processedText to my replaceText(inputText, tab, "    ")
-    
+
     -- Handle other special characters as needed
     -- ...
-    
+
     return processedText
 end processTextForITerm
 

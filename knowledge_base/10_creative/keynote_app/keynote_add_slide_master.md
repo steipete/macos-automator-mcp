@@ -1,5 +1,5 @@
 ---
-title: 'Keynote: Add New Slide with Master'
+title: "Keynote: Add New Slide with Master"
 category: 10_creative
 id: keynote_add_slide_master
 description: >-
@@ -32,7 +32,7 @@ on addKeynoteSlide(theMasterSlideName)
     if not running then return "error: Keynote is not running."
     if (count of documents) is 0 then return "error: No Keynote presentation is open."
     activate
-    
+
     try
       tell front document
         -- Get the master slide object by name
@@ -40,7 +40,7 @@ on addKeynoteSlide(theMasterSlideName)
         if targetMaster is missing value then
           return "error: Master slide '" & theMasterSlideName & "' not found in current theme. Available masters: " & (name of master slides)
         end if
-        
+
         make new slide with properties {base slide:targetMaster}
       end tell
       return "New slide added using master '" & theMasterSlideName & "'."
@@ -52,4 +52,5 @@ end addKeynoteSlide
 
 return my addKeynoteSlide("--MCP_INPUT:masterSlideName")
 ```
-END_TIP 
+
+END_TIP

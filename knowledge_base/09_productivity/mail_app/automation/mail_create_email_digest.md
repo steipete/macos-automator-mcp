@@ -42,7 +42,7 @@ on processMCPParameters(inputParams)
 	-- Extract parameters
 	set digestDays to "--MCP_INPUT:digestDays"
 	set digestFolder to "--MCP_INPUT:digestFolder"
-	
+
 	if digestDays is "" then
 		set digestDays to 1
 	else
@@ -52,7 +52,7 @@ on processMCPParameters(inputParams)
 			set digestDays to 1
 		end try
 	end if
-	
+
 	return createEmailDigest(digestDays, digestFolder)
 end processMCPParameters
 
@@ -61,11 +61,11 @@ on createEmailDigest(days, folder)
 	if days is missing value then
 		set days to 1
 	end if
-	
+
 	if folder is missing value then
 		set folder to ""
 	end if
-	
+
 	tell application "Mail"
 		try
 			set digestContent to "Email Digest - " & ((current date) as string) & "
@@ -73,10 +73,10 @@ on createEmailDigest(days, folder)
 Messages from the past " & days & " day(s):
 -------------------------------------------------
 "
-			
+
 			set cutoffDate to (current date) - (days * days)
 			set messagesToInclude to {}
-			
+
 			-- Get messages from specified folder or all inboxes
 			if folder is "" then
 				set messagesToInclude to messages of inbox whose date received > cutoffDate
@@ -88,16 +88,16 @@ Messages from the past " & days & " day(s):
 					set messagesToInclude to messages of inbox whose date received > cutoffDate
 				end try
 			end if
-			
+
 			set messageCount to count of messagesToInclude
-			
+
 			-- Create the digest content
 			repeat with i from 1 to messageCount
 				set theMessage to item i of messagesToInclude
 				set messageDate to date received of theMessage
 				set messageSender to sender of theMessage
 				set messageSubject to subject of theMessage
-				
+
 				set digestContent to digestContent & "
 From: " & messageSender & "
 Date: " & messageDate & "
@@ -105,13 +105,13 @@ Subject: " & messageSubject & "
 --------------------
 "
 			end repeat
-			
+
 			set digestContent to digestContent & "
 End of digest. Total messages: " & messageCount & "."
-			
+
 			-- Create a new email with the digest
 			set newMessage to make new outgoing message with properties {subject:"Email Digest - " & ((current date) as string), content:digestContent, visible:true}
-			
+
 			return {success:true, message:"Created email digest with " & messageCount & " messages", result:messageCount}
 		on error errMsg
 			return {success:false, error:"Error creating email digest: " & errMsg}
@@ -128,6 +128,7 @@ end createEmailDigest
 ## Example Usage
 
 ### Create digest of last 24 hours
+
 ```json
 {
   "digestDays": 1,
@@ -136,6 +137,7 @@ end createEmailDigest
 ```
 
 ### Create weekly digest from specific folder
+
 ```json
 {
   "digestDays": 7,
@@ -144,6 +146,7 @@ end createEmailDigest
 ```
 
 ### Create monthly digest
+
 ```json
 {
   "digestDays": 30,
@@ -152,6 +155,7 @@ end createEmailDigest
 ```
 
 ### Create digest from a specific mailbox
+
 ```json
 {
   "digestDays": 3,
@@ -162,6 +166,7 @@ end createEmailDigest
 ## Digest Format
 
 The digest includes:
+
 - Email Digest header with current date
 - Time period covered
 - For each message:
@@ -174,6 +179,7 @@ The digest includes:
 ## Return Value
 
 Returns an object with:
+
 - `success`: Boolean indicating operation success
 - `message`: Description of what was done
 - `result`: Number of messages included in the digest

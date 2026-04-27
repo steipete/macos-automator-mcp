@@ -1,5 +1,5 @@
 ---
-title: 'Core: Textual Comparison Operators'
+title: "Core: Textual Comparison Operators"
 category: 02_as_core
 id: core_operator_comparison_textual
 description: >-
@@ -62,4 +62,5 @@ return "strA comes before strB: " & aBeforeB & ¬
   "\nx is not less than z: " & xNotLessThanZ & ¬
   "\nx is not greater than z: " & xNotGreaterThanZ
 ```
-END_TIP 
+
+END_TIP

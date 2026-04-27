@@ -1,5 +1,5 @@
 ---
-title: 'JXA Safari Content Extraction'
+title: "JXA Safari Content Extraction"
 category: 03_jxa_core
 id: jxa_safari_content_extraction
 description: Extract data from web pages using Safari and JavaScript for Automation
@@ -27,15 +27,15 @@ Safari must have Automation permissions enabled in System Settings → Privacy &
 
 ```javascript
 function extractSafariContent() {
-  const safari = Application('Safari');
+  const safari = Application("Safari");
   safari.activate();
-  
+
   const currentTab = safari.windows[0].currentTab;
-  
+
   // Execute JavaScript in Safari to extract page content
   // This is more reliable in Safari than in Chrome via JXA
-  const pageTitle = currentTab.execute({javascript: 'document.title'});
-  
+  const pageTitle = currentTab.execute({ javascript: "document.title" });
+
   // Extract all links on the page
   const linksScript = `
     const links = Array.from(document.querySelectorAll('a'));
@@ -45,16 +45,16 @@ function extractSafariContent() {
     }));
     JSON.stringify(linkData.slice(0, 10)); // Limit to first 10 links
   `;
-  
-  const linksJson = currentTab.execute({javascript: linksScript});
+
+  const linksJson = currentTab.execute({ javascript: linksScript });
   const links = JSON.parse(linksJson);
-  
+
   // Format links as text
   let linksText = "Links on the page:\n";
   links.forEach((link, i) => {
-    linksText += `${i+1}. "${link.text}" - ${link.href}\n`;
+    linksText += `${i + 1}. "${link.text}" - ${link.href}\n`;
   });
-  
+
   // Get page metadata
   const metadataScript = `
     const metadata = {
@@ -66,10 +66,10 @@ function extractSafariContent() {
     };
     JSON.stringify(metadata);
   `;
-  
-  const metadataJson = currentTab.execute({javascript: metadataScript});
+
+  const metadataJson = currentTab.execute({ javascript: metadataScript });
   const metadata = JSON.parse(metadataJson);
-  
+
   // Format metadata as text
   const metadataText = `Page Information:
 Title: ${metadata.title}
@@ -77,12 +77,12 @@ URL: ${metadata.url}
 Description: ${metadata.description}
 H1 Headings: ${metadata.h1Count}
 Images: ${metadata.imageCount}`;
-  
+
   // Display the information
   const app = Application.currentApplication();
   app.includeStandardAdditions = true;
   app.displayDialog(metadataText + "\n\n" + linksText);
-  
+
   return "Safari content extraction completed.";
 }
 ```

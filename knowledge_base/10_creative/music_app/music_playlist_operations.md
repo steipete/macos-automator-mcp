@@ -1,5 +1,5 @@
 ---
-title: 'Music: Playlist Operations'
+title: "Music: Playlist Operations"
 category: 10_creative
 id: music_playlist_operations
 description: >-
@@ -89,14 +89,14 @@ tell application "Music"
   if not running then
     return "The Music app is not running. Please launch it first."
   end if
-  
+
   set resultText to ""
-  
+
   -- Execute the requested action
   if actionParam is "list" then
     -- List all playlists
     set allPlaylists to {}
-    
+
     -- System playlists (Library, Music, etc.)
     try
       set systemPlaylists to (get name of library playlists)
@@ -107,7 +107,7 @@ tell application "Music"
     on error
       set resultText to resultText & "No system playlists found.\n"
     end try
-    
+
     -- User playlists
     try
       set userPlaylists to (get name of user playlists)
@@ -118,7 +118,7 @@ tell application "Music"
     on error
       set resultText to resultText & "\nNo user playlists found.\n"
     end try
-    
+
     -- Smart playlists
     try
       set smartPlaylists to (get name of smart playlists)
@@ -129,7 +129,7 @@ tell application "Music"
     on error
       set resultText to resultText & "\nNo smart playlists found.\n"
     end try
-    
+
     -- Subscribed/Apple Music playlists
     try
       set subscribedPlaylists to (get name of subscription playlists)
@@ -140,9 +140,9 @@ tell application "Music"
     on error
       set resultText to resultText & "\nNo subscribed playlists found.\n"
     end try
-    
+
     set resultText to resultText & "\nTotal playlists: " & ((count of playlists) as text)
-    
+
   else if actionParam is "create" then
     -- Create a new playlist
     try
@@ -157,7 +157,7 @@ tell application "Music"
     on error errMsg number errNum
       set resultText to "Error creating playlist (" & errNum & "): " & errMsg
     end try
-    
+
   else if actionParam is "add_current" then
     -- Add currently playing track to specified playlist
     try
@@ -167,32 +167,32 @@ tell application "Music"
         make new user playlist with properties {name:playlistNameParam}
         set resultText to "Created new playlist '" & playlistNameParam & "'.\n"
       end if
-      
+
       -- Check if there's a current track
       if player state is stopped then
         set resultText to resultText & "No track is currently playing. Please play a track first."
       else
         -- Get the current track
         set currentTrack to current track
-        
+
         -- Add to playlist
         duplicate currentTrack to user playlist playlistNameParam
-        
+
         -- Get track info for confirmation
         set trackName to name of currentTrack
         set artistName to artist of currentTrack
-        
+
         set resultText to resultText & "Added track '" & trackName & "' by " & artistName & " to playlist '" & playlistNameParam & "'"
       end if
     on error errMsg number errNum
       set resultText to "Error adding current track to playlist (" & errNum & "): " & errMsg
-      
+
       if errNum is -1728 then
         -- Common error: track is already in playlist
         set resultText to "This track is already in the playlist '" & playlistNameParam & "'"
       end if
     end try
-    
+
   else if actionParam is "play" then
     -- Play specified playlist
     try
@@ -216,14 +216,14 @@ tell application "Music"
         set resultText to "Playlist '" & playlistNameParam & "' not found."
         return resultText
       end if
-      
+
       -- Get information about what's playing
       delay 1 -- Give time for playback to start
-      
+
       if player state is playing then
         set currentTrackName to name of current track
         set currentArtistName to artist of current track
-        
+
         set resultText to "Now playing from " & playlistType & " playlist '" & playlistNameParam & "'\n"
         set resultText to resultText & "Current track: '" & currentTrackName & "' by " & currentArtistName
       else
@@ -232,41 +232,41 @@ tell application "Music"
     on error errMsg number errNum
       set resultText to "Error playing playlist (" & errNum & "): " & errMsg
     end try
-    
+
   else if actionParam is "search" then
     -- Search for tracks
     try
       -- Perform search
       set searchResults to search library playlist 1 for searchTermParam
-      
+
       set resultCount to count of searchResults
-      
+
       if resultCount is 0 then
         set resultText to "No results found for search term '" & searchTermParam & "'"
       else
         set resultText to "Found " & resultCount & " results for '" & searchTermParam & "':\n\n"
-        
+
         -- List first 10 results (to avoid extremely long responses)
         set maxResults to 10
         if resultCount < maxResults then
           set maxResults to resultCount
         end if
-        
+
         repeat with i from 1 to maxResults
           set currentTrack to item i of searchResults
-          
+
           set trackName to name of currentTrack
           set artistName to artist of currentTrack
           set albumName to album of currentTrack
-          
+
           set resultText to resultText & i & ". '" & trackName & "' by " & artistName & " (Album: " & albumName & ")\n"
         end repeat
-        
+
         -- Note if there are more results
         if resultCount > maxResults then
           set resultText to resultText & "\n... and " & (resultCount - maxResults) & " more results"
         end if
-        
+
         -- Add option to add results to a playlist if playlist name was provided
         if playlistNameParam is not "" then
           set resultText to resultText & "\n\nTo add these results to the playlist '" & playlistNameParam & "', run this script again with action='add_search_results'"
@@ -276,7 +276,7 @@ tell application "Music"
       set resultText to "Error searching for tracks (" & errNum & "): " & errMsg
     end try
   end if
-  
+
   return resultText
 end tell
 ```

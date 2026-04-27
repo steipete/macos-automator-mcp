@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Emulate Mobile Device'
+title: "Chrome: Emulate Mobile Device"
 category: 07_browsers
 id: chrome_emulate_device
 description: >-
@@ -53,25 +53,25 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
     if not running then
       return "error: Google Chrome is not running."
     end if
-    
+
     if (count of windows) is 0 then
       return "error: No Chrome windows open."
     end if
-    
+
     if (count of tabs of front window) is 0 then
       return "error: No tabs in front Chrome window."
     end if
-    
+
     -- Activate Chrome to ensure keyboard shortcuts work
     activate
   end tell
-  
+
   -- Open DevTools
   tell application "System Events"
     tell process "Google Chrome"
       set frontmost to true
       delay 0.3
-      
+
       -- Check if DevTools is already open
       set devToolsOpen to false
       repeat with w in windows
@@ -80,19 +80,19 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
           exit repeat
         end if
       end repeat
-      
+
       -- Open DevTools if not already open
       if not devToolsOpen then
         key code 34 using {command down, option down} -- Option+Command+I
         delay 0.7
       end if
-      
+
       -- Toggle device toolbar with Command+Shift+M
       key code 46 using {command down, shift down} -- Command+Shift+M
       delay 0.5
     end tell
   end tell
-  
+
   -- Prepare the device emulation script based on provided parameters
   if deviceName is not missing value and deviceName is not "" then
     -- Use predefined device
@@ -100,7 +100,7 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
       (function() {
         try {
           const deviceName = '" & my escapeJSString(deviceName) & "';
-          
+
           // Function to ensure we're in a DevTools context
           function ensureDevTools() {
             if (typeof DevToolsAPI === 'undefined') {
@@ -109,7 +109,7 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
               if (typeof chrome !== 'undefined' && chrome.devtools) {
                 chrome.devtools.inspectedWindow.eval(
                   'DevToolsAPI && DevToolsAPI.setDeviceMetricsOverride()',
-                  function(result, isException) { 
+                  function(result, isException) {
                     if (isException) {
                       console.error('Failed to execute in DevTools context');
                     }
@@ -121,7 +121,7 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
             }
             return { success: true };
           }
-          
+
           // Check if we're in DevTools context
           const devToolsCheck = ensureDevTools();
           if (devToolsCheck.error) {
@@ -133,19 +133,19 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
               { name: 'Pixel 6', width: 412, height: 915, devicePixelRatio: 2.625, userAgent: 'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36', mobile: true },
               { name: 'Samsung Galaxy S21', width: 360, height: 800, devicePixelRatio: 3, userAgent: 'Mozilla/5.0 (Linux; Android 12; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36', mobile: true }
             ];
-            
+
             // Find the requested device
             const device = devices.find(d => d.name.toLowerCase() === deviceName.toLowerCase());
-            
+
             if (!device) {
               return { error: true, message: 'Device \"' + deviceName + '\" not found in predefined devices' };
             }
-            
+
             // Apply device emulation using the main page emulation API
             const result = emulateDeviceDirectly(device);
             return result;
           }
-          
+
           // Use the DevTools API
           // This function tries various approaches to enable device emulation
           function emulateWithDevToolsAPI() {
@@ -155,7 +155,7 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
               if (typeof DevToolsAPI.setDeviceMetricsOverride === 'function') {
                 const devices = DevToolsAPI.getDevicesList();
                 const device = devices.find(d => d.title.toLowerCase() === deviceName.toLowerCase());
-                
+
                 if (device) {
                   DevToolsAPI.setDeviceMetricsOverride(device);
                   return { success: true, message: 'Device emulation set to ' + deviceName };
@@ -163,15 +163,15 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
                   return { error: true, message: 'Device name not found in DevTools device list' };
                 }
               }
-              
+
               // Method 2: Use UI automation via DevToolsAPI
               if (typeof DevToolsAPI.showPanel === 'function' && typeof UI !== 'undefined') {
                 // Switch to Device Mode in DevTools
                 DevToolsAPI.showPanel('device_mode');
-                
+
                 if (typeof UI.inspectorView !== 'undefined' && UI.inspectorView.showPanel) {
                   UI.inspectorView.showPanel('device_mode');
-                  
+
                   // Try to select the device from the dropdown
                   if (UI.DeviceModeModel && UI.DeviceModeModel.deviceModelSetting) {
                     UI.DeviceModeModel.deviceModelSetting.set(deviceName);
@@ -180,12 +180,12 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
                 }
               }
             }
-            
+
             // Fallback: Use direct emulation
             const fallbackDevice = getDefaultDeviceSpecs(deviceName);
             return emulateDeviceDirectly(fallbackDevice);
           }
-          
+
           // Function to get device specs for known devices
           function getDefaultDeviceSpecs(name) {
             const devices = {
@@ -195,11 +195,11 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
               'pixel 6': { width: 412, height: 915, devicePixelRatio: 2.625, userAgent: 'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36', mobile: true },
               'samsung galaxy s21': { width: 360, height: 800, devicePixelRatio: 3, userAgent: 'Mozilla/5.0 (Linux; Android 12; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36', mobile: true }
             };
-            
+
             const deviceKey = name.toLowerCase();
             return devices[deviceKey] || { width: 375, height: 667, devicePixelRatio: 2, userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1', mobile: true };
           }
-          
+
           // Function to directly emulate a device using page emulation API
           function emulateDeviceDirectly(device) {
             if (typeof EmulationAgent !== 'undefined') {
@@ -212,25 +212,25 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
                 screenWidth: device.width,
                 screenHeight: device.height
               });
-              
+
               EmulationAgent.setUserAgentOverride({
                 userAgent: device.userAgent
               });
-              
+
               return { success: true, message: 'Device emulated using EmulationAgent' };
             } else if (typeof chrome !== 'undefined' && chrome.debugger) {
               // Try using chrome.debugger API if available (rare in this context)
               chrome.debugger.sendCommand({tabId: chrome.devtools.inspectedWindow.tabId}, 'Emulation.setDeviceMetricsOverride', {
-                width: device.width, 
+                width: device.width,
                 height: device.height,
                 deviceScaleFactor: device.devicePixelRatio,
                 mobile: device.mobile
               });
-              
+
               chrome.debugger.sendCommand({tabId: chrome.devtools.inspectedWindow.tabId}, 'Emulation.setUserAgentOverride', {
                 userAgent: device.userAgent
               });
-              
+
               return { success: true, message: 'Device emulated using chrome.debugger API' };
             } else {
               // Last resort: Try to use the window.emulationParams approach
@@ -239,21 +239,21 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
                   deviceName: deviceName,
                   device: device
                 };
-                
+
                 // Add a fake element to indicate success for screen scraping
                 const infoDiv = document.createElement('div');
                 infoDiv.id = 'mcpDeviceEmulationInfo';
                 infoDiv.style.display = 'none';
                 infoDiv.textContent = JSON.stringify(device);
                 document.body.appendChild(infoDiv);
-                
+
                 return { success: true, message: 'Emulation parameters stored for later use' };
               }
             }
-            
+
             return { error: true, message: 'No emulation API available' };
           }
-          
+
           // Execute the emulation
           return emulateWithDevToolsAPI();
         } catch (e) {
@@ -269,7 +269,7 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
     if devicePixelRatio is missing value or devicePixelRatio is "" then set devicePixelRatio to 2
     if userAgent is missing value or userAgent is "" then set userAgent to "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
     if mobile is missing value then set mobile to true
-    
+
     set emulationScript to "
       (function() {
         try {
@@ -280,7 +280,7 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
             userAgent: '" & my escapeJSString(userAgent) & "',
             mobile: " & mobile & "
           };
-          
+
           // Function to directly emulate a device using page emulation API
           function emulateDeviceDirectly(device) {
             if (typeof EmulationAgent !== 'undefined') {
@@ -293,43 +293,43 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
                 screenWidth: device.width,
                 screenHeight: device.height
               });
-              
+
               EmulationAgent.setUserAgentOverride({
                 userAgent: device.userAgent
               });
-              
+
               return { success: true, message: 'Custom device emulated using EmulationAgent' };
             } else if (typeof chrome !== 'undefined' && chrome.debugger) {
               // Try using chrome.debugger API if available
               chrome.debugger.sendCommand({tabId: chrome.devtools.inspectedWindow.tabId}, 'Emulation.setDeviceMetricsOverride', {
-                width: device.width, 
+                width: device.width,
                 height: device.height,
                 deviceScaleFactor: device.devicePixelRatio,
                 mobile: device.mobile
               });
-              
+
               chrome.debugger.sendCommand({tabId: chrome.devtools.inspectedWindow.tabId}, 'Emulation.setUserAgentOverride', {
                 userAgent: device.userAgent
               });
-              
+
               return { success: true, message: 'Custom device emulated using chrome.debugger API' };
             } else {
               // Last resort: Set parameters and try to use UI automation
               window.customEmulationParams = device;
-              
+
               // Add a marker element for screen scraping
               const infoDiv = document.createElement('div');
               infoDiv.id = 'mcpDeviceEmulationInfo';
               infoDiv.style.display = 'none';
               infoDiv.textContent = JSON.stringify(device);
               document.body.appendChild(infoDiv);
-              
+
               return { success: true, message: 'Custom emulation parameters set' };
             }
-            
+
             return { error: true, message: 'No emulation API available' };
           }
-          
+
           return emulateDeviceDirectly(customDevice);
         } catch (e) {
           return { error: true, message: e.toString() };
@@ -337,12 +337,12 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
       })();
     "
   end if
-  
+
   -- Execute the emulation script
   tell application "Google Chrome"
     try
       set emulationResult to execute active tab of front window javascript emulationScript
-      
+
       -- Check the result
       if emulationResult contains "error" then
         return "error: " & emulationResult
@@ -359,20 +359,20 @@ on emulateDeviceInChrome(deviceName, width, height, devicePixelRatio, userAgent,
                 return info;
               }
             }
-            
+
             // Check for stored emulation parameters
             if (window.emulationParams) {
               return window.emulationParams;
             } else if (window.customEmulationParams) {
               return window.customEmulationParams;
             }
-            
+
             return null;
           })();
         "
-        
+
         set deviceInfo to execute active tab of front window javascript infoScript
-        
+
         if deviceName is not missing value and deviceName is not "" then
           return "Successfully configured emulation for device: " & deviceName
         else
@@ -401,4 +401,5 @@ end escapeJSString
 
 return my emulateDeviceInChrome("--MCP_INPUT:deviceName", "--MCP_INPUT:width", "--MCP_INPUT:height", "--MCP_INPUT:devicePixelRatio", "--MCP_INPUT:userAgent", "--MCP_INPUT:mobile")
 ```
+
 END_TIP

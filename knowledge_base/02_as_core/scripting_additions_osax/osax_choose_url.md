@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: choose URL Command'
+title: "StandardAdditions: choose URL Command"
 category: 02_as_core
 id: osax_choose_url
 description: >-
@@ -44,7 +44,7 @@ try
   else
     set chosenURL to "User cancelled URL input."
   end if
-  
+
   -- Choose a File URL
   set fileURLResult to choose URL showing File with prompt "Select a local file to get its URL:" with title "File URL Chooser"
   if fileURLResult is not false then
@@ -52,7 +52,7 @@ try
   else
     set chosenURL to chosenURL & "\nUser cancelled File URL input."
   end if
-  
+
 on error errMsg number errNum
   if errNum is -128 then
     set chosenURL to chosenURL & "\nUser cancelled a dialog (-128)."
@@ -63,4 +63,5 @@ end try
 
 return chosenURL
 ```
-END_TIP 
+
+END_TIP

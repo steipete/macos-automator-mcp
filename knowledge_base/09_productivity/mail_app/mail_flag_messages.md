@@ -1,5 +1,5 @@
 ---
-title: 'Mail: Flag Messages'
+title: "Mail: Flag Messages"
 category: 09_productivity
 id: mail_flag_messages
 description: Flags selected messages in Mail.app with specific flag colors
@@ -12,7 +12,7 @@ keywords:
   - highlight
 language: applescript
 isComplex: false
-argumentsPrompt: 'Provide flag color as ''flagColor'' in inputData (optional, defaults to ''red'')'
+argumentsPrompt: "Provide flag color as 'flagColor' in inputData (optional, defaults to 'red')"
 notes: >
   - Flags or unflags currently selected messages in Mail.app
 
@@ -34,7 +34,7 @@ on setMessageFlags(colorName)
   else
     set flagColor to lowercase of colorName
   end if
-  
+
   -- Validate color name
   set validColors to {"red", "orange", "yellow", "green", "blue", "purple", "gray", "none"}
   set isValidColor to false
@@ -44,11 +44,11 @@ on setMessageFlags(colorName)
       exit repeat
     end if
   end repeat
-  
+
   if not isValidColor then
     return "Error: Invalid flag color. Use red, orange, yellow, green, blue, purple, gray, or none"
   end if
-  
+
   tell application "Mail"
     try
       -- Get selected messages
@@ -56,7 +56,7 @@ on setMessageFlags(colorName)
       if (count of selectedMessages) is 0 then
         return "Error: No messages selected. Please select messages in Mail.app before running this script."
       end if
-      
+
       -- Convert color name to flag index
       set flagIndex to 0 -- Default for none/unflag
       if flagColor is "red" then
@@ -74,10 +74,10 @@ on setMessageFlags(colorName)
       else if flagColor is "gray" then
         set flagIndex to 7
       end if
-      
+
       -- Flag or unflag the messages
       set messageCount to count of selectedMessages
-      
+
       repeat with thisMessage in selectedMessages
         if flagColor is "none" then
           -- Unflag the message
@@ -89,17 +89,17 @@ on setMessageFlags(colorName)
           set flag index of thisMessage to flagIndex
         end if
       end repeat
-      
+
       -- Return result
       if flagColor is "none" then
         set actionText to "Unflagged"
       else
         set actionText to "Flagged with " & flagColor & " flag"
       end if
-      
+
       set resultText to actionText & " " & messageCount & " message"
       if messageCount ≠ 1 then set resultText to resultText & "s"
-      
+
       return resultText
     on error errMsg
       return "Error flagging messages: " & errMsg
@@ -111,6 +111,7 @@ return my setMessageFlags("--MCP_INPUT:flagColor")
 ```
 
 This script:
+
 1. Adds colored flags to currently selected messages in Mail.app
 2. Supports all standard Mail.app flag colors: red, orange, yellow, green, blue, purple, gray
 3. Can also remove flags by specifying "none" as the flag color

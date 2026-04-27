@@ -1,5 +1,5 @@
 ---
-title: 'Logic Pro: Scripter MIDI Plugin'
+title: "Logic Pro: Scripter MIDI Plugin"
 category: 10_creative
 id: logic_pro_scripter_midi
 description: >-
@@ -94,14 +94,14 @@ function HandleMIDI(event) {
             var rootNote = event.pitch;
             var thirdNote = rootNote + 4;  // Major third
             var fifthNote = rootNote + 7;  // Perfect fifth
-            
+
             // Create the three notes of the chord
             var noteRoot = new NoteOn(event);
             var noteThird = new NoteOn(event);
             noteThird.pitch = thirdNote;
             var noteFifth = new NoteOn(event);
             noteFifth.pitch = fifthNote;
-            
+
             // Keep track of all notes in the chord
             activeNotes.push({
                 root: rootNote,
@@ -109,7 +109,7 @@ function HandleMIDI(event) {
                 fifth: fifthNote,
                 velocity: event.velocity
             });
-            
+
             // Send all notes in the chord
             noteRoot.send();
             noteThird.send();
@@ -125,12 +125,12 @@ function HandleMIDI(event) {
                     noteOffThird.pitch = activeNotes[i].third;
                     var noteOffFifth = new NoteOff(event);
                     noteOffFifth.pitch = activeNotes[i].fifth;
-                    
+
                     // Send all note-offs
                     noteOffRoot.send();
                     noteOffThird.send();
                     noteOffFifth.send();
-                    
+
                     // Remove from active notes
                     activeNotes.splice(i, 1);
                     break;
@@ -171,10 +171,10 @@ tell application "Logic Pro"
   -- Activate Logic Pro
   activate
   delay 0.5 -- Give time for Logic Pro to come to foreground
-  
+
   -- Initialize result
   set resultText to ""
-  
+
   -- Use UI scripting to insert and configure the Scripter plugin
   tell application "System Events"
     tell process "Logic Pro"
@@ -182,14 +182,14 @@ tell application "Logic Pro"
       if (count of windows) is 0 then
         return "Error: Logic Pro is running but no project is open."
       end if
-      
+
       -- Check if we can insert a MIDI effect
       try
         -- First, make sure we have a MIDI or Software Instrument track selected
         -- Press Enter to create a new track if needed
         keystroke return
         delay 0.5
-        
+
         -- Create a software instrument track
         -- Typically this is Option+Command+S or via menu
         -- We'll use the menu to be safe
@@ -200,7 +200,7 @@ tell application "Logic Pro"
           -- Look for "New Tracks" submenu
           click menu item "New Tracks..." of menu "Track" of menu bar 1
           delay 0.5
-          
+
           -- In the new tracks dialog, select Software Instrument
           try
             -- Try to click Software Instrument radio button
@@ -219,33 +219,33 @@ tell application "Logic Pro"
           keystroke "s" using {command down, option down}
           delay 1
         end try
-        
+
         -- Now insert Scripter on the track
         -- Typically this is done through the MIDI FX slot
         try
           -- Click on MIDI FX slot (position depends on UI layout)
           -- This is best-effort and may need adjustment
-          
+
           -- Try common method of accessing MIDI FX
           try
             -- Press I to open instrument slot
             keystroke "i"
             delay 0.5
-            
+
             -- Use Tab key to navigate to MIDI FX section (varies by Logic version)
             repeat 3 times
               keystroke tab
               delay 0.2
             end repeat
-            
+
             -- Press Down to open MIDI FX menu
             keystroke (ASCII character 31) -- Down arrow
             delay 0.5
-            
+
             -- Type "scr" to filter to Scripter
             keystroke "scr"
             delay 0.3
-            
+
             -- Press Return to select Scripter
             keystroke return
             delay 1
@@ -267,18 +267,18 @@ tell application "Logic Pro"
             on error
               -- Both approaches failed
               set resultText to resultText & "Could not insert Scripter plugin. "
-              
+
               -- Exit this try block
               error "Could not insert Scripter"
             end try
           end try
-          
+
           -- If we got here, Scripter should be inserted
           -- Now we need to open the Scripter editor and paste our code
-          
+
           -- Wait for Scripter UI to appear
           delay 1
-          
+
           -- Look for Scripter editor window
           -- This is challenging without knowing exact UI elements
           try
@@ -296,33 +296,33 @@ tell application "Logic Pro"
             on error
               -- Both approaches failed
               set resultText to resultText & "Could not open Scripter editor. "
-              
+
               -- Exit this try block
               error "Could not open Scripter editor"
             end try
           end try
-          
+
           -- Now paste the script into the editor
           try
             -- This is best-effort and may need adjustment based on Scripter's UI
-            
+
             -- Select all existing text
             keystroke "a" using {command down}
             delay 0.2
-            
+
             -- Delete it
             keystroke (ASCII character 8) -- Delete/Backspace
             delay 0.2
-            
+
             -- Paste our script
             set the clipboard to scriptContent
             keystroke "v" using {command down}
             delay 0.5
-            
+
             -- Run the script (typically Command+R)
             keystroke "r" using {command down}
             delay 0.5
-            
+
             -- Success!
             set resultText to "Successfully inserted Scripter plugin and loaded script code."
             if scriptPathParam is not "" then
@@ -330,10 +330,10 @@ tell application "Logic Pro"
             else
               set resultText to resultText & " Default chord generator script loaded."
             end if
-            
+
             -- Add information about the script
             set resultText to resultText & return & return & "This script will transform single notes into major triads, creating a chord from each note played."
-            
+
             -- Add usage instructions
             set resultText to resultText & return & return & "Usage Instructions:" & return
             set resultText to resultText & "1. Play single notes on your MIDI keyboard" & return
@@ -343,18 +343,18 @@ tell application "Logic Pro"
             -- Script insertion failed
             set resultText to resultText & "Could not insert script code. "
           end try
-          
+
         on error insertErr
           -- MIDI FX insertion failed
           set resultText to resultText & "Error: " & insertErr
         end try
-        
+
       on error trackErr
         set resultText to "Error creating or selecting appropriate track: " & trackErr
       end try
     end tell
   end tell
-  
+
   -- Return result
   return resultText
 end tell

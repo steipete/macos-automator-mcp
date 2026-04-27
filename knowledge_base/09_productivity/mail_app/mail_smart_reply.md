@@ -1,5 +1,5 @@
 ---
-title: 'Mail: Smart Reply with Templates'
+title: "Mail: Smart Reply with Templates"
 category: 09_productivity
 id: mail_smart_reply
 description: >-
@@ -70,7 +70,7 @@ end readTemplateFile
 on findBestTemplate(templateFolder, messageSubject, messageBody, senderName)
   -- Get list of templates
   set templatePaths to my getTemplatePaths(templateFolder)
-  
+
   if (count of templatePaths) is 0 then
     -- No templates found - create default
     set defaultTemplate to "Dear --NAME--,
@@ -81,7 +81,7 @@ I've received your message and will respond in detail shortly.
 
 Best regards,
 --YOUR-NAME--"
-    
+
     -- Try to save default template
     try
       set defaultPath to templateFolder & "default.txt"
@@ -93,12 +93,12 @@ Best regards,
       return {path:"", content:defaultTemplate}
     end try
   end if
-  
+
   -- Convert inputs to lowercase for matching
   set subjectLower to lowercase of messageSubject
   set bodyLower to lowercase of messageBody
   set senderLower to lowercase of senderName
-  
+
   -- Define categories of templates to look for with their keywords
   set templateCategories to {¬
     {name:"urgent", keywords:{"urgent", "asap", "emergency", "immediately", "critical", "deadline", "tomorrow", "today"}}, ¬
@@ -109,13 +109,13 @@ Best regards,
     {name:"thank", keywords:{"thank", "appreciate", "grateful", "thanks", "received"}}, ¬
     {name:"complaint", keywords:{"issue", "problem", "complaint", "concerned", "disappointed", "dissatisfied", "failed", "error"}} ¬
   }
-  
+
   -- First try to find template with sender's name or domain
   set senderTemplate to missing value
   set senderScore to 0
   repeat with templatePath in templatePaths
     set templateName to lowercase of (last text item of templatePath delimited by "/")
-    
+
     -- Check if template name contains sender's name or domain
     set senderNameWords to my splitString(senderLower, " ")
     repeat with nameWord in senderNameWords
@@ -125,7 +125,7 @@ Best regards,
         exit repeat
       end if
     end repeat
-    
+
     -- Check if template is for sender's email domain
     if templateName contains "@" then
       set domainParts to my splitString(senderLower, "@")
@@ -138,21 +138,21 @@ Best regards,
       end if
     end if
   end repeat
-  
+
   -- Score templates based on keyword matches
   set bestTemplate to ""
   set bestScore to 0
   set bestContent to ""
-  
+
   repeat with templatePath in templatePaths
     set templateName to lowercase of (last text item of templatePath delimited by "/")
     set matchScore to 0
-    
+
     -- Check category keywords in subject and body
     repeat with category in templateCategories
       set categoryName to name of category
       set categoryKeywords to keywords of category
-      
+
       if templateName contains categoryName then
         -- Check if category keywords appear in subject or body
         repeat with keyword in categoryKeywords
@@ -163,14 +163,14 @@ Best regards,
             set matchScore to matchScore + 1
           end if
         end repeat
-        
+
         -- Bonus for category name in subject
         if subjectLower contains categoryName then
           set matchScore to matchScore + 5
         end if
       end if
     end repeat
-    
+
     -- If this template scores higher than current best, update
     if matchScore > bestScore then
       set bestTemplate to templatePath
@@ -178,13 +178,13 @@ Best regards,
       set bestContent to my readTemplateFile(templatePath)
     end if
   end repeat
-  
+
   -- If sender match is better than keyword match, use that
   if senderTemplate is not missing value and senderScore > bestScore then
     set bestTemplate to senderTemplate
     set bestContent to my readTemplateFile(senderTemplate)
   end if
-  
+
   -- If no good match found, use default template
   if bestTemplate is "" or bestContent is "" then
     -- Look for a default template
@@ -196,27 +196,27 @@ Best regards,
         exit repeat
       end if
     end repeat
-    
+
     -- If still no template, use the first available
     if bestTemplate is "" or bestContent is "" and (count of templatePaths) > 0 then
       set bestTemplate to item 1 of templatePaths
       set bestContent to my readTemplateFile(bestTemplate)
     end if
   end if
-  
+
   return {path:bestTemplate, content:bestContent}
 end findBestTemplate
 
 on processTemplate(templateContent, senderName, senderEmail, subject, body)
   -- Replace template placeholders with actual values
   set processedContent to templateContent
-  
+
   -- Get user's name for signature
   set userName to "Me"
   try
     set userName to do shell script "id -F"
   end try
-  
+
   -- Basic placeholder replacements
   set nameToUse to senderName
   if nameToUse contains "<" then
@@ -229,7 +229,7 @@ on processTemplate(templateContent, senderName, senderEmail, subject, body)
       set nameToUse to text 1 thru ((length of nameToUse) - 1) of nameToUse
     end repeat
   end if
-  
+
   -- Get first name only
   set firstNameToUse to nameToUse
   set AppleScript's text item delimiters to " "
@@ -238,7 +238,7 @@ on processTemplate(templateContent, senderName, senderEmail, subject, body)
     set firstNameToUse to item 1 of nameParts
   end if
   set AppleScript's text item delimiters to ""
-  
+
   -- Replace placeholders
   set processedContent to my replaceString(processedContent, "--NAME--", nameToUse)
   set processedContent to my replaceString(processedContent, "--FIRSTNAME--", firstNameToUse)
@@ -246,14 +246,14 @@ on processTemplate(templateContent, senderName, senderEmail, subject, body)
   set processedContent to my replaceString(processedContent, "--SUBJECT--", subject)
   set processedContent to my replaceString(processedContent, "--DATE--", (current date) as string)
   set processedContent to my replaceString(processedContent, "--YOUR-NAME--", userName)
-  
+
   -- Advanced replacements - extract quoted text snippets
   if processedContent contains "--QUOTED--" then
     set quotedText to ""
     set bodyLines to paragraphs of body
     set maxLines to 3
     set lineCount to 0
-    
+
     repeat with aLine in bodyLines
       if aLine is not "" and aLine does not start with ">" and lineCount < maxLines then
         if quotedText is not "" then
@@ -263,10 +263,10 @@ on processTemplate(templateContent, senderName, senderEmail, subject, body)
         set lineCount to lineCount + 1
       end if
     end repeat
-    
+
     set processedContent to my replaceString(processedContent, "--QUOTED--", quotedText)
   end if
-  
+
   return processedContent
 end processTemplate
 
@@ -292,7 +292,7 @@ on extractEmailAddress(fullAddress)
     if fullAddress contains "<" and fullAddress contains ">" then
       set AppleScript's text item delimiters to "<"
       set emailParts to text items of fullAddress
-      
+
       if (count of emailParts) > 1 then
         set emailWithBracket to item 2 of emailParts
         set AppleScript's text item delimiters to ">"
@@ -301,12 +301,12 @@ on extractEmailAddress(fullAddress)
         return emailAddress
       end if
     end if
-    
+
     -- If no angle brackets, assume the whole string is an email
     if fullAddress contains "@" then
       return fullAddress
     end if
-    
+
     return ""
   on error
     return ""
@@ -315,7 +315,7 @@ end extractEmailAddress
 
 on smartReply(templateFolder)
   set folderPath to my setDefaultTemplatePath(templateFolder)
-  
+
   tell application "Mail"
     try
       -- Check if a message is selected
@@ -323,39 +323,39 @@ on smartReply(templateFolder)
       if (count of selectedMessages) is 0 then
         return "Error: No message selected. Please select a message in Mail.app before running this script."
       end if
-      
+
       -- Get the first selected message
       set theMessage to item 1 of selectedMessages
       set messageSubject to subject of theMessage
       set messageContent to content of theMessage
       set messageSender to sender of theMessage
       set senderEmail to my extractEmailAddress(messageSender)
-      
+
       -- Find best template for this message
       set templateInfo to my findBestTemplate(folderPath, messageSubject, messageContent, messageSender)
       set templatePath to path of templateInfo
       set templateContent to content of templateInfo
-      
+
       if templateContent is "" then
         return "Error: Could not find or read any suitable templates in " & folderPath
       end if
-      
+
       -- Process template
       set replyBody to my processTemplate(templateContent, messageSender, senderEmail, messageSubject, messageContent)
-      
+
       -- Create reply
       set replyMessage to reply theMessage with opening window
-      
+
       -- Set reply content
       delay 0.5 -- Give Mail time to create the reply window
       set content of replyMessage to replyBody
-      
+
       set templateName to "Default"
       if templatePath is not "" then
         set templateName to last text item of templatePath delimited by "/"
         set templateName to text 1 thru ((length of templateName) - 4) of templateName -- Remove .txt
       end if
-      
+
       return "Created reply to " & messageSender & " using template: " & templateName
     on error errMsg
       return "Error creating smart reply: " & errMsg
@@ -367,6 +367,7 @@ return my smartReply("--MCP_INPUT:templatePath")
 ```
 
 This script:
+
 1. Creates a reply to the selected email using customizable text templates
 2. Intelligently selects the best template based on:
    - Keywords in the subject and message body

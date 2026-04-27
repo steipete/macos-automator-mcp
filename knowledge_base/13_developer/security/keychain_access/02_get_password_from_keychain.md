@@ -1,5 +1,5 @@
 ---
-title: 'Keychain Access: Retrieve Password'
+title: "Keychain Access: Retrieve Password"
 category: 13_developer
 id: keychain_get_password
 description: >-
@@ -42,11 +42,11 @@ on getPasswordFromKeychain(accountName, serviceName, serverName)
   if accountName is missing value or accountName is "" then
     return "error: Account name is required."
   end if
-  
+
   try
     set cmdArgs to ""
     set cmdType to ""
-    
+
     -- Determine which type of password to retrieve
     if serviceName is not missing value and serviceName is not "" then
       -- Find generic password (application/service password)
@@ -61,14 +61,14 @@ on getPasswordFromKeychain(accountName, serviceName, serverName)
       set cmdType to "find-generic-password"
       set cmdArgs to "-a " & quoted form of accountName
     end if
-    
+
     -- Build the security command with password output
     set securityCmd to "security " & cmdType & " " & cmdArgs & " -w"
-    
+
     -- Execute the command and capture the password
     -- NOTE: This may trigger a keychain prompt for user approval
     set thePassword to do shell script securityCmd
-    
+
     -- Return a success message (intentionally NOT returning the actual password)
     if cmdType is "find-generic-password" then
       if serviceName is not missing value and serviceName is not "" then
@@ -93,12 +93,14 @@ return my getPasswordFromKeychain("--MCP_INPUT:accountName", "--MCP_INPUT:servic
 ```
 
 This script:
+
 1. Takes an account name and optionally a service or server name
 2. Determines whether to search for a generic password or internet password
 3. Uses the `security` command-line tool to retrieve the password
 4. Returns a success message (without exposing the actual password)
 
 Important security notes:
+
 - This script may trigger a user authorization dialog if the keychain item is protected
 - For security reasons, the script returns a success message rather than the actual password
 - In a real application, you would use the password immediately but never store or display it
@@ -108,7 +110,8 @@ Important security notes:
   - Store it briefly in a variable that will be cleared when the script finishes
 
 Additional keychain options:
+
 - You can specify a keychain file with `-k /path/to/keychain`
 - View more details about an item with the `-g` option instead of `-w`
 - List all keychain items with `security dump-keychain`
-END_TIP
+  END_TIP

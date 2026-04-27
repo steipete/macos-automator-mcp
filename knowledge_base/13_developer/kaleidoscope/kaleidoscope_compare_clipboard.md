@@ -4,7 +4,7 @@ title: Compare Clipboard with File in Kaleidoscope
 description: Use AppleScript to compare clipboard contents with a file in Kaleidoscope
 author: steipete
 language: applescript
-tags: 'kaleidoscope, diff, compare, clipboard'
+tags: "kaleidoscope, diff, compare, clipboard"
 keywords:
   - kaleidoscope
   - clipboard
@@ -36,13 +36,13 @@ Kaleidoscope can compare the clipboard contents with a file using its URL scheme
 on compareClipboardWithFile(filePath, comparisonLabel)
     set encodedPath to encodeURLComponent(filePath)
     set encodedLabel to encodeURLComponent(comparisonLabel)
-    
+
     set kaleidoscopeURL to "kaleidoscope://clipboard?" & encodedPath
-    
+
     if comparisonLabel is not equal to "" then
         set kaleidoscopeURL to kaleidoscopeURL & "&label=" & encodedLabel
     end if
-    
+
     open location kaleidoscopeURL
 end compareClipboardWithFile
 
@@ -50,7 +50,7 @@ end compareClipboardWithFile
 on encodeURLComponent(input)
     set theChars to the characters of input
     set encodedString to ""
-    
+
     repeat with c in theChars
         set theChar to c as string
         if theChar is " " then
@@ -63,7 +63,7 @@ on encodeURLComponent(input)
             set encodedString to encodedString & theChar
         end if
     end repeat
-    
+
     return encodedString
 end encodeURLComponent
 

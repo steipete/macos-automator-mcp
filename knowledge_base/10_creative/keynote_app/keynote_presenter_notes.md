@@ -1,5 +1,5 @@
 ---
-title: 'Keynote: Get and Set Presenter Notes'
+title: "Keynote: Get and Set Presenter Notes"
 category: 10_creative
 id: keynote_presenter_notes
 description: Gets or sets the presenter notes for the current slide in Keynote.
@@ -27,14 +27,14 @@ on managePresenterNotes(newNotes)
     if not running then return "error: Keynote is not running."
     if (count of documents) is 0 then return "error: No Keynote presentation is open."
     activate
-    
+
     try
       tell front document
         set currentSlide to current slide
         if currentSlide is missing value then
           return "error: No slide is currently selected."
         end if
-        
+
         if newNotes is not missing value and newNotes is not "" and newNotes is not "--MCP_INPUT:notesText" then
           -- Set presenter notes
           set presenter notes of currentSlide to newNotes
@@ -54,4 +54,5 @@ end managePresenterNotes
 
 return my managePresenterNotes("--MCP_INPUT:notesText")
 ```
-END_TIP 
+
+END_TIP

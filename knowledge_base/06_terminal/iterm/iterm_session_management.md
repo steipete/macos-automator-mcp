@@ -1,7 +1,7 @@
 ---
 id: iterm_session_management
 title: iTerm2 Session Management
-description: 'Saves, restores, and manages iTerm2 window arrangements and sessions'
+description: "Saves, restores, and manages iTerm2 window arrangements and sessions"
 language: applescript
 author: Claude
 keywords:
@@ -16,13 +16,13 @@ usage_examples:
   - Create named session configurations for different workflows
 parameters:
   - name: action
-    description: 'Action to perform - save, restore, list, or delete'
+    description: "Action to perform - save, restore, list, or delete"
     required: true
   - name: name
-    description: 'Name of the arrangement to save, restore, or delete'
+    description: "Name of the arrangement to save, restore, or delete"
     required: false
   - name: includeContents
-    description: 'Whether to save terminal contents (true/false, default false)'
+    description: "Whether to save terminal contents (true/false, default false)"
     required: false
 category: 06_terminal
 ---
@@ -36,15 +36,15 @@ on run {input, parameters}
     set action to "--MCP_INPUT:action"
     set arrangementName to "--MCP_INPUT:name"
     set includeContents to "--MCP_INPUT:includeContents"
-    
+
     -- Validate and set defaults for parameters
     if action is "" or action is missing value then
         return "Error: Please specify an action (save, restore, list, or delete)"
     end if
-    
+
     -- Convert parameters to lowercase for case-insensitive comparison
     set action to my toLowerCase(action)
-    
+
     -- Set default arrangement name if not provided
     if arrangementName is "" or arrangementName is missing value then
         if action is "list" then
@@ -53,7 +53,7 @@ on run {input, parameters}
             set arrangementName to "Default"
         end if
     end if
-    
+
     -- Set default for includeContents
     if includeContents is "" or includeContents is missing value then
         set includeContents to false
@@ -64,7 +64,7 @@ on run {input, parameters}
             set includeContents to false
         end try
     end if
-    
+
     -- Check if iTerm2 is running
     tell application "System Events"
         if not (exists process "iTerm2") then
@@ -78,7 +78,7 @@ on run {input, parameters}
             end if
         end if
     end tell
-    
+
     -- Perform the requested action
     if action is "save" then
         return saveArrangement(arrangementName, includeContents)
@@ -97,23 +97,23 @@ end run
 on saveArrangement(arrangementName, includeContents)
     tell application "iTerm2"
         activate
-        
+
         -- Use the Arrangements submenu via UI automation
         tell application "System Events"
             tell process "iTerm2"
                 set frontmost to true
                 delay 0.3
-                
+
                 -- Select Window > Save Window Arrangement...
                 click menu item "Save Window Arrangement…" of menu "Window" of menu bar 1
                 delay 0.3
-                
+
                 -- Now handle the dialog with the name field
                 set arrangementDialog to window "Save Window Arrangement"
-                
+
                 -- Enter the arrangement name
                 set value of text field 1 of arrangementDialog to arrangementName
-                
+
                 -- Set the checkbox for including contents if needed
                 if includeContents then
                     -- Check if the checkbox exists and set it
@@ -126,10 +126,10 @@ on saveArrangement(arrangementName, includeContents)
                         -- If the checkbox doesn't exist or has a different name, just continue
                     end try
                 end if
-                
+
                 -- Click the Save button
                 click button "Save" of arrangementDialog
-                
+
                 return "Saved current window arrangement as '" & arrangementName & "'."
             end tell
         end tell
@@ -140,28 +140,28 @@ end saveArrangement
 on restoreArrangement(arrangementName)
     tell application "iTerm2"
         activate
-        
+
         -- Check if the arrangement exists
         set arrangementExists to false
         set existingArrangements to my getExistingArrangements()
-        
+
         repeat with i from 1 to count of existingArrangements
             if item i of existingArrangements is arrangementName then
                 set arrangementExists to true
                 exit repeat
             end if
         end repeat
-        
+
         if not arrangementExists then
             return "Error: No saved arrangement found with name '" & arrangementName & "'."
         end if
-        
+
         -- Use the Arrangements submenu via UI automation
         tell application "System Events"
             tell process "iTerm2"
                 set frontmost to true
                 delay 0.3
-                
+
                 -- Navigate to the Window menu
                 tell menu bar 1
                     tell menu bar item "Window"
@@ -175,7 +175,7 @@ on restoreArrangement(arrangementName)
                         end tell
                     end tell
                 end tell
-                
+
                 return "Restored window arrangement '" & arrangementName & "'."
             end tell
         end tell
@@ -185,18 +185,18 @@ end restoreArrangement
 -- List all saved window arrangements
 on listArrangements()
     set existingArrangements to my getExistingArrangements()
-    
+
     if (count of existingArrangements) is 0 then
         return "No saved window arrangements found."
     else
         set arrangementsList to "Available window arrangements:
 "
-        
+
         repeat with i from 1 to count of existingArrangements
             set arrangementsList to arrangementsList & "• " & item i of existingArrangements & "
 "
         end repeat
-        
+
         return arrangementsList
     end if
 end listArrangements
@@ -205,28 +205,28 @@ end listArrangements
 on deleteArrangement(arrangementName)
     tell application "iTerm2"
         activate
-        
+
         -- Check if the arrangement exists
         set arrangementExists to false
         set existingArrangements to my getExistingArrangements()
-        
+
         repeat with i from 1 to count of existingArrangements
             if item i of existingArrangements is arrangementName then
                 set arrangementExists to true
                 exit repeat
             end if
         end repeat
-        
+
         if not arrangementExists then
             return "Error: No saved arrangement found with name '" & arrangementName & "'."
         end if
-        
+
         -- Use the Arrangements management dialog via UI automation
         tell application "System Events"
             tell process "iTerm2"
                 set frontmost to true
                 delay 0.3
-                
+
                 -- Navigate to the Window menu
                 tell menu bar 1
                     tell menu bar item "Window"
@@ -236,14 +236,14 @@ on deleteArrangement(arrangementName)
                         end tell
                     end tell
                 end tell
-                
+
                 -- Handle the Manage Window Arrangements dialog
                 set manageDialog to window "Window Arrangements"
-                
+
                 -- Select the arrangement to delete in the table
                 tell table 1 of scroll area 1 of manageDialog
                     set selectedRow to 0
-                    
+
                     -- Find and select the row with our arrangement name
                     repeat with i from 1 to count of rows
                         if value of text field 1 of row i is arrangementName then
@@ -252,18 +252,18 @@ on deleteArrangement(arrangementName)
                             exit repeat
                         end if
                     end repeat
-                    
+
                     if selectedRow is 0 then
                         -- Close the dialog since we didn't find the arrangement
                         click button "OK" of manageDialog
                         return "Error: Could not find arrangement '" & arrangementName & "' in the management dialog."
                     end if
                 end tell
-                
+
                 -- Click the - button to delete the selected arrangement
                 click button "-" of manageDialog
                 delay 0.2
-                
+
                 -- Confirm the deletion if a confirmation dialog appears
                 try
                     click button "Delete" of sheet 1 of manageDialog
@@ -271,10 +271,10 @@ on deleteArrangement(arrangementName)
                 on error
                     -- No confirmation dialog appeared, which is fine
                 end try
-                
+
                 -- Close the management dialog
                 click button "OK" of manageDialog
-                
+
                 return "Deleted window arrangement '" & arrangementName & "'."
             end tell
         end tell
@@ -284,7 +284,7 @@ end deleteArrangement
 -- Helper function to get existing arrangements
 on getExistingArrangements()
     set arrangementsPath to (POSIX path of (path to home folder)) & "Library/Application Support/iTerm2/Arrangements"
-    
+
     -- Check if the Arrangements directory exists
     try
         do shell script "test -d " & quoted form of arrangementsPath
@@ -292,11 +292,11 @@ on getExistingArrangements()
         -- Directory doesn't exist, so no arrangements
         return {}
     end try
-    
+
     -- Get arrangement files from the directory
     set arrangementFiles to paragraphs of (do shell script "ls " & quoted form of arrangementsPath & " | grep '.arrangement'")
     set arrangements to {}
-    
+
     -- Extract arrangement names from filenames
     repeat with arrangementFile in arrangementFiles
         if arrangementFile ends with ".arrangement" then
@@ -304,7 +304,7 @@ on getExistingArrangements()
             set end of arrangements to arrangementName
         end if
     end repeat
-    
+
     return arrangements
 end getExistingArrangements
 
@@ -373,6 +373,7 @@ When saving an arrangement with `includeContents` set to `true`:
 - Output from running commands is maintained
 
 This is useful for:
+
 - Preserving the state of long-running processes
 - Maintaining context between work sessions
 - Documentation and reviewing previous output
@@ -401,7 +402,7 @@ end prepareForShutdown
 -- Example: Load different arrangements based on the time of day
 on loadTimeBasedArrangement()
     set currentHour to (do shell script "date +%H") as integer
-    
+
     if currentHour ≥ 9 and currentHour < 12 then
         my restoreArrangement("Morning")
     else if currentHour ≥ 12 and currentHour < 17 then

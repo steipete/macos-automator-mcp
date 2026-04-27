@@ -1,5 +1,5 @@
 ---
-title: 'Core: Range Reference Form'
+title: "Core: Range Reference Form"
 category: 02_as_core
 id: core_reference_range
 description: Accessing a contiguous series of elements by specifying a start and end index.
@@ -72,4 +72,5 @@ return "Colors 2-4: " & (someColors1 as string) & ¬
   "\nFinder range: " & finderRange & ¬
   "\nEmpty/Invalid range attempt (see notes): " & (emptyRangeList as string)
 ```
-END_TIP 
+
+END_TIP

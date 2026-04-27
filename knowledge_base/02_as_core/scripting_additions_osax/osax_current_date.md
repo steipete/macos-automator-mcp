@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: current date Command'
+title: "StandardAdditions: current date Command"
 category: 02_as_core
 id: osax_current_date
 description: Returns the current system date and time as a date object.
@@ -46,4 +46,5 @@ return "Full Date: " & fullDateString & ¬
   "\nTime String: " & timeStr & ¬
   "\nHours: " & theHours & ":" & theMinutes & ":" & theSeconds
 ```
-END_TIP 
+
+END_TIP

@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Execute JavaScript in Active Tab'
+title: "Chrome: Execute JavaScript in Active Tab"
 category: 07_browsers
 id: chrome_execute_javascript
 description: >-
@@ -40,7 +40,7 @@ on executeJSInChrome(javascriptCode)
     if not running then return "error: Google Chrome is not running."
     if (count of windows) is 0 then return "error: No Chrome windows open."
     if (count of tabs of front window) is 0 then return "error: No tabs in front Chrome window."
-    
+
     try
       -- Make sure Chrome is front for reliability of JS execution context
       activate
@@ -63,4 +63,5 @@ end executeJSInChrome
 
 return my executeJSInChrome("--MCP_INPUT:jsCode")
 ```
+
 END_TIP

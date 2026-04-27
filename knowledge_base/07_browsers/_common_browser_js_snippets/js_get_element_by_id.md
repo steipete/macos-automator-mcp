@@ -1,5 +1,5 @@
 ---
-title: 'JS Snippet: Get Element by ID'
+title: "JS Snippet: Get Element by ID"
 category: 07_browsers
 id: js_get_element_by_id
 description: JavaScript to select an HTML element by its unique ID.
@@ -18,6 +18,7 @@ This JavaScript finds an element using its `id` attribute.
 
 ```javascript
 // Replace 'yourElementId' with the actual ID
-document.getElementById('yourElementId');
+document.getElementById("yourElementId");
 ```
-END_TIP 
+
+END_TIP

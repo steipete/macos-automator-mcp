@@ -1,5 +1,5 @@
 ---
-title: 'AppleScript Constants: The ''constant'' Data Type'
+title: "AppleScript Constants: The 'constant' Data Type"
 category: 02_as_core
 id: core_datatype_constant
 description: >-
@@ -35,12 +35,12 @@ tell application "Finder"
   set nameSort to name column -- Returns constant value: 'name'
   set sizeSort to size column -- Returns constant value: 'size'
   set dateSort to modification date column -- Returns constant value: 'modd'
-  
+
   -- View mode constants
   set listViewMode to list view -- Returns constant value: 'clvw'
   set iconViewMode to icon view -- Returns constant value: 'icnv'
   set columnViewMode to column view -- Returns constant value: 'clvw'
-  
+
   -- Using constants as parameters
   -- Set the front Finder window to list view
   if (count of Finder windows) > 0 then

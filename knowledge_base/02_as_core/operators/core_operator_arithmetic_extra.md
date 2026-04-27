@@ -1,5 +1,5 @@
 ---
-title: 'Core: Arithmetic Operators (div, mod, ^)'
+title: "Core: Arithmetic Operators (div, mod, ^)"
 category: 02_as_core
 id: core_operator_arithmetic_extra
 description: >-
@@ -50,4 +50,5 @@ return "10 div 3: " & intResult1 & ¬
   "\n2 ^ 3: " & powerResult1 & ¬
   "\n5 ^ 0.5: " & powerResult3
 ```
-END_TIP 
+
+END_TIP

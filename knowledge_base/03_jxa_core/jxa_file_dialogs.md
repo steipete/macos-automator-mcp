@@ -35,17 +35,17 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 try {
-    const filePath = app.chooseFile({
-        withPrompt: "Please select a file",
-        ofType: ["public.text", "public.image"], // Optional: limit by file types
-        defaultLocation: app.pathTo("desktop") // Optional: set starting location
-    });
-    
-    console.log("Selected file: " + filePath);
-    // Now you can process the selected file...
+  const filePath = app.chooseFile({
+    withPrompt: "Please select a file",
+    ofType: ["public.text", "public.image"], // Optional: limit by file types
+    defaultLocation: app.pathTo("desktop"), // Optional: set starting location
+  });
+
+  console.log("Selected file: " + filePath);
+  // Now you can process the selected file...
 } catch (error) {
-    // User cancelled the dialog
-    console.log("No file was selected");
+  // User cancelled the dialog
+  console.log("No file was selected");
 }
 ```
 
@@ -58,16 +58,16 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 try {
-    const folderPath = app.chooseFolder({
-        withPrompt: "Please select a folder",
-        defaultLocation: app.pathTo("home") // Optional: set starting location
-    });
-    
-    console.log("Selected folder: " + folderPath);
-    // Now you can process the selected folder...
+  const folderPath = app.chooseFolder({
+    withPrompt: "Please select a folder",
+    defaultLocation: app.pathTo("home"), // Optional: set starting location
+  });
+
+  console.log("Selected folder: " + folderPath);
+  // Now you can process the selected folder...
 } catch (error) {
-    // User cancelled the dialog
-    console.log("No folder was selected");
+  // User cancelled the dialog
+  console.log("No folder was selected");
 }
 ```
 
@@ -80,17 +80,17 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 try {
-    const savePath = app.chooseFileName({
-        withPrompt: "Save file as:",
-        defaultName: "Untitled.txt", // Default filename
-        defaultLocation: app.pathTo("documents") // Default save location
-    });
-    
-    console.log("Save location: " + savePath);
-    // Now you can save to this location...
+  const savePath = app.chooseFileName({
+    withPrompt: "Save file as:",
+    defaultName: "Untitled.txt", // Default filename
+    defaultLocation: app.pathTo("documents"), // Default save location
+  });
+
+  console.log("Save location: " + savePath);
+  // Now you can save to this location...
 } catch (error) {
-    // User cancelled the dialog
-    console.log("Save operation cancelled");
+  // User cancelled the dialog
+  console.log("Save operation cancelled");
 }
 ```
 
@@ -103,22 +103,22 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 try {
-    const files = app.chooseFile({
-        withPrompt: "Select files to process",
-        multipleSelectionsAllowed: true, // Allow selecting multiple files
-        defaultLocation: app.pathTo("documents")
-    });
-    
-    console.log("Selected files: " + files.length);
-    
-    // Process each selected file
-    files.forEach(function(file, index) {
-        console.log(`File ${index + 1}: ${file}`);
-        // Process this file...
-    });
+  const files = app.chooseFile({
+    withPrompt: "Select files to process",
+    multipleSelectionsAllowed: true, // Allow selecting multiple files
+    defaultLocation: app.pathTo("documents"),
+  });
+
+  console.log("Selected files: " + files.length);
+
+  // Process each selected file
+  files.forEach(function (file, index) {
+    console.log(`File ${index + 1}: ${file}`);
+    // Process this file...
+  });
 } catch (error) {
-    // User cancelled the dialog
-    console.log("No files were selected");
+  // User cancelled the dialog
+  console.log("No files were selected");
 }
 ```
 
@@ -132,25 +132,24 @@ app.includeStandardAdditions = true;
 const finder = Application("Finder");
 
 try {
-    const filePath = app.chooseFile({
-        withPrompt: "Please select a file"
-    });
-    
-    // Get a Finder reference to work with file attributes
-    const fileRef = finder.items[filePath];
-    
-    // Get file information
-    console.log(`Name: ${fileRef.name()}`);
-    console.log(`Size: ${fileRef.size()} bytes`);
-    console.log(`Created: ${fileRef.creationDate()}`);
-    console.log(`Modified: ${fileRef.modificationDate()}`);
-    console.log(`Kind: ${fileRef.kind()}`);
-    
-    // You can also make changes to the file if needed
-    // fileRef.comment = "My special file";
-    
+  const filePath = app.chooseFile({
+    withPrompt: "Please select a file",
+  });
+
+  // Get a Finder reference to work with file attributes
+  const fileRef = finder.items[filePath];
+
+  // Get file information
+  console.log(`Name: ${fileRef.name()}`);
+  console.log(`Size: ${fileRef.size()} bytes`);
+  console.log(`Created: ${fileRef.creationDate()}`);
+  console.log(`Modified: ${fileRef.modificationDate()}`);
+  console.log(`Kind: ${fileRef.kind()}`);
+
+  // You can also make changes to the file if needed
+  // fileRef.comment = "My special file";
 } catch (error) {
-    console.log("Operation cancelled or error occurred: " + error);
+  console.log("Operation cancelled or error occurred: " + error);
 }
 ```
 
@@ -160,33 +159,33 @@ This function helps convert a full path to a Finder file/folder reference:
 
 ```javascript
 function getFinderItemFromPath(fullPath) {
-    const finder = Application("Finder");
-    
-    // Split the path into components
-    const components = fullPath.split('/').slice(1);
-    const itemName = components.pop();
-    
-    // Start with the startup disk
-    let container = finder.startupDisk();
-    
-    // Traverse the folder hierarchy
-    components.forEach(dirName => {
-        if (dirName && dirName.length > 0) {
-            container = container.folders[dirName];
-        }
-    });
-    
-    // Get the file or folder object
-    try {
-        const item = container.files[itemName];
-        return item;
-    } catch (e) {
-        try {
-            return container.folders[itemName];
-        } catch (e2) {
-            throw new Error(`Item not found: ${fullPath}`);
-        }
+  const finder = Application("Finder");
+
+  // Split the path into components
+  const components = fullPath.split("/").slice(1);
+  const itemName = components.pop();
+
+  // Start with the startup disk
+  let container = finder.startupDisk();
+
+  // Traverse the folder hierarchy
+  components.forEach((dirName) => {
+    if (dirName && dirName.length > 0) {
+      container = container.folders[dirName];
     }
+  });
+
+  // Get the file or folder object
+  try {
+    const item = container.files[itemName];
+    return item;
+  } catch (e) {
+    try {
+      return container.folders[itemName];
+    } catch (e2) {
+      throw new Error(`Item not found: ${fullPath}`);
+    }
+  }
 }
 ```
 
@@ -196,41 +195,40 @@ This example shows a complete workflow of selecting an image file and processing
 
 ```javascript
 (() => {
-    const app = Application.currentApplication();
-    app.includeStandardAdditions = true;
-    
-    try {
-        const imagePath = app.chooseFile({
-            withPrompt: "Select an image to process",
-            ofType: ["public.image"],
-            defaultLocation: app.pathTo("pictures")
-        });
-        
-        // Display notification that processing is starting
-        app.displayNotification("Beginning image processing...", {
-            withTitle: "Image Processor"
-        });
-        
-        // Get file information using Finder
-        const finder = Application("Finder");
-        const imageFile = finder.items[imagePath];
-        
-        // Process the image (this is where you'd add your actual processing logic)
-        console.log(`Processing image: ${imageFile.name()}`);
-        console.log(`Size: ${imageFile.size() / 1024} KB`);
-        
-        // Simulate processing time
-        delay(2);
-        
-        // Display completion notification
-        app.displayNotification(`Processed ${imageFile.name()} successfully!`, {
-            withTitle: "Image Processor",
-            soundName: "Purr"
-        });
-        
-    } catch (error) {
-        console.log(`Operation cancelled or error occurred: ${error}`);
-    }
+  const app = Application.currentApplication();
+  app.includeStandardAdditions = true;
+
+  try {
+    const imagePath = app.chooseFile({
+      withPrompt: "Select an image to process",
+      ofType: ["public.image"],
+      defaultLocation: app.pathTo("pictures"),
+    });
+
+    // Display notification that processing is starting
+    app.displayNotification("Beginning image processing...", {
+      withTitle: "Image Processor",
+    });
+
+    // Get file information using Finder
+    const finder = Application("Finder");
+    const imageFile = finder.items[imagePath];
+
+    // Process the image (this is where you'd add your actual processing logic)
+    console.log(`Processing image: ${imageFile.name()}`);
+    console.log(`Size: ${imageFile.size() / 1024} KB`);
+
+    // Simulate processing time
+    delay(2);
+
+    // Display completion notification
+    app.displayNotification(`Processed ${imageFile.name()} successfully!`, {
+      withTitle: "Image Processor",
+      soundName: "Purr",
+    });
+  } catch (error) {
+    console.log(`Operation cancelled or error occurred: ${error}`);
+  }
 })();
 ```
 

@@ -1,5 +1,5 @@
 ---
-title: 'Home App: Control Smart Home Device'
+title: "Home App: Control Smart Home Device"
 category: 09_productivity
 id: home_control_device
 description: >-
@@ -98,7 +98,7 @@ on controlHomeDevice(deviceName, roomName, action, value)
           click deviceElement
           delay 0.5
           return "Device '" & deviceName & "' toggled."
-          
+
         else if action is "on" then
           -- For on action, make sure device is on
           -- For most devices, if it's not already on, clicking will turn it on
@@ -106,85 +106,85 @@ on controlHomeDevice(deviceName, roomName, action, value)
           click deviceElement
           delay 0.5
           return "Device '" & deviceName & "' turned on."
-          
+
         else if action is "off" then
           -- For off action, make sure device is off
           -- Similar to on action, but might need to check current state
           click deviceElement
           delay 0.5
           return "Device '" & deviceName & "' turned off."
-          
+
         else if action is "brightness" then
           -- For brightness, we need to access the device's detailed controls
           -- Long press or right-click to show controls
           perform action "AXShowMenu" of deviceElement
           delay 0.5
-          
+
           -- Look for the brightness slider
           set sliderFound to false
           repeat with ctrl in (UI elements of window 1)
             try
               if role of ctrl is "AXSlider" and description of ctrl contains "brightness" then
                 set sliderFound to true
-                
+
                 -- Convert value to a value between 0 and 100
                 set brightnessValue to value as number
                 if brightnessValue < 0 then set brightnessValue to 0
                 if brightnessValue > 100 then set brightnessValue to 100
-                
+
                 -- Set the slider value
                 set value of ctrl to brightnessValue
                 delay 0.5
-                
+
                 -- Click away to close the controls
                 click at {10, 10}
                 return "Set brightness of '" & deviceName & "' to " & brightnessValue & "%."
               end if
             end try
           end repeat
-          
+
           if not sliderFound then
             return "error: Brightness control not found for '" & deviceName & "'. Device may not support brightness."
           end if
-          
+
         else if action is "temperature" then
           -- For temperature, similar to brightness but looking for temperature controls
           perform action "AXShowMenu" of deviceElement
           delay 0.5
-          
+
           -- Look for the temperature control
           set tempControlFound to false
           repeat with ctrl in (UI elements of window 1)
             try
               if role of ctrl is "AXSlider" and description of ctrl contains "temperature" then
                 set tempControlFound to true
-                
+
                 -- Set the temperature value
                 set tempValue to value as number
                 set value of ctrl to tempValue
                 delay 0.5
-                
+
                 -- Click away to close the controls
                 click at {10, 10}
                 return "Set temperature of '" & deviceName & "' to " & tempValue & " degrees."
               end if
             end try
           end repeat
-          
+
           if not tempControlFound then
             return "error: Temperature control not found for '" & deviceName & "'. Device may not support temperature adjustment."
           end if
-          
+
         else
           return "error: Unsupported action '" & action & "'. Valid actions: toggle, on, off, brightness, temperature."
         end if
-        
+
       end tell
     on error errMsg
       return "error: Failed to control device - " & errMsg
     end try
   end tell
-  
+
   return "error: Operation failed to complete."
 end controlHomeDevice
 

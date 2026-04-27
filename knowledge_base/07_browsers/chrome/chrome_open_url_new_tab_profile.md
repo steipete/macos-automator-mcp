@@ -1,5 +1,5 @@
 ---
-title: 'Chrome: Open URL in New Tab (Specific Profile)'
+title: "Chrome: Open URL in New Tab (Specific Profile)"
 category: 07_browsers
 id: chrome_open_url_new_tab_profile
 description: >-
@@ -35,7 +35,7 @@ notes: >
 
 on openInChrome(theURL, profileName, useNewWindow)
   if theURL is missing value or theURL is "" then return "error: URL not provided."
-  
+
   if profileName is not missing value and profileName is not "" then
     try
       set chromeArgs to "--args"
@@ -70,4 +70,5 @@ end openInChrome
 
 return my openInChrome("--MCP_INPUT:targetURL", "--MCP_INPUT:profileDir", --MCP_INPUT:newWindow)
 ```
-END_TIP 
+
+END_TIP

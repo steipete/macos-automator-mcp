@@ -1,5 +1,5 @@
 ---
-title: 'StandardAdditions: list disks and list folder Commands'
+title: "StandardAdditions: list disks and list folder Commands"
 category: 02_as_core
 id: osax_list_disk_folder
 description: Lists mounted disk volumes and the contents of a specified folder.
@@ -73,4 +73,5 @@ end try
 
 return diskOutput & "\n\n" & desktopContents & "\n\n" & appsContents
 ```
-END_TIP 
+
+END_TIP

@@ -4,7 +4,7 @@ title: View Git File History in Kaleidoscope
 description: Use AppleScript to open Git file history in Kaleidoscope
 author: steipete
 language: applescript
-tags: 'kaleidoscope, git, history, version control'
+tags: "kaleidoscope, git, history, version control"
 keywords:
   - file history
   - revision tracking
@@ -43,7 +43,7 @@ end viewGitHistory
 on encodeURLComponent(input)
     set theChars to the characters of input
     set encodedString to ""
-    
+
     repeat with c in theChars
         set theChar to c as string
         if theChar is " " then
@@ -56,7 +56,7 @@ on encodeURLComponent(input)
             set encodedString to encodedString & theChar
         end if
     end repeat
-    
+
     return encodedString
 end encodeURLComponent
 

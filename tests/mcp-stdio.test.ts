@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import path from 'path';
-import os from 'os';
-import fs from 'fs/promises';
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { Client } from "@modelcontextprotocol/sdk/client";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import path from "path";
+import os from "os";
+import fs from "fs/promises";
 
-const WORKSPACE_PATH = path.resolve(__dirname, '..');
-const TSX_PATH = path.join(WORKSPACE_PATH, 'node_modules', '.bin', 'tsx');
-const SERVER_PATH = path.join(WORKSPACE_PATH, 'src', 'server.ts');
-const TSX_TSCONFIG_PATH = path.join(WORKSPACE_PATH, 'tests', 'tsconfig.runtime.json');
+const WORKSPACE_PATH = path.resolve(__dirname, "..");
+const TSX_PATH = path.join(WORKSPACE_PATH, "node_modules", ".bin", "tsx");
+const SERVER_PATH = path.join(WORKSPACE_PATH, "src", "server.ts");
+const TSX_TSCONFIG_PATH = path.join(WORKSPACE_PATH, "tests", "tsconfig.runtime.json");
 
-const TEST_CONTENT = 'Content written by execute_script via stdio test';
+const TEST_CONTENT = "Content written by execute_script via stdio test";
 
 async function waitForFileExists(filePath: string, timeoutMs = 15000, pollMs = 250) {
   const deadline = Date.now() + timeoutMs;
@@ -32,7 +32,7 @@ function shellEscape(value: string) {
   return value.replace(/'/g, "'\\''");
 }
 
-describe('MCP stdio protocol', () => {
+describe("MCP stdio protocol", () => {
   let client: Client;
   let transport: StdioClientTransport;
 
@@ -41,17 +41,17 @@ describe('MCP stdio protocol', () => {
       command: TSX_PATH,
       args: [SERVER_PATH],
       cwd: WORKSPACE_PATH,
-      stderr: 'pipe',
+      stderr: "pipe",
       env: {
-        MCP_E2E_TESTING: 'true',
-        VITEST: 'true',
+        MCP_E2E_TESTING: "true",
+        VITEST: "true",
         TSX_TSCONFIG_PATH,
       },
     });
 
     client = new Client({
-      name: 'macos-automator-mcp-tests',
-      version: '0.0.0',
+      name: "macos-automator-mcp-tests",
+      version: "0.0.0",
     });
 
     await client.connect(transport);
@@ -61,19 +61,17 @@ describe('MCP stdio protocol', () => {
     await client.close();
   });
 
-  it('lists tools, returns tips, and executes a script', async () => {
+  it("lists tools, returns tips, and executes a script", async () => {
     const { tools } = await client.listTools();
-    expect(tools.some((tool) => tool.name === 'get_scripting_tips')).toBe(true);
-    expect(tools.some((tool) => tool.name === 'execute_script')).toBe(true);
+    expect(tools.some((tool) => tool.name === "get_scripting_tips")).toBe(true);
+    expect(tools.some((tool) => tool.name === "execute_script")).toBe(true);
 
     const tipsResult = await client.callTool({
-      name: 'get_scripting_tips',
-      arguments: { search_term: 'knowledge base', limit: 1 },
+      name: "get_scripting_tips",
+      arguments: { search_term: "knowledge base", limit: 1 },
     });
-    const tipsText = (tipsResult.content ?? [])
-      .map((item) => item.text ?? '')
-      .join('\n');
-    expect(tipsText).toContain('How to Use This Knowledge Base');
+    const tipsText = (tipsResult.content ?? []).map((item) => item.text ?? "").join("\n");
+    expect(tipsText).toContain("How to Use This Knowledge Base");
 
     const tempFilePath = path.join(os.tmpdir(), `mcp_stdio_test_${Date.now()}.txt`);
     const escapedTempFilePath = shellEscape(tempFilePath);
@@ -82,14 +80,14 @@ describe('MCP stdio protocol', () => {
 
     try {
       await client.callTool({
-        name: 'execute_script',
+        name: "execute_script",
         arguments: {
           script_content: appleScript,
         },
       });
 
       await waitForFileExists(tempFilePath, 20000);
-      const fileContent = await fs.readFile(tempFilePath, 'utf-8');
+      const fileContent = await fs.readFile(tempFilePath, "utf-8");
       expect(fileContent.trim()).toBe(TEST_CONTENT);
     } finally {
       try {

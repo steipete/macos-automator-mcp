@@ -1,5 +1,5 @@
 ---
-title: 'Image Events: Get Image Dimensions'
+title: "Image Events: Get Image Dimensions"
 category: 10_creative
 id: image_events_get_dimensions
 description: >-
@@ -23,10 +23,10 @@ argumentsPrompt: Absolute POSIX path to the image file as 'imagePath' in inputDa
 
 on getImageDimensions(posixImagePath)
   if posixImagePath is missing value or posixImagePath is "" then return "error: Image path not provided."
-  
+
   try
     set imageFile to POSIX file posixImagePath as alias
-    
+
     tell application "Image Events"
       launch -- Make sure it's running (usually launches silently)
       try
@@ -44,4 +44,4 @@ on getImageDimensions(posixImagePath)
 end getImageDimensions
 
 return my getImageDimensions("--MCP_INPUT:imagePath")
-``` 
+```

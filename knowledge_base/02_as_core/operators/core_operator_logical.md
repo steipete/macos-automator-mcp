@@ -1,5 +1,5 @@
 ---
-title: 'Core: Logical Operators (and, or, not)'
+title: "Core: Logical Operators (and, or, not)"
 category: 02_as_core
 id: core_operator_logical
 description: >-
@@ -60,4 +60,5 @@ return "a AND b: " & result_a_and_b & ¬
   "\nComplex Result 1: " & complexResult1 & ¬
   "\nCan Drive Status: " & canDrive
 ```
-END_TIP 
+
+END_TIP

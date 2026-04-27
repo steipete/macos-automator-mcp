@@ -61,7 +61,7 @@ set myList to {"Alpha", "Beta", "Gamma", "Delta"}
 
 try
   set singleChoice to choose from list myList with prompt "Select an item:" with title "Selection" OK button name "Choose" cancel button name "Skip"
-  
+
   if singleChoice is false then
     return "User cancelled selection"
   else

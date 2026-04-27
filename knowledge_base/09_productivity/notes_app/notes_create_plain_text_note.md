@@ -1,5 +1,5 @@
 ---
-title: 'Notes: Create Plain Text Note'
+title: "Notes: Create Plain Text Note"
 category: 09_productivity
 id: notes_create_plain_text_note
 description: >-
@@ -28,7 +28,7 @@ notes: >-
 on createPlainTextNote(theTitle, theBody, theFolderName)
   if theTitle is missing value or theTitle is "" then set theTitle to "New Note " & ((current date) as string)
   if theBody is missing value then set theBody to ""
-  
+
   tell application "Notes"
     activate
     try
@@ -43,7 +43,7 @@ on createPlainTextNote(theTitle, theBody, theFolderName)
           log "Warning: Folder '" & theFolderName & "' not found. Note will be created in default location."
         end if
       end if
-      
+
       if targetContainer is missing value then
         -- Create in default location (usually "All iCloud" or first account)
         make new note with properties {name:theTitle, body:theBody}
@@ -61,4 +61,5 @@ end createPlainTextNote
 
 return my createPlainTextNote("--MCP_INPUT:noteTitle", "--MCP_INPUT:noteBody", "--MCP_INPUT:folderName")
 ```
-END_TIP 
+
+END_TIP

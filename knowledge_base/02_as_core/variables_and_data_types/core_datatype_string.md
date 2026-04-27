@@ -1,5 +1,5 @@
 ---
-title: 'Core: String Data Type'
+title: "Core: String Data Type"
 category: 02_as_core
 id: core_datatype_string
 description: >-
@@ -43,4 +43,5 @@ set myNum to numAsString as integer
 
 return "Length: " & strLength & "\\nFirst Char: " & firstChar & "\\nFirst Word: " & firstWord & "\\nGreeting: " & greeting & "\\nNumber: " & myNum
 ```
-END_TIP 
+
+END_TIP

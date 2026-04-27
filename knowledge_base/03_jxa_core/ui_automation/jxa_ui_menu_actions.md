@@ -28,99 +28,99 @@ The function can be used to perform menu actions by specifying the path of menu 
 ```javascript
 // Perform a menu action
 function performMenuAction(appName, menuItems) {
-    try {
-        if (!Array.isArray(menuItems) || menuItems.length === 0) {
-            return {
-                success: false,
-                error: "Menu items must be provided as a non-empty array"
-            };
-        }
-        
-        // Activate the application
-        const app = Application(appName);
-        app.activate();
-        delay(0.5);
-        
-        // Get System Events process for UI interaction
-        const systemEvents = Application("System Events");
-        const process = systemEvents.processes[appName];
-        
-        if (!process.exists()) {
-            return {
-                success: false,
-                error: `Process ${appName} not found`
-            };
-        }
-        
-        // Build the menu path
-        let menuPath = "menu bar 1";
-        for (let i = 0; i < menuItems.length; i++) {
-            const menuItem = menuItems[i];
-            menuPath += `->menu "${menuItem}"`;
-            if (i < menuItems.length - 1) {
-                menuPath += "->menu item";
-            } else {
-                menuPath += "->menu item";
-            }
-        }
-        
-        // Try to click the menu item
-        try {
-            const itemRef = process[menuPath];
-            if (itemRef.exists()) {
-                itemRef.click();
-                return {
-                    success: true,
-                    message: `Performed menu action: ${menuItems.join(' -> ')}`
-                };
-            } else {
-                return {
-                    success: false,
-                    error: "Menu item not found"
-                };
-            }
-        } catch (e) {
-            // If the specific path fails, try plan B: manually navigating menus
-            try {
-                // Click on the top-level menu
-                const topMenu = process.menuBars[0].menuBarItems[menuItems[0]];
-                topMenu.click();
-                delay(0.3);
-                
-                // Navigate through submenus
-                let currentMenu = topMenu.menus[0];
-                for (let i = 1; i < menuItems.length; i++) {
-                    const menuItemName = menuItems[i];
-                    const menuItemRef = currentMenu.menuItems[menuItemName];
-                    
-                    if (i === menuItems.length - 1) {
-                        // Click the final menu item
-                        menuItemRef.click();
-                    } else {
-                        // Navigate to the next submenu
-                        menuItemRef.click();
-                        delay(0.3);
-                        currentMenu = menuItemRef.menus[0];
-                    }
-                }
-                
-                return {
-                    success: true,
-                    message: `Performed menu action: ${menuItems.join(' -> ')}`
-                };
-            } catch (e2) {
-                return {
-                    success: false,
-                    error: `Menu action failed: ${e2.message}`
-                };
-            }
-        }
-    } catch (error) {
-        return {
-            success: false,
-            error: `Error performing menu action: ${error.message}`
-        };
+  try {
+    if (!Array.isArray(menuItems) || menuItems.length === 0) {
+      return {
+        success: false,
+        error: "Menu items must be provided as a non-empty array",
+      };
     }
+
+    // Activate the application
+    const app = Application(appName);
+    app.activate();
+    delay(0.5);
+
+    // Get System Events process for UI interaction
+    const systemEvents = Application("System Events");
+    const process = systemEvents.processes[appName];
+
+    if (!process.exists()) {
+      return {
+        success: false,
+        error: `Process ${appName} not found`,
+      };
+    }
+
+    // Build the menu path
+    let menuPath = "menu bar 1";
+    for (let i = 0; i < menuItems.length; i++) {
+      const menuItem = menuItems[i];
+      menuPath += `->menu "${menuItem}"`;
+      if (i < menuItems.length - 1) {
+        menuPath += "->menu item";
+      } else {
+        menuPath += "->menu item";
+      }
+    }
+
+    // Try to click the menu item
+    try {
+      const itemRef = process[menuPath];
+      if (itemRef.exists()) {
+        itemRef.click();
+        return {
+          success: true,
+          message: `Performed menu action: ${menuItems.join(" -> ")}`,
+        };
+      } else {
+        return {
+          success: false,
+          error: "Menu item not found",
+        };
+      }
+    } catch (e) {
+      // If the specific path fails, try plan B: manually navigating menus
+      try {
+        // Click on the top-level menu
+        const topMenu = process.menuBars[0].menuBarItems[menuItems[0]];
+        topMenu.click();
+        delay(0.3);
+
+        // Navigate through submenus
+        let currentMenu = topMenu.menus[0];
+        for (let i = 1; i < menuItems.length; i++) {
+          const menuItemName = menuItems[i];
+          const menuItemRef = currentMenu.menuItems[menuItemName];
+
+          if (i === menuItems.length - 1) {
+            // Click the final menu item
+            menuItemRef.click();
+          } else {
+            // Navigate to the next submenu
+            menuItemRef.click();
+            delay(0.3);
+            currentMenu = menuItemRef.menus[0];
+          }
+        }
+
+        return {
+          success: true,
+          message: `Performed menu action: ${menuItems.join(" -> ")}`,
+        };
+      } catch (e2) {
+        return {
+          success: false,
+          error: `Menu action failed: ${e2.message}`,
+        };
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error performing menu action: ${error.message}`,
+    };
+  }
 }
 ```
 

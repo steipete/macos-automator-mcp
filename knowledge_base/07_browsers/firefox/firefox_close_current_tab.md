@@ -1,5 +1,5 @@
 ---
-title: 'Firefox: Close Current Tab'
+title: "Firefox: Close Current Tab"
 category: 07_browsers
 id: firefox_close_current_tab
 description: Closes the currently active tab in Firefox.
@@ -29,14 +29,14 @@ on run
     activate
     delay 0.3 -- Allow Firefox to activate
   end tell
-  
+
   tell application "System Events"
     tell process "Firefox"
       -- Use the standard shortcut to close a tab (Command+W)
       keystroke "w" using {command down}
     end tell
   end tell
-  
+
   return "Closed the current Firefox tab"
 end run
 ```
@@ -49,38 +49,38 @@ This alternative script first checks if there's only one tab open, which can be 
 on run
   -- Save current clipboard content
   set oldClipboard to the clipboard
-  
+
   tell application "Firefox"
     activate
     delay 0.3 -- Allow Firefox to activate
   end tell
-  
+
   -- First check how many tabs we have using the tab list
   tell application "System Events"
     tell process "Firefox"
       -- Open tab overview
       keystroke "," using {shift down, command down}
       delay 0.5 -- Allow the overview to open
-      
+
       -- Select all text (tabs list)
       keystroke "a" using {command down}
       delay 0.2
-      
+
       -- Copy to clipboard
       keystroke "c" using {command down}
       delay 0.2
-      
+
       -- Close the overview
       keystroke escape
     end tell
   end tell
-  
+
   -- Process clipboard content to count tabs
   set tabsText to the clipboard
   set AppleScript's text item delimiters to return
   set tabItems to every text item of tabsText
   set AppleScript's text item delimiters to ""
-  
+
   -- Count non-empty items
   set tabCount to 0
   repeat with tabItem in tabItems
@@ -88,10 +88,10 @@ on run
       set tabCount to tabCount + 1
     end if
   end repeat
-  
+
   -- Restore original clipboard
   set the clipboard to oldClipboard
-  
+
   -- Close tab, or warn if it's the last tab
   if tabCount > 1 then
     tell application "System Events"
@@ -103,7 +103,7 @@ on run
     return "Closed the current Firefox tab. " & (tabCount - 1) & " tabs remaining."
   else
     return "Warning: This is the last tab. Closing it would close the Firefox window."
-    
+
     -- If you want to force close the last tab anyway, uncomment these lines:
     -- tell application "System Events"
     --   tell process "Firefox"

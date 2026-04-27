@@ -18,7 +18,7 @@ usage_examples:
   - Position windows in custom configurations across multiple monitors
 parameters:
   - name: layout
-    description: 'Layout pattern to use - grid, cascade, horizontal, vertical, or custom'
+    description: "Layout pattern to use - grid, cascade, horizontal, vertical, or custom"
     required: true
   - name: gridRows
     description: Number of rows for grid layout (default 2)
@@ -27,7 +27,7 @@ parameters:
     description: Number of columns for grid layout (default 2)
     required: false
   - name: positions
-    description: 'Array of position objects for custom layout {x, y, width, height}'
+    description: "Array of position objects for custom layout {x, y, width, height}"
     required: false
 category: 06_terminal
 ---
@@ -42,15 +42,15 @@ on run {input, parameters}
     set gridRows to "--MCP_INPUT:gridRows"
     set gridColumns to "--MCP_INPUT:gridColumns"
     set positions to "--MCP_INPUT:positions"
-    
+
     -- Validate and set defaults for parameters
     if layout is "" or layout is missing value then
         set layout to "grid"
     end if
-    
+
     -- Convert layout to lowercase for case-insensitive comparison
     set layout to my toLowerCase(layout)
-    
+
     -- Set defaults for grid dimensions
     if gridRows is "" or gridRows is missing value then
         set gridRows to 2
@@ -62,7 +62,7 @@ on run {input, parameters}
             set gridRows to 2
         end try
     end if
-    
+
     if gridColumns is "" or gridColumns is missing value then
         set gridColumns to 2
     else
@@ -73,7 +73,7 @@ on run {input, parameters}
             set gridColumns to 2
         end try
     end if
-    
+
     -- Check if positions is a valid list for custom layout
     set hasValidPositions to false
     if layout is "custom" then
@@ -87,17 +87,17 @@ on run {input, parameters}
                 set hasValidPositions to false
             end try
         end if
-        
+
         if not hasValidPositions then
             return "Error: Custom layout requires valid position specifications."
         end if
     end if
-    
+
     -- Get screen dimensions
     set screenDimensions to getScreenDimensions()
     set screenWidth to item 1 of screenDimensions
     set screenHeight to item 2 of screenDimensions
-    
+
     -- Check if iTerm2 is running
     tell application "System Events"
         if not (exists process "iTerm2") then
@@ -105,7 +105,7 @@ on run {input, parameters}
             delay 1 -- Give iTerm2 time to launch
         end if
     end tell
-    
+
     -- Apply the selected layout
     tell application "iTerm2"
         -- Check if any windows are open
@@ -113,9 +113,9 @@ on run {input, parameters}
             create window with default profile
             delay 0.5
         end if
-        
+
         set windowCount to count of windows
-        
+
         -- Create additional windows if needed for the layout
         if layout is "grid" then
             set neededWindows to gridRows * gridColumns
@@ -128,35 +128,35 @@ on run {input, parameters}
         else if layout is "custom" then
             set neededWindows to count of positions
         end if
-        
+
         -- Create additional windows if needed
         repeat while windowCount < neededWindows
             create window with default profile
             delay 0.3
             set windowCount to count of windows
         end repeat
-        
+
         -- Apply the selected layout
         if layout is "grid" then
             arrangeInGrid(gridRows, gridColumns, screenWidth, screenHeight)
             return "Arranged " & windowCount & " iTerm2 windows in a " & gridRows & "×" & gridColumns & " grid."
-            
+
         else if layout is "cascade" then
             arrangeInCascade(screenWidth, screenHeight)
             return "Arranged " & windowCount & " iTerm2 windows in a cascade pattern."
-            
+
         else if layout is "horizontal" then
             arrangeHorizontally(screenWidth, screenHeight)
             return "Arranged " & windowCount & " iTerm2 windows horizontally."
-            
+
         else if layout is "vertical" then
             arrangeVertically(screenWidth, screenHeight)
             return "Arranged " & windowCount & " iTerm2 windows vertically."
-            
+
         else if layout is "custom" then
             arrangeCustom(positions)
             return "Applied custom arrangement to iTerm2 windows."
-            
+
         else
             return "Error: Invalid layout type. Use 'grid', 'cascade', 'horizontal', 'vertical', or 'custom'."
         end if
@@ -168,32 +168,32 @@ on arrangeInGrid(rows, columns, screenWidth, screenHeight)
     tell application "iTerm2"
         set windowCount to count of windows
         set windowIndex to 1
-        
+
         set marginX to 20
         set marginY to 20
         set usableWidth to screenWidth - (2 * marginX)
         set usableHeight to screenHeight - (2 * marginY)
-        
+
         set cellWidth to usableWidth / columns
         set cellHeight to usableHeight / rows
-        
+
         -- Calculate window dimensions with spacing
         set spacingX to 10
         set spacingY to 10
         set windowWidth to cellWidth - spacingX
         set windowHeight to cellHeight - spacingY
-        
+
         repeat with row from 1 to rows
             repeat with col from 1 to columns
                 if windowIndex > windowCount then exit repeat
-                
+
                 set winX to marginX + ((col - 1) * cellWidth)
                 set winY to marginY + ((row - 1) * cellHeight)
-                
+
                 tell window windowIndex
                     set bounds to {winX, winY, winX + windowWidth, winY + windowHeight}
                 end tell
-                
+
                 set windowIndex to windowIndex + 1
             end repeat
             if windowIndex > windowCount then exit repeat
@@ -205,15 +205,15 @@ end arrangeInGrid
 on arrangeInCascade(screenWidth, screenHeight)
     tell application "iTerm2"
         set windowCount to count of windows
-        
+
         set baseWidth to (screenWidth * 0.75)
         set baseHeight to (screenHeight * 0.75)
         set offsetStep to 30
-        
+
         repeat with i from 1 to windowCount
             set winX to 50 + ((i - 1) * offsetStep)
             set winY to 50 + ((i - 1) * offsetStep)
-            
+
             -- Ensure the window doesn't go off screen
             if winX + baseWidth > screenWidth then
                 set winX to 50
@@ -221,7 +221,7 @@ on arrangeInCascade(screenWidth, screenHeight)
             if winY + baseHeight > screenHeight then
                 set winY to 50
             end if
-            
+
             tell window i
                 set bounds to {winX, winY, winX + baseWidth, winY + baseHeight}
             end tell
@@ -233,20 +233,20 @@ end arrangeInCascade
 on arrangeHorizontally(screenWidth, screenHeight)
     tell application "iTerm2"
         set windowCount to count of windows
-        
+
         set marginX to 20
         set marginY to 50
         set usableWidth to screenWidth - (2 * marginX)
-        
+
         -- Calculate window width with spacing
         set spacingX to 10
         set windowWidth to (usableWidth / windowCount) - spacingX
         set windowHeight to screenHeight - (2 * marginY)
-        
+
         repeat with i from 1 to windowCount
             set winX to marginX + ((i - 1) * (windowWidth + spacingX))
             set winY to marginY
-            
+
             tell window i
                 set bounds to {winX, winY, winX + windowWidth, winY + windowHeight}
             end tell
@@ -258,20 +258,20 @@ end arrangeHorizontally
 on arrangeVertically(screenWidth, screenHeight)
     tell application "iTerm2"
         set windowCount to count of windows
-        
+
         set marginX to 50
         set marginY to 20
         set usableHeight to screenHeight - (2 * marginY)
-        
+
         -- Calculate window height with spacing
         set spacingY to 10
         set windowHeight to (usableHeight / windowCount) - spacingY
         set windowWidth to screenWidth - (2 * marginX)
-        
+
         repeat with i from 1 to windowCount
             set winX to marginX
             set winY to marginY + ((i - 1) * (windowHeight + spacingY))
-            
+
             tell window i
                 set bounds to {winX, winY, winX + windowWidth, winY + windowHeight}
             end tell
@@ -284,17 +284,17 @@ on arrangeCustom(positionsList)
     tell application "iTerm2"
         set windowCount to count of windows
         set positionCount to count of positionsList
-        
+
         -- Apply as many positions as we have windows
         repeat with i from 1 to (min of windowCount and positionCount)
             set positionData to item i of positionsList
-            
+
             -- Extract position data
             set winX to 0
             set winY to 0
             set winWidth to 800
             set winHeight to 600
-            
+
             try
                 if positionData contains {x:0} then
                     set winX to x of positionData as integer
@@ -312,7 +312,7 @@ on arrangeCustom(positionsList)
                 -- Skip invalid position data
                 return "Error: Invalid position data for window " & i
             end try
-            
+
             -- Apply the position
             tell window i
                 set bounds to {winX, winY, winX + winWidth, winY + winHeight}
@@ -407,12 +407,12 @@ To determine screen coordinates for multi-monitor setups:
 on getMultiScreenInfo()
     tell application "System Events"
         set screenInfo to {}
-        
+
         repeat with i from 1 to (count of desktops)
             set screenBounds to bounds of desktop i
             set end of screenInfo to {index:i, bounds:screenBounds}
         end repeat
-        
+
         return screenInfo
     end tell
 end getMultiScreenInfo
@@ -473,6 +473,7 @@ After arranging windows, save the arrangement using iTerm2's built-in functional
 ```
 
 This creates a 2×2 grid suitable for:
+
 - Top-left: API server
 - Top-right: Database console
 - Bottom-left: File editing
@@ -487,6 +488,7 @@ This creates a 2×2 grid suitable for:
 ```
 
 This creates a side-by-side arrangement for:
+
 - Left: Production server monitoring
 - Middle: Staging environment
 - Right: Deployment scripts
@@ -497,9 +499,9 @@ This creates a side-by-side arrangement for:
 {
   "layout": "custom",
   "positions": [
-    {"x": 100, "y": 100, "width": 1000, "height": 800},  // Primary monitor
-    {"x": 2020, "y": 100, "width": 1000, "height": 400}, // Secondary top
-    {"x": 2020, "y": 550, "width": 1000, "height": 400}  // Secondary bottom
+    { "x": 100, "y": 100, "width": 1000, "height": 800 }, // Primary monitor
+    { "x": 2020, "y": 100, "width": 1000, "height": 400 }, // Secondary top
+    { "x": 2020, "y": 550, "width": 1000, "height": 400 } // Secondary bottom
   ]
 }
 ```
@@ -521,7 +523,7 @@ Example extension for auto-executing commands:
 on arrangeWithCommands(layout, commands)
     -- First arrange the windows using the standard function
     my arrangeInGrid(2, 2, 1440, 900)
-    
+
     -- Then execute the commands in each window
     tell application "iTerm2"
         repeat with i from 1 to (count of commands)

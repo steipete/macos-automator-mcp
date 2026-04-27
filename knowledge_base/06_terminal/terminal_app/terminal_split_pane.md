@@ -1,5 +1,5 @@
 ---
-title: 'Terminal: Split Pane Management'
+title: "Terminal: Split Pane Management"
 id: terminal_split_pane
 category: 06_terminal
 description: >-
@@ -25,12 +25,14 @@ isComplex: true
 This script manages split panes in Terminal.app, allowing you to create split layouts and navigate between panes. It works through UI automation since Terminal.app doesn't provide direct AppleScript access to its split pane functionality.
 
 **Features:**
+
 - Create horizontal or vertical split panes
 - Close the current pane
 - Navigate between panes (next, previous, or in a specific direction)
 - Works with Terminal.app's built-in split pane system
 
 **Important Notes:**
+
 - Requires Accessibility permissions for UI scripting
 - Terminal.app must be the frontmost application when running this script
 - Uses menu commands to trigger Terminal's native split pane functionality
@@ -40,12 +42,12 @@ on runWithInput(inputData, legacyArguments)
     set defaultAction to "create"
     set defaultDirection to "horizontal"
     set defaultTarget to "next"
-    
+
     -- Parse input parameters
     set action to defaultAction
     set direction to defaultDirection
     set target to defaultTarget
-    
+
     if inputData is not missing value then
         if inputData contains {action:""} then
             set action to action of inputData
@@ -57,34 +59,34 @@ on runWithInput(inputData, legacyArguments)
             set target to target of inputData
         end if
     end if
-    
+
     -- MCP placeholders for input
     set action to "--MCP_INPUT:action" -- create, close, or navigate
     set direction to "--MCP_INPUT:direction" -- horizontal or vertical (for create action)
     set target to "--MCP_INPUT:target" -- next, previous, up, down, left, or right (for navigate action)
-    
+
     -- Normalize inputs to lowercase
     set action to my toLower(action)
     set direction to my toLower(direction)
     set target to my toLower(target)
-    
+
     -- Validate inputs
     if action is not in {"create", "close", "navigate"} then
         return "Error: Invalid action. Use 'create', 'close', or 'navigate'."
     end if
-    
+
     if action is "create" and direction is not in {"horizontal", "vertical"} then
         return "Error: For 'create' action, direction must be 'horizontal' or 'vertical'."
     end if
-    
+
     if action is "navigate" and target is not in {"next", "previous", "up", "down", "left", "right"} then
         return "Error: For 'navigate' action, target must be 'next', 'previous', 'up', 'down', 'left', or 'right'."
     end if
-    
+
     -- Ensure Terminal.app is active
     tell application "Terminal" to activate
     delay 0.5 -- Give Terminal time to become active
-    
+
     -- Perform the requested action via UI automation
     if action is "create" then
         return createSplitPane(direction)
@@ -100,7 +102,7 @@ on createSplitPane(direction)
     tell application "System Events"
         tell process "Terminal"
             set frontmost to true
-            
+
             -- Use Window menu to create split pane
             tell menu bar 1
                 tell menu bar item "Window"
@@ -128,7 +130,7 @@ on closeSplitPane()
     tell application "System Events"
         tell process "Terminal"
             set frontmost to true
-            
+
             -- Use Window menu to close split pane
             tell menu bar 1
                 tell menu bar item "Window"
@@ -147,7 +149,7 @@ on navigateSplitPane(target)
     tell application "System Events"
         tell process "Terminal"
             set frontmost to true
-            
+
             -- Use Window menu to navigate between panes
             tell menu bar 1
                 tell menu bar item "Window"
@@ -196,17 +198,17 @@ on capitalize(theText)
     if length of theText is 0 then
         return ""
     end if
-    
+
     set firstChar to character 1 of theText
     set restOfText to text 2 thru -1 of theText
-    
+
     if ASCII number of firstChar ≥ 97 and ASCII number of firstChar ≤ 122 then
         -- Convert lowercase letter to uppercase
         set capitalizedChar to ASCII character ((ASCII number of firstChar) - 32)
     else
         set capitalizedChar to firstChar
     end if
-    
+
     return capitalizedChar & restOfText
 end capitalize
 ```

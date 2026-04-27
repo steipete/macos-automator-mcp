@@ -1,5 +1,5 @@
 ---
-title: 'Terminal: Find and Focus Windows or Tabs'
+title: "Terminal: Find and Focus Windows or Tabs"
 id: terminal_find_focus_window
 category: 06_terminal
 description: >-
@@ -25,6 +25,7 @@ isComplex: true
 This script allows you to find specific Terminal.app windows or tabs based on various criteria and bring them to the front.
 
 **Features:**
+
 - Search for windows/tabs by window title
 - Search for windows/tabs by the command being executed
 - Search for windows/tabs by process name
@@ -32,6 +33,7 @@ This script allows you to find specific Terminal.app windows or tabs based on va
 - Activate and bring matching windows to the front
 
 **Usage Examples:**
+
 - Find a terminal window running a specific server
 - Locate and focus a terminal window with a specific directory in its title
 - Switch to a terminal tab running a particular process
@@ -41,12 +43,12 @@ on runWithInput(inputData, legacyArguments)
     set defaultSearchType to "title"
     set defaultSearchTerm to ""
     set defaultPartialMatch to true
-    
+
     -- Parse input parameters
     set searchType to defaultSearchType
     set searchTerm to defaultSearchTerm
     set partialMatch to defaultPartialMatch
-    
+
     if inputData is not missing value then
         if inputData contains {searchType:""} then
             set searchType to searchType of inputData
@@ -65,36 +67,36 @@ on runWithInput(inputData, legacyArguments)
             end try
         end if
     end if
-    
+
     if searchTerm is "" then
         return "Error: searchTerm not provided. Please specify what to search for."
     end if
-    
+
     -- Normalize search type to lowercase
     set searchType to my toLower(searchType)
-    
+
     tell application "Terminal"
         set windowCount to count of windows
         if windowCount is 0 then
             return "No Terminal windows are open."
         end if
-        
+
         -- Variables to track our findings
         set foundWindows to {}
         set foundTabs to {}
         set foundIndices to {}
-        
+
         -- Search through all windows and tabs
         repeat with i from 1 to windowCount
             set currentWindow to window i
-            
+
             -- Get all tabs in the current window
             set tabCount to count of tabs in currentWindow
-            
+
             repeat with j from 1 to tabCount
                 set currentTab to tab j of currentWindow
                 set isMatch to false
-                
+
                 -- Search based on different criteria
                 if searchType is "title" then
                     -- Search in the window's title
@@ -103,7 +105,7 @@ on runWithInput(inputData, legacyArguments)
                         set windowTitle to name of currentWindow
                     end if
                     set isMatch to matchesSearchTerm(windowTitle, searchTerm, partialMatch)
-                    
+
                 else if searchType is "command" then
                     -- Search in the current command
                     try
@@ -116,7 +118,7 @@ on runWithInput(inputData, legacyArguments)
                     on error
                         -- If we can't get the command, just continue
                     end try
-                    
+
                 else if searchType is "process" then
                     -- Search by process name
                     try
@@ -126,7 +128,7 @@ on runWithInput(inputData, legacyArguments)
                             repeat with proc in tabProcesses
                                 set end of processNames to name of proc
                             end repeat
-                            
+
                             -- Check if any process matches
                             repeat with procName in processNames
                                 if matchesSearchTerm(procName, searchTerm, partialMatch) then
@@ -141,7 +143,7 @@ on runWithInput(inputData, legacyArguments)
                 else
                     return "Error: Invalid searchType. Use 'title', 'command', or 'process'."
                 end if
-                
+
                 -- If we found a match, record it
                 if isMatch then
                     set end of foundWindows to currentWindow
@@ -150,7 +152,7 @@ on runWithInput(inputData, legacyArguments)
                 end if
             end repeat
         end repeat
-        
+
         -- Process the results
         set foundCount to count of foundWindows
         if foundCount is 0 then
@@ -160,23 +162,23 @@ on runWithInput(inputData, legacyArguments)
             set targetWindow to item 1 of foundWindows
             set targetTab to item 1 of foundTabs
             set {winIndex, tabIndex} to item 1 of foundIndices
-            
+
             -- Activate Terminal app
             activate
-            
+
             -- Set the window to front
             set frontmost of targetWindow to true
-            
+
             -- Select the specific tab
             set selected of targetTab to true
-            
+
             -- Format and return the results
             if foundCount is 1 then
                 return "Found and focused 1 matching tab (Window " & winIndex & ", Tab " & tabIndex & ")."
             else
                 set foundMessage to "Found " & foundCount & " matching tabs. Focused Window " & winIndex & ", Tab " & tabIndex & "."
                 set foundMessage to foundMessage & " Other matches: "
-                
+
                 repeat with i from 2 to foundCount
                     set {winIndex, tabIndex} to item i of foundIndices
                     set foundMessage to foundMessage & "Window " & winIndex & ", Tab " & tabIndex
@@ -184,7 +186,7 @@ on runWithInput(inputData, legacyArguments)
                         set foundMessage to foundMessage & "; "
                     end if
                 end repeat
-                
+
                 return foundMessage
             end if
         end if
@@ -195,7 +197,7 @@ end runWithInput
 on getLastCommandIndex(historyText)
     set theLines to paragraphs of historyText
     set lineCount to count of theLines
-    
+
     -- Start from the end and find a non-empty line
     if lineCount > 0 then
         repeat with i from lineCount to 1 by -1
@@ -205,7 +207,7 @@ on getLastCommandIndex(historyText)
             end if
         end repeat
     end if
-    
+
     return 0
 end getLastCommandIndex
 
@@ -214,10 +216,10 @@ on matchesSearchTerm(textToCheck, searchTerm, partialMatch)
     if textToCheck is missing value or textToCheck is "" then
         return false
     end if
-    
+
     set lowercaseText to my toLower(textToCheck)
     set lowercaseSearch to my toLower(searchTerm)
-    
+
     if partialMatch then
         return lowercaseText contains lowercaseSearch
     else
@@ -268,6 +270,7 @@ The `partialMatch` parameter controls how search terms are matched:
 ### Example Usage
 
 1. **Find terminal with a specific project:**
+
    ```json
    {
      "searchType": "title",
@@ -276,6 +279,7 @@ The `partialMatch` parameter controls how search terms are matched:
    ```
 
 2. **Find terminal running a database server:**
+
    ```json
    {
      "searchType": "process",

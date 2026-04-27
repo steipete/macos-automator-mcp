@@ -31,7 +31,7 @@ This script automates the process of committing and pushing changes to a Git rep
 on run {input, parameters}
     set repoPath to "--MCP_INPUT:repoPath"
     set commitMessage to "--MCP_INPUT:commitMessage"
-    
+
     if repoPath is "" or repoPath is missing value then
         tell application "Finder"
             if exists Finder window 1 then
@@ -43,17 +43,17 @@ on run {input, parameters}
             end if
         end tell
     end if
-    
+
     if commitMessage is "" or commitMessage is missing value then
         set commitMessage to "Update from AppleScript"
     end if
-    
+
     -- Properly escape the commit message for the shell
     set quotedMessage to quoted form of commitMessage
-    
+
     -- Build the command with proper chaining
     set gitCommand to "cd " & quoted form of repoPath & " && git add -A && git commit -m " & quotedMessage & " && git push"
-    
+
     try
         set result to do shell script gitCommand
         return "Successfully committed and pushed changes to repository at " & repoPath & "." & return & return & result

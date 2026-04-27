@@ -1,5 +1,5 @@
 ---
-title: 'Core: Date Data Type'
+title: "Core: Date Data Type"
 category: 02_as_core
 id: core_datatype_date
 description: Working with dates and times in AppleScript.
@@ -35,4 +35,4 @@ set oneHourLater to now + (1 * hours) -- 'hours' is a constant
 set secondsDifference to specificDate - now
 
 return "Now: " & (now as string) & "\\nYear: " & theYear & "\\nOne hour later: " & (oneHourLater as string) & "\\nSeconds diff: " & secondsDifference
-``` 
+```

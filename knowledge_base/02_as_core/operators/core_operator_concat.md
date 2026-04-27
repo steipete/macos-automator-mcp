@@ -1,5 +1,5 @@
 ---
-title: 'Core: Concatenation Operator (&)'
+title: "Core: Concatenation Operator (&)"
 category: 02_as_core
 id: core_operator_concat
 description: >-
@@ -12,7 +12,7 @@ keywords:
   - string
   - list
   - record
-  - '&'
+  - "&"
 language: applescript
 ---
 
@@ -36,4 +36,4 @@ set record3 to {name:"Banana", type:"Fruit"}
 set updatedRecord1 to record1 & record3 -- {name:"Banana", type:"Fruit"} (name is overwritten)
 
 return "String: " & combinedString & "\\nList: " & (combinedList as string) & "\\nRecord: " & (text 1 thru 30 of (combinedRecord as string)) -- Coercing record to string is verbose
-``` 
+```

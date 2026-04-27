@@ -1,5 +1,5 @@
 ---
-title: 'Safari: Close Tab'
+title: "Safari: Close Tab"
 category: 07_browsers
 id: safari_close_tab
 description: Closes the current tab or a tab with a specific index in Safari.
@@ -33,18 +33,18 @@ on closeTab(tabIndex)
   if not application "Safari" is running then
     return "error: Safari is not running."
   end if
-  
+
   tell application "Safari"
     try
       if (count of windows) is 0 then
         return "error: No windows open in Safari."
       end if
-      
+
       tell front window
         if (count of tabs) is 0 then
           return "error: No tabs open in Safari."
         end if
-        
+
         -- If tabIndex is provided and valid, close that specific tab
         if tabIndex is not missing value and tabIndex is not "" then
           try
@@ -52,7 +52,7 @@ on closeTab(tabIndex)
             if tabIndexNum < 1 or tabIndexNum > (count of tabs) then
               return "error: Invalid tab index. Must be between 1 and " & (count of tabs) & "."
             end if
-            
+
             close tab tabIndexNum
             return "Successfully closed tab at index " & tabIndexNum & "."
           on error

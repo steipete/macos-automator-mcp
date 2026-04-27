@@ -1,5 +1,5 @@
 ---
-title: 'JXA File Paths and Aliases'
+title: "JXA File Paths and Aliases"
 category: 03_jxa_core
 id: jxa_file_paths_and_aliases
 description: Working with different path formats and file references in JXA
@@ -27,7 +27,7 @@ const app = Application.currentApplication();
 app.includeStandardAdditions = true;
 
 // Import Foundation framework for URL operations
-ObjC.import('Foundation');
+ObjC.import("Foundation");
 ```
 
 ## File Paths and Aliases
@@ -35,28 +35,39 @@ ObjC.import('Foundation');
 ```javascript
 function workWithPaths() {
   // Different ways to reference paths
-  const homeFolder = app.pathTo('home folder');
-  const documentsFolder = app.pathTo('documents folder');
-  const currentFolder = app.pathTo('startup disk').toString() + 
-                       app.doShellScript('pwd');
-  
+  const homeFolder = app.pathTo("home folder");
+  const documentsFolder = app.pathTo("documents folder");
+  const currentFolder = app.pathTo("startup disk").toString() + app.doShellScript("pwd");
+
   // Using Path object to handle relative paths and ~
-  const relPath = Path('~/Documents');
+  const relPath = Path("~/Documents");
   const absPath = relPath.toString(); // Converts to absolute path
-  
+
   // Working with file URLs
-  ObjC.import('Foundation');
+  ObjC.import("Foundation");
   const fileURL = $.NSURL.fileURLWithPath(absPath);
   const urlString = fileURL.absoluteString.js;
-  
+
   // Display all paths
-  const pathInfo = "Home: " + homeFolder + "\n" +
-                  "Documents: " + documentsFolder + "\n" + 
-                  "Current: " + currentFolder + "\n" +
-                  "Path Object: " + relPath + "\n" +
-                  "Absolute: " + absPath + "\n" +
-                  "URL: " + urlString;
-  
+  const pathInfo =
+    "Home: " +
+    homeFolder +
+    "\n" +
+    "Documents: " +
+    documentsFolder +
+    "\n" +
+    "Current: " +
+    currentFolder +
+    "\n" +
+    "Path Object: " +
+    relPath +
+    "\n" +
+    "Absolute: " +
+    absPath +
+    "\n" +
+    "URL: " +
+    urlString;
+
   app.displayDialog(pathInfo);
 }
 ```
@@ -97,10 +108,10 @@ JXA provides two main ways to work with paths:
 
 ```javascript
 function posixToHFS(posixPath) {
-  ObjC.import('Foundation');
+  ObjC.import("Foundation");
   const url = $.NSURL.fileURLWithPath(posixPath);
   const path = $.NSString.alloc.initWithString(url.path.js);
-  const hfsPath = path.stringByReplacingOccurrencesOfStringWithString('/', ':');
+  const hfsPath = path.stringByReplacingOccurrencesOfStringWithString("/", ":");
   return hfsPath.js;
 }
 ```
@@ -109,9 +120,9 @@ function posixToHFS(posixPath) {
 
 ```javascript
 function hfsToPOSIX(hfsPath) {
-  ObjC.import('Foundation');
+  ObjC.import("Foundation");
   const path = $.NSString.alloc.initWithString(hfsPath);
-  const posixPath = path.stringByReplacingOccurrencesOfStringWithString(':', '/');
+  const posixPath = path.stringByReplacingOccurrencesOfStringWithString(":", "/");
   return posixPath.js;
 }
 ```
@@ -120,7 +131,7 @@ function hfsToPOSIX(hfsPath) {
 
 ```javascript
 function pathToURL(posixPath) {
-  ObjC.import('Foundation');
+  ObjC.import("Foundation");
   const url = $.NSURL.fileURLWithPath(posixPath);
   return url.absoluteString.js;
 }
@@ -132,10 +143,10 @@ JXA uses the File and Alias objects to reference files in a persistent way:
 
 ```javascript
 // Create a file reference
-const fileRef = File(app.pathTo('desktop') + '/example.txt');
+const fileRef = File(app.pathTo("desktop") + "/example.txt");
 
 // Create an alias to a file
-const aliasRef = Alias(app.pathTo('desktop') + '/example.txt');
+const aliasRef = Alias(app.pathTo("desktop") + "/example.txt");
 ```
 
 File references and aliases can be used to track files even if they're moved or renamed, but they work slightly differently. Aliases are more persistent across file system changes.
