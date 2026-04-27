@@ -14,7 +14,6 @@ const TEST_CONTENT = 'Content written by execute_script via stdio test';
 
 async function waitForFileExists(filePath: string, timeoutMs = 15000, pollMs = 250) {
   const deadline = Date.now() + timeoutMs;
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
       await fs.access(filePath);

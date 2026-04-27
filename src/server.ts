@@ -70,9 +70,6 @@ async function main() {
   const server = new McpServer({
     name: 'macos_automator', // Matches the key in mcp.json
     version: pkg.version, // Dynamically use version from package.json
-    onLog: (level: "DEBUG" | "INFO" | "WARN" | "ERROR", message: string, data?: Record<string, unknown>) => {
-      logger[level.toLowerCase() as 'debug' | 'info' | 'warn' | 'error']?.(`[MCP_SDK] ${message}`, data);
-    }
   });
 
   server.registerTool(
