@@ -70,12 +70,6 @@ jobs: # Single top-level jobs key
         run: pnpm run build
       - name: Check TypeScript compilation
         run: pnpm run typecheck
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v5
-        with:
-          name: dist-node-${{ matrix.node-version }}
-          path: dist/
-          retention-days: 7
 
   validation: # Existing validation job (preserved and slightly updated for clarity)
     name: Validate Knowledge Base
@@ -96,14 +90,6 @@ jobs: # Single top-level jobs key
         run: pnpm install --frozen-lockfile
       - name: Validate Knowledge Base
         run: pnpm run validate
-      - name: Upload validation results
-        if: always() # Always upload, even if validation fails, to see the report
-        uses: actions/upload-artifact@v5
-        with:
-          name: kb-validation-report
-          path: validation-results/kb-report.md # Ensure this path is where `pnpm run validate` outputs its report
-          if-no-files-found: ignore
-          retention-days: 7
 
 # Test macOS specific functionality (optional, as actual execution requires macOS)
 # Uncomment this section if you want to set up a macOS runner for execution tests
