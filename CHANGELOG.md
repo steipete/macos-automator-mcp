@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fixed `macos-automator-mcp --version` so version checkers print the package version and exit instead of starting the MCP stdio server (#201).
+
 ## [0.4.1] - 2025-05-20
 
 - Fixed version reporting to only occur on tool calls, not MCP initialization handshake
