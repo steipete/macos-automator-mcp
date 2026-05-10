@@ -48,6 +48,11 @@ const IS_E2E_TESTING = process.env.MCP_E2E_TESTING === "true" || process.env.VIT
 let hasEmittedFirstCallInfo = false; // Flag for first tool call
 const serverInfoMessage = `MacOS Automator MCP v${pkg.version}, started at ${SERVER_START_TIME_ISO}`;
 
+if (process.argv.includes("--version") || process.argv.includes("-v")) {
+  process.stdout.write(`${pkg.version}\n`);
+  process.exit(0);
+}
+
 const logger = new Logger("macos_automator_server");
 const scriptExecutor = new ScriptExecutor();
 

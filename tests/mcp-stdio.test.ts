@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { execFileSync } from "node:child_process";
 import path from "path";
 import os from "os";
 import fs from "fs/promises";
+import packageJson from "../package.json" with { type: "json" };
 
 const WORKSPACE_PATH = path.resolve(__dirname, "..");
 const TSX_PATH = path.join(WORKSPACE_PATH, "node_modules", ".bin", "tsx");
@@ -97,4 +99,22 @@ describe("MCP stdio protocol", () => {
       }
     }
   }, 60000);
+});
+
+describe("CLI flags", () => {
+  it("prints version and exits without starting stdio transport", () => {
+    const output = execFileSync(TSX_PATH, [SERVER_PATH, "--version"], {
+      cwd: WORKSPACE_PATH,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        MCP_E2E_TESTING: "true",
+        VITEST: "true",
+        TSX_TSCONFIG_PATH,
+      },
+      timeout: 1000,
+    });
+
+    expect(output.trim()).toBe(packageJson.version);
+  });
 });
