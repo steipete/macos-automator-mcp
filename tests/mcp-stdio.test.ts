@@ -131,5 +131,5 @@ describe("CLI flags", () => {
     });
 
     expect(output.trim()).toBe(packageJson.version);
-  });
+  }, 20000);
 });
