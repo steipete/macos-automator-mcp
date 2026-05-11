@@ -3,21 +3,7 @@
 // NOTE: SDK ESM/CJS hybrid: imports work at runtime, but types are mapped via tsconfig.json "paths". Suppress TS errors for imports.
 // TODO: Replace 'unknown' with proper input types if/when SDK types are available.
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import * as sdkTypes from "@modelcontextprotocol/sdk/types.js";
-// import { ZodError } from 'zod'; // ZodError is not directly used from here, handled by SDK or refined errors
-import { Logger } from "./logger.js";
-import { ExecuteScriptInputSchema, GetScriptingTipsInputSchema } from "./schemas.js";
-import { ScriptExecutor } from "./ScriptExecutor.js";
 import type { ScriptExecutionError, ExecuteScriptResponse } from "./types.js";
-// import pkg from '../package.json' with { type: 'json' }; // Import package.json // REMOVED
-import {
-  getKnowledgeBase,
-  getScriptingTipsService,
-  conditionallyInitializeKnowledgeBase,
-} from "./services/knowledgeBaseService.js"; // Import KB functions
-import { substitutePlaceholders } from "./placeholderSubstitutor.js"; // Value import
 import type { SubstitutionResult } from "./placeholderSubstitutor.js"; // Type import
 
 // Added imports for robust package.json loading
@@ -52,6 +38,26 @@ if (process.argv.includes("--version") || process.argv.includes("-v")) {
   process.stdout.write(`${pkg.version}\n`);
   process.exit(0);
 }
+
+const [
+  { McpServer },
+  { StdioServerTransport },
+  sdkTypes,
+  { Logger },
+  { ExecuteScriptInputSchema, GetScriptingTipsInputSchema },
+  { ScriptExecutor },
+  { getKnowledgeBase, getScriptingTipsService, conditionallyInitializeKnowledgeBase },
+  { substitutePlaceholders },
+] = await Promise.all([
+  import("@modelcontextprotocol/sdk/server/mcp.js"),
+  import("@modelcontextprotocol/sdk/server/stdio.js"),
+  import("@modelcontextprotocol/sdk/types.js"),
+  import("./logger.js"),
+  import("./schemas.js"),
+  import("./ScriptExecutor.js"),
+  import("./services/knowledgeBaseService.js"),
+  import("./placeholderSubstitutor.js"),
+]);
 
 const logger = new Logger("macos_automator_server");
 const scriptExecutor = new ScriptExecutor();

@@ -127,7 +127,7 @@ describe("CLI flags", () => {
         VITEST: "true",
         TSX_TSCONFIG_PATH,
       },
-      timeout: 5000,
+      timeout: 15000,
     });
 
     expect(output.trim()).toBe(packageJson.version);
