@@ -87,7 +87,7 @@ async function main() {
     "execute_script",
     {
       annotations: {
-        title: 'Execute Script',
+        title: "Execute Script",
         destructiveHint: true,
       },
       description: `Automate macOS tasks using AppleScript or JXA (JavaScript for Automation) to control applications like Terminal, Chrome, Safari, Finder, etc.
@@ -377,7 +377,7 @@ async function main() {
     "get_scripting_tips",
     {
       annotations: {
-        title: 'Get Scripting Tips',
+        title: "Get Scripting Tips",
         readOnlyHint: true,
       },
       description: `Discover how to automate any app on your Mac with this comprehensive knowledge base of AppleScript/JXA tips and runnable scripts. This tool is essential for discovery and should be the FIRST CHOICE when aiming to automate macOS tasks, especially those involving common applications or system functions, before attempting to write scripts from scratch. It helps identify pre-built, tested solutions, effectively teaching you how to control virtually any aspect of your macOS experience.
