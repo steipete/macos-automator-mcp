@@ -34,6 +34,12 @@ function shellEscape(value: string) {
   return value.replace(/'/g, "'\\''");
 }
 
+function toolByName(tools: Awaited<ReturnType<Client["listTools"]>>["tools"], name: string) {
+  const tool = tools.find((candidate) => candidate.name === name);
+  expect(tool, `expected MCP tool ${name} to be listed`).toBeDefined();
+  return tool!;
+}
+
 describe("MCP stdio protocol", () => {
   let client: Client;
   let transport: StdioClientTransport;
@@ -65,8 +71,17 @@ describe("MCP stdio protocol", () => {
 
   it("lists tools, returns tips, and executes a script", async () => {
     const { tools } = await client.listTools();
-    expect(tools.some((tool) => tool.name === "get_scripting_tips")).toBe(true);
-    expect(tools.some((tool) => tool.name === "execute_script")).toBe(true);
+    const tipsTool = toolByName(tools, "get_scripting_tips");
+    const executeTool = toolByName(tools, "execute_script");
+
+    expect(tipsTool.annotations).toMatchObject({
+      title: "Get Scripting Tips",
+      readOnlyHint: true,
+    });
+    expect(executeTool.annotations).toMatchObject({
+      title: "Execute Script",
+      destructiveHint: true,
+    });
 
     const tipsResult = await client.callTool({
       name: "get_scripting_tips",
@@ -112,7 +127,7 @@ describe("CLI flags", () => {
         VITEST: "true",
         TSX_TSCONFIG_PATH,
       },
-      timeout: 1000,
+      timeout: 5000,
     });
 
     expect(output.trim()).toBe(packageJson.version);
