@@ -42,11 +42,13 @@ Add this to your MCP client's `mcp.json` and watch the automation begin:
   "mcpServers": {
     "macos_automator": {
       "command": "npx",
-      "args": ["-y", "@steipete/macos-automator-mcp@latest"]
+      "args": ["-y", "--package", "@steipete/macos-automator-mcp", "macos-automator-mcp"]
     }
   }
 }
 ```
+
+If your MCP client has a VS Code-style package installer field, enter `@steipete/macos-automator-mcp` without `@latest`. The MCP config above still resolves the current npm `latest` version, while avoiding package-name validation issues and npm's scoped-package bin inference.
 
 ### 🛠️ Robot Workshop Mode (Local Development)
 
@@ -355,7 +357,7 @@ Fine-tune your robot's behavior with these environment variables:
   - `INFO`: Normal robot chatter
   - `WARN`: Only important stuff
   - `ERROR`: Silent mode (robot speaks only when things explode)
-  - Example: `LOG_LEVEL=DEBUG npx @steipete/macos-automator-mcp@latest`
+  - Example: `LOG_LEVEL=DEBUG npx -y --package @steipete/macos-automator-mcp macos-automator-mcp`
 
 - **`KB_PARSING`**: When should the robot load its brain?
   - `lazy` (default): Loads knowledge on-demand (fast startup, lazy robot)
