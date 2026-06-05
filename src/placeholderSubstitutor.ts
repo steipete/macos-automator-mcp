@@ -65,7 +65,7 @@ export function substitutePlaceholders({
   };
 
   // JS-style ${inputData.key}
-  const jsInputDataRegex = /\\$\\{inputData\\.(\\w+)\\}/g;
+  const jsInputDataRegex = /\$\{inputData\.(\w+)\}/g;
   logSub("Before jsInputDataRegex", { scriptContentLength: currentScriptContent.length });
   currentScriptContent = currentScriptContent.replace(jsInputDataRegex, (match, keyName) => {
     const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
@@ -79,7 +79,7 @@ export function substitutePlaceholders({
   logSub("After jsInputDataRegex", { scriptContentLength: currentScriptContent.length });
 
   // JS-style ${arguments[N]}
-  const jsArgumentsRegex = /\\$\\{arguments\\[(\\d+)\\]\\}/g;
+  const jsArgumentsRegex = /\$\{arguments\[(\d+)\]\}/g;
   logSub("Before jsArgumentsRegex", { scriptContentLength: currentScriptContent.length });
   currentScriptContent = currentScriptContent.replace(jsArgumentsRegex, (match, indexStr) => {
     const index = Number.parseInt(indexStr, 10);
