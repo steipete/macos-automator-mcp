@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed JS-style `${inputData.key}` and `${arguments[N]}` placeholder substitution in scripts. Thanks @devYRPauli.
 - Added MCP tool annotations so clients can distinguish read-only scripting tips from script execution that can modify system state (#171). Thanks @bryankthompson.
 - Fixed `macos-automator-mcp --version` so version checkers print the package version and exit instead of starting the MCP stdio server (#201).
 - Fixed the documented VS Code/npm install command to avoid `@latest` package-name validation and scoped-package bin inference issues (#38).
