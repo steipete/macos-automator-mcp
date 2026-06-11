@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## [0.4.2] - 2026-06-11
 
 - Fixed JS-style `${inputData.key}` and `${arguments[N]}` placeholder substitution in scripts. Thanks @devYRPauli.
