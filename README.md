@@ -109,10 +109,10 @@ Scripts can be provided as inline content (`script_content`), an absolute file p
 
 - `arguments` (array of strings, optional):
   - For `script_path`: Passed as standard arguments to the script's `on run argv` (AppleScript) or `run(argv)` (JXA) handler.
-  - For `kb_script_id`: Used if the pre-defined script is designed to accept positional string arguments (e.g., replaces placeholders like `--MCP_ARG_1`, `--MCP_ARG_2`). Check the script's `argumentsPrompt` from `get_scripting_tips`.
+  - For `kb_script_id`: Used if the pre-defined script accepts positional string arguments (e.g., `${arguments[0]}` or the legacy `--MCP_ARG_1`). Check the script's `argumentsPrompt` from `get_scripting_tips`.
 - `input_data` (JSON object, optional):
   - Primarily for `kb_script_id` scripts designed to accept named, structured inputs.
-  - Values from this object replace placeholders in the script (e.g., `--MCP_INPUT:yourKeyName`). See `argumentsPrompt` from `get_scripting_tips`.
+  - Values replace placeholders in the script (e.g., `${inputData.yourKeyName}` or the legacy `--MCP_INPUT:yourKeyName`). See `argumentsPrompt` from `get_scripting_tips`.
   - Values (strings, numbers, booleans, simple arrays/objects) are converted to their AppleScript literal equivalents.
 
 **Other Options:**
@@ -227,105 +227,6 @@ Your personal automation librarian! Searches through 200+ pre-built scripts fast
   `{ "toolName": "get_scripting_tips", "input": { "category": "safari" } }`
 - Search for tips related to "clipboard":
   `{ "toolName": "get_scripting_tips", "input": { "search_term": "clipboard" } }`
-
-### 3. `accessibility_query` - The UI X-Ray Vision
-
-Give your robot superhero powers to see and click ANY button in ANY app! This tool peers into the soul of macOS applications using the accessibility framework. Powered by the mystical `ax` binary, it's like having X-ray vision for user interfaces.
-
-The `ax` binary, and therefore this tool, can accept its JSON command input in multiple ways:
-
-1.  **Direct JSON String Argument:** If `ax` is invoked with a single command-line argument that is not a valid file path, it will attempt to parse this argument as a complete JSON string.
-2.  **File Path Argument:** If `ax` is invoked with a single command-line argument that is a valid file path, it will read the complete JSON command from this file.
-3.  **STDIN:** If `ax` is invoked with no command-line arguments, it will read the complete JSON command (which can be multi-line) from standard input.
-
-This tool exposes the complete macOS accessibility API capabilities, allowing detailed inspection of UI elements and their properties. It's particularly useful for automating interactions with applications that don't have robust AppleScript support or when you need to inspect the UI structure in detail.
-
-**Input Parameters:**
-
-- `command` (enum: 'query' | 'perform', required): The operation to perform.
-  - `query`: Retrieves information about UI elements.
-  - `perform`: Executes an action on a UI element (like clicking a button).
-
-- `locator` (object, required): Specifications to find the target element(s).
-  - `app` (string, required): The application to target, specified by either bundle ID or display name (e.g., "Safari", "com.apple.Safari").
-  - `role` (string, required): The accessibility role of the target element (e.g., "AXButton", "AXStaticText").
-  - `match` (object, required): Key-value pairs of attributes to match. Can be empty (`{}`) if not needed.
-  - `navigation_path_hint` (array of strings, optional): Path to navigate within the application hierarchy (e.g., `["window[1]", "toolbar[1]"]`).
-
-- `return_all_matches` (boolean, optional): When `true`, returns all matching elements rather than just the first match. Default is `false`.
-
-- `attributes_to_query` (array of strings, optional): Specific attributes to query for matched elements. If not provided, common attributes will be included. Examples: `["AXRole", "AXTitle", "AXValue"]`
-
-- `required_action_name` (string, optional): Filter elements to only those supporting a specific action (e.g., "AXPress" for clickable elements).
-
-- `action_to_perform` (string, optional, required when `command="perform"`): The accessibility action to perform on the matched element (e.g., "AXPress" to click a button).
-
-- `report_execution_time` (boolean, optional): If true, the tool will return an additional message containing the formatted script execution time. Defaults to false.
-
-- `limit` (integer, optional): Maximum number of lines to return in the output. Defaults to 500. Output will be truncated if it exceeds this limit.
-
-- `max_elements` (integer, optional): For `return_all_matches: true` queries, this specifies the maximum number of UI elements the `ax` binary will fully process and return attributes for. If omitted, an internal default (e.g., 200) is used. This helps manage performance when querying UIs with a very large number of matching elements (like numerous text fields on a complex web page). This is different from `limit`, which truncates the final text output based on lines.
-
-- `debug_logging` (boolean, optional): If true, enables detailed debug logging from the underlying `ax` binary. This diagnostic information will be included in the response, which can be helpful for troubleshooting complex queries or unexpected behavior. Defaults to false.
-
-- `output_format` (enum: 'smart' | 'verbose' | 'text_content', optional, default: 'smart'): Controls the format and verbosity of the attribute output from the `ax` binary.
-  - `'smart'`: (Default) Optimized for readability. Omits attributes with empty or placeholder values. Returns key-value pairs.
-  - `'verbose'`: Maximum detail. Includes all attributes, even empty/placeholders. Key-value pairs. Best for debugging element properties.
-  - `'text_content'`: Highly compact for text extraction. Returns only concatenated text values of common textual attributes (e.g., AXValue, AXTitle). No keys are returned. Ideal for quickly getting all text from elements; the `attributes_to_query` parameter is ignored in this mode.
-
-**Example Queries (Note: key names have changed to snake_case):**
-
-1.  **Find all text elements in the front Safari window:**
-
-    ```json
-    {
-      "command": "query",
-      "return_all_matches": true,
-      "locator": {
-        "app": "Safari",
-        "role": "AXStaticText",
-        "match": {},
-        "navigation_path_hint": ["window[1]"]
-      }
-    }
-    ```
-
-2.  **Find and click a button with a specific title:**
-
-    ```json
-    {
-      "command": "perform",
-      "locator": {
-        "app": "System Settings",
-        "role": "AXButton",
-        "match": { "AXTitle": "General" }
-      },
-      "action_to_perform": "AXPress"
-    }
-    ```
-
-3.  **Get detailed information about the focused UI element:**
-    ```json
-    {
-      "command": "query",
-      "locator": {
-        "app": "Mail",
-        "role": "AXTextField",
-        "match": { "AXFocused": "true" }
-      },
-      "attributes_to_query": [
-        "AXRole",
-        "AXTitle",
-        "AXValue",
-        "AXDescription",
-        "AXHelp",
-        "AXPosition",
-        "AXSize"
-      ]
-    }
-    ```
-
-**Note:** Using this tool requires that the application running this server has the necessary Accessibility permissions in macOS System Settings > Privacy & Security > Accessibility.
 
 ## 🎮 Robot Playground: Cool Things Your New Robot Friend Can Do
 
