@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.4.3] - 2026-06-19
 
 - Updated transitive dependency overrides to patched Vite and Hono releases.
 
