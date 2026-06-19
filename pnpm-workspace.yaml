@@ -1,2 +1,3 @@
 overrides:
-  vite: 7.3.2
+  hono: 4.12.26
+  vite: 7.3.5
