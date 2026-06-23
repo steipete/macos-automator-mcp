@@ -48,13 +48,13 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^25.9.2",
-    "@typescript/native-preview": "7.0.0-dev.20260618.1",
-    "oxfmt": "^0.55.0",
-    "oxlint": "^1.69.0",
+    "@types/node": "^26.0.0",
+    "@typescript/native-preview": "7.0.0-dev.20260623.1",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=24.0.0"
