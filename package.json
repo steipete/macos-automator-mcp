@@ -48,8 +48,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^26.0.1",
-    "@typescript/native-preview": "7.0.0-dev.20260623.1",
+    "@types/node": "^26.1.0",
+    "@typescript/native-preview": "7.0.0-dev.20260701.1",
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",
     "tsx": "^4.22.4",
