@@ -5,7 +5,7 @@ This document outlines key strategies and learnings from creating End-to-End (E2
 ## 1. Test Runner Configuration (Vitest)
 
 - **Single Run for CI/Automation:** To ensure Vitest runs tests once and then exits (suitable for CI or automated scripts), use the `run` command.
-  - Example: `npm test -- run --no-file-parallelism <test_file_path>`
+  - Example: `pnpm exec vitest run --no-file-parallelism <test_file_path>`
   - The `--no-file-parallelism` flag was used during development to simplify debugging by running tests sequentially if multiple test files were present. Adjust as needed.
 
 ## 2. MCP Inspector UI Selectors (Playwright)

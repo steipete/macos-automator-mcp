@@ -8,18 +8,18 @@ This guide provides tips and techniques based on common scenarios encountered.
 
 ### 1. Enable Detailed Substitution Logging
 
-When using knowledge base scripts (`knowledgeBaseScriptId`) with the `execute_script` tool, placeholders like `--MCP_INPUT:keyName` and `--MCP_ARG_N` are substituted with values from `inputData` and `arguments` respectively. If this substitution is incorrect, it can lead to AppleScript syntax errors (like the common `-2741 "Expected , or } but found class name."`).
+When using knowledge base scripts (`kb_script_id`) with the `execute_script` tool, placeholders like `--MCP_INPUT:keyName` and `--MCP_ARG_N` are substituted with values from `input_data` and `arguments` respectively. If this substitution is incorrect, it can lead to AppleScript syntax errors (like the common `-2741 "Expected , or } but found class name."`).
 
 To understand exactly how these substitutions are being performed:
 
-- **Use `includeSubstitutionLogs: true`**: Add this parameter to your `execute_script` call.
+- **Use `include_substitution_logs: true`**: Add this parameter to your `execute_script` call.
   ```json
   {
-    "method": "execute_script",
-    "params": {
-      "knowledgeBaseScriptId": "your_script_id",
-      "inputData": { "someKey": "someValue" },
-      "includeSubstitutionLogs": true
+    "toolName": "execute_script",
+    "input": {
+      "kb_script_id": "your_script_id",
+      "input_data": { "some_key": "someValue" },
+      "include_substitution_logs": true
     }
   }
   ```
@@ -50,7 +50,7 @@ This methodical approach helps pinpoint exactly which part of a complex regex is
 
 If a script fails and substitution seems correct, or if it's an inline script or script file:
 
-1.  **Isolate the AppleScript/JXA**: Take the final, substituted script content (available from `includeExecutedScriptInOutput: true` or the error message).
+1.  **Isolate the AppleScript/JXA**: Take the final, substituted script content (available from `include_executed_script_in_output: true` or the error message).
 2.  **Run in Script Editor (for AppleScript) or a JXA environment**: macOS's Script Editor provides better error highlighting and a more direct execution environment.
     - Paste the script content.
     - Run it.
@@ -92,4 +92,4 @@ For JXA, use `console.log()`.
 - **-1712 (errAEEventTimedOut)**: Script took too long, or a hidden permissions dialog might be blocking execution.
 - **-10004 (errAEAccessDenied)**: Typically a file access or permissions issue.
 
-By using these techniques, particularly the `includeSubstitutionLogs` feature and iterative debugging, you can more effectively diagnose and resolve issues with your AppleScript and JXA automations executed via this server.
+By using these techniques, particularly the `include_substitution_logs` feature and iterative debugging, you can more effectively diagnose and resolve issues with your AppleScript and JXA automations executed via this server.

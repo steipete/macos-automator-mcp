@@ -267,7 +267,7 @@ Fine-tune your robot's behavior with these environment variables:
 
 ## 👨‍🔬 Robot Scientists Welcome!
 
-Want to upgrade your robot? Check out [DEVELOPMENT.md](DEVELOPMENT.md) for the full technical manual on teaching new tricks to your automation assistant.
+Want to upgrade your robot? Check out the [development guide](docs/DEVELOPMENT.md) for the full technical manual on teaching new tricks to your automation assistant.
 
 ## 🧠 Teach Your Robot New Tricks (Local Knowledge Base)
 

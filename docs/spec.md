@@ -34,7 +34,7 @@ macos-automator-mcp/
 ├── docs/
 │   └── spec.md (this file)
 ├── .gitignore
-├── DEVELOPMENT.md
+├── docs/DEVELOPMENT.md
 ├── LICENSE
 ├── README.md
 ├── package.json
@@ -325,7 +325,7 @@ Handles replacing placeholders in scripts fetched from the knowledge base.
 ### 8. Documentation and Startup
 
 - `README.md` should detail tool usage, including `kb_script_id`, `input_data`, placeholder conventions, and permissions.
-- `DEVELOPMENT.md` should explain KB contribution guidelines.
+- `docs/DEVELOPMENT.md` should explain KB contribution guidelines.
 - Server startup logs current working directory and critical permission warnings.
 
 ## Part 2: Knowledge Base Content Specification and Generation
