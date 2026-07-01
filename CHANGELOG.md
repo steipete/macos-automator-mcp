@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Updated Node.js type definitions and the native TypeScript preview compiler used for development and CI.
+
 ## [0.4.4] - 2026-07-01
 
 - Updated the transitive YAML parser used for knowledge-base frontmatter to address a quadratic CPU-exhaustion denial-of-service vulnerability ([GHSA-h67p-54hq-rp68](https://github.com/advisories/GHSA-h67p-54hq-rp68), [#254](https://github.com/steipete/macos-automator-mcp/pull/254)).
