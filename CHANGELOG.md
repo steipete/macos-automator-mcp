@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated the transitive YAML parser used for knowledge-base frontmatter to address a quadratic CPU-exhaustion denial-of-service vulnerability ([GHSA-h67p-54hq-rp68](https://github.com/advisories/GHSA-h67p-54hq-rp68)).
+
 ## [0.4.3] - 2026-06-19
 
 - Updated transitive dependency overrides to patched Vite and Hono releases.
