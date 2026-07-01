@@ -65,7 +65,7 @@ macos-automator-mcp/
 ├── .github/workflows/    # GitHub Actions workflows (CI)
 ├── .oxlintrc.json
 ├── .gitignore
-├── DEVELOPMENT.md        # This file
+├── docs/DEVELOPMENT.md   # This file
 ├── LICENSE
 ├── README.md
 ├── pnpm-lock.yaml

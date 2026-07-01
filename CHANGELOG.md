@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Corrected development, debugging, and knowledge-base validation documentation to match current file paths, commands, and snake_case MCP inputs.
 - Updated Node.js type definitions and the native TypeScript preview compiler used for development and CI.
 
 ## [0.4.4] - 2026-07-01
