@@ -33,7 +33,19 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Check registry
+        id: registry
+        run: |
+          package_spec=$(node -p "const p = require('./package.json'); p.name + '@' + p.version")
+          if npm view "$package_spec" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "$package_spec is already published; skipping duplicate publication."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish
+        if: steps.registry.outputs.exists != 'true'
         run: pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
