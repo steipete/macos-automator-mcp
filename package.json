@@ -1,6 +1,6 @@
 {
   "name": "@steipete/macos-automator-mcp",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "MCP Server to execute AppleScript and JXA on macOS.",
   "keywords": [
     "applescript",
