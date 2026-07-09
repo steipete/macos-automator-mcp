@@ -56,11 +56,7 @@ export interface ScriptExecutionOptions {
   language?: "applescript" | "javascript";
   timeoutMs?: number;
   output_format_mode?:
-    | "auto"
-    | "human_readable"
-    | "structured_error"
-    | "structured_output_and_error"
-    | "direct";
+    "auto" | "human_readable" | "structured_error" | "structured_output_and_error" | "direct";
   arguments?: string[]; // For script files executed via path
 }
 

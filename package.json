@@ -31,14 +31,14 @@
   "type": "module",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsgo",
+    "build": "tsc",
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "lint": "pnpm format:check && oxlint --deny-warnings src tests scripts",
     "format": "oxfmt --write .",
     "validate": "tsx scripts/validate-kb.ts",
     "test": "vitest run",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "format:check": "oxfmt --check ."
   },
   "dependencies": {
@@ -48,13 +48,12 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.0",
-    "@typescript/native-preview": "7.0.0-dev.20260702.3",
-    "oxfmt": "^0.57.0",
-    "oxlint": "^1.72.0",
-    "tsx": "^4.22.4",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "@types/node": "^26.1.1",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
+    "tsx": "^4.23.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=24.0.0"
