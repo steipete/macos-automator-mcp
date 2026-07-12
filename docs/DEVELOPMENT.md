@@ -45,9 +45,9 @@ This guide provides instructions for setting up the development environment, run
 - **Testing with MCP Client:**
   Ensure the server is running and accessible via the MCP client.
 
-- **Using pnpm link:**
+- **Installing the local CLI globally:**
   ```bash
-  pnpm link --global
+  pnpm add --global .
   ```
 
 ## Project Structure Overview
