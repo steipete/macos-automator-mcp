@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated pnpm and transitive development/runtime dependencies to their current stable releases.
+
 ## [0.4.5] - 2026-07-02
 
 - Included the v0.4.4 YAML-parser and esbuild security updates in the npm package after the v0.4.4 registry publication was missed.

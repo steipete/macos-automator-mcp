@@ -1,4 +1,6 @@
 overrides:
   esbuild: 0.28.1
-  hono: 4.12.26
-  vite: 7.3.5
+  hono: 4.12.29
+  vite: 8.1.4
+allowBuilds:
+  esbuild: true
