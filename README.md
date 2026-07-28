@@ -1,5 +1,7 @@
 # macOS Automator MCP 🤖 - Your Friendly Neighborhood RoboScripter™
 
+[![MCP Toplist](https://mcptoplist.com/badge/glama%2Fsteipete%2Fmacos-automator-mcp.svg)](https://mcptoplist.com/server/glama%2Fsteipete%2Fmacos-automator-mcp)
+
 ![macOS Automator MCP Server](assets/logo.png)
 
 ## 🎯 Mission Control: Teaching Robots to Click Buttons Since 2024
