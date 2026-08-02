@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Replaced the broken pnpm 11.12.0 release with pnpm 11.17.0 and updated runtime, development, and CI dependencies to their current stable releases.
+- Replaced the broken pnpm 11.12.0 release with pnpm 11.18.0 and updated runtime, development, and CI dependencies to their current stable releases.
 
 ## [0.4.5] - 2026-07-02
 
