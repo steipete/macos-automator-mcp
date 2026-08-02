@@ -42,15 +42,15 @@
     "format:check": "oxfmt --check ."
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "fuse.js": "^7.5.0",
     "gray-matter": "^4.0.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "oxfmt": "^0.60.0",
-    "oxlint": "^1.75.0",
+    "@types/node": "^26.1.2",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
@@ -58,5 +58,5 @@
   "engines": {
     "node": ">=24.0.0"
   },
-  "packageManager": "pnpm@11.17.0"
+  "packageManager": "pnpm@11.18.0"
 }
