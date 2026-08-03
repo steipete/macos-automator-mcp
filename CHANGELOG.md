@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Rewrote the README around installation and first use, with detailed tool and configuration references moved into `docs/`.
+
 ## [0.4.6] - 2026-08-01
 
 - Replaced the broken pnpm 11.12.0 release with pnpm 11.18.0 and updated runtime, development, and CI dependencies, including @hono/node-server 2.0.12 to resolve a path-traversal vulnerability ([GHSA-frvp-7c67-39w9](https://github.com/advisories/GHSA-frvp-7c67-39w9)).
