@@ -3,7 +3,7 @@
 ![macOS Automator MCP](assets/logo.png)
 
 [![CI](https://img.shields.io/github/actions/workflow/status/steipete/macos-automator-mcp/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/steipete/macos-automator-mcp/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@steipete/macos-automator-mcp?style=flat-square)](https://registry.npmjs.org/@steipete%2Fmacos-automator-mcp/latest)
+[![npm](https://img.shields.io/npm/v/@steipete/macos-automator-mcp?style=flat-square)](https://www.npmjs.com/package/@steipete/macos-automator-mcp)
 [![Node.js](https://img.shields.io/node/v/@steipete/macos-automator-mcp?style=flat-square)](https://nodejs.org/)
 [![macOS](https://img.shields.io/badge/platform-macOS-000000?style=flat-square&logo=apple)](https://www.apple.com/macos/)
 [![License](https://img.shields.io/github/license/steipete/macos-automator-mcp?style=flat-square)](LICENSE)
