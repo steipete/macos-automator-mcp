@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Rewrote the README around installation and first use, with detailed tool and configuration references moved into `docs/`.
+- Updated development dependencies and refreshed the patched Hono and Vite security overrides.
 
 ## [0.4.6] - 2026-08-01
 
