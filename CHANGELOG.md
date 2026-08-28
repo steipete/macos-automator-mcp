@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated pnpm, Node.js types, formatting and lint tooling, and the Hono override; refreshed transitive dependencies.
 - Rewrote the README around installation and first use, with detailed tool and configuration references moved into `docs/`.
 - Updated development dependencies and refreshed the patched Hono and Vite security overrides.
 
