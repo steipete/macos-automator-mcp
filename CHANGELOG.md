@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated Zod to 4.5.4 for input-validation fixes and reduced schema memory use.
 - Updated pnpm, Node.js types, formatting and lint tooling, and the Hono override; refreshed transitive dependencies.
 - Rewrote the README around installation and first use, with detailed tool and configuration references moved into `docs/`.
 - Updated development dependencies and refreshed the patched Hono and Vite security overrides.
