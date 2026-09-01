@@ -1,11 +1,10 @@
 # Changelog
 
-## Unreleased
+## [0.4.7] - 2026-08-31
 
 - Updated Zod to 4.5.4 for input-validation fixes and reduced schema memory use.
-- Updated pnpm, Node.js types, formatting and lint tooling, and the Hono override; refreshed transitive dependencies.
+- Updated pnpm and development tooling, refreshed transitive dependencies, and advanced the esbuild, Hono, and Vite security overrides.
 - Rewrote the README around installation and first use, with detailed tool and configuration references moved into `docs/`.
-- Updated development dependencies and refreshed the patched Hono and Vite security overrides.
 
 ## [0.4.6] - 2026-08-01
 
