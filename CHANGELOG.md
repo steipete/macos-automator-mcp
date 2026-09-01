@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.4.8] - Unreleased
+
 ## [0.4.7] - 2026-08-31
 
 - Updated Zod to 4.5.4 for input-validation fixes and reduced schema memory use.
