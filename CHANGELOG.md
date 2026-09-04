@@ -2,6 +2,8 @@
 
 ## [0.4.8] - Unreleased
 
+- Updated pnpm, Node.js type definitions, oxlint, and oxfmt for dependency-installation, linting, and formatting fixes.
+
 ## [0.4.7] - 2026-08-31
 
 - Updated Zod to 4.5.4 for input-validation fixes and reduced schema memory use.
