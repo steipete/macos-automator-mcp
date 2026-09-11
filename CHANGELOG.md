@@ -2,7 +2,10 @@
 
 ## [0.4.8] - Unreleased
 
-- Updated pnpm, Node.js type definitions, oxlint, and oxfmt for dependency-installation, linting, and formatting fixes.
+**Highlights:** Updated input validation and development tooling while retaining Node.js 24 support.
+
+- Updated Zod to 4.6.1 for schema parsing, memory-use, and default-value fixes.
+- Updated pnpm, Node.js type definitions, oxlint, oxfmt, and Vitest for dependency-installation, linting, formatting, and testing fixes; thanks @dependabot for the tooling updates.
 
 ## [0.4.7] - 2026-08-31
 
