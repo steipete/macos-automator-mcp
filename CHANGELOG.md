@@ -2,10 +2,11 @@
 
 ## Unreleased
 
-**Highlights:** Updated input validation and development tooling while retaining Node.js 24 support.
+**Highlights:** Updated input validation, developer tooling, and CI while retaining Node.js 24 support.
 
 - Updated architecture, development, and protocol-testing documentation and clarified tool descriptions.
-- Updated Zod to 4.6.1 for schema parsing, memory-use, and default-value fixes.
+- Updated Zod to 4.6.2; aligned Node.js types with the supported Node 24 floor and enforce a 48-hour dependency release age.
+- Test macOS execution on Node 24 and 26, pin GitHub Actions, and run knowledge-base validation alongside build checks without a separate dependency installation.
 - Updated pnpm, Node.js type definitions, oxlint, oxfmt, and Vitest for dependency-installation, linting, formatting, and testing fixes; thanks @dependabot for the tooling updates.
 
 ## [0.4.7] - 2026-08-31
