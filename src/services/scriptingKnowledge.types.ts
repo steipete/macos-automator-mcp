@@ -41,7 +41,7 @@ export interface TipFrontmatter {
   id?: string;
   title: string;
   description?: string;
-  keywords?: string[];
+  keywords?: unknown;
   notes?: string;
   language?: "applescript" | "javascript";
   isComplex?: boolean;

@@ -17,8 +17,6 @@ const EMBEDDED_KNOWLEDGE_BASE_DIR = path.resolve(import.meta.dirname, "..", ".."
 const LOCAL_KB_ENV_VAR = "LOCAL_KB_PATH";
 const DEFAULT_LOCAL_KB_PATH = path.join(os.homedir(), ".macos-automator", "knowledge_base");
 
-let indexedKnowledgeBase: KnowledgeBaseIndex | null = null;
-let isLoadingKnowledgeBase = false;
 let knowledgeBaseLoadPromise: Promise<KnowledgeBaseIndex> | null = null;
 
 function getLocalKnowledgeBasePath(): string {
@@ -78,14 +76,19 @@ function mergeKnowledgeData(
   for (const newCategory of loadedPathData.categories) {
     const existingCategory = categoriesMap.get(newCategory.id);
     if (existingCategory) {
-      if (isLocalOverrideContext) {
+      if (isLocalOverrideContext && newCategory.description !== undefined) {
         existingCategory.description = newCategory.description;
         logger.debug("Updated existing category description with local data", {
           categoryId: newCategory.id,
         });
       }
     } else {
-      categoriesMap.set(newCategory.id, { ...newCategory, tipCount: 0 }); // tipCount will be recalculated
+      categoriesMap.set(newCategory.id, {
+        ...newCategory,
+        description:
+          newCategory.description ?? `Tips and examples for ${newCategory.id.replace(/_/g, " ")}.`,
+        tipCount: 0,
+      });
       logger.debug("Added new category from loaded path", { categoryId: newCategory.id });
     }
   }
@@ -155,36 +158,29 @@ async function actualLoadAndIndexKnowledgeBase(): Promise<KnowledgeBaseIndex> {
     }
   }
 
-  indexedKnowledgeBase = baseKb;
-
   logger.info(
-    `Knowledge base loading complete: ${indexedKnowledgeBase.categories.length} categories, ` +
-      `${indexedKnowledgeBase.tips.length} scriptable tips (${indexedKnowledgeBase.tips.filter((t) => t.isLocal).length} local/overridden), ` +
-      `${indexedKnowledgeBase.sharedHandlers.length} shared handlers (${indexedKnowledgeBase.sharedHandlers.filter((h) => h.isLocal).length} local/overridden).`,
+    `Knowledge base loading complete: ${baseKb.categories.length} categories, ` +
+      `${baseKb.tips.length} scriptable tips (${baseKb.tips.filter((t) => t.isLocal).length} local/overridden), ` +
+      `${baseKb.sharedHandlers.length} shared handlers (${baseKb.sharedHandlers.filter((h) => h.isLocal).length} local/overridden).`,
   );
-  return indexedKnowledgeBase;
+  return baseKb;
 }
 
-export async function getKnowledgeBase(): Promise<KnowledgeBaseIndex> {
-  if (indexedKnowledgeBase && !isLoadingKnowledgeBase) {
-    return indexedKnowledgeBase;
+export function getKnowledgeBase(): Promise<KnowledgeBaseIndex> {
+  if (!knowledgeBaseLoadPromise) {
+    const loadPromise = actualLoadAndIndexKnowledgeBase().catch((error: unknown) => {
+      // A failed older load must not invalidate a newer refresh.
+      if (knowledgeBaseLoadPromise === loadPromise) knowledgeBaseLoadPromise = null;
+      throw error;
+    });
+    knowledgeBaseLoadPromise = loadPromise;
   }
-  if (isLoadingKnowledgeBase && knowledgeBaseLoadPromise) {
-    logger.debug("Knowledge base is currently loading, awaiting existing promise.");
-    return knowledgeBaseLoadPromise;
-  }
-  isLoadingKnowledgeBase = true;
-  knowledgeBaseLoadPromise = actualLoadAndIndexKnowledgeBase().finally(() => {
-    isLoadingKnowledgeBase = false;
-  });
   return knowledgeBaseLoadPromise;
 }
 
-export async function forceReloadKnowledgeBase(): Promise<KnowledgeBaseIndex> {
+export function forceReloadKnowledgeBase(): Promise<KnowledgeBaseIndex> {
   logger.info("Forcing knowledge base reload...");
-  indexedKnowledgeBase = null;
   knowledgeBaseLoadPromise = null;
-  isLoadingKnowledgeBase = false;
   return getKnowledgeBase();
 }
 
