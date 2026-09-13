@@ -55,11 +55,13 @@ This guide provides instructions for setting up the development environment, run
 ```
 macos-automator-mcp/
 ├── src/                  # Source code
-│   ├── server.ts         # Main server logic & MCP tool definitions
-│   ├── AppleScriptExecutor.ts # Core osascript execution
+│   ├── server.ts         # CLI, startup, transport and shutdown
+│   ├── registerTools.ts  # MCP tool definitions
+│   ├── executeScript.ts  # Execution tool handler and responses
+│   ├── ScriptExecutor.ts # Core osascript execution
 │   ├── logger.ts         # Logging utility
 │   ├── schemas.ts        # Zod input schemas
-│   └── (cli.ts)          # Optional separate CLI entry if needed
+│   └── services/        # Knowledge-base loading, merging and search
 ├── dist/                 # Compiled JavaScript output
 ├── docs/                 # Documentation and screenshots
 ├── .github/workflows/    # GitHub Actions workflows (CI)
