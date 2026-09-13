@@ -1,12 +1,7 @@
 // Zod input schemas
 import { z } from "zod";
 
-// Placeholder for KNOWN_CATEGORIES. In a real scenario, this might be populated dynamically
-// or from a more extensive list. For now, ensure it's not empty for z.enum.
-// const KNOWN_CATEGORIES = ['basics', 'finder', 'electron_editors', 'safari', 'chrome'] as const; // Keep for reference or future dynamic population
-
-// Allow any string for category, as they are dynamically loaded from the KB.
-const DynamicScriptingKnowledgeCategoryEnum = z
+const KnowledgeCategorySchema = z
   .string()
   .describe(
     "Category of AppleScript/JXA tips. Should match a discovered category ID from the knowledge base.",
@@ -103,7 +98,7 @@ export const ExecuteScriptInputSchema = z
 export type ExecuteScriptInput = z.infer<typeof ExecuteScriptInputSchema>;
 
 export const GetScriptingTipsInputSchema = z.object({
-  category: DynamicScriptingKnowledgeCategoryEnum.optional().describe(
+  category: KnowledgeCategorySchema.optional().describe(
     "Specific category of tips. If omitted with no `search_term`, lists all categories.",
   ),
   search_term: z
@@ -131,6 +126,3 @@ export const GetScriptingTipsInputSchema = z.object({
 });
 
 export type GetScriptingTipsInput = z.infer<typeof GetScriptingTipsInputSchema>;
-
-// Output is always { content: [{ type: "text", text: "string_output" }] }
-// No specific Zod schema needed for output beyond what MCP SDK handles.

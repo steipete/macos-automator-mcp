@@ -1,4 +1,3 @@
-// Logging utility
 import type { LogLevel } from "./types.js";
 
 const LOG_LEVELS: Record<LogLevel, number> = {
@@ -9,11 +8,9 @@ const LOG_LEVELS: Record<LogLevel, number> = {
 };
 
 export class Logger {
-  private currentLogLevel; // Type is inferred from constructor assignment
-  // private context: string; // Type is inferred from constructor
+  private readonly currentLogLevel;
 
   constructor(private context: string = "MCP_Server") {
-    // Using private accessor in constructor to declare and assign
     const envLogLevel = process.env.LOG_LEVEL?.toUpperCase() as LogLevel | undefined;
     this.currentLogLevel =
       envLogLevel && LOG_LEVELS[envLogLevel] !== undefined
