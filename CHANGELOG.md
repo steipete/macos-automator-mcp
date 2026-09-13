@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Substitute knowledge-base inputs once using the script language, preserving placeholder-like input text, correctly serializing JXA values, and escaping AppleScript record labels.
 - Fixed default category discovery, prototype-named categories, malformed tip metadata, local category-description overrides, and overlapping knowledge-base refreshes.
 - Load documented `_shared_handlers` while preserving legacy `shared-handlers`, and validate all runnable subdirectories with the same script-block selection as the runtime.
 

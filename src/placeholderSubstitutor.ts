@@ -3,12 +3,10 @@ export interface SubstitutionResult {
   logs: string[];
 }
 
-// Helper functions for KB script argument substitution
 export function escapeForAppleScriptStringLiteral(value: string): string {
   return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
-// Helper function to convert camelCase to snake_case
 function camelToSnake(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
@@ -25,156 +23,88 @@ export function valueToAppleScriptLiteral(value: unknown): string {
   }
   if (typeof value === "object" && value !== null) {
     const recordParts = Object.entries(value).map(
-      ([k, v]) => `${k}:${valueToAppleScriptLiteral(v)}`,
+      ([key, value]) => `${appleScriptIdentifier(key)}:${valueToAppleScriptLiteral(value)}`,
     );
     return `{${recordParts.join(", ")}}`;
   }
-  console.warn(
-    '[placeholderSubstitutor] Unsupported type for AppleScript literal conversion, using "missing value"',
-    { value },
-  );
-  return "missing value"; // AppleScript's equivalent of null/undefined (bare keyword)
+  return "missing value";
+}
+
+// AppleScript language keywords, excluding application/property terminology such as name.
+const appleScriptKeywords = new Set(
+  `about above after against and apart around as aside at back before
+beginning behind below beneath beside between but by considering contain contains continue copy div
+does eighth else end equal equals error every exit false fifth first for fourth from front get given
+global if ignoring in instead into is it its last local me middle mod my ninth not of on onto or out
+over prop property put ref reference repeat return returning script second set seventh since sixth
+some tell tenth that the then third through thru timeout times to transaction true try until use
+where while whose with without`.split(/\s+/),
+);
+
+function appleScriptIdentifier(key: string): string {
+  if (/^[a-zA-Z][a-zA-Z0-9_]*$/.test(key) && !appleScriptKeywords.has(key.toLowerCase()))
+    return key;
+  return `|${key.replace(/\\/g, "\\\\").replace(/\|/g, "\\|")}|`;
+}
+
+function valueToJavaScriptLiteral(value: unknown): string {
+  const json = JSON.stringify(value) ?? "null";
+  // Object initializers give __proto__ special meaning; JSON parsing preserves data keys.
+  return value !== null && typeof value === "object" ? `JSON.parse(${JSON.stringify(json)})` : json;
 }
 
 interface SubstitutePlaceholdersArgs {
   scriptContent: string;
   inputData?: Record<string, unknown>;
   args?: string[];
+  language?: "applescript" | "javascript";
   includeSubstitutionLogs: boolean;
 }
+
+const templateToken = String.raw`\$\{(?:inputData\.\w+|arguments\[\d+\])\}`;
+const legacyToken = String.raw`--MCP_(?:INPUT:\w+|ARG_\d+)`;
+const placeholderPattern = new RegExp(
+  `(["'])(${templateToken}|${legacyToken})\\1|(${templateToken})|([(,=]\\s*)(${legacyToken})\\b`,
+  "g",
+);
 
 export function substitutePlaceholders({
   scriptContent,
   inputData,
   args,
+  language = "applescript",
   includeSubstitutionLogs,
 }: SubstitutePlaceholdersArgs): SubstitutionResult {
-  let currentScriptContent = scriptContent;
-  const substitutionLogs: string[] = [];
-
-  const inputLiteral = (key: string): string =>
-    inputData && key in inputData ? valueToAppleScriptLiteral(inputData[key]) : "missing value";
-  const argumentLiteral = (index: number): string =>
-    args && index >= 0 && index < args.length
-      ? valueToAppleScriptLiteral(args[index])
-      : "missing value";
-
-  const logSub = (message: string, data: unknown) => {
-    const logEntry = `[SUBST] ${message} ${JSON.stringify(data)}`;
-    if (includeSubstitutionLogs) {
-      substitutionLogs.push(logEntry);
-    }
-  };
-
-  // JS-style ${inputData.key}
-  const jsInputDataRegex = /\$\{inputData\.(\w+)\}/g;
-  logSub("Before jsInputDataRegex", { scriptContentLength: currentScriptContent.length });
-  currentScriptContent = currentScriptContent.replace(jsInputDataRegex, (match, keyName) => {
-    const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
-    const replacementValue = inputLiteral(snakeKeyName); // Bare keyword
-    logSub("jsInputDataRegex replacing", { match, keyName, snakeKeyName, replacementValue });
-    return replacementValue;
-  });
-  logSub("After jsInputDataRegex", { scriptContentLength: currentScriptContent.length });
-
-  // JS-style ${arguments[N]}
-  const jsArgumentsRegex = /\$\{arguments\[(\d+)\]\}/g;
-  logSub("Before jsArgumentsRegex", { scriptContentLength: currentScriptContent.length });
-  currentScriptContent = currentScriptContent.replace(jsArgumentsRegex, (match, indexStr) => {
-    const index = Number.parseInt(indexStr, 10);
-    const replacementValue = argumentLiteral(index); // Bare keyword
-    logSub("jsArgumentsRegex replacing", { match, indexStr, index, replacementValue });
-    return replacementValue;
-  });
-  logSub("After jsArgumentsRegex", { scriptContentLength: currentScriptContent.length });
-
-  // Quoted "--MCP_INPUT:keyName" (handles single or double quotes around the placeholder)
-  const quotedMcpInputRegex = /(["'])--MCP_INPUT:(\w+)\1/g;
-  logSub("Before quotedMcpInputRegex (match surrounding quotes)", {
-    scriptContentLength: currentScriptContent.length,
-  });
-  currentScriptContent = currentScriptContent.replace(
-    quotedMcpInputRegex,
-    (match, _openingQuote, keyName) => {
-      const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
-      const replacementValue = inputLiteral(snakeKeyName);
-      logSub("quotedMcpInputRegex (match surrounding quotes) replacing", {
-        match,
-        keyName,
-        snakeKeyName,
-        replacementValue,
-      });
-      return replacementValue;
+  const logs: string[] = [];
+  // One pass over source: inserted values must never become template syntax.
+  const substitutedScript = scriptContent.replace(
+    placeholderPattern,
+    (
+      match: string,
+      _quote: string | undefined,
+      quotedToken: string | undefined,
+      bareTemplate: string | undefined,
+      prefix: string | undefined,
+      bareLegacy: string | undefined,
+    ) => {
+      const token = quotedToken ?? bareTemplate ?? bareLegacy!;
+      const named = token.match(/(?:inputData\.|MCP_INPUT:)(\w+)/);
+      let value: unknown;
+      if (named) {
+        const key = camelToSnake(named[1]);
+        value = inputData && Object.hasOwn(inputData, key) ? inputData[key] : undefined;
+      } else {
+        const position = token.match(/(?:arguments\[|MCP_ARG_)(\d+)/)!;
+        const index = Number(position[1]) - (token.startsWith("--MCP_") ? 1 : 0);
+        value = args && index >= 0 && index < args.length ? args[index] : undefined;
+      }
+      const replacement =
+        language === "javascript"
+          ? valueToJavaScriptLiteral(value)
+          : valueToAppleScriptLiteral(value);
+      if (includeSubstitutionLogs) logs.push(`[SUBST] ${JSON.stringify({ match, replacement })}`);
+      return (prefix ?? "") + replacement;
     },
   );
-  logSub("After quotedMcpInputRegex (match surrounding quotes)", {
-    scriptContentLength: currentScriptContent.length,
-  });
-
-  // Quoted "--MCP_ARG_N" (handles single or double quotes)
-  const quotedMcpArgRegex = /(["'])--MCP_ARG_(\d+)\1/g;
-  logSub("Before quotedMcpArgRegex (match surrounding quotes)", {
-    scriptContentLength: currentScriptContent.length,
-  });
-  currentScriptContent = currentScriptContent.replace(
-    quotedMcpArgRegex,
-    (match, _openingQuote, argNumStr) => {
-      const argIndex = Number.parseInt(argNumStr, 10) - 1;
-      const replacementValue = argumentLiteral(argIndex);
-      logSub("quotedMcpArgRegex (match surrounding quotes) replacing", {
-        match,
-        argNumStr,
-        argIndex,
-        replacementValue,
-      });
-      return replacementValue;
-    },
-  );
-  logSub("After quotedMcpArgRegex (match surrounding quotes)", {
-    scriptContentLength: currentScriptContent.length,
-  });
-
-  // Context-aware bare placeholders (not in comments) e.g., in function calls like myFunc(--MCP_INPUT:key)
-  const expressionMcpInputRegex = /([(,=]\s*)--MCP_INPUT:(\w+)\b/g;
-  logSub("Before expressionMcpInputRegex", { scriptContentLength: currentScriptContent.length });
-  currentScriptContent = currentScriptContent.replace(
-    expressionMcpInputRegex,
-    (match, prefix, keyName) => {
-      const snakeKeyName = camelToSnake(keyName); // Convert camelCase from script to snake_case for lookup
-      const replacementValue = inputLiteral(snakeKeyName);
-      logSub("expressionMcpInputRegex replacing", {
-        match,
-        prefix,
-        keyName,
-        snakeKeyName,
-        replacementValue,
-      });
-      return prefix + replacementValue;
-    },
-  );
-  logSub("After expressionMcpInputRegex", { scriptContentLength: currentScriptContent.length });
-
-  const expressionMcpArgRegex = /([(,=]\s*)--MCP_ARG_(\d+)\b/g;
-  logSub("Before expressionMcpArgRegex", { scriptContentLength: currentScriptContent.length });
-  currentScriptContent = currentScriptContent.replace(
-    expressionMcpArgRegex,
-    (match, prefix, argNumStr) => {
-      const argIndex = Number.parseInt(argNumStr, 10) - 1;
-      const replacementValue = argumentLiteral(argIndex);
-      logSub("expressionMcpArgRegex replacing", {
-        match,
-        prefix,
-        argNumStr,
-        argIndex,
-        replacementValue,
-      });
-      return prefix + replacementValue;
-    },
-  );
-  logSub("After expressionMcpArgRegex", { scriptContentLength: currentScriptContent.length });
-
-  return {
-    substitutedScript: currentScriptContent,
-    logs: substitutionLogs,
-  };
+  return { substitutedScript, logs };
 }

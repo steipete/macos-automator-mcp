@@ -43,7 +43,7 @@ Run exactly one script source. Choose one of these mutually exclusive inputs:
 | `arguments`  | string array                  | File arguments for `on run argv`/`run(argv)`, or positional knowledge-base placeholders. |
 | `input_data` | object                        | Named values substituted into knowledge-base script placeholders.                        |
 
-Knowledge-base scripts can use `${inputData.keyName}` or the legacy `--MCP_INPUT:keyName` form for named inputs. The server maps camel-case placeholder names to snake-case `input_data` keys. Positional placeholders use `${arguments[N]}` or the legacy `--MCP_ARG_N` form.
+Knowledge-base scripts can use `${inputData.keyName}` or the legacy `--MCP_INPUT:keyName` form for named inputs. The server maps camel-case placeholder names to snake-case `input_data` keys. Positional placeholders use zero-based `${arguments[N]}` or one-based legacy `--MCP_ARG_N`. Values are serialized for the script language: AppleScript literals or JavaScript JSON values. Missing inputs become `missing value` in AppleScript and `null` in JXA. Placeholders are standalone expressions (or whole quoted values), not fragments inside larger string literals. Inserted input is never processed as another placeholder.
 
 Example knowledge-base input:
 
