@@ -16,9 +16,6 @@ export interface ScriptingTip {
   isComplex?: boolean; // Heuristic (e.g., script length) or from frontmatter
   argumentsPrompt?: string; // Human-readable prompt for arguments if run by ID
   isLocal?: boolean; // Indicates if the tip is from the local KB
-  // Placeholder for future:
-  // inputSchema?: any; // Optional Zod schema string or object for 'inputData' if run by ID
-  // usesSharedHandlers?: string[]; // Names of handlers from shared-handlers/
 }
 
 export interface SharedHandler {
@@ -49,9 +46,4 @@ export interface TipFrontmatter {
   language?: "applescript" | "javascript";
   isComplex?: boolean;
   argumentsPrompt?: string;
-  // usesSharedHandlers?: string[];
-}
-
-export interface CategoryInfoFrontmatter {
-  description: string;
 }

@@ -7,7 +7,7 @@ import type {
   SharedHandler,
   TipFrontmatter,
 } from "./scriptingKnowledge.types.js";
-import { Logger } from "../logger.js"; // Assuming logger is one level up
+import { Logger } from "../logger.js";
 
 const logger = new Logger("KBLoader");
 
@@ -71,7 +71,7 @@ export async function loadTipsAndHandlersFromPath(
   async function findTipsRecursively(
     currentScanPath: string,
     categoryId: KnowledgeCategory,
-  ): Promise<{ count: number; files: ScriptingTip[] }> {
+  ): Promise<ScriptingTip[]> {
     logger.debug("Recursively scanning directory for tips", { currentScanPath, categoryId });
 
     let entries: import("node:fs").Dirent[];
@@ -87,10 +87,9 @@ export async function loadTipsAndHandlersFromPath(
           isLocalKb,
         });
       }
-      return { count: 0, files: [] };
+      return [];
     }
 
-    let currentLevelCount = 0;
     const currentLevelFiles: ScriptingTip[] = [];
 
     for (const entry of entries) {
@@ -98,10 +97,8 @@ export async function loadTipsAndHandlersFromPath(
 
       try {
         if (entry.isDirectory()) {
-          // Do not pass encounteredTipIdsThisPath down for sub-categories, ID uniqueness is per category or global later
           const subDirResult = await findTipsRecursively(entryPath, categoryId);
-          currentLevelCount += subDirResult.count;
-          currentLevelFiles.push(...subDirResult.files);
+          currentLevelFiles.push(...subDirResult);
         } else if (entry.isFile() && entry.name.endsWith(".md") && !entry.name.startsWith("_")) {
           let fileContent: string;
           try {
@@ -118,7 +115,7 @@ export async function loadTipsAndHandlersFromPath(
 
           const parsedFile = parseMarkdownTipFile(fileContent, entryPath);
 
-          if (parsedFile?.frontmatter?.title) {
+          if (parsedFile) {
             const fm = parsedFile.frontmatter;
             const baseName = path
               .basename(entry.name, ".md")
@@ -158,13 +155,11 @@ export async function loadTipsAndHandlersFromPath(
                     : [],
                 notes: fm.notes,
                 filePath: entryPath,
-                isComplex:
-                  fm.isComplex !== undefined ? fm.isComplex : parsedFile.script.length > 250,
+                isComplex: fm.isComplex ?? parsedFile.script.length > 250,
                 argumentsPrompt: fm.argumentsPrompt,
                 isLocal: isLocalKb,
               };
               currentLevelFiles.push(newTip);
-              currentLevelCount++;
               logger.debug("Found scriptable tip", { tipId, categoryId, isLocalKb });
             } else {
               logger.debug("Conceptual tip (no script block)", {
@@ -184,7 +179,7 @@ export async function loadTipsAndHandlersFromPath(
         });
       }
     }
-    return { count: currentLevelCount, files: currentLevelFiles };
+    return currentLevelFiles;
   }
 
   const sharedHandlersPath = path.join(basePath, SHARED_HANDLERS_DIR_NAME);
@@ -198,9 +193,7 @@ export async function loadTipsAndHandlersFromPath(
         const filePath = path.join(sharedHandlersPath, handlerFile.name);
         const content = await fs.readFile(filePath, "utf-8");
         const handlerName = path.basename(handlerFile.name, path.extname(handlerFile.name));
-        const language = (handlerFile.name.endsWith(".js") ? "javascript" : "applescript") as
-          | "javascript"
-          | "applescript";
+        const language = handlerFile.name.endsWith(".js") ? "javascript" : "applescript";
 
         loadedSharedHandlers.push({
           name: handlerName,
@@ -244,7 +237,7 @@ export async function loadTipsAndHandlersFromPath(
 
   for (const categoryDirEntry of categoryDirEntries) {
     if (categoryDirEntry.isDirectory() && categoryDirEntry.name !== SHARED_HANDLERS_DIR_NAME) {
-      const categoryId = categoryDirEntry.name as KnowledgeCategory;
+      const categoryId = categoryDirEntry.name;
       const categoryPath = path.join(basePath, categoryId);
       let categoryDescription = `Tips and examples for ${categoryId.replace(/_/g, " ")}.`;
       const categoryInfoPath = path.join(categoryPath, "_category_info.md");
@@ -260,18 +253,18 @@ export async function loadTipsAndHandlersFromPath(
       }
 
       const categoryScanResults = await findTipsRecursively(categoryPath, categoryId);
-      loadedTips.push(...categoryScanResults.files);
+      loadedTips.push(...categoryScanResults);
 
-      if (categoryScanResults.count > 0) {
+      if (categoryScanResults.length > 0) {
         // Only add category if it has tips from this path
         loadedCategories.push({
           id: categoryId,
           description: categoryDescription,
-          tipCount: categoryScanResults.count,
+          tipCount: categoryScanResults.length,
         });
         logger.debug("Processed category from path", {
           categoryId,
-          tipCount: categoryScanResults.count,
+          tipCount: categoryScanResults.length,
           isLocalKb,
         });
       }
