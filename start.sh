@@ -10,7 +10,7 @@ DIST_SERVER_JS="$PROJECT_ROOT/dist/server.js"
 SRC_SERVER_TS="$PROJECT_ROOT/src/server.ts"
 
 if [ -f "$DIST_SERVER_JS" ]; then
-  exec node "$DIST_SERVER_JS"
+  exec node "$DIST_SERVER_JS" "$@"
 else
   if ! command -v tsx &> /dev/null && ! [ -f "$PROJECT_ROOT/node_modules/.bin/tsx" ]; then
     echo "WARN: tsx command not found locally or globally. Attempting to install via pnpm..." >&2
@@ -27,8 +27,8 @@ else
           echo "ERROR: tsx not found globally or locally at $TSX_PATH. Cannot run from source." >&2
           exit 1
       fi
-      exec "$TSX_PATH" "$SRC_SERVER_TS"
+      exec "$TSX_PATH" "$SRC_SERVER_TS" "$@"
   else
-      exec tsx "$SRC_SERVER_TS"
+      exec tsx "$SRC_SERVER_TS" "$@"
   fi
 fi

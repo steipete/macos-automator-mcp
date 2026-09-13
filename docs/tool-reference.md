@@ -37,11 +37,11 @@ Run exactly one script source. Choose one of these mutually exclusive inputs:
 
 ### Script inputs
 
-| Input        | Type                          | Description                                                                              |
-| ------------ | ----------------------------- | ---------------------------------------------------------------------------------------- |
-| `language`   | `applescript` or `javascript` | Language for inline or file sources; defaults to `applescript`.                          |
-| `arguments`  | string array                  | File arguments for `on run argv`/`run(argv)`, or positional knowledge-base placeholders. |
-| `input_data` | object                        | Named values substituted into knowledge-base script placeholders.                        |
+| Input        | Type                          | Description                                                                                     |
+| ------------ | ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `language`   | `applescript` or `javascript` | Language for inline or file sources; defaults to `applescript`.                                 |
+| `arguments`  | string array                  | Inline/file arguments for `on run argv`/`run(argv)`, or positional knowledge-base placeholders. |
+| `input_data` | object                        | Named values substituted into knowledge-base script placeholders.                               |
 
 Knowledge-base scripts can use `${inputData.keyName}` or the legacy `--MCP_INPUT:keyName` form for named inputs. The server maps camel-case placeholder names to snake-case `input_data` keys. Positional placeholders use zero-based `${arguments[N]}` or one-based legacy `--MCP_ARG_N`. Values are serialized for the script language: AppleScript literals or JavaScript JSON values. Missing inputs become `missing value` in AppleScript and `null` in JXA. Placeholders are standalone expressions (or whole quoted values), not fragments inside larger string literals. Inserted input is never processed as another placeholder.
 
@@ -60,7 +60,7 @@ Example knowledge-base input:
 
 | Input                               | Type    | Default | Description                                            |
 | ----------------------------------- | ------- | ------- | ------------------------------------------------------ |
-| `timeout_seconds`                   | integer | `60`    | Stop the script when the timeout expires.              |
+| `timeout_seconds`                   | integer | `60`    | Stop after 1–2147483 seconds (the Node timer limit).   |
 | `output_format_mode`                | enum    | `auto`  | Select `osascript` output formatting.                  |
 | `include_executed_script_in_output` | boolean | `false` | Include the final substituted source or executed path. |
 | `include_substitution_logs`         | boolean | `false` | Include placeholder-substitution diagnostics.          |

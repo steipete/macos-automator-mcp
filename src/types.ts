@@ -9,7 +9,7 @@ export interface ScriptExecutionOptions {
     | "structured_error"
     | "structured_output_and_error"
     | "direct";
-  arguments?: string[]; // For script files executed via path
+  arguments?: string[]; // Passed to the script's run handler
 }
 
 export interface ScriptExecutionResult {
@@ -27,7 +27,7 @@ export interface ScriptExecutionError extends Error {
   killed?: boolean; // Specifically for timeouts
   originalError?: unknown; // The raw error from child_process
   isTimeout?: boolean;
-  execution_time_seconds: number;
+  execution_time_seconds?: number;
 }
 
 export interface ExecuteScriptResponse {
