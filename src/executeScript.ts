@@ -1,10 +1,9 @@
 import * as sdkTypes from "@modelcontextprotocol/sdk/types.js";
-import { ExecuteScriptInputSchema } from "./schemas.js";
+import { ExecuteScriptInputSchema, type ExecuteScriptInput } from "./schemas.js";
 import { ScriptExecutor } from "./ScriptExecutor.js";
 import { Logger } from "./logger.js";
 import { getKnowledgeBase } from "./services/KnowledgeBaseManager.js";
 import { substitutePlaceholders } from "./placeholderSubstitutor.js";
-import type { SubstitutionResult } from "./placeholderSubstitutor.js";
 import type { ScriptExecutionError, ExecuteScriptResponse } from "./types.js";
 
 const logger = new Logger("macos_automator_server");
@@ -15,30 +14,21 @@ function formatDuration(seconds: number): string {
   if (ms < 1) return "<1 millisecond.";
   if (ms < 1000) return `${ms.toFixed(0)} milliseconds.`;
   if (ms < 60000) return `${(ms / 1000).toFixed(2)} seconds.`;
-  const totalSeconds = ms / 1000;
-  return `${Math.floor(totalSeconds / 60)} minute(s) and ${Math.round(totalSeconds % 60)} seconds.`;
+  const totalSeconds = Math.round(seconds);
+  return `${Math.floor(totalSeconds / 60)} minute(s) and ${totalSeconds % 60} seconds.`;
 }
 
-export async function executeScript(
-  args: unknown,
-  takeServerInfo: () => string | undefined,
-): Promise<ExecuteScriptResponse> {
-  const input = ExecuteScriptInputSchema.parse(args);
-  let execution_time_seconds: number | undefined;
-  let scriptContentToExecute: string | undefined = input.script_content;
-  let scriptPathToExecute: string | undefined = input.script_path;
-  let languageToUse: "applescript" | "javascript";
-  let finalArgumentsForScriptFile = input.arguments || [];
-  let substitutionLogs: string[] = [];
+interface ResolvedScript {
+  source: { content: string } | { path: string };
+  language: "applescript" | "javascript";
+  arguments: string[];
+  substitutionLogs: string[];
+}
 
-  logger.debug("execute_script called with input:", input);
-
-  const mainOutputContent: { type: "text"; text: string }[] = [];
-
+async function resolveScript(input: ExecuteScriptInput): Promise<ResolvedScript> {
   if (input.kb_script_id) {
     const kb = await getKnowledgeBase();
-    const tip = kb.tips.find((t: { id: string }) => t.id === input.kb_script_id);
-
+    const tip = kb.tips.find((tip) => tip.id === input.kb_script_id);
     if (!tip) {
       throw new sdkTypes.McpError(
         sdkTypes.ErrorCode.InvalidParams,
@@ -51,68 +41,56 @@ export async function executeScript(
         `Knowledge base script ID '${input.kb_script_id}' has no script content.`,
       );
     }
-
-    languageToUse = tip.language;
-    scriptPathToExecute = undefined;
-    finalArgumentsForScriptFile = [];
-
-    const substitutionResult: SubstitutionResult = substitutePlaceholders({
+    const options = {
       scriptContent: tip.script,
       language: tip.language,
       inputData: input.input_data,
       args: input.arguments,
-      includeSubstitutionLogs: input.include_substitution_logs || false,
-    });
-
-    scriptContentToExecute = substitutionResult.substitutedScript;
-    substitutionLogs = substitutionResult.logs;
-    logger.info("Executing Knowledge Base script", {
-      id: tip.id,
-      finalLength: scriptContentToExecute?.length,
-    });
-  } else if (input.script_path || input.script_content) {
-    languageToUse = input.language || "applescript";
-    if (input.script_path) {
-      logger.debug("Executing script from path", {
-        scriptPath: input.script_path,
-        language: languageToUse,
-      });
-    } else if (input.script_content) {
-      logger.debug("Executing script from content", {
-        language: languageToUse,
-        initialLength: input.script_content.length,
-      });
-    }
-  } else {
-    throw new sdkTypes.McpError(
-      sdkTypes.ErrorCode.InvalidParams,
-      "No script source provided (content, path, or KB ID).",
-    );
+      includeSubstitutionLogs: input.include_substitution_logs,
+    };
+    const substitution = substitutePlaceholders(options);
+    return {
+      source: { content: substitution.substitutedScript },
+      language: tip.language,
+      arguments: [],
+      substitutionLogs: substitution.logs,
+    };
   }
+  // The schema guarantees one nonempty source; empty optional fields cannot shadow it.
+  const source = input.script_path
+    ? { path: input.script_path }
+    : { content: input.script_content! };
+  return {
+    source,
+    language: input.language ?? "applescript",
+    arguments: input.arguments ?? [],
+    substitutionLogs: [],
+  };
+}
 
-  if (scriptContentToExecute) {
-    logger.debug("Final script content to be executed:", {
-      language: languageToUse,
-      script: scriptContentToExecute,
-    });
-  } else if (scriptPathToExecute) {
-    logger.debug("Executing script via path (content not logged here):", {
-      scriptPath: scriptPathToExecute,
-      language: languageToUse,
-    });
-  }
+export async function executeScript(
+  args: unknown,
+  takeServerInfo: () => string | undefined,
+): Promise<ExecuteScriptResponse> {
+  const input = ExecuteScriptInputSchema.parse(args);
+  logger.debug("execute_script called with input:", input);
+  const {
+    source,
+    language,
+    arguments: scriptArguments,
+    substitutionLogs,
+  } = await resolveScript(input);
+  const sourceKind = "content" in source ? "Content" : "Path";
+  const sourceText = "content" in source ? source.content : source.path;
+  const mainOutputContent: { type: "text"; text: string }[] = [];
 
   try {
-    const result = await scriptExecutor.execute(
-      { content: scriptContentToExecute, path: scriptPathToExecute },
-      {
-        language: languageToUse,
-        timeoutMs: (input.timeout_seconds || 60) * 1000,
-        output_format_mode: input.output_format_mode || "auto",
-        arguments: scriptPathToExecute ? finalArgumentsForScriptFile : [],
-      },
-    );
-    execution_time_seconds = result.execution_time_seconds;
+    const result = await scriptExecutor.execute(source, {
+      language,
+      timeoutMs: input.timeout_seconds * 1000,
+      output_format_mode: input.output_format_mode,
+      arguments: scriptArguments,
+    });
 
     if (result.stderr) {
       logger.warn("Script execution produced stderr (even on success)", {
@@ -134,13 +112,10 @@ export async function executeScript(
     mainOutputContent.push({ type: "text", text: result.stdout });
 
     if (input.include_executed_script_in_output) {
-      let scriptIdentifier = "Script source not determined (should not happen).";
-      if (scriptContentToExecute) {
-        scriptIdentifier = `\n--- Executed Script Content ---\n${scriptContentToExecute}`;
-      } else if (scriptPathToExecute) {
-        scriptIdentifier = `\n--- Executed Script Path ---\n${scriptPathToExecute}`;
-      }
-      mainOutputContent.push({ type: "text", text: scriptIdentifier });
+      mainOutputContent.push({
+        type: "text",
+        text: `\n--- Executed Script ${sourceKind} ---\n${sourceText}`,
+      });
     }
 
     const finalResponseContent = mainOutputContent;
@@ -163,7 +138,6 @@ export async function executeScript(
     return response;
   } catch (error: unknown) {
     const execError = error as ScriptExecutionError;
-    execution_time_seconds = execError.execution_time_seconds;
 
     let baseErrorMessage = "Script execution failed. ";
 
@@ -176,7 +150,7 @@ export async function executeScript(
     if (execError.isTimeout) {
       throw new sdkTypes.McpError(
         sdkTypes.ErrorCode.RequestTimeout,
-        `Script execution timed out after ${input.timeout_seconds || 60} seconds.`,
+        `Script execution timed out after ${input.timeout_seconds} seconds.`,
       );
     }
 
@@ -194,19 +168,15 @@ export async function executeScript(
       finalErrorMessage = `${baseErrorMessage}\n\nPOSSIBLE PERMISSION ISSUE: Ensure the application running this server (e.g., Terminal, Node) has required permissions in 'System Settings > Privacy & Security > Automation' and 'Accessibility'. See README.md. The target application for the script may also need specific permissions.`;
     }
 
-    let scriptIdentifierForError = "Script source not determined (should not happen).";
-    if (scriptContentToExecute) {
-      scriptIdentifierForError = `\n\n--- Script Attempted (Content) ---\n${scriptContentToExecute}`;
-    } else if (scriptPathToExecute) {
-      scriptIdentifierForError = `\n\n--- Script Attempted (Path) ---\n${scriptPathToExecute}`;
-    }
-    finalErrorMessage += scriptIdentifierForError;
+    finalErrorMessage += `\n\n--- Script Attempted (${sourceKind}) ---\n${sourceText}`;
 
     if (input.include_substitution_logs && substitutionLogs.length > 0) {
       finalErrorMessage += `\n\n--- Substitution Logs ---\n${substitutionLogs.join("\n")}`;
     }
 
-    logger.error("execute_script handler error", { execution_time_seconds });
+    logger.error("execute_script handler error", {
+      execution_time_seconds: execError.execution_time_seconds,
+    });
 
     const errorOutputParts: string[] = [finalErrorMessage];
     const serverInfo = takeServerInfo();

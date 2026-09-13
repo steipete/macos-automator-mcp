@@ -63,7 +63,7 @@ export class ScriptExecutor {
     let scriptToLog: string;
 
     if (scriptSource.content !== undefined) {
-      osaArgs.push("-e", scriptSource.content);
+      osaArgs.push("-e", scriptSource.content, "--");
       scriptToLog =
         scriptSource.content.length > 200
           ? `${scriptSource.content.substring(0, 200)}...`
@@ -82,7 +82,7 @@ export class ScriptExecutor {
         fileError.name = "ScriptFileAccessError";
         throw fileError;
       }
-      osaArgs.push(scriptSource.path);
+      osaArgs.push("--", scriptSource.path);
       scriptToLog = `File: ${scriptSource.path}`;
     } else {
       // This case should be prevented by Zod validation in server.ts

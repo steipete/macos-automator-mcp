@@ -36,6 +36,7 @@ Dependency updates must be at least 48 hours old; `pnpm-workspace.yaml` enforces
 
   ```bash
   ./start.sh
+  ./start.sh --version
   ```
 
 - **Direct Execution:**

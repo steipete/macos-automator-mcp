@@ -13,7 +13,7 @@ export function registerTools(server: McpServer, takeServerInfo: () => string | 
       },
       description: `Run AppleScript or JavaScript for Automation (JXA) on macOS with the host user's privileges.
 Choose exactly one source: kb_script_id (discover IDs with get_scripting_tips), inline script_content, or an absolute script_path.
-Knowledge-base scripts accept named input_data and positional arguments for placeholders; file scripts receive arguments in their run handler.
+Knowledge-base scripts accept named input_data and positional arguments for placeholders; inline and file scripts receive arguments in their run handler.
 Use language for inline/file JXA. Optional fields control timeout, output formatting, execution timing, and diagnostic source/substitution output.`,
       inputSchema: ExecuteScriptInputSchema,
     },

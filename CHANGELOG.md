@@ -2,15 +2,16 @@
 
 ## Unreleased
 
+**Highlights:** More reliable knowledge-base discovery and script execution, with Node 24/26 CI coverage.
+
+- Resolve exactly one script source, pass inline and option-looking arguments as data, forward launcher arguments, and carry rounded execution seconds into minutes.
 - Substitute knowledge-base inputs once using the script language, preserving placeholder-like input text, correctly serializing JXA values, and escaping AppleScript record labels.
 - Fixed default category discovery, prototype-named categories, malformed tip metadata, local category-description overrides, and overlapping knowledge-base refreshes.
 - Load documented `_shared_handlers` while preserving legacy `shared-handlers`, and validate all runnable subdirectories with the same script-block selection as the runtime.
-
-**Highlights:** Updated input validation, developer tooling, and CI while retaining Node.js 24 support.
-
-- Updated architecture, development, and protocol-testing documentation and clarified tool descriptions.
+- Compatibility: `timeout_seconds` now accepts 1–2147483 seconds; zero, negative, and overflowing values are rejected instead of defaulting, failing during execution, or being clamped.
 - Updated Zod to 4.6.2; aligned Node.js types with the supported Node 24 floor and enforce a 48-hour dependency release age.
 - Test macOS execution on Node 24 and 26, pin GitHub Actions, and run knowledge-base validation alongside build checks without a separate dependency installation.
+- Updated architecture, development, and protocol-testing documentation and clarified tool descriptions.
 - Updated pnpm, Node.js type definitions, oxlint, oxfmt, and Vitest for dependency-installation, linting, formatting, and testing fixes; thanks @dependabot for the tooling updates.
 
 ## [0.4.7] - 2026-08-31

@@ -49,9 +49,11 @@ export const ExecuteScriptInputSchema = z
     timeout_seconds: z
       .number()
       .int()
+      .positive()
+      .max(2147483)
       .optional()
       .default(60)
-      .describe("The timeout for the script execution in seconds. Defaults to 60."),
+      .describe("The timeout in seconds, from 1 to 2147483 (Node timer limit). Defaults to 60."),
     output_format_mode: z
       .enum(["auto", "human_readable", "structured_error", "structured_output_and_error", "direct"])
       .optional()
