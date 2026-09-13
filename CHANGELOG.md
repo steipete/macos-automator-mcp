@@ -1,9 +1,10 @@
 # Changelog
 
-## [0.4.8] - Unreleased
+## Unreleased
 
 **Highlights:** Updated input validation and development tooling while retaining Node.js 24 support.
 
+- Updated architecture, development, and protocol-testing documentation and clarified tool descriptions.
 - Updated Zod to 4.6.1 for schema parsing, memory-use, and default-value fixes.
 - Updated pnpm, Node.js type definitions, oxlint, oxfmt, and Vitest for dependency-installation, linting, formatting, and testing fixes; thanks @dependabot for the tooling updates.
 

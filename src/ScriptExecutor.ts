@@ -1,4 +1,3 @@
-// src/ScriptExecutor.ts
 import { execFile, type ExecFileException } from "node:child_process";
 import { promisify } from "node:util";
 import fs from "node:fs/promises";
@@ -28,8 +27,8 @@ export class ScriptExecutor {
 
     const {
       language = "applescript",
-      timeoutMs = 30000, // Default 30 seconds
-      output_format_mode = "auto", // Default to auto
+      timeoutMs = 30000,
+      output_format_mode = "auto",
       arguments: scriptArgs = [],
     } = options;
 
@@ -39,19 +38,14 @@ export class ScriptExecutor {
       osaArgs.push("-l", "JavaScript");
     }
 
-    // Determine resolved output mode based on 'auto' logic if necessary
-    let resolved_mode = output_format_mode;
-    if (resolved_mode === "auto") {
-      if (language === "javascript") {
-        resolved_mode = "direct";
-      } else {
-        // AppleScript
-        resolved_mode = "human_readable";
-      }
-    }
+    const resolvedMode =
+      output_format_mode === "auto"
+        ? language === "javascript"
+          ? "direct"
+          : "human_readable"
+        : output_format_mode;
 
-    // Add -s flags based on the resolved mode
-    switch (resolved_mode) {
+    switch (resolvedMode) {
       case "human_readable":
         osaArgs.push("-s", "h");
         break;
@@ -113,43 +107,35 @@ export class ScriptExecutor {
     try {
       const { stdout, stderr } = await execFileAsync("osascript", osaArgs, {
         timeout: timeoutMs,
-        windowsHide: true,
       });
-      const current_execution_time_seconds = parseFloat(
-        ((Date.now() - scriptStartTime) / 1000).toFixed(3),
-      );
+      const executionTimeSeconds = parseFloat(((Date.now() - scriptStartTime) / 1000).toFixed(3));
 
-      const stdoutString = stdout.toString();
-      const stderrString = stderr.toString();
-
-      if (stderrString?.trim()) {
+      if (stderr.trim()) {
         logger.warn("osascript produced stderr output on successful execution", {
-          stderr: stderrString.trim(),
+          stderr: stderr.trim(),
         });
       }
       return {
-        stdout: stdoutString.trim(),
-        stderr: stderrString.trim(),
-        execution_time_seconds: current_execution_time_seconds,
+        stdout: stdout.trim(),
+        stderr: stderr.trim(),
+        execution_time_seconds: executionTimeSeconds,
       };
     } catch (error: unknown) {
-      const current_execution_time_seconds = parseFloat(
-        ((Date.now() - scriptStartTime) / 1000).toFixed(3),
-      );
-      const nodeError = error as ExecFileException; // Error from execFileAsync
+      const executionTimeSeconds = parseFloat(((Date.now() - scriptStartTime) / 1000).toFixed(3));
+      const nodeError = error as ExecFileException;
       const executionError: ScriptExecutionError = new Error(
         nodeError.message,
       ) as ScriptExecutionError;
 
-      executionError.name = nodeError.name; // Preserve original error name if meaningful
+      executionError.name = nodeError.name;
       executionError.stdout = nodeError.stdout?.toString();
       executionError.stderr = nodeError.stderr?.toString();
-      executionError.exitCode = nodeError.code; // string or number
+      executionError.exitCode = nodeError.code;
       executionError.signal = nodeError.signal;
       executionError.killed = !!nodeError.killed;
       executionError.isTimeout = !!nodeError.killed; // 'killed' is true if process was terminated by timeout
-      executionError.originalError = nodeError; // Preserve original node error
-      executionError.execution_time_seconds = current_execution_time_seconds; // Set the calculated time
+      executionError.originalError = nodeError;
+      executionError.execution_time_seconds = executionTimeSeconds;
 
       logger.error("osascript execution failed", {
         message: executionError.message,
@@ -159,7 +145,7 @@ export class ScriptExecutor {
         signal: executionError.signal,
         isTimeout: executionError.isTimeout,
         scriptToLog,
-        execution_time_seconds: current_execution_time_seconds,
+        execution_time_seconds: executionTimeSeconds,
       });
 
       throw executionError;

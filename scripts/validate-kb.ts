@@ -1,13 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {
-  report,
-  printValidationReport,
-  logErrorToReport,
-  logWarningToReport as _logWarningToReport,
-} from "./kbReport.js";
+import { report, printValidationReport, logErrorToReport } from "./kbReport.js";
 import { processKnowledgeBasePath } from "./kbPathProcessor.js";
 
 // Constants

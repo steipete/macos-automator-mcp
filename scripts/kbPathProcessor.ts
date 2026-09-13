@@ -4,7 +4,6 @@ import matter from "gray-matter";
 import { report, logErrorToReport, logWarningToReport } from "./kbReport.js";
 import { validateTipFile, validateSharedHandlerFile } from "./kbFileValidator.js";
 
-// Constants moved from validate-kb.ts that are relevant here
 const SHARED_HANDLERS_DIR_NAME = "_shared_handlers";
 
 async function validateTipFilesRecursively(
@@ -35,8 +34,6 @@ async function validateTipFilesRecursively(
         `Failed to read directory: ${(error as Error).message}`,
         isLocalKbScan,
       );
-    } else {
-      // console.debug(`Optional category directory not found in local KB: ${currentPath}`);
     }
   }
 }
@@ -74,8 +71,6 @@ export async function processKnowledgeBasePath(
                 `Failed to read _shared_handlers directory: ${(error as Error).message}`,
                 isLocal,
               );
-            } else {
-              // console.debug(`Optional _shared_handlers directory not found in local KB: ${categoryPath}`);
             }
           }
           continue;
