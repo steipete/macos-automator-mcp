@@ -38,7 +38,7 @@
     "format": "oxfmt --write .",
     "validate": "tsx scripts/validate-kb.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -p tsconfig.check.json",
     "format:check": "oxfmt --check ."
   },
   "dependencies": {

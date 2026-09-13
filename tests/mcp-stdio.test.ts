@@ -2,33 +2,17 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { execFileSync } from "node:child_process";
-import path from "path";
-import os from "os";
-import fs from "fs/promises";
+import path from "node:path";
+import os from "node:os";
+import fs from "node:fs/promises";
+import { CallToolResultSchema } from "@modelcontextprotocol/sdk/types.js";
 import packageJson from "../package.json" with { type: "json" };
 
-const WORKSPACE_PATH = path.resolve(__dirname, "..");
+const WORKSPACE_PATH = path.resolve(import.meta.dirname, "..");
 const TSX_PATH = path.join(WORKSPACE_PATH, "node_modules", ".bin", "tsx");
 const SERVER_PATH = path.join(WORKSPACE_PATH, "src", "server.ts");
-const TSX_TSCONFIG_PATH = path.join(WORKSPACE_PATH, "tests", "tsconfig.runtime.json");
 
 const TEST_CONTENT = "Content written by execute_script via stdio test";
-
-async function waitForFileExists(filePath: string, timeoutMs = 15000, pollMs = 250) {
-  const deadline = Date.now() + timeoutMs;
-  while (true) {
-    try {
-      await fs.access(filePath);
-      return;
-    } catch {
-      /* ignore */
-    }
-    if (Date.now() > deadline) {
-      throw new Error(`Timed out waiting for file to exist: ${filePath}`);
-    }
-    await new Promise((resolve) => setTimeout(resolve, pollMs));
-  }
-}
 
 function shellEscape(value: string) {
   return value.replace(/'/g, "'\\''");
@@ -43,8 +27,10 @@ function toolByName(tools: Awaited<ReturnType<Client["listTools"]>>["tools"], na
 describe("MCP stdio protocol", () => {
   let client: Client;
   let transport: StdioClientTransport;
+  let tempDirectory: string;
 
   beforeAll(async () => {
+    tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-stdio-"));
     transport = new StdioClientTransport({
       command: TSX_PATH,
       args: [SERVER_PATH],
@@ -53,7 +39,8 @@ describe("MCP stdio protocol", () => {
       env: {
         MCP_E2E_TESTING: "true",
         VITEST: "true",
-        TSX_TSCONFIG_PATH,
+        LOCAL_KB_PATH: path.join(tempDirectory, "local-kb"),
+        LOG_LEVEL: "ERROR",
       },
     });
 
@@ -66,7 +53,8 @@ describe("MCP stdio protocol", () => {
   }, 30000);
 
   afterAll(async () => {
-    await client.close();
+    await client?.close();
+    await fs.rm(tempDirectory, { recursive: true, force: true });
   });
 
   it("lists tools, returns tips, and executes a script", async () => {
@@ -87,23 +75,26 @@ describe("MCP stdio protocol", () => {
       name: "get_scripting_tips",
       arguments: { search_term: "knowledge base", limit: 1 },
     });
-    const tipsText = (tipsResult.content ?? []).map((item) => item.text ?? "").join("\n");
+    const tipsText = CallToolResultSchema.parse(tipsResult)
+      .content.filter((item) => item.type === "text")
+      .map((item) => item.text)
+      .join("\n");
     expect(tipsText).toContain("How to Use This Knowledge Base");
 
-    const tempFilePath = path.join(os.tmpdir(), `mcp_stdio_test_${Date.now()}.txt`);
+    const tempFilePath = path.join(tempDirectory, "output.txt");
     const escapedTempFilePath = shellEscape(tempFilePath);
     const escapedTestContent = shellEscape(TEST_CONTENT);
     const appleScript = `do shell script "echo '${escapedTestContent}' > '${escapedTempFilePath}'"\nreturn "${escapedTempFilePath}"`;
 
     try {
-      await client.callTool({
+      const result = await client.callTool({
         name: "execute_script",
         arguments: {
           script_content: appleScript,
         },
       });
 
-      await waitForFileExists(tempFilePath, 20000);
+      expect(result.isError).not.toBe(true);
       const fileContent = await fs.readFile(tempFilePath, "utf-8");
       expect(fileContent.trim()).toBe(TEST_CONTENT);
     } finally {
@@ -125,7 +116,6 @@ describe("CLI flags", () => {
         ...process.env,
         MCP_E2E_TESTING: "true",
         VITEST: "true",
-        TSX_TSCONFIG_PATH,
       },
       timeout: 15000,
     });

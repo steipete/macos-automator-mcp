@@ -65,7 +65,6 @@ macos-automator-mcp/
 ├── dist/                 # Compiled JavaScript output
 ├── docs/                 # Documentation and screenshots
 ├── .github/workflows/    # GitHub Actions workflows (CI)
-├── .oxlintrc.json
 ├── .gitignore
 ├── docs/DEVELOPMENT.md   # This file
 ├── LICENSE
@@ -83,7 +82,7 @@ The server features an extensible knowledge base of AppleScript/JXA tips and run
 ### Directory Structure
 
 - **`knowledge_base/`**: Root directory.
-- **`knowledge_base/_shared_handlers/`**: Contains reusable AppleScript (`.applescript`) or JXA (`.js`) handlers/subroutines. These are not yet automatically prepended but are loaded and can be referenced in complex script designs.
+- **`knowledge_base/_shared_handlers/`**: Contains reusable AppleScript (`.applescript`) or JXA (`.js`) handlers/subroutines. These are not yet automatically prepended but are loaded and must be copied into scripts that need them.
 - **`knowledge_base/<category_name>/`**: Each subdirectory represents a category of tips (e.g., `finder`, `safari`, `mail`).
 - **`knowledge_base/<category_name>/_category_info.md`**: (Optional) A Markdown file whose frontmatter can contain a `description` for the category, used by `get_scripting_tips`.
 - **`knowledge_base/<category_name>/<tip_file_name>.md`**: Individual Markdown files for each script/tip.
@@ -141,14 +140,14 @@ console.log("Hello from JXA!");
 
 ### Parsing and Loading
 
-- The `src/services/knowledgeBaseService.ts` handles loading and parsing these Markdown files.
+- `src/services/kbLoader.ts` parses Markdown; `KnowledgeBaseManager.ts` merges and caches the index; `knowledgeBaseService.ts` handles queries.
 - It uses the `gray-matter` library for parsing frontmatter.
 - The knowledge base is **lazy-loaded** on the first call to `get_scripting_tips` or when `execute_script` uses a `kb_script_id`.
 
 ## Scripts Overview
 
 - `pnpm run build`: Compiles TypeScript to JavaScript.
-- `pnpm run dev`: Runs the server in development mode with hot reloading (using tsx).
+- `pnpm run dev`: Runs the server in development mode from TypeScript (using tsx).
 - `pnpm run start`: Starts the compiled server.
 - `pnpm run lint`: Lints the codebase using oxlint.
 - `pnpm run format`: Formats the codebase using oxfmt.

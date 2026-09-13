@@ -1,20 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {
-  report,
-  logErrorToReport,
-  logWarningToReport,
-  type _ValidationReport,
-} from "./kbReport.js";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type {
-  _ScriptingTip,
-  _KnowledgeBaseIndex,
-} from "../src/services/scriptingKnowledge.types.js";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { _Logger } from "../src/logger.js";
+import { report, logErrorToReport, logWarningToReport } from "./kbReport.js";
 
 export interface TipFrontmatter {
   id?: string;
@@ -28,17 +15,7 @@ export interface TipFrontmatter {
   notes?: string;
 }
 
-// The lintAndFixAppleScript function was commented out in the original validate-kb.ts.
-// It's removed here for cleanliness. If needed, it can be added back from history.
-
-/**
- * Helper function to validate the title in frontmatter
- */
-function _validateTitle(
-  frontmatter: TipFrontmatter,
-  filePath: string,
-  isLocalKb: boolean,
-): boolean {
+function validateTitle(frontmatter: TipFrontmatter, filePath: string, isLocalKb: boolean): boolean {
   if (
     !frontmatter.title ||
     typeof frontmatter.title !== "string" ||
@@ -50,10 +27,7 @@ function _validateTitle(
   return true;
 }
 
-/**
- * Helper function to validate and register the tip ID
- */
-function _validateAndRegisterTipId(
+function validateAndRegisterTipId(
   frontmatterId: string | undefined,
   filePath: string,
   categoryId: string,
@@ -103,10 +77,7 @@ function _validateAndRegisterTipId(
   return tipId;
 }
 
-/**
- * Helper function to validate the category in frontmatter
- */
-function _validateCategory(
+function validateCategory(
   frontmatter: TipFrontmatter,
   categoryId: string,
   filePath: string,
@@ -121,10 +92,7 @@ function _validateCategory(
   }
 }
 
-/**
- * Helper function to validate the description in frontmatter
- */
-function _validateDescription(
+function validateDescription(
   frontmatter: TipFrontmatter,
   filePath: string,
   isLocalKb: boolean,
@@ -138,14 +106,7 @@ function _validateDescription(
   }
 }
 
-/**
- * Helper function to validate keywords in frontmatter
- */
-function _validateKeywords(
-  frontmatter: TipFrontmatter,
-  filePath: string,
-  isLocalKb: boolean,
-): void {
+function validateKeywords(frontmatter: TipFrontmatter, filePath: string, isLocalKb: boolean): void {
   if (
     !frontmatter.keywords ||
     !Array.isArray(frontmatter.keywords) ||
@@ -157,10 +118,7 @@ function _validateKeywords(
   }
 }
 
-/**
- * Helper function to validate language in frontmatter
- */
-function _validateLanguage(
+function validateLanguage(
   frontmatter: TipFrontmatter,
   filePath: string,
   isLocalKb: boolean,
@@ -180,10 +138,7 @@ function _validateLanguage(
   return lang as "applescript" | "javascript";
 }
 
-/**
- * Helper function to validate script block in markdown body
- */
-function _validateScriptBlock(
+function validateScriptBlock(
   markdownBody: string,
   expectedLanguage: string,
   filePath: string,
@@ -218,10 +173,7 @@ function _validateScriptBlock(
   return { scriptContent, scriptBlockLanguage };
 }
 
-/**
- * Helper function to validate complex arguments settings vs script content
- */
-function _validateComplexArguments(
+function validateComplexArguments(
   frontmatter: TipFrontmatter,
   scriptContent: string | undefined,
   filePath: string,
@@ -255,39 +207,32 @@ export async function validateTipFile(
   const { data, content: markdownBody } = matter(fileContent, { excerpt: true });
   const frontmatter = data as TipFrontmatter;
 
-  // Validate title - exit early if invalid
-  if (!_validateTitle(frontmatter, filePath, isLocalKb)) {
+  if (!validateTitle(frontmatter, filePath, isLocalKb)) {
     return;
   }
 
-  // Validate and register tip ID
-  _validateAndRegisterTipId(frontmatter.id, filePath, categoryId, kbPath, isLocalKb);
+  validateAndRegisterTipId(frontmatter.id, filePath, categoryId, kbPath, isLocalKb);
 
-  // Record the successful parse in the report
   report.totalTipsParsed++;
   report.categoriesFound.add(categoryId);
 
-  // Validate remaining frontmatter fields
-  _validateCategory(frontmatter, categoryId, filePath, isLocalKb);
-  _validateDescription(frontmatter, filePath, isLocalKb);
-  _validateKeywords(frontmatter, filePath, isLocalKb);
+  validateCategory(frontmatter, categoryId, filePath, isLocalKb);
+  validateDescription(frontmatter, filePath, isLocalKb);
+  validateKeywords(frontmatter, filePath, isLocalKb);
 
-  // Validate language
-  const validatedLanguage = _validateLanguage(frontmatter, filePath, isLocalKb);
+  const validatedLanguage = validateLanguage(frontmatter, filePath, isLocalKb);
   if (!validatedLanguage) {
     return; // Exit if language is invalid
   }
 
-  // Validate script block
-  const { scriptContent } = _validateScriptBlock(
+  const { scriptContent } = validateScriptBlock(
     markdownBody,
     validatedLanguage,
     filePath,
     isLocalKb,
   );
 
-  // Validate complex arguments and placeholders
-  _validateComplexArguments(frontmatter, scriptContent, filePath, isLocalKb);
+  validateComplexArguments(frontmatter, scriptContent, filePath, isLocalKb);
 }
 
 export async function validateSharedHandlerFile(

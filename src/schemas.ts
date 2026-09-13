@@ -13,7 +13,7 @@ export const ExecuteScriptInputSchema = z
       .string()
       .optional()
       .describe(
-        "The ID of a knowledge base script to execute. Replaces script_content and script_path if provided.",
+        "The ID of a knowledge base script to execute. Use instead of script_content or script_path.",
       ),
     script_content: z
       .string()
