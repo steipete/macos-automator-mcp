@@ -24,27 +24,16 @@ To understand exactly how these substitutions are being performed:
   }
   ```
 - **Inspect the Output**: The server will then include a detailed log of each substitution step in the output. On success, these logs are prepended to the script's standard output. On failure, they are appended to the error message. This allows you to see:
-  - Which regex patterns were applied.
-  - What parts of the script were matched.
-  - What the placeholder values were resolved to.
-  - The script content length before and after each major substitution stage.
+  - The source placeholder that matched.
+  - The language-specific literal inserted in its place.
 
-This was crucial in diagnosing an issue where the regex for matching quoted placeholders was not working as expected. The logs showed that the script content length wasn't changing, indicating no matches were being found, which led to a step-by-step simplification and rebuilding of the problematic regex.
+Substitution scans the source once, so placeholder-like text inside input values stays literal. Named placeholders map camelCase to snake_case input keys; positional placeholders use zero-based `${arguments[N]}` or one-based `--MCP_ARG_N`.
 
-### 2. Iterative Regex Simplification (When Substitution Fails)
+### 2. Check Placeholder Context and Language
 
-If substitution logs indicate that a specific regex pattern is not matching as expected (e.g., `scriptContentLength` doesn't change after its application):
+Use placeholders as complete expressions, such as `return ${inputData.message}` in AppleScript or `JSON.stringify(${inputData.value})` in JXA. A whole quoted placeholder is also supported; embedding a placeholder inside a larger string literal is not supported.
 
-1.  **Isolate the Problematic Regex**: Identify the regex responsible for the failing substitution (e.g., `quotedMcpInputRegex` in our case).
-2.  **Drastically Simplify**: Change the regex to its simplest possible form that should still match _some_ part of the target placeholder string. For example, to debug `/(?:['"])--MCP_INPUT:(\w+)(?:[''])/g`, we first simplified it to `/--MCP_INPUT:/g`.
-3.  **Test**: Run the script. If this extremely simple regex works (i.e., makes replacements and changes `scriptContentLength`), it confirms that the core string replacement mechanism is functional in that part of the code.
-4.  **Incrementally Rebuild**: Gradually add parts back to the regex, testing at each step:
-    - Test capture groups: e.g., `/--MCP_INPUT:(\w+)/g` to ensure `keyName` is captured.
-    - Test character sets or specific quoting: e.g., try matching only double quotes `/"--MCP_INPUT:(\w+)\"/g`, then add single quotes.
-    - Test non-capturing groups or more complex constructs like backreferences (e.g., `/(["\'])--MCP_INPUT:(\w+)\1/g` which eventually solved our problem for matching surrounding quotes).
-5.  **Examine Replacement Logic**: Ensure the replacement function uses the captured groups correctly and that the replacement value (e.g., from `valueToAppleScriptLiteral`) is what you expect.
-
-This methodical approach helps pinpoint exactly which part of a complex regex is causing the failure.
+For a failing KB script, compare its code-block language with the substituted source. AppleScript lists and records use braces; JXA arrays and objects use JSON syntax. Missing values become `missing value` in AppleScript and `null` in JXA. Test a small synthetic input first, especially when values contain quotes, backslashes, or newlines.
 
 ### 3. Test Snippets in Script Editor
 

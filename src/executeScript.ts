@@ -58,6 +58,7 @@ export async function executeScript(
 
     const substitutionResult: SubstitutionResult = substitutePlaceholders({
       scriptContent: tip.script,
+      language: tip.language,
       inputData: input.input_data,
       args: input.arguments,
       includeSubstitutionLogs: input.include_substitution_logs || false,
