@@ -2,6 +2,8 @@
 
 This guide provides instructions for setting up the development environment, running the server locally, understanding the knowledge base, and contributing to the project.
 
+Dependency updates must be at least 48 hours old; `pnpm-workspace.yaml` enforces this minimum release age. Keep Node.js type definitions on the supported Node 24 line. The pnpm 11 pin retains a single-document lockfile while [GitHub dependency-graph support for pnpm multi-document files](https://github.com/dependabot/dependabot-core/issues/14794#issuecomment-5610159226) is incomplete.
+
 ## Getting Started
 
 1.  **Clone the repository:**
