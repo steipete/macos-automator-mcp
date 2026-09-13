@@ -4,7 +4,7 @@ macOS Automator MCP exposes two tools over stdio. All input field names use `sna
 
 ## `get_scripting_tips`
 
-Search the bundled and local AppleScript/JXA knowledge bases. Set `list_categories` to `true` to list the available categories.
+Search the bundled and local AppleScript/JXA knowledge bases. Set `list_categories` to `true` to list the available categories. Requests without a category or search term also list categories; `limit` only applies when browsing/searching tips.
 
 | Input              | Type             | Default | Description                                                           |
 | ------------------ | ---------------- | ------- | --------------------------------------------------------------------- |

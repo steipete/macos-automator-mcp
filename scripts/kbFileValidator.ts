@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
+import { extractScriptBlock } from "../src/services/kbFormat.js";
 import { report, logErrorToReport, logWarningToReport } from "./kbReport.js";
 
 export interface TipFrontmatter {
@@ -144,12 +145,11 @@ function validateScriptBlock(
   filePath: string,
   isLocalKb: boolean,
 ): { scriptContent?: string; scriptBlockLanguage?: string } {
-  const scriptBlockRegex = /```(applescript|javascript)\s*\n([\s\S]*?)\n```/i;
-  const scriptMatch = markdownBody.match(scriptBlockRegex);
+  const scriptBlock = extractScriptBlock(markdownBody);
   let scriptContent: string | undefined;
   let scriptBlockLanguage: string | undefined;
 
-  if (!scriptMatch || !scriptMatch[2] || scriptMatch[2].trim() === "") {
+  if (!scriptBlock || scriptBlock.script === "") {
     if (expectedLanguage === "applescript" || expectedLanguage === "javascript") {
       logWarningToReport(
         filePath,
@@ -158,8 +158,8 @@ function validateScriptBlock(
       );
     }
   } else {
-    scriptBlockLanguage = scriptMatch[1].toLowerCase();
-    scriptContent = scriptMatch[2].trim();
+    scriptBlockLanguage = scriptBlock.language;
+    scriptContent = scriptBlock.script;
 
     if (scriptBlockLanguage !== expectedLanguage) {
       logWarningToReport(

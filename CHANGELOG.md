@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fixed default category discovery, prototype-named categories, malformed tip metadata, local category-description overrides, and overlapping knowledge-base refreshes.
+- Load documented `_shared_handlers` while preserving legacy `shared-handlers`, and validate all runnable subdirectories with the same script-block selection as the runtime.
+
 **Highlights:** Updated input validation, developer tooling, and CI while retaining Node.js 24 support.
 
 - Updated architecture, development, and protocol-testing documentation and clarified tool descriptions.

@@ -62,13 +62,13 @@ Local tips add to the bundled knowledge base. By default, the server reads:
 
 Set `LOCAL_KB_PATH` to use another directory. A leading `~` is expanded to the current user's home directory.
 
-Mirror the bundled `knowledge_base/` category structure. Tip files are Markdown with YAML frontmatter and an AppleScript or JavaScript code block; shared handlers are `.applescript` or `.js` files in `_shared_handlers/`.
+Mirror the bundled `knowledge_base/` category structure. Tip files are Markdown with YAML frontmatter and an AppleScript or JavaScript code block; shared handlers are `.applescript` or `.js` files in `_shared_handlers/`. The legacy runtime directory `shared-handlers/` remains supported; when both contain the same handler name and language, `_shared_handlers/` takes precedence.
 
 Merging follows these rules:
 
 - A local tip with the same ID replaces the bundled tip.
 - A local shared handler with the same name and language replaces the bundled handler.
-- A local `_category_info.md` can replace a category description.
+- A local `_category_info.md` can replace a category description without local tips. Adding local tips without that metadata preserves the bundled description.
 - New local IDs, handlers, and categories are added to the index.
 
 Validate an alternate local knowledge base from a source checkout:

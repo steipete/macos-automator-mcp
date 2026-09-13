@@ -32,7 +32,7 @@ The validation script:
 
 1. Parses the frontmatter metadata for each file
 2. Checks for required fields (title, description, etc.)
-3. Verifies ID uniqueness
+3. Verifies ID uniqueness, including tips in underscore-prefixed subdirectories that are also loaded at runtime
 4. Extracts script content from code blocks and reports missing, empty, or language-mismatched blocks
 5. Checks complex-script argument prompts against MCP placeholders
 

@@ -1,6 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
+import { z } from "zod";
+import { SHARED_HANDLER_DIRECTORIES, extractScriptBlock } from "./kbFormat.js";
 import type {
   ScriptingTip,
   KnowledgeCategory,
@@ -11,7 +13,26 @@ import { Logger } from "../logger.js";
 
 const logger = new Logger("KBLoader");
 
-const SHARED_HANDLERS_DIR_NAME = "shared-handlers"; // Used for locating shared handlers within a KB path
+const optionalText = z
+  .string()
+  .nullish()
+  .transform((value) => value ?? undefined);
+const TipFrontmatterSchema = z.object({
+  title: z.string().refine((value) => value.trim().length > 0),
+  id: optionalText,
+  description: optionalText,
+  notes: optionalText,
+  argumentsPrompt: optionalText,
+  language: z
+    .enum(["applescript", "javascript"])
+    .nullish()
+    .transform((value) => value ?? undefined),
+  isComplex: z
+    .boolean()
+    .nullish()
+    .transform((value) => value ?? undefined),
+  keywords: z.unknown().optional(),
+});
 
 export interface ParsedTipFile {
   frontmatter: TipFrontmatter;
@@ -23,26 +44,18 @@ export interface ParsedTipFile {
 export function parseMarkdownTipFile(fileContent: string, filePath: string): ParsedTipFile | null {
   try {
     const { data, content: markdownBody } = matter(fileContent);
-    const frontmatter = data as TipFrontmatter;
-
-    if (!frontmatter.title) {
-      logger.warn("Markdown tip file missing title in frontmatter", { filePath });
+    const parsed = TipFrontmatterSchema.safeParse(data);
+    if (!parsed.success) {
+      logger.warn("Markdown tip file has invalid frontmatter", {
+        filePath,
+        fields: parsed.error.issues.map((issue) => issue.path.join(".")),
+      });
       return null;
     }
-
-    let script: string | null = null;
-    let determinedLanguage: "applescript" | "javascript" = frontmatter.language || "applescript";
-
-    const asMatch = markdownBody.match(/```applescript\s*\n([\s\S]*?)\n```/i);
-    const jsMatch = markdownBody.match(/```javascript\s*\n([\s\S]*?)\n```/i);
-
-    if (asMatch) {
-      script = asMatch[1].trim();
-      determinedLanguage = "applescript";
-    } else if (jsMatch) {
-      script = jsMatch[1].trim();
-      determinedLanguage = "javascript";
-    }
+    const frontmatter = parsed.data;
+    const block = extractScriptBlock(markdownBody);
+    const script = block?.script ?? null;
+    const determinedLanguage = block?.language ?? frontmatter.language ?? "applescript";
     return { frontmatter, body: markdownBody, script, determinedLanguage };
   } catch (e: unknown) {
     logger.error("Failed to parse Markdown tip file", { filePath, error: (e as Error).message });
@@ -51,7 +64,7 @@ export function parseMarkdownTipFile(fileContent: string, filePath: string): Par
 }
 
 export interface LoadedKnowledgePath {
-  categories: { id: KnowledgeCategory; description: string; tipCount: number }[];
+  categories: { id: KnowledgeCategory; description?: string; tipCount: number }[];
   tips: ScriptingTip[];
   sharedHandlers: SharedHandler[];
 }
@@ -182,42 +195,50 @@ export async function loadTipsAndHandlersFromPath(
     return currentLevelFiles;
   }
 
-  const sharedHandlersPath = path.join(basePath, SHARED_HANDLERS_DIR_NAME);
-  try {
-    const handlerFiles = await fs.readdir(sharedHandlersPath, { withFileTypes: true });
-    for (const handlerFile of handlerFiles) {
-      if (
-        handlerFile.isFile() &&
-        (handlerFile.name.endsWith(".applescript") || handlerFile.name.endsWith(".js"))
-      ) {
-        const filePath = path.join(sharedHandlersPath, handlerFile.name);
-        const content = await fs.readFile(filePath, "utf-8");
-        const handlerName = path.basename(handlerFile.name, path.extname(handlerFile.name));
-        const language = handlerFile.name.endsWith(".js") ? "javascript" : "applescript";
+  for (const directory of SHARED_HANDLER_DIRECTORIES) {
+    const sharedHandlersPath = path.join(basePath, directory);
+    try {
+      const handlerFiles = await fs.readdir(sharedHandlersPath, { withFileTypes: true });
+      for (const handlerFile of handlerFiles) {
+        if (
+          handlerFile.isFile() &&
+          (handlerFile.name.endsWith(".applescript") || handlerFile.name.endsWith(".js"))
+        ) {
+          const filePath = path.join(sharedHandlersPath, handlerFile.name);
+          const content = await fs.readFile(filePath, "utf-8");
+          const handlerName = path.basename(handlerFile.name, path.extname(handlerFile.name));
+          const language = handlerFile.name.endsWith(".js") ? "javascript" : "applescript";
 
-        loadedSharedHandlers.push({
-          name: handlerName,
-          content,
-          filePath,
-          language,
-          isLocal: isLocalKb,
-        });
-        logger.debug("Loaded shared handler", { name: handlerName, language, isLocalKb });
+          if (
+            loadedSharedHandlers.some(
+              (handler) => handler.name === handlerName && handler.language === language,
+            )
+          )
+            continue;
+          loadedSharedHandlers.push({
+            name: handlerName,
+            content,
+            filePath,
+            language,
+            isLocal: isLocalKb,
+          });
+          logger.debug("Loaded shared handler", { name: handlerName, language, isLocalKb });
+        }
       }
-    }
-  } catch (e: unknown) {
-    const error = e as NodeJS.ErrnoException;
-    if (error.code !== "ENOENT") {
-      logger.warn("Error reading shared-handlers directory. Skipping.", {
-        path: sharedHandlersPath,
-        error: error.message,
-        isLocalKb,
-      });
-    } else {
-      logger.debug("shared-handlers directory not found, normal for some KBs.", {
-        path: sharedHandlersPath,
-        isLocalKb,
-      });
+    } catch (e: unknown) {
+      const error = e as NodeJS.ErrnoException;
+      if (error.code !== "ENOENT") {
+        logger.warn("Error reading shared-handlers directory. Skipping.", {
+          path: sharedHandlersPath,
+          error: error.message,
+          isLocalKb,
+        });
+      } else {
+        logger.debug("shared-handlers directory not found, normal for some KBs.", {
+          path: sharedHandlersPath,
+          isLocalKb,
+        });
+      }
     }
   }
 
@@ -236,10 +257,13 @@ export async function loadTipsAndHandlersFromPath(
   }
 
   for (const categoryDirEntry of categoryDirEntries) {
-    if (categoryDirEntry.isDirectory() && categoryDirEntry.name !== SHARED_HANDLERS_DIR_NAME) {
+    if (
+      categoryDirEntry.isDirectory() &&
+      !SHARED_HANDLER_DIRECTORIES.includes(categoryDirEntry.name)
+    ) {
       const categoryId = categoryDirEntry.name;
       const categoryPath = path.join(basePath, categoryId);
-      let categoryDescription = `Tips and examples for ${categoryId.replace(/_/g, " ")}.`;
+      let categoryDescription: string | undefined;
       const categoryInfoPath = path.join(categoryPath, "_category_info.md");
 
       try {
@@ -255,8 +279,7 @@ export async function loadTipsAndHandlersFromPath(
       const categoryScanResults = await findTipsRecursively(categoryPath, categoryId);
       loadedTips.push(...categoryScanResults);
 
-      if (categoryScanResults.length > 0) {
-        // Only add category if it has tips from this path
+      if (categoryScanResults.length > 0 || categoryDescription !== undefined) {
         loadedCategories.push({
           id: categoryId,
           description: categoryDescription,

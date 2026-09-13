@@ -4,14 +4,13 @@ import matter from "gray-matter";
 import { report, logErrorToReport, logWarningToReport } from "./kbReport.js";
 import { validateTipFile, validateSharedHandlerFile } from "./kbFileValidator.js";
 
-const SHARED_HANDLERS_DIR_NAME = "_shared_handlers";
+import { SHARED_HANDLER_DIRECTORIES } from "../src/services/kbFormat.js";
 
 async function validateTipFilesRecursively(
   currentPath: string,
   categoryId: string,
   kbPathToUse: string,
   isLocalKbScan: boolean,
-  recursive = true,
 ): Promise<void> {
   try {
     const entries = await fs.readdir(currentPath, { withFileTypes: true });
@@ -19,10 +18,8 @@ async function validateTipFilesRecursively(
     for (const entry of entries) {
       const entryPath = path.join(currentPath, entry.name);
 
-      if (entry.isDirectory() && recursive) {
-        if (!entry.name.startsWith("_")) {
-          await validateTipFilesRecursively(entryPath, categoryId, kbPathToUse, isLocalKbScan);
-        }
+      if (entry.isDirectory()) {
+        await validateTipFilesRecursively(entryPath, categoryId, kbPathToUse, isLocalKbScan);
       } else if (entry.isFile() && entry.name.endsWith(".md") && !entry.name.startsWith("_")) {
         await validateTipFile(entryPath, categoryId, kbPathToUse, isLocalKbScan);
       }
@@ -47,13 +44,18 @@ export async function processKnowledgeBasePath(
   );
   try {
     const categoryDirEntries = await fs.readdir(basePathToScan, { withFileTypes: true });
+    const sharedHandlerFiles = new Set<string>();
+    categoryDirEntries.sort(
+      (a, b) =>
+        SHARED_HANDLER_DIRECTORIES.indexOf(a.name) - SHARED_HANDLER_DIRECTORIES.indexOf(b.name),
+    );
 
     for (const categoryDirEntry of categoryDirEntries) {
       if (categoryDirEntry.isDirectory()) {
         const categoryId = categoryDirEntry.name;
         const categoryPath = path.join(basePathToScan, categoryId);
 
-        if (categoryId === SHARED_HANDLERS_DIR_NAME) {
+        if (SHARED_HANDLER_DIRECTORIES.includes(categoryId)) {
           try {
             const handlerFiles = await fs.readdir(categoryPath, { withFileTypes: true });
             for (const handlerFile of handlerFiles) {
@@ -61,6 +63,8 @@ export async function processKnowledgeBasePath(
                 handlerFile.isFile() &&
                 (handlerFile.name.endsWith(".applescript") || handlerFile.name.endsWith(".js"))
               ) {
+                if (sharedHandlerFiles.has(handlerFile.name)) continue;
+                sharedHandlerFiles.add(handlerFile.name);
                 await validateSharedHandlerFile(path.join(categoryPath, handlerFile.name), isLocal);
               }
             }

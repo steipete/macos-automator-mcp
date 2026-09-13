@@ -54,7 +54,7 @@ function formatCategoryTitle(category: string): string {
 }
 
 function generateNoResultsMessage(category?: string, searchTerm?: string): string {
-  return `No tips found matching your criteria (Category: ${category || "All Categories"}, SearchTerm: ${searchTerm || "None"}). Try \`listCategories: true\` to see available categories.`;
+  return `No tips found matching your criteria (Category: ${category || "All Categories"}, SearchTerm: ${searchTerm || "None"}). Try \`list_categories: true\` to see available categories.`;
 }
 
 function formatSingleTipToMarkdownBlock(tip: ScriptingTip): string {
@@ -141,7 +141,7 @@ function handleListCategories(kb: KnowledgeBaseIndex, version?: string): string 
   const totalTipCount = kb.categories.reduce((sum, cat) => sum + (cat.tipCount || 0), 0);
   const versionString = version ? `\nmacos_automator version: ${version}` : "";
 
-  return `## Available AppleScript/JXA Tip Categories:${versionString}\n${categoryList}\n\nTotal Scripts Available: ${totalTipCount}\nVisit https://github.com/steipete/macos-automator-mcp to contribute your AppleScripts\n\nUse \`category: "category_name"\` to get specific tips, or \`searchTerm: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
+  return `## Available AppleScript/JXA Tip Categories:${versionString}\n${categoryList}\n\nTotal Scripts Available: ${totalTipCount}\nVisit https://github.com/steipete/macos-automator-mcp to contribute your AppleScripts\n\nUse \`category: "category_name"\` to get specific tips, or \`search_term: "keyword"\` to search. Tips with a runnable ID can be executed directly via the \`execute_script\` tool.`;
 }
 
 interface SearchResult {
@@ -184,27 +184,11 @@ function groupTipsByCategory(
   tips: ScriptingTip[],
   specificCategory?: string,
 ): { category: KnowledgeCategory; tips: ScriptingTip[] }[] {
-  const resultsToFormat: { category: KnowledgeCategory; tips: ScriptingTip[] }[] = [];
-  if (specificCategory) {
-    if (tips.length > 0) {
-      resultsToFormat.push({ category: specificCategory, tips });
-    }
-  } else {
-    const groupedByCat: Record<string, ScriptingTip[]> = tips.reduce(
-      (acc, tip) => {
-        const catKey = tip.category;
-        if (!acc[catKey]) acc[catKey] = [];
-        acc[catKey].push(tip);
-        return acc;
-      },
-      {} as Record<string, ScriptingTip[]>,
-    );
-
-    for (const catKey of Object.keys(groupedByCat)) {
-      resultsToFormat.push({ category: catKey, tips: groupedByCat[catKey] });
-    }
-  }
-  return resultsToFormat;
+  if (specificCategory) return tips.length ? [{ category: specificCategory, tips }] : [];
+  return Array.from(
+    Map.groupBy(tips, (tip) => tip.category),
+    ([category, tips]) => ({ category, tips }),
+  );
 }
 
 export async function getScriptingTipsService(
@@ -222,7 +206,7 @@ export async function getScriptingTipsService(
     serverDetailsString = `\n\n---\nServer Started: ${serverInfo.startTime}\nExecution Mode: ${serverInfo.mode}${versionInfo}`;
   }
 
-  if (input.list_categories || (!input.category && !input.search_term && !input.limit)) {
+  if (input.list_categories || (!input.category && !input.search_term)) {
     return handleListCategories(kb, serverInfo?.version) + serverDetailsString;
   }
 
